@@ -1,0 +1,18 @@
+import axios from 'axios'
+import { config } from '../../Config'
+const apiServer = config.url.TABUNG_API_BASE_URL
+
+export const getKutipanByTabung = async (id) => {
+    const response = await axios.get(`${apiServer}/kutipan/tabung/${id}`)
+    return response.data
+}
+
+export const getKutipan = async (id) => {
+    const response = await axios.get(`${apiServer}/kutipan/${id}`)
+    return response.data
+}
+
+export const saveKutipan = async (kutipan) => {
+    const response = await axios.post(`${apiServer}/kutipan`, kutipan)
+    return response.data
+}
