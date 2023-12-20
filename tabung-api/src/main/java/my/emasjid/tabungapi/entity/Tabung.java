@@ -22,7 +22,6 @@ public class Tabung {
 
     private String name;
 
-    @Column(name = "iscents")
     private boolean isCents;
 
     @ManyToOne
