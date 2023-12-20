@@ -11,7 +11,7 @@
 git clone https://github.com/Dev4w4n/e-masjid.git
 cd e-masjid
 ```
-### 2. cd into progres folder
+### 2. cd into postgres folder
 1. Create the image
 ```
 cd postgres
