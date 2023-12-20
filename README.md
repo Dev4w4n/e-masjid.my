@@ -11,7 +11,7 @@
 git clone https://github.com/Dev4w4n/e-masjid.git
 cd e-masjid
 ```
-### 2. Setup Postgres container
+### 2. cd into progres folder
 1. Create the image
 ```
 cd postgres
@@ -29,21 +29,18 @@ docker run -d \
   --name emasjid-postgres \
   emasjid-postgres-image
 ```
-### 3. Run api-khairat
+### 3. cd into khairat-api folder
 ```
-cd api-khairat
 mvn clean package -P dev
-java -jar ./target/api.jar
+java -jar ./target/khairat-api-1.0.0.jar
 ```
-### 4. Run api-tabung
+### 4. cd into tabung-api folder
 ```
-cd api-tabung
 mvn clean package -P dev
-java -jar ./target/api.jar
+java -jar ./target/tabung-api-1.0.0.jar
 ```
-### 5. Run dashbord
+### 5. cd into dashbord folder
 ```
-cd dashboard
 npm install
 npm start
 ```
