@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import my.emasjid.cadanganapi.entity.Cadangan;
 
 public interface CadanganRepository extends JpaRepository<Cadangan, Long> {
-    public Page<Cadangan> findAllCadangan(Pageable pageable);
+    public Page<Cadangan> findAll(Pageable pageable);
 }

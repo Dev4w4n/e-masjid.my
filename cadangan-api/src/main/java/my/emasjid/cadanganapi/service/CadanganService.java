@@ -15,7 +15,7 @@ public class CadanganService {
     private CadanganRepository cadanganRepository;
 
     public Page<Cadangan> getAllCadangan(Pageable pageable) {
-        return cadanganRepository.findAllCadangan(pageable);
+        return cadanganRepository.findAll(pageable);
     }
 
     public Cadangan save(Cadangan cadangan) {
