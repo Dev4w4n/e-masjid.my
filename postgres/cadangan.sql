@@ -8,8 +8,8 @@ insert into cadangan_types(name) values ('Lain-lain');
 
 CREATE TABLE cadangan (
     id serial PRIMARY KEY,
-    cadangan_types_id INTEGER REFERENCES cadangan_types(id)
-    cadangan_text VARCHAR(1024) IS NOT NULL,
+    cadangan_types_id INTEGER REFERENCES cadangan_types(id),
+    cadangan_text VARCHAR(1024) NOT NULL,
     tindakan_text VARCHAR(1024),
     is_open BOOLEAN DEFAULT false,
     score smallint,
