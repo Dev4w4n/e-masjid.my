@@ -14,7 +14,6 @@ cd e-masjid
 ### 2. cd into postgres folder
 1. Create the image
 ```
-cd postgres
 docker build -t emasjid-postgres-image .
 ```
 
@@ -29,23 +28,27 @@ docker run -d \
   --name emasjid-postgres \
   emasjid-postgres-image
 ```
-### 3. cd into khairat-api folder
+### 3. cd into ./api/khairat-api folder
 ```
 mvn clean package -P dev
 java -jar ./target/khairat-api-1.0.0.jar
 ```
-### 4. cd into tabung-api folder
+### 4. cd into ./api/tabung-api folder
 ```
 mvn clean package -P dev
 java -jar ./target/tabung-api-1.0.0.jar
 ```
-### 5. cd into dashbord folder
+### 5. cd into ./api/cadangan-api folder
+```
+mvn clean package -P dev
+java -jar ./target/cadangan-api-1.0.0.jar
+```
+### 6. cd into dashbord folder
 ```
 npm install
 npm start
 ```
-
-### 6. Open dashboard in browser
+### 7. Open dashboard in browser
 ```
 http://localhost:3000
 ```
