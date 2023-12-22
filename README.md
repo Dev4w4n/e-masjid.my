@@ -14,11 +14,11 @@ The main goals for this system are listed below.
 
 **Easy of use**
 
-Not everyone is an IT expert. Designing a system for non-IT people needs careful consideration.
+- Not everyone is an IT expert. Designing a system for non-IT people needs careful consideration.
 
 **Time to use your IT skills for good deeds**
 
-Open source is a form of sadaqah which is a required practise in Islam.
+- Open source is a form of sadaqah which is a required practise in Islam.
 
 ##  Prerequisite
 1. Docker
