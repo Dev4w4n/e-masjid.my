@@ -59,6 +59,16 @@ mvn clean package -P dev;java -jar ./target/tabung-api-1.0.0.jar
 ```
 mvn clean package -P dev;java -jar ./target/cadangan-api-1.0.0.jar
 ```
+### You may also build all api at one go using the build aggregator at ./api
+```shell
+mvn clean install -P dev;
+# in a new terminal
+java -jar ./api/cadangan-api/target/cadangan-api.jar
+# in another new terminal
+java -jar ./api/tabung-api/target/tabung-api.jar
+# in another new terminal
+java -jar ./api/khairat-api/target/khairat-api.jar 
+```
 ### 6. cd into dashbord folder
 ```
 npm install;npm start
