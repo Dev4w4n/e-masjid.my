@@ -49,15 +49,15 @@ docker run -d \
 ```
 ### 3. cd into ./api/khairat-api folder
 ```
-mvn clean package -P dev;java -jar ./target/khairat-api-1.0.0.jar
+mvn clean package -P dev;java -jar ./target/khairat-api.jar
 ```
 ### 4. cd into ./api/tabung-api folder
 ```
-mvn clean package -P dev;java -jar ./target/tabung-api-1.0.0.jar
+mvn clean package -P dev;java -jar ./target/tabung-api.jar
 ```
 ### 5. cd into ./api/cadangan-api folder
 ```
-mvn clean package -P dev;java -jar ./target/cadangan-api-1.0.0.jar
+mvn clean package -P dev;java -jar ./target/cadangan-api.jar
 ```
 ### 6. cd into dashbord folder
 ```
