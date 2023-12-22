@@ -1,4 +1,4 @@
-# E-Masjid 
+# E-Masjid.My - Sistem masjid untuk semua
 
 ##  Prerequisite
 1. Docker
