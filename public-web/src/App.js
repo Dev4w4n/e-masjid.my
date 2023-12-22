@@ -1,8 +1,10 @@
 import React, { Component, Suspense } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import './scss/style.scss'
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import Copyright from './components/Copyright';
 
 
 const loading = (
@@ -12,6 +14,7 @@ const loading = (
 )
 // Containers
 const Home = React.lazy(() => import('./Pages/Home'))
+const Cadangan = React.lazy(() => import('./Pages/Cadangan'))
 
 class App extends Component {
   render() {
@@ -19,14 +22,15 @@ class App extends Component {
       <HashRouter>
         <Suspense fallback={loading}>
           <Navbar />
+
           <Routes>
-            <Route
-              path="*"
-              name="Home"
-              element={<Home />}
-            />
+            <Route path="*" name="Home" element={<Home />} />
+            <Route path="cadangan/" name="Cadangan" element={<Cadangan />} />
           </Routes>
+
           <Footer />
+          <Copyright />
+          
         </Suspense>
       </HashRouter>
     )
