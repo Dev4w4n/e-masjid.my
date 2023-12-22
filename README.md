@@ -1,4 +1,24 @@
-# E-Masjid.My - Sistem masjid untuk semua
+<p align="center">
+  <img src="./public-web/src/assets/home/logo.png" alt="E-Masjid.My" width="80" height="80"/>
+</p>
+
+<h2 align="center"><b>E-Masjid.My</b></h2>
+<p align="center"><b>Sistem masjid untuk semua</b></p>
+<p align="center">
+  E-Masjid.My is free and open source (Apache-2.0 License) mosque management system
+<p><br>
+
+Philosophy
+=====
+The main goals for this system are listed below.
+
+**Easy of use**
+
+Not everyone is an IT expert. Designing a system for non-IT people needs careful consideration.
+
+**Time to use your IT skills for good deeds**
+
+Open source is a form of sadaqah which is a required practise in Islam.
 
 ##  Prerequisite
 1. Docker
