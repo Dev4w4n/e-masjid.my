@@ -42,7 +42,7 @@ mvn clean package -P dev -DskipTests;
 ```
 mvn clean package -P dev -DskipTests;
 ```
-### 5. Docker compose
+### 5. Docker compose from the main folder
 ```
 docker-compose up --build
 ```
