@@ -1,36 +1,130 @@
+import React, { useState } from "react";
+import {
+  CTabContent,
+  CTabPane,
+  CButton,
+  CForm,
+  CFormTextarea,
+} from "@coreui/react";
 import Emoji from "../components/Cadangan/Emoji";
 
 export default function Cadangan() {
 
-  const handleEmojiClick = (index) => {
-    console.log(index)
+  const [emojiValue, setEmojiValue] = useState(-1);
+  const [activeKey, setActiveKey] = useState(1);
+
+  const handleEmojiClickParent = (index) => {
+    setEmojiValue(index);
   };
 
   return (
     <section className="bg-white">
       <div className="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
-        <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900">Cadangan / Aduan</h2>
-        <p className="mb-8 lg:mb-16 font-light text-center text-gray-500 sm:text-xl">Maklum balas anda amat dialu-alukan.</p>
-        <form action="#" className="space-y-8 flex flex-col">
-          <div>
-            <label htmlFor="subject" className="block mb-2 text-center text-sm font-medium text-gray-900">Sila berikan penilaian anda tentang masjid ini</label>
-            <Emoji onEmojiClick={handleEmojiClick} />
-          </div>
-          <div className="sm:col-span-2">
-            <label htmlFor="message" className="block mb-2 text-sm font-medium text-gray-900">Sila masukkan mesej anda (Jika ada)</label>
-            <textarea id="message" rows="6" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500" placeholder="Masukkan mesej anda di sini..." required></textarea>
-          </div>
-          <div className="ml-auto">
-            <button className="py-3 px-5 text-sm font-medium text-center text-white rounded-lg bg-primary-700 sm:w-fit hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300">
-              <div className="flex flex-row align-middle">
-                <span className="mr-2">Teruskan</span>
-                <svg className="w-5 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                  <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd"></path>
-                </svg>
+        <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900">
+          Cadangan / Aduan
+        </h2>
+        <p className="mb-8 lg:mb-16 font-light text-center text-gray-500 sm:text-lg">
+          Maklum balas anda amat dialu-alukan.
+        </p>
+
+        <CForm className="space-y-8 flex flex-col">
+          <CTabContent>
+            <CTabPane role="tabpanel" aria-labelledby="home-tab-pane" visible={activeKey === 1}>
+              <p className="text-md text-gray-700 leading-tight text-center mt-8 mb-1">
+                Penilaian anda tentang masjid ini
+              </p>
+              <Emoji onEmojiClick={handleEmojiClickParent} />
+              <div className="mb-6 pt-4">
+                <p className="text-md text-gray-700 leading-tight text-center mt-8 mb-1">
+                  Pesanan anda
+                </p>
+                <CFormTextarea
+                  rows={4}
+                  type="text"
+                  placeholder="Masukkan pesanan anda di sini... (Jika ada)"
+                  name="visitormessage"
+                  className="w-full px-4 py-3 rounded-xl text-gray-700 font-medium border-solid border-2 border-gray-200"
+                ></CFormTextarea>
               </div>
-            </button>
+            </CTabPane>
+            <CTabPane role="tabpanel" aria-labelledby="detail-tab-pane" visible={activeKey === 2} >
+              <p className="text-md text-gray-700 leading-tight text-center mt-8 mb-5">
+                Masukkan maklumat berikut jika anda ingin dihubungi pihak masjid berkenaan cadangan/aduan anda.
+              </p>
+              <div className="mb-6">
+                <input
+                  type="text"
+                  placeholder="Nama"
+                  name="fullname"
+                  className="w-full px-4 py-3 rounded-md text-gray-700 font-medium border-solid border-2 border-gray-200"
+                />
+              </div>
+              <div className="mb-6">
+                <input
+                  type="text"
+                  placeholder="No telefon"
+                  name="mobile"
+                  className="w-full px-4 py-3 rounded-md text-gray-700 font-medium border-solid border-2 border-gray-200"
+                />
+              </div>
+              <div className="mb-6">
+                <input
+                  type="text"
+                  placeholder="Alamat email"
+                  name="address"
+                  className="w-full px-4 py-3 rounded-md text-gray-700 font-medium border-solid border-2 border-gray-200"
+                />
+              </div>
+            </CTabPane>
+            <CTabPane role="tabpanel" aria-labelledby="thanks-tab-pane" visible={activeKey === 3} >
+              <p className="text-md text-gray-700 leading-tight text-center mt-8 mb-5">
+                Terima kasih. Cadangan / Aduan anda telah dihantar ke pihak pengurusan masjid.
+              </p>
+            </CTabPane>
+          </CTabContent>
+
+          <div className="flex gap-3 ml-auto">
+            {activeKey > 1 && activeKey < 3 &&  (
+              <CButton onClick={() => setActiveKey(activeKey - 1)} className="flex items-center text-sm font-medium focus:outline-none border border-gray-300 rounded-lg shadow-sm text-center text-gray-700 bg-white hover:bg-gray-100">
+                <svg
+                  className="w-5"
+                  fill="currentColor"
+                  viewBox="0 0 25 25"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M24 12.001H2.914l5.294-5.295-.707-.707L1 12.501l6.5 6.5.707-.707-5.293-5.293H24v-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span className="ml-2">Kembali</span>
+              </CButton>
+            )}
+            {activeKey <= 2 && (
+              <CButton onClick={() => setActiveKey(activeKey + 1)} className="flex items-center text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300">
+                <span className="mr-2">Teruskan</span>
+                <svg
+                  className="w-5"
+                  fill="currentColor"
+                  viewBox="0 0 25 25"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="m17.5 5.999-.707.707 5.293 5.293H1v1h21.086l-5.294 5.295.707.707L24 12.499l-6.5-6.5z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </CButton>
+            )}
+            {activeKey > 2 && (
+              <CButton onClick={() => (window.location.href = "/web")} className="flex items-center text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300">
+                <span className="mr-2">Kembali ke Laman Utama</span>
+              </CButton>
+            )}
           </div>
-        </form>
+        </CForm>
       </div>
     </section>
   );
