@@ -53,6 +53,8 @@ docker-compose up --build
 ```
 ## Contributing guide
 
+Please fork this repo and submit your PR.
+
 We love your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
 
 - Reporting a bug
