@@ -25,7 +25,24 @@ The main goals for this system are listed below.
 2. Java 17
 3. Node 20
 
-## Quickstart guide
+## Quickstart guide ( Docker compose )
+### 1. cd into ./api/khairat-api folder
+```
+mvn clean package -P dev -DskipTests;
+```
+### 2. cd into ./api/tabung-api folder
+```
+mvn clean package -P dev -DskipTests;
+```
+### 4. cd into ./api/cadangan-api folder
+```
+mvn clean package -P dev -DskipTests;
+```
+### 5. Docker compose
+```
+docker-compose up --build
+```
+## Quickstart guide ( Manual )
 ### 1. Clone this repo
 ```
 git clone https://github.com/Dev4w4n/e-masjid.git
