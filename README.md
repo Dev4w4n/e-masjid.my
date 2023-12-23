@@ -26,8 +26,8 @@ The main goals for this system are listed below.
 
 ##  Prerequisite
 1. Docker
-2. Java 17
-3. Node 20
+2. Java 17 (SpringBoot 3.2.0)
+3. Node 20 (ReactJS 18 + Tailwind CSS)
 
 ## Quickstart guide ( Docker compose )
 ### 1. cd into ./api/khairat-api folder
