@@ -57,4 +57,4 @@ We love your input! We want to make contributing to this project as easy and tra
 - Documentation
 - Unit testing
   
-Or you would just like to chat with us, find us on [Discord](https://discord.com/channels/1186627708919230474/1186628502942924831)
+Or you would just like to chat with us, find us on [Discord](https://discord.gg/Bzc7j5np)
