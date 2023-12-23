@@ -27,14 +27,19 @@ The main goals for this system are listed below.
 ##  Prerequisite
 1. Docker
 2. Java 17 (SpringBoot 3.2.0)
-3. Node 20 (ReactJS 18 + Tailwind CSS)
+3. Node 20 (ReactJS 18 + CoreUI + Tailwind CSS)
 
 ## Quickstart guide ( Docker compose )
-### 1. cd into ./api/khairat-api folder
+### 1. Clone this repo
+```
+git clone https://github.com/Dev4w4n/e-masjid.my.git;
+cd e-masjid.my
+```
+### 2. cd into ./api/khairat-api folder
 ```
 mvn clean package -P dev -DskipTests;
 ```
-### 2. cd into ./api/tabung-api folder
+### 3. cd into ./api/tabung-api folder
 ```
 mvn clean package -P dev -DskipTests;
 ```
@@ -42,7 +47,7 @@ mvn clean package -P dev -DskipTests;
 ```
 mvn clean package -P dev -DskipTests;
 ```
-### 5. Docker compose from the main folder
+### 5. Run docker-compose from the main folder
 ```
 docker-compose up --build
 ```
@@ -60,3 +65,4 @@ We love your input! We want to make contributing to this project as easy and tra
 - Unit testing
   
 Or you would just like to chat with us, find us on [Discord](https://discord.gg/SX64rWJJ)
+
