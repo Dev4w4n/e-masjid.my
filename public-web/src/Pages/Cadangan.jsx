@@ -1,6 +1,11 @@
 import Emoji from "../components/Cadangan/Emoji";
 
 export default function Cadangan() {
+
+  const handleEmojiClick = (index) => {
+    console.log(index)
+  };
+
   return (
     <section className="bg-white">
       <div className="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
@@ -9,7 +14,7 @@ export default function Cadangan() {
         <form action="#" className="space-y-8 flex flex-col">
           <div>
             <label htmlFor="subject" className="block mb-2 text-center text-sm font-medium text-gray-900">Sila berikan penilaian anda tentang masjid ini</label>
-            <Emoji />
+            <Emoji onEmojiClick={handleEmojiClick} />
           </div>
           <div className="sm:col-span-2">
             <label htmlFor="message" className="block mb-2 text-sm font-medium text-gray-900">Sila masukkan mesej anda (Jika ada)</label>
