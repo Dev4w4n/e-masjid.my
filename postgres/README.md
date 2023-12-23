@@ -10,7 +10,6 @@ docker run -d \
   -e POSTGRES_DB=mydatabase \
   -e POSTGRES_USER=myuser \
   -e POSTGRES_PASSWORD=mypassword \
-  -v my-postgres-volume:/var/lib/postgresql/data \
   --name emasjid-postgres \
   emasjid-postgres-image
 ```
