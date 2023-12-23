@@ -5,7 +5,7 @@
 <h2 align="center"><b>E-Masjid.My</b></h2>
 <p align="center"><b>Sistem masjid untuk semua</b></p>
 <p align="center">
-  E-Masjid.My is free and open source (Apache-2.0 License) mosque management system
+  E-Masjid.My is a free and open source (Apache-2.0 License) mosque management system
 <p><br>
 
 Philosophy
@@ -18,7 +18,11 @@ The main goals for this system are listed below.
 
 **Time to use your IT skills for good deeds**
 
-- Open source is a form of sadaqah which is a required practise in Islam.
+- Open source is a form of sadaqah which is a required practice in Islam.
+
+**Longer living**
+
+- Hosting/Tech companies may die, but we hope that by open-sourcing this project, it will live longer for the sake of ummah.
 
 ##  Prerequisite
 1. Docker
