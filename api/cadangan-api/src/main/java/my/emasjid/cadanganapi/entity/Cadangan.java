@@ -31,6 +31,15 @@ public class Cadangan {
     @Column(name = "tindakan_text", length = 1024)
     private String tindakanText;
 
+    @Column(name = "cadangan_nama", length = 128)
+    private String cadanganNama;
+    
+    @Column(name = "cadangan_email", length = 128)
+    private String cadanganEmail;
+
+    @Column(name = "cadangan_phone", length = 16)
+    private String cadanganPhone;
+
     @Column(name = "is_open", nullable = false)
     private Boolean isOpen = false;
 
