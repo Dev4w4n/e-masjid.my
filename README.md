@@ -5,7 +5,7 @@
 <h2 align="center"><b>E-Masjid.My</b></h2>
 <p align="center"><b>Sistem masjid untuk semua</b></p>
 <p align="center">
-  E-Masjid.My is a free and open source (Apache-2.0 License) mosque management system
+  E-Masjid.My is a free and open source (MIT License) mosque management system
 <p><br>
 
 Philosophy
