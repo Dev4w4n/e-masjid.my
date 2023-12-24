@@ -5,7 +5,7 @@
 <h2 align="center"><b>E-Masjid.My</b></h2>
 <p align="center"><b>Sistem masjid untuk semua</b></p>
 <p align="center">
-  E-Masjid.My is free and open source (Apache-2.0 License) mosque management system
+  E-Masjid.My is a free and open source (Apache-2.0 License) mosque management system
 <p><br>
 
 Philosophy
@@ -18,48 +18,31 @@ The main goals for this system are listed below.
 
 **Time to use your IT skills for good deeds**
 
-- Open source is a form of sadaqah which is a required practise in Islam.
+- Open source is a form of sadaqah which is a required practice in Islam.
+
+**Longer living**
+
+- Hosting/Tech companies may die, but we hope that by open-sourcing this project, it will live longer for the sake of ummah.
 
 ##  Prerequisite
 1. Docker
-2. Java 17
-3. Node 20
+2. Java 17 (SpringBoot 3.2.0)
+3. Node 20 (ReactJS 18 + Tailwind CSS)
 
-## Quickstart guide
-### 1. Clone this repo
+## Quickstart guide ( Docker compose )
+### 1. cd into ./api/khairat-api folder
 ```
-git clone https://github.com/Dev4w4n/e-masjid.git
-cd e-masjid
+mvn clean package -P dev -DskipTests;
 ```
-### 2. cd into postgres folder
-1. Create the image
+### 2. cd into ./api/tabung-api folder
 ```
-docker build -t emasjid-postgres-image .
+mvn clean package -P dev -DskipTests;
 ```
-
-2. Run the container
+### 4. cd into ./api/cadangan-api folder
 ```
-docker run -d \
-  -p 5432:5432 \
-  -e POSTGRES_DB=mydatabase \
-  -e POSTGRES_USER=myuser \
-  -e POSTGRES_PASSWORD=mypassword \
-  --name emasjid-postgres \
-  emasjid-postgres-image
+mvn clean package -P dev -DskipTests;
 ```
-### 3. cd into ./api/khairat-api folder
-```
-mvn clean package -P dev;java -jar ./target/khairat-api-1.0.0.jar
-```
-### 4. cd into ./api/tabung-api folder
-```
-mvn clean package -P dev;java -jar ./target/tabung-api-1.0.0.jar
-```
-### 5. cd into ./api/cadangan-api folder
-```
-mvn clean package -P dev;java -jar ./target/cadangan-api-1.0.0.jar
-```
-### You may also build all api at one go using the build aggregator at ./api
+### You may also build all api at one go using the build aggregator
 ```shell
 mvn clean install -P dev;
 # in a new terminal
@@ -69,12 +52,21 @@ java -jar ./api/tabung-api/target/tabung-api.jar
 # in another new terminal
 java -jar ./api/khairat-api/target/khairat-api.jar 
 ```
-### 6. cd into dashbord folder
+### 5. Docker compose from the main folder
 ```
-npm install;npm start
+docker-compose up --build
 ```
-### 7. Open dashboard in browser
-```
-http://localhost:3000
-```
-## More to come ....
+## Contributing guide
+
+Please fork this repo and submit your PR.
+
+We love your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
+
+- Reporting a bug
+- Submitting a fix
+- Proposing new features
+- Enhancing features
+- Documentation
+- Unit testing
+  
+Or you would just like to chat with us, find us on [Discord](https://discord.gg/SX64rWJJ)
