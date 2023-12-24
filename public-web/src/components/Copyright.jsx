@@ -1,7 +1,7 @@
 export default function Copyright() {
     return (
       <div className="text-center pt-3">
-        <span><a target="_blank" rel="noreferrer" href="https://e-masjid.my/" className="hover:underline">E-Masjid.My</a> © 2023 <a target="_blank" rel="noreferrer" href="https://4w4n.com/" className="hover:underline"> Open Cloud Services (SA0604301-H) </a></span>
+        <span className="ms-1">Powered by <a href='https://e-masjid.my' target='_blank' rel="noreferrer">E-Masjid.my</a> &copy; 2023-2024 </span>
       </div>
     );
   }
