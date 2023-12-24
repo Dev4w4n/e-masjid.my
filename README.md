@@ -42,7 +42,7 @@ mvn clean package -P dev -DskipTests;
 ```
 mvn clean package -P dev -DskipTests;
 ```
-### You may also build all api at one go using the build aggregator
+### You may also build all api at one go using the build aggregator at ./api
 ```shell
 mvn clean install -P dev;
 # in a new terminal
