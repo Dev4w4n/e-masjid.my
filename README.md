@@ -35,6 +35,17 @@ The main goals for this system are listed below.
 git clone https://github.com/Dev4w4n/e-masjid.my.git;
 cd e-masjid.my
 ```
+### You may also build all api at one go using the build aggregator at ./api
+```shell
+mvn clean install -P dev;
+# in a new terminal
+java -jar ./api/cadangan-api/target/cadangan-api.jar
+# in another new terminal
+java -jar ./api/tabung-api/target/tabung-api.jar
+# in another new terminal
+java -jar ./api/khairat-api/target/khairat-api.jar 
+```
+
 ### run.dev.sh (for Linux)
 ```
 sh run-dev.sh
