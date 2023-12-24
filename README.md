@@ -30,27 +30,25 @@ The main goals for this system are listed below.
 3. Node 20 (ReactJS 18 + CoreUI + Tailwind CSS)
 
 ## Quickstart guide ( Docker compose )
-### 1. Clone this repo
+### Clone this repo
 ```
 git clone https://github.com/Dev4w4n/e-masjid.my.git;
 cd e-masjid.my
 ```
-### 2. cd into ./api/khairat-api folder
+### run.dev.sh (for Linux)
 ```
-mvn clean package -P dev -DskipTests;
+sh run-dev.sh
 ```
-### 3. cd into ./api/tabung-api folder
+### run.dev.sh (for Windows)
 ```
-mvn clean package -P dev -DskipTests;
+run-dev.bat
 ```
-### 4. cd into ./api/cadangan-api folder
-```
-mvn clean package -P dev -DskipTests;
-```
-### 5. Run docker-compose from the main folder
-```
-docker-compose up --build
-```
+
+This will automatically build all the APIs, and run the docker-compose file where it will spin up 6 containers for the developments environment.
+
+Once the containers are up, you may stop any of the containers depending on what you will be working on to save your local resources.
+
+
 ## Contributing guide
 
 Please fork this repo and submit your PR.
