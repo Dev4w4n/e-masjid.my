@@ -11,13 +11,13 @@ export default function Footer() {
             <h1 className="font-bold capitalize sm:pt-0 pt-8 pb-4">Tentang Masjid</h1>
             <ul>
               <li>
-                <a href="#">Senarai Ahli AJK</a>
+                <a href="/">Senarai Ahli AJK</a>
               </li>
               <li>
-                <a href="#">Hubungi Kami</a>
+                <a href="/">Hubungi Kami</a>
               </li>
               <li>
-                <a href="#">Download Borang</a>
+                <a href="/">Download Borang</a>
               </li>
             </ul>
           </div>
@@ -25,13 +25,13 @@ export default function Footer() {
             <h1 className="font-bold capitalize sm:pt-0 pt-8 pb-4">Aktiviti</h1>
             <ul>
               <li>
-                <a href="#">Nuzul Al-Quran</a>
+                <a href="/">Nuzul Al-Quran</a>
               </li>
               <li>
-                <a href="#">Maulidurrasul</a>
+                <a href="/">Maulidurrasul</a>
               </li>
               <li>
-                <a href="#">Ramadhan</a>
+                <a href="/">Ramadhan</a>
               </li>
             </ul>
           </div>
@@ -39,13 +39,13 @@ export default function Footer() {
             <h1 className="font-bold capitalize sm:pt-0 pt-8 pb-4">Sosmed</h1>
             <ul>
               <li>
-                <a href="#">Tiktok</a>
+                <a href="/">Tiktok</a>
               </li>
               <li>
-                <a href="#">Twitter</a>
+                <a href="/">Twitter</a>
               </li>
               <li>
-                <a href="#">Facebook</a>
+                <a href="/">Facebook</a>
               </li>
             </ul>
           </div>

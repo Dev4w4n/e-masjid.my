@@ -1,24 +1,75 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   CTabContent,
   CTabPane,
   CButton,
   CForm,
   CFormTextarea,
+  CFormInput,
 } from "@coreui/react";
 import Emoji from "../components/Cadangan/Emoji";
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { saveCadangan } from "../service/Cadangan/CadanganApi";
 
 export default function Cadangan() {
-
   const [emojiValue, setEmojiValue] = useState(-1);
   const [activeKey, setActiveKey] = useState(1);
+  const inputCadangan = useRef();
+  const inputNama = useRef();
+  const inputPhone = useRef();
+  const inputEmail = useRef();
 
+  const handleNextClick = () => {
+    if(emojiValue === -1) {
+      toast.error('Sila berikan penilaian anda', {
+        position: 'bottom-center',
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      })
+    } else {
+      setActiveKey(activeKey + 1);
+    }
+  }
+
+  const handleSubmitClick = async () => {
+    try {
+      const nama = inputNama.current.value ? inputNama.current.value : null
+      const email = inputEmail.current.value ? inputEmail.current.value : null
+      const phone = inputPhone.current.value ? inputPhone.current.value : null
+
+      const json ={
+        "cadanganType": {
+            "id": 3,
+        },
+        "cadanganText": inputCadangan.current.value,
+        "cadanganNama": nama,
+        "cadanganEmail": email,
+        "cadanganPhone": phone,
+        "tindakanText": null,
+        "isOpen": true,
+        "score": emojiValue+1,
+        "createDate": new Date().getTime(),
+      }
+      
+      await saveCadangan(json)
+      setActiveKey(activeKey + 1);
+    } catch (error) {
+      console.error(error)
+    }
+  }
   const handleEmojiClickParent = (index) => {
     setEmojiValue(index);
   };
 
   return (
     <section className="bg-white">
+      <ToastContainer />
       <div className="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
         <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900">
           Cadangan / Aduan
@@ -39,6 +90,8 @@ export default function Cadangan() {
                   Pesanan anda
                 </p>
                 <CFormTextarea
+                  ref={inputCadangan}
+                  maxLength="1024"
                   rows={4}
                   type="text"
                   placeholder="Masukkan pesanan anda di sini... (Jika ada)"
@@ -52,7 +105,9 @@ export default function Cadangan() {
                 Masukkan maklumat berikut jika anda ingin dihubungi pihak masjid berkenaan cadangan/aduan anda.
               </p>
               <div className="mb-6">
-                <input
+                <CFormInput
+                  ref={inputNama}
+                  maxLength="128"
                   type="text"
                   placeholder="Nama"
                   name="fullname"
@@ -60,7 +115,9 @@ export default function Cadangan() {
                 />
               </div>
               <div className="mb-6">
-                <input
+                <CFormInput
+                  ref={inputPhone}
+                  maxLength="16"
                   type="text"
                   placeholder="No telefon"
                   name="mobile"
@@ -68,8 +125,10 @@ export default function Cadangan() {
                 />
               </div>
               <div className="mb-6">
-                <input
-                  type="text"
+                <CFormInput
+                  ref={inputEmail}
+                  maxLength="120"
+                  type="email"
                   placeholder="Alamat email"
                   name="address"
                   className="w-full px-4 py-3 rounded-md text-gray-700 font-medium border-solid border-2 border-gray-200"
@@ -101,8 +160,8 @@ export default function Cadangan() {
                 <span className="ml-2">Kembali</span>
               </CButton>
             )}
-            {activeKey <= 2 && (
-              <CButton onClick={() => setActiveKey(activeKey + 1)} className="flex items-center text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300">
+            {activeKey < 2 && (
+              <CButton onClick={() => handleNextClick()} className="flex items-center text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300">
                 <span className="mr-2">Teruskan</span>
                 <svg
                   className="w-5"
@@ -116,6 +175,11 @@ export default function Cadangan() {
                     clipRule="evenodd"
                   />
                 </svg>
+              </CButton>
+            )}
+            {activeKey === 2 && (
+              <CButton onClick={() => handleSubmitClick()} className="flex items-center text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300">
+                <span className="mr-2">Hantar</span>
               </CButton>
             )}
             {activeKey > 2 && (
