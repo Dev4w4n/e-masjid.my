@@ -46,7 +46,7 @@ run-dev.bat
 
 This will automatically build all the APIs, and run the docker-compose file where it will spin up 6 containers for the developments environment.
 
-Once the containers are up, you may stop any of the containers depending on what you will be working on to save your local resources.
+Once the containers are up, you may stop any of the containers depending on what you will be working on to free up your local resources.
 
 
 ## Contributing guide
