@@ -39,7 +39,7 @@ cd e-masjid.my
 ```
 sh run-dev.sh
 ```
-### run-dev.sh (for Windows)
+### run-dev.bat (for Windows)
 ```
 run-dev.bat
 ```
