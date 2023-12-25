@@ -24,6 +24,10 @@ The main goals for this system are listed below.
 
 - Hosting/Tech companies may die, but we hope that by open-sourcing this project, it will live longer for the sake of ummah.
 
+**We give, not take**
+
+- We should be contributing to the Muslim community, rather than benefiting from them, especially the Masjid.
+
 ##  Prerequisite
 1. Docker
 2. Java 17 (SpringBoot 3.2.0)
