@@ -24,10 +24,16 @@ The main goals for this system are listed below.
 
 - Hosting/Tech companies may die, but we hope that by open-sourcing this project, it will live longer for the sake of ummah.
 
-##  Prerequisite
+**We give, not take**
+
+- We should be contributing to the Muslim community, rather than benefiting from them, especially the Masjid.
+
+
+## Prerequisites
 1. Docker
-2. Java 17 (SpringBoot 3.2.0)
-3. Node 20 (ReactJS 18 + CoreUI + Tailwind CSS)
+2. Java 17 (Spring Boot 3.2.0)
+3. Maven
+4. Node 20 (ReactJS 18 + CoreUI + Tailwind CSS)
 
 ## Quickstart guide ( Docker compose )
 ### Clone this repo
@@ -35,18 +41,18 @@ The main goals for this system are listed below.
 git clone https://github.com/Dev4w4n/e-masjid.my.git;
 cd e-masjid.my
 ```
-### run.dev.sh (for Linux)
+### run-dev.sh (for Linux)
 ```
 sh run-dev.sh
 ```
-### run.dev.sh (for Windows)
+### run-dev.bat (for Windows)
 ```
 run-dev.bat
 ```
 
 This will automatically build all the APIs, and run the docker-compose file where it will spin up 6 containers for the developments environment.
 
-Once the containers are up, you may stop any of the containers depending on what you will be working on to save your local resources.
+Once the containers are up, you may stop any of the containers depending on what you will be working on to free up your local resources.
 
 
 ## Contributing guide
@@ -62,5 +68,5 @@ We love your input! We want to make contributing to this project as easy and tra
 - Documentation
 - Unit testing
   
-Or you would just like to chat with us, find us on [Discord](https://discord.gg/SX64rWJJ)
+Or you would just like to chat with us, find us on [Discord](https://discord.gg/vz4WWM85)
 
