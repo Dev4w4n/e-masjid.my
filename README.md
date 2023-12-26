@@ -28,10 +28,12 @@ The main goals for this system are listed below.
 
 - We should be contributing to the Muslim community, rather than benefiting from them, especially the Masjid.
 
-##  Prerequisite
+
+## Prerequisites
 1. Docker
-2. Java 17 (SpringBoot 3.2.0)
-3. Node 20 (ReactJS 18 + CoreUI + Tailwind CSS)
+2. Java 17 (Spring Boot 3.2.0)
+3. Maven
+4. Node 20 (ReactJS 18 + CoreUI + Tailwind CSS)
 
 ## Quickstart guide ( Docker compose )
 ### Clone this repo
