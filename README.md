@@ -7,6 +7,9 @@
 <p align="center">
   E-Masjid.My is a free and open source (MIT License) mosque management system
 <p><br>
+<h2 align="center">
+  <a href='https://demo.e-masjid.my'>Live Demo</a>
+</h2><br>
 
 Philosophy
 =====
