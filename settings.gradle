@@ -8,3 +8,9 @@
  */
 
 rootProject.name = 'e-masjid.my'
+include 'api'
+include 'dashboard'
+include 'public-web'
+include 'api:cadangan-api'
+include 'api:khairat-api'
+include 'api:tabung-api'
