@@ -4,18 +4,17 @@ cd ./api
 mvn clean package -P dev -DskipTests
 cd ..
 
-docker-compose -f docker-compose-v2.yaml up --build -d
 
 cd public-web
-docker build -t emasjid-public-web .
-docker run -d \
-  -p 3001:3000 \
-  --name emasjid-public-web \
-  emasjid-public-web
+rm -rf ./build
+npm install
+npm run build:dev
+cd ..
 
-cd ../dashboard
-docker build -t emasjid-dashboard .
-docker run -d \
-  -p 3000:3000 \
-  --name emasjid-dashboard \
-  emasjid-dashboard
+cd dashboard
+rm -rf ./build
+npm install
+npm run build:dev
+cd ..
+
+docker-compose -f docker-compose-v2.yaml up --build -d

@@ -35,4 +35,25 @@ services:
     depends_on:
       - postgres
 
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    depends_on:
+      - khairat-api
+      - tabung-api
+      - cadangan-api
+
+  public-web:
+    build:
+      context: ./public-web
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3001:3000"
+    depends_on:
+      - khairat-api
+      - tabung-api
+      - cadangan-api
 
