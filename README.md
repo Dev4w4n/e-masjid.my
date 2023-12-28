@@ -54,6 +54,15 @@ This will automatically build all the APIs, and run the docker-compose file wher
 
 Once the containers are up, you may stop any of the containers depending on what you will be working on to free up your local resources.
 
+## Gradle Build
+
+You may utilise ./gradlew (or gradlew.bat on windows) provided to configure/execute your build. The commands below will show available tasks on gradle:
+
+```
+./gradlew task
+
+./gradlew task --all
+```
 
 ## Contributing guide
 
