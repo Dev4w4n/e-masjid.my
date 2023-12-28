@@ -51,6 +51,12 @@ const Senarai = () => {
             <CNavItem>
               <CNavLink href="#">Aduan</CNavLink>
             </CNavItem>
+            <CNavItem>
+              <CNavLink href="#">Lain-lain</CNavLink>
+            </CNavItem>
+            <CNavItem>
+              <CNavLink href="#">Selesai</CNavLink>
+            </CNavItem>
           </CNav>
             <br />
             <p className="text-medium-emphasis small">Senarai cadangan</p>
