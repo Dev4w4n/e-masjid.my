@@ -8,4 +8,6 @@ import my.emasjid.cadanganapi.entity.Cadangan;
 
 public interface CadanganRepository extends JpaRepository<Cadangan, Long> {
     public Page<Cadangan> findAll(Pageable pageable);
+
+    public Page<Cadangan> findByCadanganTypeIdAndIsOpen(Long cadanganTypeId, Boolean isOpen, Pageable pageable);
 }
