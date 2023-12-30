@@ -18,6 +18,14 @@ public class CadanganService {
         return cadanganRepository.findAll(pageable);
     }
 
+    public Page<Cadangan> getAllCadanganByType(Long cadanganTypeId, Boolean isOpen,Pageable pageable) {
+        return cadanganRepository.findByCadanganTypeIdAndIsOpen(cadanganTypeId, isOpen, pageable);
+    }
+
+    public Object getTotalCadanganByType() {
+        return cadanganRepository.getTotalCadanganByType();
+    }
+
     public Cadangan save(Cadangan cadangan) {
         return cadanganRepository.save(cadangan);
     }

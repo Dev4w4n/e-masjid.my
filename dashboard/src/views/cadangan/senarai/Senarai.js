@@ -1,36 +1,37 @@
 import React, { useState, useEffect } from 'react'
 import {
-  CSpinner,
-  CButton,
-  CButtonGroup,
+  CBadge,
   CCard,
   CCardBody,
-  CFormCheck,
-  CCardFooter,
   CCardHeader,
   CCol,
-  CProgress,
   CNav,
   CNavItem,
   CNavLink,
+  CTabContent,
+  CTabPane,
   CRow,
 } from '@coreui/react'
-const Senarai = () => {
-  const [loading, setLoading] = useState(false)
+import CadanganList from 'src/components/cadangan/CadanganList'
+import { getCadanganCount } from 'src/service/cadangan/CadanganApi'
 
-  if (loading) {
-    return (
-      <CRow>
-        <CCol xs={12}>
-          <CCard className="mb-4">
-            <CCardBody>
-              <CSpinner color="primary" />
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-    )
+const Senarai = () => {
+  const [activeKey, setActiveKey] = useState(1)
+  const [cadanganCount, setCadanganCount] = useState([])
+
+  const fetchCount = async () => {
+    const response = await getCadanganCount()
+    setCadanganCount(response)
   }
+  useEffect(() => {
+    fetchCount()
+  },[])
+
+  const renderCount = (activeKey) => {
+    const index = activeKey - 1;
+    return cadanganCount[index] || 0;
+  }
+
   return (
     <CRow>
       <CCol xs={12}>
@@ -39,27 +40,76 @@ const Senarai = () => {
             <strong>Senarai Cadangan</strong>
           </CCardHeader>
           <CCardBody>
-          <CNav variant="tabs">
-            <CNavItem>
-              <CNavLink href="#" active>
-                Baru
+          <CNav variant="tabs" role="tablist">
+            <CNavItem role="presentation">
+              <CNavLink component="button" 
+              active={activeKey === 1}
+              aria-selected={activeKey === 1}
+              onClick={() => setActiveKey(1)}>
+                Baru  <CBadge color="secondary">{renderCount(1)}</CBadge>
               </CNavLink>
             </CNavItem>
-            <CNavItem>
-              <CNavLink href="#">Cadangan</CNavLink>
+            <CNavItem role="presentation">
+              <CNavLink component="button" 
+              active={activeKey === 2}
+              aria-selected={activeKey === 2}
+              onClick={() => setActiveKey(2)}>
+                Cadangan <CBadge color="secondary">{renderCount(2)}</CBadge>
+              </CNavLink>
             </CNavItem>
-            <CNavItem>
-              <CNavLink href="#">Aduan</CNavLink>
+            <CNavItem role="presentation">
+              <CNavLink component="button" 
+              active={activeKey === 3}
+              aria-selected={activeKey === 3}
+              onClick={() => setActiveKey(3)}>
+                Aduan <CBadge color="secondary">{renderCount(3)}</CBadge>
+              </CNavLink>
             </CNavItem>
-            <CNavItem>
-              <CNavLink href="#">Lain-lain</CNavLink>
+            <CNavItem role="presentation">
+              <CNavLink component="button" 
+              active={activeKey === 4}
+              aria-selected={activeKey === 4}
+              onClick={() => setActiveKey(4)}>
+                Lain-lain <CBadge color="secondary">{renderCount(4)}</CBadge>
+              </CNavLink>
             </CNavItem>
-            <CNavItem>
-              <CNavLink href="#">Selesai</CNavLink>
+            <CNavItem role="presentation">
+              <CNavLink component="button" 
+              active={activeKey === 5}
+              aria-selected={activeKey === 5}
+              onClick={() => setActiveKey(5)}>
+                Selesai <CBadge color="secondary">{renderCount(5)}</CBadge>
+              </CNavLink>
             </CNavItem>
           </CNav>
             <br />
-            <p className="text-medium-emphasis small">Senarai cadangan</p>
+            <CTabContent>
+              <CTabPane role="tabpanel" 
+              aria-labelledby="baru-tab-pane" 
+              visible={activeKey === 1}>
+                <CadanganList isOpen="true" cadanganType={1} activeKey={activeKey} />
+              </CTabPane>
+              <CTabPane role="tabpanel" 
+              aria-labelledby="cadangan-tab-pane" 
+              visible={activeKey === 2}>
+                <CadanganList isOpen="true" cadanganType={2} activeKey={activeKey} />
+              </CTabPane>
+              <CTabPane role="tabpanel" 
+              aria-labelledby="aduan-tab-pane" 
+              visible={activeKey === 3}>
+                <CadanganList isOpen="true" cadanganType={3} activeKey={activeKey} />
+              </CTabPane>
+              <CTabPane role="tabpanel" 
+              aria-labelledby="lain-tab-pane" 
+              visible={activeKey === 4}>
+                <CadanganList isOpen="true" cadanganType={4} activeKey={activeKey} />
+              </CTabPane>
+              <CTabPane role="tabpanel" 
+              aria-labelledby="tutup-tab-pane" 
+              visible={activeKey === 5}>
+                <CadanganList isOpen="false" cadanganType={5} activeKey={activeKey} />
+              </CTabPane>
+            </CTabContent>
           </CCardBody>
         </CCard>
       </CCol>
