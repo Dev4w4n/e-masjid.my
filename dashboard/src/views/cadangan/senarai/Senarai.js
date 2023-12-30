@@ -28,8 +28,7 @@ const Senarai = () => {
   },[])
 
   const renderCount = (activeKey) => {
-    const index = activeKey - 1;
-    return cadanganCount[index] || 0;
+    return cadanganCount[activeKey - 1] || 0;
   }
 
   return (

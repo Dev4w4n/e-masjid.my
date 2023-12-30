@@ -34,8 +34,20 @@ export const getCadanganByType = async (page, size, cadanganType, isOpen) => {
 
 const columns = [
   {
-    name: 'Date',
-    selector: (row) => row.createDate,
+    name: 'Tarikh',
+    selector: (row) => {
+      let date = new Date(row.createDate); 
+      let day = date.getDate();
+      let month = date.getMonth() + 1; 
+      let year = date.getFullYear();
+
+      let time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+
+      day = day < 10 ? '0' + day : day;
+      month = month < 10 ? '0' + month : month;
+
+      return day + '/' + month + '/' + year + ' ' + time;
+    },
   },
   {
     name: 'Mesej',
@@ -53,23 +65,6 @@ const columns = [
     name: 'Id',
     selector: (row) => row.id,
     omit: true,
-  },
-]
-
-const data = [
-  {
-    id: 1,
-    cadanganText: 'Tandas busuk',
-    createDate: 123984722,
-    score: 4,
-    action: <CButton> Lihat </CButton>,
-  },
-  {
-    id: 1,
-    cadanganText: 'Tandas busuk',
-    createDate: 123984722,
-    score: 4,
-    action: <CButton> Lihat </CButton>,
   },
 ]
 
@@ -110,7 +105,8 @@ const CadanganList = (props) => {
       setLoading(true)
       if(props.activeKey === props.cadanganType) {
         const response = await getCadanganByType(page, size, props.cadanganType, props.isOpen)
-        setData(response.data)
+        setData(response.content)
+        console.log(response.content)
       }
       setLoading(false)
     }
