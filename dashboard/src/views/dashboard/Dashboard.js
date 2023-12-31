@@ -19,6 +19,7 @@ import {
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
 import { getMemberCount } from 'src/service/khairat/MembersApi'
 import { getKutipanByTabung } from 'src/service/tabung/KutipanApi';
+import { getCadanganCount } from 'src/service/cadangan/CadanganApi'
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(false)
@@ -26,6 +27,7 @@ const Dashboard = () => {
   const [kutipanList, setKutipanList] = useState([])
   const [kutipanChartValue, setKutipanChartValue] = useState([])
   const [kutipanChartValueTop5, setKutipanChartValueTop5] = useState([])
+  const [cadanganCount, setCadanganCount] = useState(0)
 
   useEffect(() => {
     const calculatePercentageChange = (oldValue, newValue) => {
@@ -92,8 +94,14 @@ const Dashboard = () => {
       }
     };
     
+    const fetchCadanganCount = async () => {
+      const response = await getCadanganCount()
+      setCadanganCount(response[0])
+    }
+
     fetchKutipan()
     fetchMemberCount();
+    fetchCadanganCount();
   }, []);
 
   if (loading) {
@@ -116,7 +124,8 @@ const Dashboard = () => {
       <WidgetsDropdown
         memberCount={memberCount}
         kutipanList={kutipanList}
-        kutipanChartValueTop5={kutipanChartValueTop5} />
+        kutipanChartValueTop5={kutipanChartValueTop5} 
+        cadanganCount={cadanganCount} />
       <CCard className="mb-4">
         <CCardBody>
           <CRow>

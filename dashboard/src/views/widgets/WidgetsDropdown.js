@@ -12,9 +12,11 @@ import {
 import { getStyle } from '@coreui/utils'
 import { CChartLine } from '@coreui/react-chartjs'
 import CIcon from '@coreui/icons-react'
-import { cilArrowBottom, cilArrowTop, cilOptions, cilUser, cilBadge } from '@coreui/icons'
+import { cilArrowBottom, cilArrowTop, cilOptions, cilUser, cilBadge, cilCommentBubble } from '@coreui/icons'
+import { useNavigate } from 'react-router-dom'
 
 const WidgetsDropdown = (props) => {
+  const navigate = useNavigate()
   const [kutipanList, setKutipanList] = useState([])
   const [kutipanPercentage, setKutipanPercentage] = useState()
   const [kutipanLatestValue, setKutipanLatestValue] = useState()
@@ -110,76 +112,16 @@ const WidgetsDropdown = (props) => {
       </CCol>
       
       <CCol sm={6} lg={3}>
-        <CWidgetStatsA
-          className="mb-4"
+      <CWidgetStatsC
+          className="mb-5 hover-effect" 
+          icon={<CIcon icon={cilCommentBubble} height={36} />}
           color="danger"
-          value={
-            <>
-              ???{' '}
-              <span className="fs-6 fw-normal">
-                (???% <CIcon icon={cilArrowBottom} />)
-              </span>
-            </>
-          }
-          title="Cadangan"
-          action={
-            <CDropdown alignment="end">
-              <CDropdownToggle color="transparent" caret={false} className="p-0">
-                <CIcon icon={cilOptions} className="text-high-emphasis-inverse" />
-              </CDropdownToggle>
-              <CDropdownMenu>
-                <CDropdownItem>Action</CDropdownItem>
-                <CDropdownItem>Another action</CDropdownItem>
-                <CDropdownItem>Something else here...</CDropdownItem>
-                <CDropdownItem disabled>Disabled action</CDropdownItem>
-              </CDropdownMenu>
-            </CDropdown>
-          }
-          chart={
-            <CChartLine
-              className="mt-3"
-              style={{ height: '70px' }}
-              data={{
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                datasets: [
-                  {
-                    label: 'My First dataset',
-                    backgroundColor: 'rgba(255,255,255,.2)',
-                    borderColor: 'rgba(255,255,255,.55)',
-                    data: [78, 81, 80, 45, 34, 12, 40],
-                    fill: true,
-                  },
-                ],
-              }}
-              options={{
-                plugins: {
-                  legend: {
-                    display: false,
-                  },
-                },
-                maintainAspectRatio: false,
-                scales: {
-                  x: {
-                    display: false,
-                  },
-                  y: {
-                    display: false,
-                  },
-                },
-                elements: {
-                  line: {
-                    borderWidth: 2,
-                    tension: 0.4,
-                  },
-                  point: {
-                    radius: 0,
-                    hitRadius: 10,
-                    hoverRadius: 4,
-                  },
-                },
-              }}
-            />
-          }
+          inverse
+          // progress={{ value: 100 }}
+          text="Cadangan Baru"
+          title="Cadangan Baru"
+          value={props.cadanganCount}
+          onClick={() => navigate('/cadangan/senarai')}
         />
       </CCol>
       
