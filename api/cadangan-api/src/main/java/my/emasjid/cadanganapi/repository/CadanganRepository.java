@@ -12,6 +12,8 @@ public interface CadanganRepository extends JpaRepository<Cadangan, Long> {
 
     public Page<Cadangan> findByCadanganTypeIdAndIsOpen(Long cadanganTypeId, Boolean isOpen, Pageable pageable);
 
+    public Page<Cadangan> findByIsOpen(Boolean isOpen, Pageable pageable);
+
     @Query(nativeQuery = true,
         value = "SELECT " +
                 "SUM(CASE WHEN c.cadangan_types_id = 1 AND c.is_open = true THEN 1 ELSE 0 END) AS totalNew, " +

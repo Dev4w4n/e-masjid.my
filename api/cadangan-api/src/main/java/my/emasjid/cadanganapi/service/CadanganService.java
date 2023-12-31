@@ -22,8 +22,16 @@ public class CadanganService {
         return cadanganRepository.findByCadanganTypeIdAndIsOpen(cadanganTypeId, isOpen, pageable);
     }
 
+    public Page<Cadangan> getAllCadanganByType(Boolean isOpen,Pageable pageable) {
+        return cadanganRepository.findByIsOpen(isOpen, pageable);
+    }
+
     public Object getTotalCadanganByType() {
         return cadanganRepository.getTotalCadanganByType();
+    }
+
+    public Cadangan getCadanganById(Long id) {
+        return cadanganRepository.findById(id).get();
     }
 
     public Cadangan save(Cadangan cadangan) {

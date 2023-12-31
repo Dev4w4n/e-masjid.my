@@ -7,6 +7,11 @@ export const getCadangan = async () => {
     return response.data
 }
 
+export const getCadanganById = async (id) => {
+    const response = await axios.get(`${apiServer}/cadangan/${id}`)
+    return response.data
+}
+
 export const getCadanganCount = async () => {
     const response = await axios.get(`${apiServer}/cadangan/count`)
     return response.data
@@ -14,6 +19,11 @@ export const getCadanganCount = async () => {
 
 export const getCadanganByType = async (page, size, cadanganTypeId, isOpen) => {
     const response = await axios.get(`${apiServer}/cadangan?page=${page}&size=${size}&cadanganTypeId=${cadanganTypeId}&isOpen=${isOpen}`)
+    return response.data
+}
+
+export const getCadanganByOpen = async (page, size, isOpen) => {
+    const response = await axios.get(`${apiServer}/cadangan?page=${page}&size=${size}&isOpen=${isOpen}`)
     return response.data
 }
 

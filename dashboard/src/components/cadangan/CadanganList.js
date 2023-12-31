@@ -1,36 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import {
   CSpinner,
-  CButton,
-  CButtonGroup,
   CCard,
   CCardBody,
-  CFormCheck,
-  CCardFooter,
-  CCardHeader,
   CCol,
-  CProgress,
-  CNav,
-  CNavItem,
-  CNavLink,
-  CTabContent,
-  CTabPane,
   CRow,
 } from '@coreui/react'
 import DataTable from 'react-data-table-component'
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import {getCadanganByType} from 'src/service/cadangan/CadanganApi'
-import { cilMagnifyingGlass, cilInfo } from '@coreui/icons'
+import {getCadanganByType, getCadanganByOpen} from 'src/service/cadangan/CadanganApi'
+import { cilMagnifyingGlass } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
+import CadanganEditor from './CadanganEditor'
 
-
-/*
-export const getCadanganByType = async (page, size, cadanganType, isOpen) => {
-    const response = await axios.get(`${apiServer}/cadangan?page=${page}&size=${size}&cadanganType=${cadanganType}&isOpen=${isOpen}`)
-    return response.data
-}
-*/
 
 const columns = [
   {
@@ -58,61 +40,33 @@ const columns = [
     selector: (row) => row.score,
   },
   {
-    name: 'Tindakan',
-    selector: (row) => row.action,
-  },
-  {
     name: 'Id',
     selector: (row) => row.id,
     omit: true,
   },
 ]
 
-// const conditionalRowStyles = [
-// 	{
-// 		when: row => row.paymentHistory.some(item => {
-//       const paymentDateYear = new Date(item.paymentDate).getFullYear()
-//       const currentYear = new Date().getFullYear()
-//       return paymentDateYear === currentYear;
-//     }),
-// 		style: {
-// 			backgroundColor: 'rgba(213, 245, 227, 0.9)',
-// 			color: 'black',
-// 		},
-// 	},
-// 	{
-// 		when: row => row.paymentHistory.every(item => {
-//       const paymentDateYear = new Date(item.paymentDate).getFullYear();
-//       const currentYear = new Date().getFullYear();
-//       return paymentDateYear !== currentYear;
-//     }),
-// 		style: {
-// 			backgroundColor: 'rgba(252, 243, 207, 0.9)',
-// 			color: 'black',
-// 		},
-// 	},
-// ]
-
-const CadanganList = (props) => {
+const CadanganList = ({ onEditorUpdated, ...props }) => {
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
-
+  const [rowClickedInfo, setRowClickedInfo] = useState(null)
   const [data, setData] = useState([])
+  const [dataChanged, setDataChanged] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
       if(props.activeKey === props.cadanganType) {
-        const response = await getCadanganByType(page, size, props.cadanganType, props.isOpen)
+        const response = (props.activeKey === 5 && props.cadanganType === 5) ? 
+        await getCadanganByOpen(page, size, props.isOpen) : await getCadanganByType(page, size, props.cadanganType, props.isOpen)
         setData(response.content)
-        console.log(response.content)
       }
       setLoading(false)
     }
     fetchData()
     
-  }, [])
+  }, [props.activeKey, dataChanged])
 
   const resultEmpty = () => {
     return (
@@ -120,6 +74,14 @@ const CadanganList = (props) => {
         <CIcon icon={cilMagnifyingGlass} className="me-2" /> Tiada rekod.
       </p>
     )
+  }
+
+  const handleRefreshData = () => {
+    setDataChanged(!dataChanged)
+  }
+  const handleRowClick = (row) => {
+    row.visibleXL = true
+    setRowClickedInfo(row)
   }
 
   if (loading) {
@@ -150,6 +112,8 @@ const CadanganList = (props) => {
           }}
         />
       </CCol>
+      <CadanganEditor onHandleRefreshData={handleRefreshData} 
+      onEditorUpdated={onEditorUpdated} rowClickedInfo={rowClickedInfo} />
     </CRow>
   )
 }

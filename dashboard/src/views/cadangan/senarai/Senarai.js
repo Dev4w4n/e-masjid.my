@@ -26,6 +26,9 @@ const Senarai = () => {
   useEffect(() => {
     fetchCount()
   },[])
+  const handleEditorUpdated = async () => {
+    await fetchCount()
+  }
 
   const renderCount = (activeKey) => {
     return cadanganCount[activeKey - 1] || 0;
@@ -86,27 +89,32 @@ const Senarai = () => {
               <CTabPane role="tabpanel" 
               aria-labelledby="baru-tab-pane" 
               visible={activeKey === 1}>
-                <CadanganList isOpen="true" cadanganType={1} activeKey={activeKey} />
+                <CadanganList onEditorUpdated={handleEditorUpdated} 
+                isOpen="true" cadanganType={1} activeKey={activeKey} />
               </CTabPane>
               <CTabPane role="tabpanel" 
               aria-labelledby="cadangan-tab-pane" 
               visible={activeKey === 2}>
-                <CadanganList isOpen="true" cadanganType={2} activeKey={activeKey} />
+                <CadanganList onEditorUpdated={handleEditorUpdated} 
+                isOpen="true" cadanganType={2} activeKey={activeKey} />
               </CTabPane>
               <CTabPane role="tabpanel" 
               aria-labelledby="aduan-tab-pane" 
               visible={activeKey === 3}>
-                <CadanganList isOpen="true" cadanganType={3} activeKey={activeKey} />
+                <CadanganList onEditorUpdated={handleEditorUpdated} 
+                isOpen="true" cadanganType={3} activeKey={activeKey} />
               </CTabPane>
               <CTabPane role="tabpanel" 
               aria-labelledby="lain-tab-pane" 
               visible={activeKey === 4}>
-                <CadanganList isOpen="true" cadanganType={4} activeKey={activeKey} />
+                <CadanganList onEditorUpdated={handleEditorUpdated} 
+                isOpen="true" cadanganType={4} activeKey={activeKey} />
               </CTabPane>
               <CTabPane role="tabpanel" 
               aria-labelledby="tutup-tab-pane" 
               visible={activeKey === 5}>
-                <CadanganList isOpen="false" cadanganType={5} activeKey={activeKey} />
+                <CadanganList onEditorUpdated={handleEditorUpdated} 
+                isOpen="false" cadanganType={5} activeKey={activeKey} />
               </CTabPane>
             </CTabContent>
           </CCardBody>
