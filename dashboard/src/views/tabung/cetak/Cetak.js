@@ -12,13 +12,14 @@ import {
   CButton,
   CSpinner,
 } from '@coreui/react'
-import { getKutipan, getKutipanByTabung } from 'src/service/tabung/KutipanApi';
-import { getTabung } from 'src/service/tabung/TabungApi';
+import { getKutipan, getKutipanByTabung } from 'src/service/tabung/KutipanApi'
+import { getTabung } from 'src/service/tabung/TabungApi'
 import DataTable from 'react-data-table-component'
 import { cilInfo, cilPrint } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-import { useReactToPrint } from 'react-to-print';
-import DenominasiPrint from 'src/components/print/DenominasiPrint';
+import { useReactToPrint } from 'react-to-print'
+import DenominasiPrint from 'src/components/print/tabung/DenominasiPrint'
+import PenyataBulananSelector from 'src/components/tabung/PenyataBulananSelector'
 
 const columns = [
   {
@@ -58,6 +59,7 @@ const Cetak = () => {
   const componentRef = useRef();
   const [visibleXL, setVisibleXL] = useState(false)
   const [penyata, setPenyata] = useState()
+  const [visibleBulanan, setVisibleBulanan] = useState(false)
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -146,14 +148,18 @@ const Cetak = () => {
     )
   }
 
+  const previewBulanan = () => {
+    setVisibleBulanan(true)
+  }
+
   const cetakBulanan = () => {
     if (kutipanList.length > 0) {
       return (
         <CRow>
           <CCol></CCol>
           <CCol></CCol>
-          <CCol>
-            <CIcon icon={cilPrint} className="me-2" onClick={() => printPreview(item.id)}/>
+          <CCol className="hover-effect" onClick={() => previewBulanan()}>
+            <CIcon icon={cilPrint} className="me-2" />
             Cetak Penyata Bulanan
           </CCol>
         </CRow>
@@ -205,6 +211,8 @@ const Cetak = () => {
           </CCardBody>
         </CCard>
       </CCol>
+      <PenyataBulananSelector visible={visibleBulanan} tabung={selectedTabung} 
+      onModalClose={() => setVisibleBulanan(false)} />
     </CRow>
   )
 }

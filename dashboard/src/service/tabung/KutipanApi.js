@@ -7,6 +7,11 @@ export const getKutipanByTabung = async (id) => {
     return response.data
 }
 
+export const getKutipanByTabungBetweenCreateDate = async (id, fromDate, toDate) => {
+    const response = await axios.get(`${apiServer}/kutipan/tabung/${id}/betweenCreateDate?fromDate=${fromDate}&toDate=${toDate}`)
+    return response.data
+}
+
 export const getKutipan = async (id) => {
     const response = await axios.get(`${apiServer}/kutipan/${id}`)
     return response.data
