@@ -1,5 +1,6 @@
-import React, { forwardRef } from 'react'
+import React, { useState, forwardRef, useEffect } from 'react'
 import { CCol, CRow, CContainer, CTable } from '@coreui/react'
+import { getKutipanByTabungBetweenCreateDate } from 'src/service/tabung/KutipanApi'
 
 const columns = [
   {
@@ -19,14 +20,53 @@ const columns = [
   },
 ]
 
-const items = [
-  {
-    minggu: 'MINGGU 1',
-    tarikh: '2022-01-01',
-    jumlah: '10.00',
-  }
-]
 const PenyataBulananPrint = forwardRef((props, ref) => {
+  const [items, setItems] = useState([])
+
+  useEffect(() => {
+    async function loadPenyata() {
+      const startOfMonth = new Date(
+        props.penyata.selectedMonth.getFullYear(),
+        props.penyata.selectedMonth.getMonth(),
+        1
+      )
+      const endOfMonth = new Date(
+        props.penyata.selectedMonth.getFullYear(),
+        props.penyata.selectedMonth.getMonth() + 1,
+        0
+      )
+
+      const response = await getKutipanByTabungBetweenCreateDate(
+        props.penyata.tabung.id,
+        startOfMonth.getTime(),
+        endOfMonth.getTime()
+      )
+      console.log(response)
+
+      let items = []
+      let total = 0
+      for (let i = 0; i < response.length; i++) {
+        items.push({
+          minggu: "MINGGU " + (i + 1),
+          tarikh: new Intl.DateTimeFormat('en-GB').format(new Date(response[i].createDate)),
+          jumlah: response[i].total.toLocaleString('ms-MY', { style: 'currency', currency: 'MYR' }),
+        })
+        total = total + response[i].total
+      }
+      items.push({
+        minggu: 'JUMLAH',
+        tarikh: '',
+        jumlah: total.toLocaleString('ms-MY', { style: 'currency', currency: 'MYR' }),
+        _props: { active: true },
+        _cellProps: { id: { scope: 'row' } },
+      })
+
+      setItems(items)
+    }
+
+    loadPenyata()
+  }, [props.penyata])
+
   return (
     <CContainer
       fluid
@@ -44,11 +84,11 @@ const PenyataBulananPrint = forwardRef((props, ref) => {
         </CCol>
       </CRow>
       <CRow>
-        <CCol style={{ textAlign: 'center' }}>Nama Tabung: {props.penyata.tabung.name}</CCol>
-      </CRow>
-      <CRow>
-        <CCol style={{ textAlign: 'center' }}>
-          BULAN: {new Intl.DateTimeFormat('en-GB').format(new Date(props.penyata.createDate))}
+        <CCol style={{ textAlign: 'left' }}>Nama Tabung: {props.penyata.tabung.name}</CCol>
+        <CCol></CCol>
+        <CCol style={{ textAlign: 'right' }}>
+          Tarikh Cetak:{' '}
+          {new Intl.DateTimeFormat('en-GB').format(new Date(props.penyata.createDate))}
         </CCol>
       </CRow>
       <CRow>

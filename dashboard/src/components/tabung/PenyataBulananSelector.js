@@ -4,17 +4,12 @@ import {
   CModalBody,
   CModalHeader,
   CModalFooter,
-  CForm,
-  CFormLabel,
-  CFormTextarea,
   CButton,
-  CButtonGroup,
 } from '@coreui/react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { useReactToPrint } from 'react-to-print'
 import PenyataBulananPrint from 'src/components/print/tabung/PenyataBulananPrint'
-import { getKutipanByTabungBetweenCreateDate } from 'src/service/tabung/KutipanApi'
 import { getTabungById } from 'src/service/tabung/TabungApi'
 
 const PenyataBulananSelector = ({ onModalClose, ...props }) => {
@@ -48,13 +43,13 @@ const PenyataBulananSelector = ({ onModalClose, ...props }) => {
 
   const printPreview = async () => {
     const tabung = await getTabungById(props.tabung)
-    console.log(selectedMonth)
     const dataToPrint = {
       tabung: {
         id: tabung.id,
         name: tabung.name
       },
       createDate: new Date().getTime(),
+      selectedMonth: selectedMonth,
     }
     setPrintData(dataToPrint)
     setVisibleXL(true)
@@ -110,6 +105,7 @@ const PenyataBulananSelector = ({ onModalClose, ...props }) => {
         </CModalFooter>
       </CModal>
       <CModal
+        size='xl'
         visible={visibleXL}
         onClick={() => {
           resetModal()
@@ -123,7 +119,7 @@ const PenyataBulananSelector = ({ onModalClose, ...props }) => {
           <CButton
             color="secondary"
             onClick={() => {
-              setVisibleXL(false); resetModal()
+              resetModal()
             }}
           >
             Batal
