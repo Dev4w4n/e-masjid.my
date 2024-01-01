@@ -19,7 +19,14 @@ const columns = [
   },
 ]
 
-const PenyataBulanan = forwardRef((props, ref) => {
+const items = [
+  {
+    minggu: 'MINGGU 1',
+    tarikh: '2022-01-01',
+    jumlah: '10.00',
+  }
+]
+const PenyataBulananPrint = forwardRef((props, ref) => {
   return (
     <CContainer
       fluid
@@ -29,7 +36,7 @@ const PenyataBulanan = forwardRef((props, ref) => {
       <CRow>
         <CCol style={{ textAlign: 'center' }}>
           <h3>PENYATA KUTIPAN DAN DERMA BULANAN</h3>
-        </CCol>
+        </CCol> 
       </CRow>
       <CRow>
         <CCol style={{ textAlign: 'center' }}>
@@ -65,4 +72,4 @@ const PenyataBulanan = forwardRef((props, ref) => {
   )
 })
 
-export default PenyataBulanan
+export default PenyataBulananPrint
