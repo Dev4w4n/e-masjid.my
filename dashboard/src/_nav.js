@@ -1,6 +1,13 @@
 import React from 'react'
 import CIcon from '@coreui/icons-react'
-import { cilMoney, cilGift, cilCommentBubble, cilSpeedometer, cibGnu, cilGroup } from '@coreui/icons'
+import { cilMoney, 
+  cilGift, 
+  cilCommentBubble, 
+  cilSpeedometer, 
+  cibGnu, 
+  cilGroup,
+  cilSettings 
+} from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
 const _nav = [
@@ -65,32 +72,32 @@ const _nav = [
     ],
   },
   {
-    component: CNavTitle,
-    name: 'Akan Datang',
-  },
-  {
     component: CNavGroup,
     name: 'Cadangan',
     to: '/cadangan',
     icon: <CIcon icon={cilCommentBubble} customClassName="nav-icon" />,
     items: [
-      // {
-      //   component: CNavItem,
-      //   name: 'Senarai',
-      //   to: '/cadangan/daftar',
-      // },
-      // {
-      //   component: CNavItem,
-      //   name: 'QR code',
-      //   to: '/cadangan/cetak',
-      // },
+      {
+        component: CNavItem,
+        name: 'Senarai',
+        to: '/cadangan/senarai',
+      },
+      {
+        component: CNavItem,
+        name: 'Cetak QR',
+        to: '/cadangan/cetak',
+      },
     ],
   },
   {
+    component: CNavTitle,
+    name: 'Akan datang',
+  },
+  {
     component: CNavGroup,
-    name: 'E-Korban',
-    to: '/korban',
-    icon: <CIcon icon={cibGnu} customClassName="nav-icon" />,
+    name: 'Tetapan Masjid',
+    to: '/tetapan',
+    icon: <CIcon icon={cilSettings} customClassName="nav-icon" />,
     items: [
       // {
       //   component: CNavItem,
@@ -109,6 +116,24 @@ const _nav = [
     name: 'AJK',
     to: '/ajk',
     icon: <CIcon icon={cilGroup} customClassName="nav-icon" />,
+    items: [
+      // {
+      //   component: CNavItem,
+      //   name: 'Senarai',
+      //   to: '/cadangan/daftar',
+      // },
+      // {
+      //   component: CNavItem,
+      //   name: 'QR code',
+      //   to: '/cadangan/cetak',
+      // },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'E-Korban',
+    to: '/korban',
+    icon: <CIcon icon={cibGnu} customClassName="nav-icon" />,
     items: [
       // {
       //   component: CNavItem,

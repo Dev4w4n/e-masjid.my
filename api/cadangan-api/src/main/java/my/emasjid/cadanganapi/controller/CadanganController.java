@@ -31,11 +31,36 @@ public class CadanganController {
     @GetMapping("/cadangan")
     @ResponseBody
     public ResponseEntity<Page<Cadangan>> getAllCadangan(@RequestParam int page,
-    @RequestParam int size) {
+    @RequestParam int size, @RequestParam(required = false) Long cadanganTypeId, @RequestParam Boolean isOpen) {
         PageRequest pageable = PageRequest.of(page, size);
 
         try {
-            return ResponseEntity.ok(cadanganService.getAllCadangan(pageable));
+            return (cadanganTypeId==null) ? ResponseEntity.ok(cadanganService.getAllCadanganByType(isOpen, pageable)) :
+                ResponseEntity.ok(cadanganService.getAllCadanganByType(cadanganTypeId, isOpen, pageable));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+    }
+
+    @GetMapping("/cadangan/{id}")
+    @ResponseBody
+    public ResponseEntity<Cadangan> getCadanganById(@PathVariable Long id) {
+
+        try {
+            return ResponseEntity.ok(cadanganService.getCadanganById(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+    }
+
+    @GetMapping("/cadangan/count")
+    @ResponseBody
+    public ResponseEntity<Object> getAllCadanganCount() {
+
+        try {
+            return ResponseEntity.ok(cadanganService.getTotalCadanganByType());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }

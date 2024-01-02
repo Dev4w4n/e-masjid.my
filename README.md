@@ -1,3 +1,5 @@
+[![en](https://img.shields.io/badge/lang-en-red.svg)](./README.en.md)
+
 <p align="center">
   <img src="./public-web/src/assets/home/logo.png" alt="E-Masjid.My" width="80" height="80"/>
 </p>
@@ -5,54 +7,57 @@
 <h2 align="center"><b>E-Masjid.My</b></h2>
 <p align="center"><b>Sistem masjid untuk semua</b></p>
 <p align="center">
-  E-Masjid.My is a free and open source (MIT License) mosque management system
-<p><br>
+  E-Masjid.My ialah sebuah sistem pengurusan masjid percuma dan sumber terbuka (lesen MIT)
+</p><br>
+<h2 align="center">
+  <a href='https://demo.e-masjid.my'>Demo Langsung</a>
+</h2><br>
 
-Philosophy
+Falsafah
 =====
-The main goals for this system are listed below.
+Matlamat-matlamat utama sistem ini ialah seperti berikut.
 
-**Easy of use**
+**Mudah untuk digunakan**
 
-- Not everyone is an IT expert. Designing a system for non-IT people needs careful consideration.
+- Bukan semua orang pakar IT. Mereka bentuk sebuah sistem untuk orang bukan IT memerlukan pertimbangan yang teliti.
 
-**Time to use your IT skills for good deeds**
+**Masa untuk menggunakan kemahiran IT untuk berbuat kebaikan**
 
-- Open source is a form of sadaqah which is a required practice in Islam.
+- Sumber terbuka ialah suatu bentuk sedekah — sesuatu yang dituntut dalam Islam.
 
-**Longer living**
+**Jangka hayat yang panjang**
 
-- Hosting/Tech companies may die, but we hope that by open-sourcing this project, it will live longer for the sake of ummah.
+- Syarikat pengehosan/teknologi mungkin mati tetapi kami berharap dengan menyerahkan projek ini secara sumber terbuka, projek ini dapat hidup lebih lama demi ummah.
 
-**We give, not take**
+**Beri, bukan ambil**
 
-- We should be contributing to the Muslim community, rather than benefiting from them, especially the Masjid.
+- Kita sepatutnya menyumbang kepada komuniti Muslim, terutamanya masjid dan bukan mengambil manfaat daripada mereka.
 
 
-## Prerequisites
+## Prasyarat
 1. Docker
 2. Java 17 (Spring Boot 3.2.0)
 3. Maven
 4. Node 20 (ReactJS 18 + CoreUI + Tailwind CSS)
 
-## Quickstart guide ( Docker compose )
-### Clone this repo
+## Panduan permulaan pantas (Docker compose)
+### Klon repo ini
 ```
 git clone https://github.com/Dev4w4n/e-masjid.my.git;
 cd e-masjid.my
 ```
-### run-dev.sh (for Linux)
+### run-dev.sh (bagi Linux)
 ```
 sh run-dev.sh
 ```
-### run-dev.bat (for Windows)
+### run-dev.bat (bagi Windows)
 ```
 run-dev.bat
 ```
 
-This will automatically build all the APIs, and run the docker-compose file where it will spin up 6 containers for the developments environment.
+Skrip ini akan membina semua API secara automatik dan melaksanakan arahan docker-compose yang akan menghidupkan 6 *container* untuk persekitaran pembangunan.
 
-Once the containers are up, you may stop any of the containers depending on what you will be working on to free up your local resources.
+Apabila kesemua *container* telah hidup, anda boleh menghentikan mana-mana *container* yang tidak diperlukan dalam tugasan anda.
 
 ## Gradle Build
 
@@ -64,18 +69,17 @@ You may utilise ./gradlew (or gradlew.bat on windows) provided to configure/exec
 ./gradlew task --all
 ```
 
-## Contributing guide
+## Panduan untuk menyumbang
+*Fork* repo ini dan hantar PR anda.
 
-Please fork this repo and submit your PR.
+Kami mahu input anda! Kami ingin menjadikan penyumbangan kepada projek mudah dan telus, sama ada dengan:
 
-We love your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
-
-- Reporting a bug
-- Submitting a fix
-- Proposing new features
-- Enhancing features
-- Documentation
-- Unit testing
+- Melaporkan pepijat
+- Menghantar pembetulan
+- Mencadangkan ciri baru
+- Menambah baik ciri
+- Dokumentasi
+- Ujian unit
   
-Or you would just like to chat with us, find us on [Discord](https://discord.gg/vz4WWM85)
+Atau anda ingin berbual dengan kami, cari kami di [Discord](https://discord.gg/vz4WWM85).
 
