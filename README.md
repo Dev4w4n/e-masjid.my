@@ -61,12 +61,30 @@ Apabila kesemua *container* telah hidup, anda boleh menghentikan mana-mana *cont
 
 ## Gradle Build
 
-You may utilise ./gradlew (or gradlew.bat on windows) provided to configure/execute your build. The commands below will show available tasks on gradle:
+Anda juga boleh menggunakan ./gradlew (atau gradlew.bat untuk windows) yg disediakan to memperinci/melaksanakan build. Perintah-perintah di bawah ini akan menunjukkan gradle tasks yang tersedia:
 
-```
+```sh
 ./gradlew task
 
 ./gradlew task --all
+```
+
+### Gradle build utk setiap modul backend
+
+Sepertimana yang anda dapat lihat pada output `./gradlew task --all`, anda boleh melaksanakan build secara berasingan untuk setiap modul backend. Setiap modul backend ditulis dalam Spring boot, jadi anda boleh menggunakan plugin org.springframework.boot seperti berikut:
+
+```sh
+cd api
+
+./gradlew api:tabung-api:bootRun  --args='--spring.profiles.active=local'
+```
+
+Anda juga boleh menjana fail Jar secara berasingan untuk digunakan pada docker-compose. Cara untuk menjana Jar adalah seperti berikut:
+
+```sh
+cd api
+
+./gradlew api:tabung-api:bootJar
 ```
 
 ## Panduan untuk menyumbang
