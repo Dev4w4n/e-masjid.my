@@ -7,7 +7,7 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const loginAjk = () => {
-    window.location.href = "https://login.e-masjid.my";
+    window.location.href = "http://localhost:3000";
   }
 
   return (

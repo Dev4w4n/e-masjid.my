@@ -3,8 +3,8 @@
   "description": "E-Masjid Public Web",
   "homepage": "/web",
   "version": "1.0.0",
-  "license": "Apache-2.0",
-  "author": "izandotnet",
+  "license": "MIT",
+  "author": "Open Cloud Services (SA0604301-H)",
   "scripts": {
     "build": "echo \"Please use build:dev or build:prod \" && exit 1",
     "build:dev": "cross-env REACT_APP_ENV=development react-scripts build",

@@ -45,7 +45,7 @@ export default function Cadangan() {
 
       const json ={
         "cadanganType": {
-            "id": 3,
+            "id": 1,
         },
         "cadanganText": inputCadangan.current.value,
         "cadanganNama": nama,

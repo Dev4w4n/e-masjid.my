@@ -174,6 +174,7 @@ const Daftar = () => {
 
   return (
     <CRow>
+      <ToastContainer />
       <CCol xs={12}>
         <CCard className="mb-4">
           <CCardHeader>

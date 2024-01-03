@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import my.emasjid.tabungapi.entity.Kutipan;
@@ -27,6 +28,18 @@ public class KutipanController {
     public ResponseEntity<List<Kutipan>> getAllKutipanByTabungId(@PathVariable Long id) {
         try {
             List<Kutipan> kutipans = kutipanRepository.findAllByTabungIdOrderByIdDesc(id);
+            return ResponseEntity.ok(kutipans);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    @GetMapping("/kutipan/tabung/{id}/betweenCreateDate")
+    @ResponseBody
+    public ResponseEntity<List<Kutipan>> getAllKutipanByTabungIdBetweenCreateDate(@PathVariable Long id
+            ,@RequestParam Long fromDate, @RequestParam Long toDate) {
+        try {
+            List<Kutipan> kutipans = kutipanRepository.findAllByTabungIdAndCreateDateBetweenOrderByIdAsc(id, fromDate, toDate);
             return ResponseEntity.ok(kutipans);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
