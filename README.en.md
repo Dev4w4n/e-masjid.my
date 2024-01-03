@@ -61,15 +61,29 @@ Once the containers are up, you may stop any of the containers depending on what
 
 You may utilise ./gradlew (or gradlew.bat on windows) provided to configure/execute your build. The commands below will show available tasks on gradle:
 
-```
+```sh
 ./gradlew task
 
 ./gradlew task --all
 ```
 
-### Gradle build utk setiap module backend
+### Gradle build for each backend modules
 
+As seen in the output of the aforementioned `./gradlew task --all`, you may execute builds separately for each of the backend modules. Each backend modules are written in Spring boot, so you may use org.springframework.boot plugin as below:
 
+```sh
+cd api
+
+./gradlew api:tabung-api:bootRun --args='--spring.profiles.active=local'
+```
+
+You may also generate the Jar file separately for the use with docker-compose. Follow the step below to generate Jar:
+
+```sh
+cd api
+
+./gradlew api:tabung-api:bootJar
+```
 
 ## Contributing guide
 
