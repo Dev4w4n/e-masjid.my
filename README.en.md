@@ -37,6 +37,7 @@ The main goals for this system are listed below.
 2. Java 17 (Spring Boot 3.2.0)
 3. Maven
 4. Node 20 (ReactJS 18 + CoreUI + Tailwind CSS)
+5. VSCode (Recommended)
 
 ## Quickstart guide ( Docker compose )
 ### Clone this repo
@@ -48,9 +49,9 @@ cd e-masjid.my
 ```
 sh run-dev.sh
 ```
-### run-dev.bat (for Windows)
+### run-dev.sh (for Windows) - Use Git Bash terminal in VSCode
 ```
-run-dev.bat
+sh run-dev.sh
 ```
 
 This will automatically build all the APIs, and run the docker-compose file where it will spin up 6 containers for the developments environment.
