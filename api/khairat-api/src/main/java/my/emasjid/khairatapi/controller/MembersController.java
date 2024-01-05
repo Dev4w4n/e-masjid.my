@@ -1,7 +1,9 @@
 package my.emasjid.khairatapi.controller;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -68,6 +70,21 @@ public class MembersController {
         }
     }
 
+    @GetMapping("/members/findByTag")
+    @ResponseBody
+    public ResponseEntity<List<Member>> findByTagId(@RequestParam String tagId) {
+        try {
+            List<Long> tagIdList = Arrays.stream(tagId.split(","))
+                               .map(Long::parseLong)
+                               .collect(Collectors.toList());
+
+            List<Member> member = memberService.getAllMembersByTagIdOrderByMemberNameAsc(tagIdList);
+            return ResponseEntity.ok(member);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
     @GetMapping("/members/count")
     @ResponseBody
     public ResponseEntity<Long> count() {
@@ -78,17 +95,6 @@ public class MembersController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-
-    // @GetMapping("/members/paidPercentage")
-    // @ResponseBody
-    // public ResponseEntity<Double> paidPercentage() {
-    //     try {
-    //         Double percentage = memberService.paidPercentage();
-    //         return ResponseEntity.ok(percentage);
-    //     } catch (Exception e) {
-    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-    //     }
-    // }
 
     @PostMapping("/members/save")
     @ResponseBody

@@ -41,7 +41,6 @@ const PenyataBulananPrint = forwardRef((props, ref) => {
         startOfMonth.getTime(),
         endOfMonth.getTime()
       )
-      console.log(response)
 
       let items = []
       let total = 0

@@ -12,6 +12,11 @@ export const searchMember = async (query) => {
   return response.data
 }
 
+export const searchMemberByTagId = async (id) => {
+  const response = await axios.get(`${apiServer}/members/findByTag?tagId=${id}`)
+  return response.data
+}
+
 export const loadMember = async (id) => {
   const response = await axios.get(`${apiServer}/members/find/${id}`)
   return response.data
