@@ -116,22 +116,22 @@ public class MemberService {
         return member;
     }
 
-private void updatePaymentHistory(List<PaymentHistory> paymentHistory, Long memberId) {
-    if (paymentHistory.isEmpty()) {
-        paymentService.deleteCurrentYearPaymentHistory(memberId);
-    } else {
-        if (!paymentService.isCurrentYearPaymentExist(memberId)) {
-            for (PaymentHistory history : paymentHistory) {
-                if (history.getId() == null) {
-                    Member member = findOne(memberId);
-                    history.setMember(member);
-                    paymentService.save(history);
-                    break;
+    private void updatePaymentHistory(List<PaymentHistory> paymentHistory, Long memberId) {
+        if (paymentHistory.isEmpty()) {
+            paymentService.deleteCurrentYearPaymentHistory(memberId);
+        } else {
+            if (!paymentService.isCurrentYearPaymentExist(memberId)) {
+                for (PaymentHistory history : paymentHistory) {
+                    if (history.getId() == null) {
+                        Member member = findOne(memberId);
+                        history.setMember(member);
+                        paymentService.save(history);
+                        break;
+                    }
                 }
             }
         }
     }
-}
 
     public Member findOne(Long id) {
         return memberRepository.findById(id).get();
@@ -154,7 +154,7 @@ private void updatePaymentHistory(List<PaymentHistory> paymentHistory, Long memb
         return memberRepository.count();
     }
 
-    // public Double paidPercentage(){
-    //     return memberRepository.paidPercentage();
-    // }
+    public List<Member> getAllMembersByTagIdOrderByMemberNameAsc(List<Long> tagId) {
+        return memberRepository.findAllByTagIdOrderByMemberNameAsc(tagId);
+    }
 }
