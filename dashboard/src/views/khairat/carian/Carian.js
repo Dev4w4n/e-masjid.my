@@ -33,23 +33,28 @@ const columns = [
   {
     name: 'Nama',
     selector: (row) => row.nama,
+    sortable: true,
   },
   {
     name: 'Penanda',
     selector: (row) => row.tagging,
+    sortable: true,
   },
   {
     name: 'No Ic',
     selector: (row) => row.icno,
+    sortable: true,
     hide: 'sm',
   },
   {
     name: 'No Telefon',
     selector: (row) => row.hp,
+    sortable: true,
   },
   {
     name: 'Status Bayaran',
     selector: (row) => row.paymentStatus,
+    sortable: true,
   },
   {
     name: 'Bayaran',
@@ -178,14 +183,15 @@ const Carian = () => {
               }) ? 'Sudah' : 'Belum';
 
               const person = item.person
-              const tagging = item.memberTags[0]?.tag.name || ''
+              const tags = item.memberTags.map(tag => tag.tag.name);
+              const commaSeparatedTags = tags.join(', ');
               return {
                 id: item.id,
                 nama: person.name,
                 icno: person.icNumber,
                 hp: person.phone,
                 alamat: person.address,
-                tagging,
+                tagging: commaSeparatedTags,
                 paymentHistory,
                 paymentStatus,
               }

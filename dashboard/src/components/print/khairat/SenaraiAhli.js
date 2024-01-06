@@ -8,8 +8,8 @@ const columns = [
     _props: { scope: 'col', className: 'col-md-5' },
   },
   {
-    key: 'noic',
-    label: 'No IC',
+    key: 'penanda',
+    label: 'Penanda',
     _props: { scope: 'col', className: 'col-2' },
   },
   {
@@ -34,16 +34,14 @@ const SenaraiAhli = forwardRef((props, ref) => {
       let items = []
       let jumlahAhli = 0
       for (let i = 0; i < props.items.length; i++) {
-        const paymentStatus = props.items[i].paymentHistory && props.items[i].paymentHistory.length > 0
-          ? props.items[i].paymentHistory.map(item => {
-              const paymentDateYear = new Date(item.paymentDate).getFullYear();
-              const currentYear = new Date().getFullYear();
-              return paymentDateYear === currentYear ? 'Sudah' : 'Belum';
-            })
-          : 'Belum';
+        const paymentStatus = props.items[i].paymentHistory.some(item => {
+          const paymentDateYear = new Date(item.paymentDate).getFullYear();
+          const currentYear = new Date().getFullYear();
+          return paymentDateYear === currentYear;
+        }) ? 'Sudah' : 'Belum';
         items.push({
           nama: props.items[i].nama,
-          noic: props.items[i].icno,
+          penanda: props.items[i].tagging,
           phone: props.items[i].hp,
           status: paymentStatus,
         })
