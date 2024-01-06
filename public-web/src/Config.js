@@ -1,6 +1,6 @@
 const prod = {
     version: {
-      BUILD: 'v1.1-beta.0',
+      BUILD: 'v1.3-beta.0',
     },
     url: {
       CADANGAN_API_BASE_URL: 'https://www.e-masjid.my/api',
@@ -9,7 +9,7 @@ const prod = {
   
   const dev = {
     version: {
-      BUILD: 'v1.1-beta.0',
+      BUILD: 'v1.3-beta.0',
     },
     url: {
       CADANGAN_API_BASE_URL: 'http://localhost:8083',
