@@ -171,13 +171,11 @@ const Carian = () => {
           setItems(
             response.map((item) => {
               const paymentHistory = item.paymentHistories
-              const paymentStatus = paymentHistory && paymentHistory.length > 0
-              ? paymentHistory.map(item => {
-                  const paymentDateYear = new Date(item.paymentDate).getFullYear();
-                  const currentYear = new Date().getFullYear();
-                  return paymentDateYear === currentYear ? 'Sudah' : 'Belum';
-                })
-              : 'Belum';
+              const paymentStatus = paymentHistory.some(item => {
+                const paymentDateYear = new Date(item.paymentDate).getFullYear();
+                const currentYear = new Date().getFullYear();
+                return paymentDateYear === currentYear;
+              }) ? 'Sudah' : 'Belum';
 
               const person = item.person
               const tagging = item.memberTags[0]?.tag.name || ''
