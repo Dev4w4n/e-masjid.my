@@ -1,6 +1,7 @@
 import React from 'react'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
+const TetapanMasjid = React.lazy(() => import('./views/tetapan/TetapanMasjid'))
 
 // Khairat
 const Daftar = React.lazy(() => import('./views/khairat/daftar/Daftar'))
@@ -32,6 +33,8 @@ const routes = [
   { path: '/cadangan/senarai', name: 'Senarai', element: SenaraiCadangan },
   // { path: '/cadangan/daftar/:paramId?', name: 'Daftar', element: DaftarTabung },
   // { path: '/cadangan/tetapan', name: 'Tetapan', element: TetapanTabung },
+
+  { path: '/tetapan', name: 'Tetapan Masjid', element: TetapanMasjid },
 ]
 
 export default routes

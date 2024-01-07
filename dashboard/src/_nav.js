@@ -90,6 +90,16 @@ const _nav = [
     ],
   },
   {
+    component: CNavItem,
+    name: 'Tetapan Masjid',
+    to: '/tetapan',
+    icon: <CIcon icon={cilSettings} customClassName="nav-icon" />,
+    badge: {
+      color: 'info',
+      // text: 'NEW',
+    },
+  },
+  {
     component: CNavTitle,
     name: 'Akan datang',
   },
