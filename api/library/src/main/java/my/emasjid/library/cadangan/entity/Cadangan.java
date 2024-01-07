@@ -1,4 +1,4 @@
-package my.emasjid.cadanganapi.entity;
+package my.emasjid.library.cadangan.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

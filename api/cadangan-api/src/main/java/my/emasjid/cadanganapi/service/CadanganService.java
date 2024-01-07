@@ -5,8 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import my.emasjid.cadanganapi.entity.Cadangan;
 import my.emasjid.cadanganapi.repository.CadanganRepository;
+import my.emasjid.library.cadangan.entity.Cadangan;
 
 @Service
 public class CadanganService {

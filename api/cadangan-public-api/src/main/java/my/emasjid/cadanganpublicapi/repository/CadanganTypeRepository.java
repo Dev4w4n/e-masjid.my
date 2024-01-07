@@ -1,4 +1,4 @@
-package my.emasjid.cadanganapi.repository;
+package my.emasjid.cadanganpublicapi.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

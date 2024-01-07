@@ -9,17 +9,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import my.emasjid.cadanganapi.entity.Cadangan;
 import my.emasjid.cadanganapi.service.CadanganService;
+import my.emasjid.library.cadangan.entity.Cadangan;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-
-
 
 @Controller
 @RequestMapping("${deploy.url}")
@@ -67,22 +64,15 @@ public class CadanganController {
 
     }
     
-    @PostMapping("/cadangan")
-    public ResponseEntity<Cadangan> createCadangan(@RequestBody Cadangan cadangan) {
-        try {
-            return ResponseEntity.ok(cadanganService.save(cadangan));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-    }
-
     @PutMapping("/cadangan/{id}")
     public ResponseEntity<Cadangan> putMethodName(@PathVariable Long id, 
     @RequestBody Cadangan cadangan) {
+
         try {
             return ResponseEntity.ok(cadanganService.save(cadangan));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
+        
     }
 }

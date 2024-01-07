@@ -12,7 +12,7 @@ const prod = {
       BUILD: 'v1.3-beta.1',
     },
     url: {
-      CADANGAN_API_BASE_URL: 'http://localhost:8083',
+      CADANGAN_API_BASE_URL: 'http://localhost:8084',
     },
   }
   

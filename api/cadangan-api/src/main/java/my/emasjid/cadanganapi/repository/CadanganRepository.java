@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import my.emasjid.cadanganapi.entity.Cadangan;
+import my.emasjid.library.cadangan.entity.Cadangan;
 
 public interface CadanganRepository extends JpaRepository<Cadangan, Long> {
     public Page<Cadangan> findAll(Pageable pageable);
