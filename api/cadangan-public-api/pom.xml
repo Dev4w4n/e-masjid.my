@@ -41,7 +41,7 @@
 		<dependency>
 			<groupId>my.emasjid</groupId>
 			<artifactId>library</artifactId>
-			<version>1.1.0</version>
+			<version>1.1.4</version>
 		</dependency>
 	</dependencies>
 

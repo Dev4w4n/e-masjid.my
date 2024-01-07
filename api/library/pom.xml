@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>my.emasjid</groupId>
 	<artifactId>library</artifactId>
-	<version>1.1.0</version>
-	<name>emasjid-lib</name>
+	<version>1.1.4</version>
+	<name>library</name>
 	<description>Library for E-Masjid.My</description>
 	<properties>
 		<java.version>17</java.version>
