@@ -100,5 +100,5 @@ Kami mahu input anda! Kami ingin menjadikan penyumbangan kepada projek mudah dan
 - Dokumentasi
 - Ujian unit
   
-Atau anda ingin berbual dengan kami, cari kami di [Discord](https://discord.gg/vz4WWM85).
+Atau anda ingin berbual dengan kami, cari kami di [Discord](https://discord.gg/k2zGpWTDpe).
 
