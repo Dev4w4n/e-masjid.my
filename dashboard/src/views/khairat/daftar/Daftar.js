@@ -102,7 +102,7 @@ const Daftar = () => {
     fetchTags()
     setTimeout(() => {
       inputNamaAhli.current.focus();
-    }, 1000);
+    }, 10);
   }, [])
   // to generate tag buttons
   useEffect(() => {
