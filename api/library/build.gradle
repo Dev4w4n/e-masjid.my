@@ -3,25 +3,29 @@
  */
 
 plugins {
-    id 'java-library'
-    id 'maven-publish'
+    // id 'java-library'
+    // id 'maven-publish'
     id 'java'
-    id 'org.springframework.boot' version "${springbootversion}"
+    // id 'org.springframework.boot' version "${springbootversion}"
 }
 
-apply plugin: 'io.spring.dependency-management'
+// apply plugin: 'io.spring.dependency-management'
 
 repositories {
     mavenLocal()
     maven {
         url = uri('https://repo.maven.apache.org/maven2/')
     }
+    maven {
+        url = uri('https://repo.spring.io/milestone')
+    }
 }
 
 dependencies {
+    compileOnly 'jakarta.persistence:jakarta.persistence-api:3.1.0'
     compileOnly "org.springframework.boot:spring-boot-starter:${springbootversion}"
-    compileOnly 'org.projectlombok:lombok'     
-    annotationProcessor 'org.projectlombok:lombok' 
+    compileOnly 'org.projectlombok:lombok:1.18.30'     
+    annotationProcessor 'org.projectlombok:lombok:1.18.30' 
     compileOnly "org.springframework.boot:spring-boot-starter-data-jpa:${springbootversion}"
     compileOnly "org.springframework.boot:spring-boot-autoconfigure"
 }
@@ -30,11 +34,3 @@ group = 'my.emasjid'
 version = '1.1.4'
 description = 'library'
 java.sourceCompatibility = JavaVersion.VERSION_17
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from(components.java)
-        }
-    }
-}
