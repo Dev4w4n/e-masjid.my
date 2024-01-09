@@ -15,7 +15,7 @@
 
 Falsafah
 =====
-Matlamat-matlamat utama sistem ini ialah seperti berikut.
+Matlamat-matlamat utama sistem ini ialah seperti berikut:
 
 **Mudah untuk digunakan**
 
@@ -40,6 +40,10 @@ Matlamat-matlamat utama sistem ini ialah seperti berikut.
 3. Maven
 4. Node 20 (ReactJS 18 + CoreUI + Tailwind CSS)
 5. VSCode (Disyorkan)
+
+## Keperluan Minimum Sistem
+1. 
+2. 
 
 ## Panduan permulaan pantas (Docker compose)
 ### Klon repo ini
