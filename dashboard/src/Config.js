@@ -1,4 +1,7 @@
 const prod = {
+  version: {
+    BUILD: 'v1.3-beta.1',
+  },
   url: {
     KHAIRAT_API_BASE_URL: 'https://www.e-masjid.my/api',
     TABUNG_API_BASE_URL: 'https://www.e-masjid.my/api',
@@ -8,6 +11,9 @@ const prod = {
 }
 
 const dev = {
+  version: {
+    BUILD: 'v1.3-beta.1',
+  },
   url: {
     KHAIRAT_API_BASE_URL: 'http://localhost:8081',
     TABUNG_API_BASE_URL: 'http://localhost:8082',

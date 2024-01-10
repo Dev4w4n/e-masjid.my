@@ -158,7 +158,7 @@ const Cetak = () => {
         <CRow>
           <CCol></CCol>
           <CCol></CCol>
-          <CCol className="hover-effect" onClick={() => previewBulanan()}>
+          <CCol align="right" className="hover-effect" onClick={() => previewBulanan()}>
             <CIcon icon={cilPrint} className="me-2" />
             Cetak Penyata Bulanan
           </CCol>

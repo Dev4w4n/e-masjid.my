@@ -37,6 +37,7 @@ The main goals for this system are listed below.
 2. Java 17 (Spring Boot 3.2.0)
 3. Maven
 4. Node 20 (ReactJS 18 + CoreUI + Tailwind CSS)
+5. VSCode (Recommended)
 
 ## Quickstart guide ( Docker compose )
 ### Clone this repo
@@ -48,9 +49,9 @@ cd e-masjid.my
 ```
 sh run-dev.sh
 ```
-### run-dev.bat (for Windows)
+### run-dev.sh (for Windows) - Use Git Bash terminal in VSCode
 ```
-run-dev.bat
+sh run-dev.sh
 ```
 
 This will automatically build all the APIs, and run the docker-compose file where it will spin up 6 containers for the developments environment.
@@ -61,19 +62,33 @@ Once the containers are up, you may stop any of the containers depending on what
 
 You may utilise ./gradlew (or gradlew.bat on windows) provided to configure/execute your build. The commands below will show available tasks on gradle:
 
-```
+```sh
 ./gradlew task
 
 ./gradlew task --all
 ```
 
-### Gradle build utk setiap module backend
+### Gradle build for each backend modules
 
+As seen in the output of the aforementioned `./gradlew task --all`, you may execute builds separately for each of the backend modules. Each backend modules are written in Spring boot, so you may use org.springframework.boot plugin as below:
 
+```sh
+cd api
+
+./gradlew api:tabung-api:bootRun --args='--spring.profiles.active=local'
+```
+
+You may also generate the Jar file separately for the use with docker-compose. Follow the step below to generate Jar:
+
+```sh
+cd api
+
+./gradlew api:tabung-api:bootJar
+```
 
 ## Contributing guide
 
-Please fork this repo and submit your PR.
+Please fork this repo and submit your Pull Request.
 
 We love your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
 

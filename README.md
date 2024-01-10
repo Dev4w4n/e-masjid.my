@@ -39,6 +39,7 @@ Matlamat-matlamat utama sistem ini ialah seperti berikut.
 2. Java 17 (Spring Boot 3.2.0)
 3. Maven
 4. Node 20 (ReactJS 18 + CoreUI + Tailwind CSS)
+5. VSCode (Disyorkan)
 
 ## Panduan permulaan pantas (Docker compose)
 ### Klon repo ini
@@ -50,9 +51,9 @@ cd e-masjid.my
 ```
 sh run-dev.sh
 ```
-### run-dev.bat (bagi Windows)
+### run-dev.sh (bagi Windows) - Gunakan terminal Git Bash di VSCode
 ```
-run-dev.bat
+sh run-dev.sh
 ```
 
 Skrip ini akan membina semua API secara automatik dan melaksanakan arahan docker-compose yang akan menghidupkan 6 *container* untuk persekitaran pembangunan.
@@ -88,7 +89,7 @@ cd api
 ```
 
 ## Panduan untuk menyumbang
-*Fork* repo ini dan hantar PR anda.
+*Fork* repo ini dan hantar *Pull Request* anda.
 
 Kami mahu input anda! Kami ingin menjadikan penyumbangan kepada projek mudah dan telus, sama ada dengan:
 
@@ -99,5 +100,5 @@ Kami mahu input anda! Kami ingin menjadikan penyumbangan kepada projek mudah dan
 - Dokumentasi
 - Ujian unit
   
-Atau anda ingin berbual dengan kami, cari kami di [Discord](https://discord.gg/vz4WWM85).
+Atau anda ingin berbual dengan kami, cari kami di [Discord](https://discord.gg/k2zGpWTDpe).
 
