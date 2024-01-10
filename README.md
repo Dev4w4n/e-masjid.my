@@ -75,18 +75,41 @@ Anda juga boleh menggunakan ./gradlew (atau gradlew.bat untuk windows) yg disedi
 Sepertimana yang anda dapat lihat pada output `./gradlew task --all`, anda boleh melaksanakan build secara berasingan untuk setiap modul backend. Setiap modul backend ditulis dalam Spring boot, jadi anda boleh menggunakan plugin org.springframework.boot seperti berikut:
 
 ```sh
-cd api
-
 ./gradlew api:tabung-api:bootRun  --args='--spring.profiles.active=local'
 ```
 
 Anda juga boleh menjana fail Jar secara berasingan untuk digunakan pada docker-compose. Cara untuk menjana Jar adalah seperti berikut:
 
 ```sh
-cd api
-
 ./gradlew api:tabung-api:bootJar
 ```
+
+### Tugasan gradle: ultimateBuild
+
+Untuk binaan keseluruhan projek, kami menyediakan `ultimateBuild`. `ultimateBuild` boleh dijalankan dengan:
+
+```sh
+./gradlew ultimateBuild
+```
+
+`ultimateBuild` dikodkan seperti berikut:
+
+```groovy
+task ultimateBuild( type: Task,
+        dependsOn: ["api:buildapi","dashboard:publish","public-web:publish"]
+        ) {
+    description="Build all programs"
+    
+    doLast {
+        println  "build completed"
+    }
+}
+```
+
+Di mana: 
+  - `api:buildapi` membina kesemua projek api, termasuk menyusun dan menyediakan pakej yg terbina.
+  - `dashboard:publish` menyusun projek dashboard dan menyediakan fail2 untuk disiarkan oleh pelayan.
+  - `public-web:publish` menyusun projek public-web dan menyediakan fail2 untuk disiarkan oleh pelayan.
 
 ## Panduan untuk menyumbang
 *Fork* repo ini dan hantar *Pull Request* anda.
