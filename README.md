@@ -35,23 +35,30 @@ Matlamat-matlamat utama sistem ini ialah seperti berikut.
 
 
 ## Prasyarat
-1. Docker
-2. Java 17 (Spring Boot 3.2.0)
-3. Maven
-4. Node 20 (ReactJS 18 + CoreUI + Tailwind CSS)
-5. VSCode (Disyorkan)
+1. Docker Desktop https://docs.docker.com/get-docker/
+2. Java 17 https://www.oracle.com/java/technologies/downloads/#java17
+3. Maven (binary) https://maven.apache.org/download.cgi
+4. Node 20 https://nodejs.org/en/download
+5. VSCode https://code.visualstudio.com/download
+6. GIT https://www.git-scm.com/downloads
 
 ## Panduan permulaan pantas (Docker compose)
-### Klon repo ini
+### Fork repo ini
+1. *Fork* repo ini ke akaun github anda, contoh `https://github.com/<github-user>/e-masjid.my` , dengan menekan butang *Fork* di bahagian atas sebelah kanan laman web ini.
+2. Setelah selesai *Fork*, *Clone* repo ini ke komputer anda.
 ```
-git clone https://github.com/Dev4w4n/e-masjid.my.git;
+git clone https://github.com/<github-user>/e-masjid.my.git
+```
+3. Setelah selesai *Clone*, navigasi ke *Folder* e-masjid.my
+```
 cd e-masjid.my
 ```
-### run-dev.sh (bagi Linux)
+4. Ikut arahan seterusnya seperti dibawah bergantung kepada sistem pengoperasian komputer anda.
+### (Linux)
 ```
 sh run-dev.sh
 ```
-### run-dev.sh (bagi Windows) - Gunakan terminal Git Bash di VSCode
+### (Windows) - Gunakan terminal Git Bash di VSCode
 ```
 sh run-dev.sh
 ```
