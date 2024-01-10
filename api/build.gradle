@@ -19,7 +19,7 @@ dependencies {
     testImplementation "junit:junit:4.13"
 }
 
-//task to build all submodules
+//task to build all submodules  
 task buildapi( type: Task,
         dependsOn: [
             "cadangan-api:bootJar", 
@@ -32,7 +32,7 @@ task buildapi( type: Task,
     description="Build all APIs"
     
     doLast {
-        println  "build completed"
+        println  "api build completed"
     }
 }
 
