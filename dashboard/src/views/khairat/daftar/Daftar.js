@@ -102,7 +102,7 @@ const Daftar = () => {
     fetchTags()
     setTimeout(() => {
       inputNamaAhli.current.focus();
-    }, 1000);
+    }, 10);
   }, [])
   // to generate tag buttons
   useEffect(() => {
@@ -328,13 +328,23 @@ const Daftar = () => {
     (inputNoIcAhli.current.value === '' || 
     inputNoIcAhli.current.value === null || 
     inputNoIcAhli.current.value === 'undefined'|| 
-    inputNoIcAhli.current.value === 'false')
+    inputNoIcAhli.current.value === 'false') ||
+    isNaN(inputNoIcAhli.current.value)
     ||
     (inputNoHpAhli.current.value === '' || 
     inputNoHpAhli.current.value === null || 
     inputNoHpAhli.current.value === 'undefined'|| 
-    inputNoHpAhli.current.value === 'false')
+    inputNoHpAhli.current.value === 'false') ||
+    isNaN(inputNoHpAhli.current.value)
     ) {
+      if (isNaN(inputNoIcAhli.current.value)) {
+        inputNoIcAhli.current.value = ''
+        inputNoIcAhli.current.focus()
+      }
+      if (isNaN(inputNoHpAhli.current.value)) {
+        inputNoHpAhli.current.value = ''
+        inputNoHpAhli.current.focus()
+      }
       setValidated(true)
       toast.error('Sila isi maklumat ahli dengan betul', {
         position: 'top-center',
@@ -621,7 +631,7 @@ const Daftar = () => {
                   type="text"
                   id="txtNoIc"
                   placeholder="Masukkan No I/C ahli"
-                  feedbackInvalid="Masukkan No I/C ahli"
+                  feedbackInvalid="Masukkan No I/C ahli. Nombor sahaja"
                   required
                   tabIndex={2}
                 />
@@ -633,7 +643,7 @@ const Daftar = () => {
                   type="text"
                   id="txtNoHp"
                   placeholder="Masukkan No telefon ahli"
-                  feedbackInvalid="Masukkan No telefon ahli"
+                  feedbackInvalid="Masukkan No telefon ahli. Nombor sahaja"
                   required
                   tabIndex={3}
                 />
