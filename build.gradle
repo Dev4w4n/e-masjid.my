@@ -6,7 +6,7 @@
  */
 
  task ultimateBuild( type: Task,
-        dependsOn: ["api:buildapi","dashboard:publish"]
+        dependsOn: ["api:buildapi","dashboard:publish","public-web:publish"]
         ) {
     description="Build all programs"
     
