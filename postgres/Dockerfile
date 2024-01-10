@@ -13,6 +13,7 @@ WORKDIR /docker-entrypoint-initdb.d
 COPY khairat.sql /docker-entrypoint-initdb.d/
 COPY tabung.sql /docker-entrypoint-initdb.d/
 COPY cadangan.sql /docker-entrypoint-initdb.d/
+COPY tetapan.sql /docker-entrypoint-initdb.d/
 
 # Create a volume for persistent storage
 VOLUME /var/lib/postgresql/data

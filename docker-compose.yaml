@@ -43,6 +43,14 @@ services:
     depends_on:
       - postgres
 
+  tetapan-api:
+    build:
+      context: ./api/tetapan-api
+    ports:
+      - "8085:8085"
+    depends_on:
+      - postgres
+
   dashboard:
     build:
       context: ./dashboard
@@ -53,6 +61,7 @@ services:
       - khairat-api
       - tabung-api
       - cadangan-api
+      - tetapan-api
 
   public-web:
     build:

@@ -9,13 +9,14 @@
 	<description>e-Masjid aggregator build</description>
 	<packaging>pom</packaging>		
 	<properties>
-        	<java.version>17</java.version>
-        </properties>
+    <java.version>17</java.version>
+  </properties>
  	<modules>
 		<module>library</module>
 		<module>cadangan-api</module>
 		<module>cadangan-public-api</module>
 		<module>khairat-api</module>
 		<module>tabung-api</module>
+		<module>tetapan-api</module>
 	</modules>
 </project>
