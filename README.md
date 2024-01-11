@@ -44,21 +44,21 @@ Matlamat-matlamat utama sistem ini ialah seperti berikut.
 
 ## Panduan permulaan pantas (Docker compose)
 ### Fork repo ini
-1. *Fork* repo ini ke akaun github anda, contoh `https://github.com/<github-user>/e-masjid.my` , dengan menekan butang *Fork* di bahagian atas sebelah kanan laman web ini.
+1. *Fork* repo ini ke akaun Github anda, contoh `https://github.com/<github-user>/e-masjid.my`, dengan menekan butang *Fork* di bahagian atas sebelah kanan laman web ini.
 2. Setelah selesai *Fork*, *Clone* repo ini ke komputer anda.
 ```
 git clone https://github.com/<github-user>/e-masjid.my.git
 ```
-3. Setelah selesai *Clone*, navigasi ke *Folder* e-masjid.my
+3. Setelah selesai *klon*, navigasi ke *folder* e-masjid.my.
 ```
 cd e-masjid.my
 ```
-4. Ikut arahan seterusnya seperti dibawah bergantung kepada sistem pengoperasian komputer anda.
-### (Linux)
+4. Ikut arahan seterusnya seperti di bawah bergantung kepada sistem pengoperasian komputer anda.
+### Linux
 ```
 sh run-dev.sh
 ```
-### (Windows) - Gunakan terminal Git Bash di VSCode
+### Windows - Gunakan terminal Git Bash di VSCode
 ```
 sh run-dev.sh
 ```
