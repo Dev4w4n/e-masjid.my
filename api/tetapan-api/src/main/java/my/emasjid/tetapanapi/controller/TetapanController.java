@@ -38,7 +38,7 @@ public class TetapanController {
         return tetapanService.save(tetapan);
     }
 
-    @PostMapping("/tetapan")
+    @PostMapping("/tetapan/senarai")
     @ResponseBody
     public List<Tetapan> save(@RequestBody List<Tetapan> senaraiTetapan) {
         return tetapanService.saveAll(senaraiTetapan);
