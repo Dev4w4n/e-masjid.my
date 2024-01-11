@@ -45,7 +45,7 @@ Matlamat-matlamat utama sistem ini ialah seperti berikut.
 ## Panduan permulaan pantas (Docker compose)
 ### Fork repo ini
 1. *Fork* repo ini ke akaun Github anda, contoh `https://github.com/<github-user>/e-masjid.my`, dengan menekan butang *Fork* di bahagian atas sebelah kanan laman web ini.
-2. Setelah selesai *Fork*, *Clone* repo ini ke komputer anda.
+2. Setelah selesai *Fork*, *klon* repo ini ke komputer anda.
 ```
 git clone https://github.com/<github-user>/e-masjid.my.git
 ```
