@@ -13,7 +13,7 @@ export const getTetapanMasjid = async () => {
 
 export const saveTetapanMasjid = async (data) => {
   try {
-    const response = await axios.post(`${apiServer}/tetapan`, data)
+    const response = await axios.post(`${apiServer}/tetapan/senarai`, data)
     return response.data
   } catch (error) {
     console.error(error)

@@ -19,7 +19,7 @@ const dev = {
     KHAIRAT_API_BASE_URL: 'http://localhost:8081',
     TABUNG_API_BASE_URL: 'http://localhost:8082',
     CADANGAN_API_BASE_URL: 'http://localhost:8083',
-    TETAPAN_API_BASE_URL: 'http://localhost:8084',
+    TETAPAN_API_BASE_URL: 'http://localhost:8085',
     LOGOUT_URL: 'http://localhost:3001',
   },
 }

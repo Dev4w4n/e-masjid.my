@@ -24,9 +24,14 @@ const TetapanMasjid = () => {
   const inputNoTelefonMasjid = useRef('')
 
   useEffect(() => {
-    async function fetchTetapan() {
+    async function loadTetapan() {
       try {
         const data = await getTetapanMasjid()
+        for(let t of data) {
+          if (t.kunci === 'NAMA_MASJID') inputNamaMasjid.current.value = t.nilai
+          if (t.kunci === 'ALAMAT_MASJID') inputAlamatMasjid.current.value = t.nilai
+          if (t.kunci === 'NO_TEL_MASJID') inputNoTelefonMasjid.current.value = t.nilai
+        }
       } catch (error) {
         setError(error)
       } finally {
@@ -34,13 +39,13 @@ const TetapanMasjid = () => {
       }
     }
 
-    fetchTetapan()
+    loadTetapan()
   }, [])
   
   async function saveTetapan() {
     if (!inputNamaMasjid.current.value ||
-      !inputNoTelefonMasjid.current.value ||
-      !inputAlamatMasjid.current.value) {
+       !inputAlamatMasjid.current.value ||
+       !inputNoTelefonMasjid.current.value) {
         setValidated(true)
         toast.error('Sila isi maklumat masjid dengan betul', {
           position: 'top-center',
@@ -54,19 +59,38 @@ const TetapanMasjid = () => {
         })
     } else {
       try {
-        const tetapan = {
-          namaMasjid: inputNamaMasjid.current.value,
-          noTelefonMasjid: inputNoTelefonMasjid.current.value,
-          alamatMasjid: inputAlamatMasjid.current.value
-        }
-        setLoading(true)
+        const tetapan = []
+        tetapan.push({kunci: 'NAMA_MASJID', nilai: inputNamaMasjid.current.value})
+        tetapan.push({kunci: 'ALAMAT_MASJID', nilai: inputAlamatMasjid.current.value})
+        tetapan.push({kunci: 'NO_TEL_MASJID', nilai: inputNoTelefonMasjid.current.value})
+
+        // setLoading(true)
         await saveTetapanMasjid(tetapan)
+        saveNotification()
       } catch (error) {
         console.error(error)
       } finally {
         setLoading(false)
       }
     }
+  }
+
+  const saveNotification = () => {
+    toast.success('Maklumat telah disimpan', {
+      position: 'top-center',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    })
+    inputNamaMasjid.current.focus()
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
   }
 
   if (loading) {
@@ -95,18 +119,6 @@ const TetapanMasjid = () => {
                   tabIndex={1}
                 />
               </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="txtNoTelefonMasjid">Nombor Telefon Masjid</CFormLabel>
-                <CFormInput
-                  ref={inputNoTelefonMasjid}
-                  type="text"
-                  id="txtNoHp"
-                  placeholder="Masukkan nombor telefon masjid"
-                  feedbackInvalid="Masukkan nombor telefon masjid"
-                  required
-                  tabIndex={2}
-                />
-              </div>
               <div>
                 <CFormLabel htmlFor="txtAlamatMasjid">Alamat Masjid</CFormLabel>
                 <CFormTextarea
@@ -118,6 +130,18 @@ const TetapanMasjid = () => {
                   required
                   tabIndex={3}>
                 </CFormTextarea>
+              </div>
+              <div className="mb-3">
+                <CFormLabel htmlFor="txtNoTelefonMasjid">Nombor Telefon Masjid</CFormLabel>
+                <CFormInput
+                  ref={inputNoTelefonMasjid}
+                  type="text"
+                  id="txtNoHp"
+                  placeholder="Masukkan nombor telefon masjid"
+                  feedbackInvalid="Masukkan nombor telefon masjid"
+                  required
+                  tabIndex={2}
+                />
               </div>
               <br />
               <div className="d-grid gap-2">
