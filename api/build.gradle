@@ -26,6 +26,7 @@ task buildapi( type: Task,
             "cadangan-public-api:bootJar", 
             "khairat-api:bootJar", 
             "tabung-api:bootJar", 
+            "tetapan-api:bootJar",
             "library:build"
             ]
         ) {
@@ -43,6 +44,7 @@ task cleanapi( type: Task,
             "cadangan-public-api:clean", 
             "khairat-api:clean", 
             "tabung-api:clean", 
+            "tetapan-api:clean",
             "library:clean"
             ]
         ) {
