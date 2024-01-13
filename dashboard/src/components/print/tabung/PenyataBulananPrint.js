@@ -1,6 +1,7 @@
 import React, { useState, forwardRef, useEffect } from 'react'
 import { CCol, CRow, CContainer, CTable } from '@coreui/react'
 import { getKutipanByTabungBetweenCreateDate } from 'src/service/tabung/KutipanApi'
+import constants  from '../../../constants/print.json';
 
 const columns = [
   {
@@ -106,6 +107,13 @@ const PenyataBulananPrint = forwardRef((props, ref) => {
       </CRow>
       <CRow>
         <CCol>(BENDAHARI)</CCol>
+      </CRow>
+      <CRow>
+        <CCol style={{ textAlign: 'center', marginTop: '20px' }}>
+          <small>{`${constants.domain} ©${constants.copyrightYear} - ${constants.printFrom} `}
+            <a href={constants.url} target="_blank" rel="noopener noreferrer">{constants.url}</a>
+          </small>
+        </CCol>
       </CRow>
     </CContainer>
   )
