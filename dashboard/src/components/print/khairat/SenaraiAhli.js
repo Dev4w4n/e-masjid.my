@@ -1,5 +1,6 @@
 import React, { useState, forwardRef, useEffect } from 'react'
 import { CCol, CRow, CContainer, CTable } from '@coreui/react'
+import constants  from '../../../constants/print.json';
 
 const columns = [
   {
@@ -84,6 +85,13 @@ const SenaraiAhli = forwardRef((props, ref) => {
       <CRow>
         <CCol className='mt-3'>
           <CTable className='table table-striped' columns={columns} items={items} />
+        </CCol>
+      </CRow>
+      <CRow>
+        <CCol style={{ textAlign: 'center', marginTop: '20px' }}>
+          <small>{`${constants.domain} ©${constants.copyrightYear} - ${constants.printFrom} `}
+            <a href={constants.url} target="_blank" rel="noopener noreferrer">{constants.url}</a>
+          </small>
         </CCol>
       </CRow>
     </CContainer>
