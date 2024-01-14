@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -25,9 +26,13 @@ type Config struct {
 	} `yaml:"database"`
 }
 
-type tetapan struct {
-	kunci string
-	nilai string
+type Tetapan struct {
+	Kunci string `gorm:"type:varchar(24) primaryKey" json:"kunci"`
+	Nilai string `gorm:"type:varchar(256)" json:"nilai"`
+}
+
+func (Tetapan) TableName() string {
+	return "tetapan"
 }
 
 func main() {
@@ -70,11 +75,15 @@ func main() {
 
 	defer pgDb.Close()
 
-	db.AutoMigrate(&tetapan{})
+	db.AutoMigrate(&Tetapan{})
+
+	store := &Store{
+		db: db,
+	}
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/tetapan", findAll).Methods("GET")
+	router.HandleFunc("/tetapan", store.findAll).Methods("GET")
 	router.HandleFunc("/tetapan/{kunci}", findByKunci).Methods("GET")
 	router.HandleFunc("/tetapan", save).Methods("POST")
 	router.HandleFunc("/tetapan/senarai", saveAll).Methods("POST")
@@ -82,8 +91,23 @@ func main() {
 	log.Fatal(http.ListenAndServe(":"+props.Server.Port, router))
 }
 
-func findAll(w http.ResponseWriter, r *http.Request) {
-	log.Println("findAll")
+type Store struct {
+	db *gorm.DB
+}
+
+func (s *Store) findAll(w http.ResponseWriter, r *http.Request) {
+	var tetapanList []Tetapan
+	result := s.db.Find(&tetapanList)
+
+	if result.Error != nil {
+		log.Println(fmt.Errorf("failed to retrieve tetapan list: %w", result.Error))
+	}
+
+	err := json.NewEncoder(w).Encode(tetapanList)
+
+	if err != nil {
+		log.Println(fmt.Errorf("failed to encode tetapan list: %w", err))
+	}
 }
 
 func findByKunci(w http.ResponseWriter, r *http.Request) {
