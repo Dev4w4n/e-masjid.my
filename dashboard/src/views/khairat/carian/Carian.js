@@ -99,7 +99,7 @@ const Carian = () => {
   const [tagIds, setTagIds] = useState([])
   const [visibleXL, setVisibleXL] = useState(false)
   const componentRef = useRef();
-
+  
   useEffect(() => {
     setTimeout(() => {
       searchInput.current.focus();
@@ -394,6 +394,9 @@ const Carian = () => {
               noDataComponent={resultEmpty()}
               columns={columns}
               data={items}
+              pagination
+              paginationPerPage={5}
+              paginationRowsPerPageOptions={[5, 10, 20, 30]}
               pointerOnHover
               highlightOnHover
               conditionalRowStyles={conditionalRowStyles}
