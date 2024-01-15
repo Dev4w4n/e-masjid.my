@@ -77,6 +77,7 @@ const Daftar = () => {
   const inputNamaTanggungan = useRef()
   const inputNoIcTanggungan = useRef()
   const inputHubunganTanggungan = useRef()
+  const inputNoResit = useRef('')
   const [validated, setValidated] = useState(false)
   const [tarikhBayaran, setTarikhBayaran] = useState([])
   const [paymentChk, setPaymentChk] = useState()
@@ -398,9 +399,14 @@ const Daftar = () => {
   const addNewMember = async () => {
     const updatablePaymentHistories = []
     if (paymentChk) {
+      let resitno = null
+      if (inputNoResit.current.value) {
+        resitno = inputNoResit.current.value
+      }
       updatablePaymentHistories.push({
         member: null,
         paymentDate: new Date().getTime(),
+        noResit: resitno,
       })
     }
     const newMemberTags = tagItems
@@ -451,15 +457,22 @@ const Daftar = () => {
     }
   }
   const updateMember = async () => {
-    const updatablePaymentHistories = []
-    if (paymentChk) {
-      updatablePaymentHistories.push({
-        member: {
-          id: memberId,
-        },
-        paymentDate: new Date().getTime(),
-      })
-    }
+    // const updatablePaymentHistories = []
+    // if (paymentChk) {
+    //   let resitno = null
+    //   if (inputNoResit.current.value) {
+
+    //     
+    //     resitno = inputNoResit.current.value
+    //   }
+    //   updatablePaymentHistories.push({
+    //     member: {
+    //       id: memberId,
+    //     },
+    //     paymentDate: new Date().getTime(),
+    //     resitNo: resitno,
+    //   })
+    // }
     const newMemberTags = updatableMemberTags
       .filter((item) => item.mode === true || item.mode === 'info')
       .map((item) => {
@@ -490,11 +503,16 @@ const Daftar = () => {
     try {
       const paymentHistory = []
       if(paymentChk) {
+        let resitno = null
+        if (inputNoResit.current.value) {
+          resitno = inputNoResit.current.value
+        }
         paymentHistory.push({
           member: {
             id: memberId,
           },
           paymentDate: new Date().getTime(),
+          noResit: resitno,
         })
       }
       const name = inputNamaAhli.current.value
@@ -589,6 +607,14 @@ const Daftar = () => {
       <CFormLabel htmlFor="txtTarikhBayaran" style={{ whiteSpace: 'pre' }}>Status bayaran tahun ini:{'\t'}</CFormLabel>
       <CFormCheck inline type="radio" id="bayaranChkBox1" onChange={() => setPaymentChk(true)} checked={paymentChk} value={paymentChk} label="Sudah"/>
       <CFormCheck inline type="radio" id="bayaranChkBox2" onChange={() => setPaymentChk(false)} checked={!paymentChk} value={!paymentChk} label="Belum"/>
+      {
+        paymentChk && (
+          <>
+          <br />
+          <CFormInput ref={inputNoResit} type="text" id="txtNoResit" placeholder="Masukkan no resit (Jika ada)" />   
+          </>
+        )
+      }
       </>
     )
   }

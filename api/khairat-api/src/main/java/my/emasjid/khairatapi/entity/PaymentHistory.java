@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "payment_history")
+@Table(name = "khairat_payment_history")
 public class PaymentHistory {
     
     @Id
@@ -30,4 +30,5 @@ public class PaymentHistory {
 
     private Long amount;
     private Long paymentDate;
+    private String noResit;
 }
