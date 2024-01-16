@@ -1,5 +1,6 @@
 import React, { useState, forwardRef, useEffect } from 'react'
 import { CCol, CRow, CContainer, CTable } from '@coreui/react'
+import constants  from '../../../constants/print.json';
 
 const columns = [
   {
@@ -19,7 +20,7 @@ const columns = [
   },
   {
     key: 'status',
-    label: 'STATUS BAYARAN',
+    label: 'STATUS BAYARAN (# NO RESIT)',
     _props: { scope: 'col', className: 'col-3' },
   },
 ]
@@ -33,17 +34,13 @@ const SenaraiAhli = forwardRef((props, ref) => {
     async function loadSenarai() {
       let items = []
       let jumlahAhli = 0
+      console.log(props.items)
       for (let i = 0; i < props.items.length; i++) {
-        const paymentStatus = props.items[i].paymentHistory.some(item => {
-          const paymentDateYear = new Date(item.paymentDate).getFullYear();
-          const currentYear = new Date().getFullYear();
-          return paymentDateYear === currentYear;
-        }) ? 'Sudah' : 'Belum';
         items.push({
           nama: props.items[i].nama,
           penanda: props.items[i].tagging,
           phone: props.items[i].hp,
-          status: paymentStatus,
+          status: props.items[i].paymentStatus,
         })
         jumlahAhli += 1
       }
@@ -84,6 +81,13 @@ const SenaraiAhli = forwardRef((props, ref) => {
       <CRow>
         <CCol className='mt-3'>
           <CTable className='table table-striped' columns={columns} items={items} />
+        </CCol>
+      </CRow>
+      <CRow>
+        <CCol style={{ textAlign: 'center', marginTop: '20px' }}>
+          <small>{`${constants.domain} ©${constants.copyrightYear} - ${constants.printFrom} `}
+            <a href={constants.url} target="_blank" rel="noopener noreferrer">{constants.url}</a>
+          </small>
         </CCol>
       </CRow>
     </CContainer>

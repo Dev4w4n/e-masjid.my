@@ -32,11 +32,12 @@ CREATE TABLE dependents (
     person_id INTEGER REFERENCES person(id)
 );
 
-CREATE TABLE payment_history (
+CREATE TABLE khairat_payment_history (
     id SERIAL PRIMARY KEY,
     member_id INTEGER,
     amount BIGINT,
-    payment_date BIGINT
+    payment_date BIGINT,
+    no_resit VARCHAR(12)
 );
 
 

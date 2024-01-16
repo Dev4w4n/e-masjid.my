@@ -52,7 +52,7 @@ const columns = [
     sortable: true,
   },
   {
-    name: 'Status Bayaran',
+    name: 'Status Bayaran (# No Resit)',
     selector: (row) => row.paymentStatus,
     sortable: true,
   },
@@ -99,7 +99,7 @@ const Carian = () => {
   const [tagIds, setTagIds] = useState([])
   const [visibleXL, setVisibleXL] = useState(false)
   const componentRef = useRef();
-
+  
   useEffect(() => {
     setTimeout(() => {
       searchInput.current.focus();
@@ -176,12 +176,12 @@ const Carian = () => {
           setItems(
             response.map((item) => {
               const paymentHistory = item.paymentHistories
+              const currentYear = new Date().getFullYear();
               const paymentStatus = paymentHistory.some(item => {
                 const paymentDateYear = new Date(item.paymentDate).getFullYear();
-                const currentYear = new Date().getFullYear();
                 return paymentDateYear === currentYear;
-              }) ? 'Sudah' : 'Belum';
-
+              }) ? `Sudah${paymentHistory.find(item => new Date(item.paymentDate).getFullYear() === currentYear)?.noResit ? ` (#${paymentHistory.find(item => new Date(item.paymentDate).getFullYear() === currentYear).noResit})` : ''}` : 'Belum';
+              
               const person = item.person
               const tags = item.memberTags.map(tag => tag.tag.name);
               const commaSeparatedTags = tags.join(', ');
@@ -233,11 +233,11 @@ const Carian = () => {
         setItems(
           response.map((item) => {
             const paymentHistory = item.paymentHistories
+            const currentYear = new Date().getFullYear();
             const paymentStatus = paymentHistory.some(item => {
               const paymentDateYear = new Date(item.paymentDate).getFullYear();
-              const currentYear = new Date().getFullYear();
               return paymentDateYear === currentYear;
-            }) ? 'Sudah' : 'Belum';
+            }) ? `Sudah${paymentHistory.find(item => new Date(item.paymentDate).getFullYear() === currentYear)?.noResit ? ` (#${paymentHistory.find(item => new Date(item.paymentDate).getFullYear() === currentYear).noResit})` : ''}` : 'Belum';
 
             const person = item.person
             const tagging = item.memberTags[0]?.tag.name || ''
@@ -394,6 +394,9 @@ const Carian = () => {
               noDataComponent={resultEmpty()}
               columns={columns}
               data={items}
+              pagination
+              paginationPerPage={5}
+              paginationRowsPerPageOptions={[5, 10, 20, 30]}
               pointerOnHover
               highlightOnHover
               conditionalRowStyles={conditionalRowStyles}

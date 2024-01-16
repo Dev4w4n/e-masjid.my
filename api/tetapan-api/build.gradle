@@ -40,7 +40,7 @@ dependencies {
 
 group = 'my.emasjid'
 version = '1.0.0'
-description = 'cadangan-api'
+description = 'tetapan-api'
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 tasks.withType(JavaCompile) {

@@ -4,3 +4,13 @@
  * This is a general purpose Gradle build.
  * Learn more about Gradle by exploring our samples at https://docs.gradle.org/6.7.1/samples
  */
+
+ task ultimateBuild( type: Task,
+        dependsOn: ["api:buildapi","dashboard:publish","public-web:publish"]
+        ) {
+    description="Build all programs"
+    
+    doLast {
+        println  "build completed"
+    }
+}
