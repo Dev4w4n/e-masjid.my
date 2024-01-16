@@ -39,8 +39,7 @@ func main() {
 	}
 }
 
-// repository.go
-
+// Strictly allow from allowedOrigin
 func controllerMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Check if the request origin is allowed
