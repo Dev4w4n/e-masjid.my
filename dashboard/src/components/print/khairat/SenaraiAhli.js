@@ -20,7 +20,7 @@ const columns = [
   },
   {
     key: 'status',
-    label: 'STATUS BAYARAN',
+    label: 'STATUS BAYARAN (# NO RESIT)',
     _props: { scope: 'col', className: 'col-3' },
   },
 ]
@@ -34,17 +34,13 @@ const SenaraiAhli = forwardRef((props, ref) => {
     async function loadSenarai() {
       let items = []
       let jumlahAhli = 0
+      console.log(props.items)
       for (let i = 0; i < props.items.length; i++) {
-        const paymentStatus = props.items[i].paymentHistory.some(item => {
-          const paymentDateYear = new Date(item.paymentDate).getFullYear();
-          const currentYear = new Date().getFullYear();
-          return paymentDateYear === currentYear;
-        }) ? 'Sudah' : 'Belum';
         items.push({
           nama: props.items[i].nama,
           penanda: props.items[i].tagging,
           phone: props.items[i].hp,
-          status: paymentStatus,
+          status: props.items[i].paymentStatus,
         })
         jumlahAhli += 1
       }
