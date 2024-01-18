@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"fmt"
-
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api-go/model"
 	"gorm.io/gorm"
 )
@@ -29,7 +27,7 @@ func (repo *TetapanRepositoryImpl) FindAll() ([]model.Tetapan, error) {
 	result := repo.Db.Find(&tetapanList)
 
 	if result.Error != nil {
-		return nil, fmt.Errorf("failed to retrieve tetapan list: %w", result.Error)
+		return nil, result.Error
 	}
 
 	return tetapanList, nil
@@ -37,16 +35,32 @@ func (repo *TetapanRepositoryImpl) FindAll() ([]model.Tetapan, error) {
 
 func (repo *TetapanRepositoryImpl) FindByKunci(kunci string) (model.Tetapan, error) {
 	var tetapan model.Tetapan
-	result := repo.Db.Find(&tetapan, "kunci = ?", kunci)
+	result := repo.Db.First(&tetapan, "kunci = ?", kunci)
 
 	if result.Error != nil {
-		return model.Tetapan{}, fmt.Errorf("failed to retrieve tetapan: %w", result.Error)
+		return model.Tetapan{}, result.Error
 	}
 
 	return tetapan, nil
 }
 
 func (repo *TetapanRepositoryImpl) Save(tetapan model.Tetapan) error {
+	var tempTetapan model.Tetapan
+	result := repo.Db.First(&tempTetapan, "kunci = ?", tetapan.Kunci)
+
+	if result.RowsAffected == 1 {
+		updateTetapan := model.Tetapan{
+			Nilai: tetapan.Nilai,
+		}
+		result = repo.Db.Model(&tetapan).Updates(updateTetapan)
+	} else {
+		result = repo.Db.Create(&tetapan)
+	}
+
+	if result.Error != nil {
+		return result.Error
+	}
+
 	return nil
 }
 
