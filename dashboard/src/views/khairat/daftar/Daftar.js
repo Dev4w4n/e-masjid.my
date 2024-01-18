@@ -261,18 +261,18 @@ const Daftar = () => {
     setTagItems(newTagItems)
   }
   async function removeDependent(id) {
-      try {
-        if (memberId !== null) {
-          const data = await getDependentsByMemberId(memberId)
-          const dependentData = data.find((item) => item.id === id)
-          if(dependentData.id) {
-            deleteDependent(dependentData.id)
-          }
+    try {
+      if (memberId !== null) {
+        const data = await getDependentsByMemberId(memberId)
+        const dependentData = data.find((item) => item.id === id)
+        if (dependentData.id) {
+          deleteDependent(dependentData.id)
         }
-        setTanggunanItems((prevItems) => prevItems.filter((dependent) => dependent.key !== id))
-      } catch (error) {
-        console.error(error)
       }
+      setTanggunanItems((prevItems) => prevItems.filter((dependent) => dependent.key !== id))
+    } catch (error) {
+      console.error(error)
+    }
   }
   async function addDependent() {
     try {
@@ -315,28 +315,28 @@ const Daftar = () => {
         inputNoIcTanggungan.current.value = ''
         inputHubunganTanggungan.current.value = 'Pilih jenis hubungan'
         inputNamaTanggungan.current.focus()
-      } 
+      }
     } catch (error) {
       console.error(error)
     }
   }
   const saveAhli = async () => {
     if (
-    (inputNamaAhli.current.value === '' || 
-    inputNamaAhli.current.value === null || 
-    inputNamaAhli.current.value === 'undefined')
-    ||
-    (inputNoIcAhli.current.value === '' || 
-    inputNoIcAhli.current.value === null || 
-    inputNoIcAhli.current.value === 'undefined'|| 
-    inputNoIcAhli.current.value === 'false') ||
-    isNaN(inputNoIcAhli.current.value)
-    ||
-    (inputNoHpAhli.current.value === '' || 
-    inputNoHpAhli.current.value === null || 
-    inputNoHpAhli.current.value === 'undefined'|| 
-    inputNoHpAhli.current.value === 'false') ||
-    isNaN(inputNoHpAhli.current.value)
+      (inputNamaAhli.current.value === '' ||
+        inputNamaAhli.current.value === null ||
+        inputNamaAhli.current.value === 'undefined')
+      ||
+      (inputNoIcAhli.current.value === '' ||
+        inputNoIcAhli.current.value === null ||
+        inputNoIcAhli.current.value === 'undefined' ||
+        inputNoIcAhli.current.value === 'false') ||
+      isNaN(inputNoIcAhli.current.value)
+      ||
+      (inputNoHpAhli.current.value === '' ||
+        inputNoHpAhli.current.value === null ||
+        inputNoHpAhli.current.value === 'undefined' ||
+        inputNoHpAhli.current.value === 'false') ||
+      isNaN(inputNoHpAhli.current.value)
     ) {
       if (isNaN(inputNoIcAhli.current.value)) {
         inputNoIcAhli.current.value = ''
@@ -485,7 +485,7 @@ const Daftar = () => {
           },
         }
       })
-      
+
     const newDependents = tanggunganItems.map((item) => {
       return {
         member: {
@@ -502,7 +502,7 @@ const Daftar = () => {
     })
     try {
       const paymentHistory = []
-      if(paymentChk) {
+      if (paymentChk) {
         let resitno = null
         if (inputNoResit.current.value) {
           resitno = inputNoResit.current.value
@@ -604,17 +604,17 @@ const Daftar = () => {
   const renderBayaran = () => {
     return (
       <>
-      <CFormLabel htmlFor="txtTarikhBayaran" style={{ whiteSpace: 'pre' }}>Status bayaran tahun ini:{'\t'}</CFormLabel>
-      <CFormCheck inline type="radio" id="bayaranChkBox1" onChange={() => setPaymentChk(true)} checked={paymentChk} value={paymentChk} label="Sudah"/>
-      <CFormCheck inline type="radio" id="bayaranChkBox2" onChange={() => setPaymentChk(false)} checked={!paymentChk} value={!paymentChk} label="Belum"/>
-      {
-        paymentChk && (
-          <>
-          <br />
-          <CFormInput ref={inputNoResit} type="text" id="txtNoResit" placeholder="Masukkan no resit (Jika ada)" />   
-          </>
-        )
-      }
+        <CFormLabel htmlFor="txtTarikhBayaran" style={{ whiteSpace: 'pre' }}>Status bayaran tahun ini:{'\t'}</CFormLabel>
+        <CFormCheck inline type="radio" id="bayaranChkBox1" onChange={() => setPaymentChk(true)} checked={paymentChk} value={paymentChk} label="Sudah" />
+        <CFormCheck inline type="radio" id="bayaranChkBox2" onChange={() => setPaymentChk(false)} checked={!paymentChk} value={!paymentChk} label="Belum" />
+        {
+          paymentChk && (
+            <>
+              <br />
+              <CFormInput ref={inputNoResit} type="text" id="txtNoResit" placeholder="Masukkan no resit (Jika ada)" />
+            </>
+          )
+        }
       </>
     )
   }
@@ -677,7 +677,9 @@ const Daftar = () => {
               <div className="mb-3">
                 <CFormLabel htmlFor="txtKawasan" tabIndex={4}>Penandaan</CFormLabel>
                 <br />
-                <>{tagButtons}</>
+                <div className="button-penandaan">
+                  <>{tagButtons}</>
+                </div>
               </div>
               <CAccordion alwaysOpen activeItemKey={3}>
                 <CAccordionItem itemKey={1}>
@@ -730,24 +732,26 @@ const Daftar = () => {
                   <CAccordionHeader>Maklumat bayaran</CAccordionHeader>
                   <CAccordionBody>
                     <div className="mb-3">
-                    {renderBayaran()}
+                      {renderBayaran()}
                     </div>
                   </CAccordionBody>
                 </CAccordionItem>
               </CAccordion>
               <br />
-              <div className="d-grid gap-2">
-                <CButton onClick={saveAhli} color="primary" size="lg" tabIndex={5}>
-                {loading ? (
-                  <>
-                    <CSpinner size="sm" color="primary" /> 
-                    <span> Sila tunggu</span>
-                  </>
-                ) : (
-                  "Simpan (F8)"
-                )}
+              <div className="button-action-container">
+                <CButton onClick={saveAhli} color="primary" size="sm" tabIndex={5}
+                  className={`custom-action-button ${loading ? 'loading' : ''}`}>
+                  {loading ? (
+                    <>
+                      <CSpinner size="sm" color="primary" />
+                      <span> Sila tunggu</span>
+                    </>
+                  ) : (
+                    "Simpan (F8)"
+                  )}
                 </CButton>
-                <CButton onClick={clearForm} color="secondary" size="lg">
+                <CButton onClick={clearForm} color="secondary" size="sm"
+                  className="custom-action-button">
                   Kosongkan semua
                 </CButton>
               </div>
