@@ -85,8 +85,8 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Cetak QR',
-        to: '/cadangan/cetak',
+        name: 'Muat Turun QR',
+        to: '/cadangan/qr',
       },
     ],
   },
