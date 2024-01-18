@@ -1,7 +1,7 @@
 package model
 
 type Tetapan struct {
-	Kunci string `gorm:"type:varchar(24) primaryKey" json:"kunci"`
+	Kunci string `gorm:"primaryKey type:varchar(24)" json:"kunci"`
 	Nilai string `gorm:"type:varchar(256)" json:"nilai"`
 }
 

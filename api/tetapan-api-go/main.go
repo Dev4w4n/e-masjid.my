@@ -21,7 +21,7 @@ func main() {
 		log.Fatalf("Error getting environment: %v", err)
 	}
 
-	db, err := config.NewDatabaseConnection(env)
+	db, err := config.DatabaseConnection(env)
 	if err != nil {
 		log.Fatalf("Error getting database connection: %v", err)
 	}

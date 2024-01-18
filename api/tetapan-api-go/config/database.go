@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewDatabaseConnection(env utils.Environment) (*gorm.DB, error) {
+func DatabaseConnection(env utils.Environment) (*gorm.DB, error) {
 	dbHost := env.DbHost
 	dbPort := env.DbPort
 	dbUser := env.DbUser
@@ -25,14 +25,6 @@ func NewDatabaseConnection(env utils.Environment) (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	pgDb, err := db.DB()
-
-	if err != nil {
-		return nil, err
-	}
-
-	defer pgDb.Close()
 
 	return db, nil
 }
