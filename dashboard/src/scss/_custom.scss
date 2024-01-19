@@ -13,7 +13,6 @@
 
 .custom-action-button {
   width: 100%;
-  /*margin: 0 2px;*/
 }
 
 /* Additional styles for loading state */
@@ -25,4 +24,6 @@
 .button-penandaan {
   display: flex; 
   gap: 5px;
+  flex-wrap: wrap;
+  white-space: nowrap;
 }
