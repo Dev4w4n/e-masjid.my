@@ -45,17 +45,7 @@ func (repo *TetapanRepositoryImpl) FindByKunci(kunci string) (model.Tetapan, err
 }
 
 func (repo *TetapanRepositoryImpl) Save(tetapan model.Tetapan) error {
-	var tempTetapan model.Tetapan
-	result := repo.Db.First(&tempTetapan, "kunci = ?", tetapan.Kunci)
-
-	if result.RowsAffected == 1 {
-		updateTetapan := model.Tetapan{
-			Nilai: tetapan.Nilai,
-		}
-		result = repo.Db.Model(&tetapan).Updates(updateTetapan)
-	} else {
-		result = repo.Db.Create(&tetapan)
-	}
+	result := repo.Db.Save(tetapan)
 
 	if result.Error != nil {
 		return result.Error
@@ -65,5 +55,11 @@ func (repo *TetapanRepositoryImpl) Save(tetapan model.Tetapan) error {
 }
 
 func (repo *TetapanRepositoryImpl) SaveAll(tetapanList []model.Tetapan) error {
+	result := repo.Db.Save(tetapanList)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
 	return nil
 }
