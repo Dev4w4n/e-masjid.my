@@ -1,6 +1,10 @@
 package model
 
 type CadanganType struct {
-	ID   int    `db:"id" json:"id" validate:"required"`
-	Name string `db:"name" json:"name"`
+	ID   int    `gorm:"column:id;primaryKey" json:"id"`
+	Name string `gorm:"column:name" json:"name"`
+}
+
+func (CadanganType) TableName() string {
+	return "cadangan_types"
 }
