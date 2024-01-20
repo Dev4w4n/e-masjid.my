@@ -147,8 +147,9 @@ const TetapanMasjid = () => {
                 />
               </div>
               <br />
-              <div className="d-grid gap-2">
-                <CButton onClick={saveTetapan} color="primary" size="lg" tabIndex={4}>
+              <div className="button-action-container">
+                <CButton onClick={saveTetapan} color="primary" size="sm" tabIndex={4}
+                className={`custom-action-button ${loading ? 'loading' : ''}`}>
                 {loading ? (
                   <>
                     <CSpinner size="sm" color="primary" /> 

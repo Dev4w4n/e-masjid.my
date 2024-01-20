@@ -239,8 +239,9 @@ const Daftar = () => {
                 </CCol>
               </CRow>
               <br />
-              <div className="d-grid gap-2">
-                <CButton color="primary" size="lg" type="submit">
+              <div className="button-action-container">
+                <CButton color="primary" size="sm" type="submit"
+                className={`custom-action-button ${loading ? 'loading' : ''}`}>
                   {loading ? (
                     <>
                       {/* <CSpinner size="sm" color="primary" /> */}
@@ -250,7 +251,8 @@ const Daftar = () => {
                     'Simpan'
                   )}
                 </CButton>
-                <CButton onClick={handleReset} color="secondary" size="lg">
+                <CButton onClick={handleReset} color="secondary" size="sm"
+                className="custom-action-button">
                   Kosongkan semua
                 </CButton>
               </div>
