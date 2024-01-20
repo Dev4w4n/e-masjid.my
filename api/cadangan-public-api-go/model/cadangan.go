@@ -1,8 +1,8 @@
-package entity
+package model
 
 type Cadangan struct {
 	ID            int          `db:"id" json:"id"`
-	CadanganType  CadanganType `db:"cadangan_type" json:"cadanganType"`
+	CadanganType  CadanganType `gorm:"embedded" json:"cadanganType"`
 	CadanganText  string       `db:"cadangan_text" json:"cadanganText"`
 	TindakanText  string       `db:"tindakan_text" json:"tindakanText"`
 	CadanganNama  string       `db:"cadangan_nama" json:"cadanganNama"`

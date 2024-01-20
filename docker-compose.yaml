@@ -37,11 +37,14 @@ services:
 
   cadangan-public-api:
     build:
-      context: ./api/cadangan-public-api
+      context: ./api/cadangan-public-api-go
     ports:
       - "8084:8084"
+    environment:
+      - GO_ENV=dev
     depends_on:
       - postgres
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "./cadangan-public-api"]
 
   tetapan-api:
     build:
