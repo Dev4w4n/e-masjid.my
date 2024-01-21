@@ -1,5 +1,6 @@
-import React, { forwardRef } from 'react'
+import React, { useState, useEffect, forwardRef } from 'react';
 import { CCol, CRow, CContainer, CTable } from '@coreui/react'
+import { getTetapanNamaMasjid } from 'src/service/tetapan/TetapanMasjidApi'
 import constants  from '../../../constants/print.json';
 
 const columns = [
@@ -21,6 +22,8 @@ const columns = [
 ]
 
 const DenominasiPrint = forwardRef((props, ref) => {
+  const [namaMasjid, setNamaMasjid] = useState("")
+
   const items = [
     {
       denominasi: 'RM 100',
@@ -61,6 +64,18 @@ const DenominasiPrint = forwardRef((props, ref) => {
     },
   ]
 
+  useEffect(() => {
+    async function loadNamaMasjid() {
+      try {
+        const response = await getTetapanNamaMasjid();
+        setNamaMasjid(response.nilai);
+      } catch (error) {
+        console.error("Error fetching nama masjid:", error);
+      }
+    }
+    loadNamaMasjid();
+  }, []);
+
   return (
     <CContainer
       fluid
@@ -74,7 +89,7 @@ const DenominasiPrint = forwardRef((props, ref) => {
       </CRow>
       <CRow>
         <CCol style={{ textAlign: 'center' }}>
-          <h3>MASJID JAMEK SUNGAI RAMBAI</h3>
+          <h3>{namaMasjid}</h3>
         </CCol>
       </CRow>
       <CRow>
