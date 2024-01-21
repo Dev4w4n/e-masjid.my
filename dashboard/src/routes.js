@@ -15,6 +15,7 @@ const TetapanTabung = React.lazy(() => import('./views/tabung/tetapan/Tetapan'))
 
 // Tabung
 const SenaraiCadangan = React.lazy(() => import('./views/cadangan/senarai/Senarai'))
+const Qr = React.lazy(() => import('./views/cadangan/qr/Qr'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -31,9 +32,8 @@ const routes = [
 
   { path: '/cadangan', name: 'Cadangan', element: SenaraiCadangan, exact: true },
   { path: '/cadangan/senarai', name: 'Senarai', element: SenaraiCadangan },
-  // { path: '/cadangan/daftar/:paramId?', name: 'Daftar', element: DaftarTabung },
-  // { path: '/cadangan/tetapan', name: 'Tetapan', element: TetapanTabung },
-
+  { path: '/cadangan/qr', name: 'Qr', element: Qr },
+  
   { path: '/tetapan', name: 'Tetapan Masjid', element: TetapanMasjid },
 ]
 

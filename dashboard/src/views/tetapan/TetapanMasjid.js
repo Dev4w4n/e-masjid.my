@@ -17,7 +17,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 const TetapanMasjid = () => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [validated, setValidated] = useState(false)
   const inputNamaMasjid = useRef('')
   const inputAlamatMasjid = useRef('')
@@ -25,20 +25,24 @@ const TetapanMasjid = () => {
 
   useEffect(() => {
     async function loadTetapan() {
+      let data
       try {
-        const data = await getTetapanMasjid()
-        for(let t of data) {
-          if (t.kunci === 'NAMA_MASJID') inputNamaMasjid.current.value = t.nilai
-          if (t.kunci === 'ALAMAT_MASJID') inputAlamatMasjid.current.value = t.nilai
-          if (t.kunci === 'NO_TEL_MASJID') inputNoTelefonMasjid.current.value = t.nilai
-        }
-      } catch (error) {
-        setError(error)
+        data = await getTetapanMasjid()
+      } catch (err) {
+        console.error(err)
       } finally {
         setLoading(false)
+        //delay value assignment due to error occurs when values being set while page rendering
+        setTimeout(() => {
+          for(let t of data) {
+            if (t.kunci === 'NAMA_MASJID') inputNamaMasjid.current.value = t.nilai
+            if (t.kunci === 'ALAMAT_MASJID') inputAlamatMasjid.current.value = t.nilai
+            if (t.kunci === 'NO_TEL_MASJID') inputNoTelefonMasjid.current.value = t.nilai
+          }
+        }, 10);
       }
     }
-
+    
     loadTetapan()
   }, [])
   
@@ -64,11 +68,10 @@ const TetapanMasjid = () => {
         tetapan.push({kunci: 'ALAMAT_MASJID', nilai: inputAlamatMasjid.current.value})
         tetapan.push({kunci: 'NO_TEL_MASJID', nilai: inputNoTelefonMasjid.current.value})
 
-        // setLoading(true)
         await saveTetapanMasjid(tetapan)
         saveNotification()
-      } catch (error) {
-        console.error(error)
+      } catch (err) {
+        console.error(err)
       } finally {
         setLoading(false)
       }
@@ -144,8 +147,9 @@ const TetapanMasjid = () => {
                 />
               </div>
               <br />
-              <div className="d-grid gap-2">
-                <CButton onClick={saveTetapan} color="primary" size="lg" tabIndex={4}>
+              <div className="button-action-container">
+                <CButton onClick={saveTetapan} color="primary" size="sm" tabIndex={4}
+                className={`custom-action-button ${loading ? 'loading' : ''}`}>
                 {loading ? (
                   <>
                     <CSpinner size="sm" color="primary" /> 

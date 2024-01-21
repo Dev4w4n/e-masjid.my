@@ -6,7 +6,8 @@ import { cilMoney,
   cilSpeedometer, 
   cibGnu, 
   cilGroup,
-  cilSettings 
+  cilSettings, 
+  cilDollar
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -84,8 +85,8 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Cetak QR',
-        to: '/cadangan/cetak',
+        name: 'Muat Turun QR',
+        to: '/cadangan/qr',
       },
     ],
   },
@@ -105,9 +106,9 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'Tetapan Masjid',
-    to: '/tetapan',
-    icon: <CIcon icon={cilSettings} customClassName="nav-icon" />,
+    name: 'AJK',
+    to: '/ajk',
+    icon: <CIcon icon={cilGroup} customClassName="nav-icon" />,
     items: [
       // {
       //   component: CNavItem,
@@ -123,9 +124,9 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'AJK',
-    to: '/ajk',
-    icon: <CIcon icon={cilGroup} customClassName="nav-icon" />,
+    name: 'Kewangan',
+    to: '/kewangan',
+    icon: <CIcon icon={cilDollar} customClassName="nav-icon" />,
     items: [
       // {
       //   component: CNavItem,
