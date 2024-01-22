@@ -1,6 +1,7 @@
 import React, { useState, forwardRef, useEffect } from 'react'
 import { CCol, CRow, CContainer, CTable } from '@coreui/react'
 import constants  from '../../../constants/print.json';
+import { getTetapanNamaMasjid } from 'src/service/tetapan/TetapanMasjidApi'
 
 const columns = [
   {
@@ -29,6 +30,7 @@ const SenaraiAhli = forwardRef((props, ref) => {
   const [items, setItems] = useState([])
   const [total, setTotal] = useState(0)
   const [tagType, setTagType] = useState('')
+  const [namaMasjid, setNamaMasjid] = useState("")
 
   useEffect(() => {
     async function loadSenarai() {
@@ -54,6 +56,19 @@ const SenaraiAhli = forwardRef((props, ref) => {
     loadSenarai()
   }, [props.items])
 
+  useEffect(() => {
+    async function loadNamaMasjid() {
+      try {
+        const response = await getTetapanNamaMasjid();
+        setNamaMasjid(response.nilai);
+      } catch (error) {
+        console.error("Error fetching nama masjid:", error);
+      }
+    }
+    loadNamaMasjid();
+  }, []);
+
+
   return (
     <CContainer
       fluid
@@ -67,7 +82,7 @@ const SenaraiAhli = forwardRef((props, ref) => {
       </CRow>
       <CRow>
         <CCol style={{ textAlign: 'center' }} className='mb-3'>
-          <b>MASJID JAMEK SUNGAI RAMBAI</b>
+          <h3>{namaMasjid}</h3>
         </CCol>
       </CRow>
       <CRow>
