@@ -19,3 +19,12 @@ export const saveTetapanMasjid = async (data) => {
     console.error(error)
   }
 }
+
+export const getTetapanNamaMasjid = async () => {
+  try {
+    const response = await axios.get(`${apiServer}/tetapan/NAMA_MASJID`)
+    return response.data
+  } catch (error) {
+    console.error(error)
+  }
+}

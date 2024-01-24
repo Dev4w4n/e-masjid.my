@@ -1,6 +1,7 @@
 import React, { useState, forwardRef, useEffect } from 'react'
 import { CCol, CRow, CContainer, CTable } from '@coreui/react'
 import { getKutipanByTabungBetweenCreateDate } from 'src/service/tabung/KutipanApi'
+import { getTetapanNamaMasjid } from 'src/service/tetapan/TetapanMasjidApi'
 import constants  from '../../../constants/print.json';
 
 const columns = [
@@ -23,35 +24,48 @@ const columns = [
 
 const PenyataBulananPrint = forwardRef((props, ref) => {
   const [items, setItems] = useState([])
+  const [namaMasjid, setNamaMasjid] = useState("")
 
+  useEffect(() => {
+    async function loadNamaMasjid() {
+      try {
+        const response = await getTetapanNamaMasjid();
+        setNamaMasjid(response.nilai);
+      } catch (error) {
+        console.error("Error fetching nama masjid:", error);
+      }
+    }
+    loadNamaMasjid();
+  }, []);
+    
   useEffect(() => {
     async function loadPenyata() {
       const startOfMonth = new Date(
         props.penyata.selectedMonth.getFullYear(),
         props.penyata.selectedMonth.getMonth(),
         1
-      )
+      );
       const endOfMonth = new Date(
         props.penyata.selectedMonth.getFullYear(),
         props.penyata.selectedMonth.getMonth() + 1,
         0
-      )
+      );
 
       const response = await getKutipanByTabungBetweenCreateDate(
         props.penyata.tabung.id,
         startOfMonth.getTime(),
         endOfMonth.getTime()
-      )
+      );
 
-      let items = []
-      let total = 0
+      let items = [];
+      let total = 0;
       for (let i = 0; i < response.length; i++) {
         items.push({
           minggu: "MINGGU " + (i + 1),
           tarikh: new Intl.DateTimeFormat('en-GB').format(new Date(response[i].createDate)),
           jumlah: response[i].total.toLocaleString('ms-MY', { style: 'currency', currency: 'MYR' }),
-        })
-        total = total + response[i].total
+        });
+        total = total + response[i].total;
       }
       items.push({
         minggu: 'JUMLAH',
@@ -59,14 +73,15 @@ const PenyataBulananPrint = forwardRef((props, ref) => {
         jumlah: total.toLocaleString('ms-MY', { style: 'currency', currency: 'MYR' }),
         _props: { active: true },
         _cellProps: { id: { scope: 'row' } },
-      })
+      });
 
-      setItems(items)
+      setItems(items);
     }
 
-    loadPenyata()
-  }, [props.penyata])
+    loadPenyata();
+  }, [props.penyata, namaMasjid]);
 
+  
   return (
     <CContainer
       fluid
@@ -80,7 +95,7 @@ const PenyataBulananPrint = forwardRef((props, ref) => {
       </CRow>
       <CRow>
         <CCol style={{ textAlign: 'center' }}>
-          <b>MASJID JAMEK SUNGAI RAMBAI</b>
+          <h3>{namaMasjid}</h3>
         </CCol>
       </CRow>
       <CRow>
@@ -117,6 +132,6 @@ const PenyataBulananPrint = forwardRef((props, ref) => {
       </CRow>
     </CContainer>
   )
-})
+});
 
 export default PenyataBulananPrint
