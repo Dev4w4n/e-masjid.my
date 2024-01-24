@@ -43,7 +43,6 @@ Matlamat-matlamat utama sistem ini ialah seperti berikut.
 6. GIT https://www.git-scm.com/downloads
 
 ## Keperluan Minimum Sistem untuk tujuan Pembangunan Sistem
-
 1. Pemproses: 1.6 GHz atau lebih pantas
 2. Memori: 4 GB RAM atau lebih tinggi
 
