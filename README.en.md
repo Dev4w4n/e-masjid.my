@@ -40,6 +40,10 @@ The main goals for this system are listed below.
 5. VSCode https://code.visualstudio.com/download
 6. GIT https://www.git-scm.com/downloads
 
+## Minimum Requirement for System Development
+1. Processor: 1.6 GHz or faster 64-bit processor
+2. Memory: 4 GB RAM or higher
+
 ## Quickstart guide (Docker compose)
 ### Fork this repo
 1. Fork this repo to your personal GitHub account, example `https://github.com/<github-user>/e-masjid.my`, by pressing the Fork button on the top right part of this page.

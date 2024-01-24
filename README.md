@@ -42,6 +42,10 @@ Matlamat-matlamat utama sistem ini ialah seperti berikut.
 5. VSCode https://code.visualstudio.com/download
 6. GIT https://www.git-scm.com/downloads
 
+## Keperluan Minimum Sistem untuk tujuan Pembangunan Sistem
+1. Pemproses: 1.6 GHz atau lebih pantas
+2. Memori: 4 GB RAM atau lebih tinggi
+
 ## Panduan permulaan pantas (Docker compose)
 ### Fork repo ini
 1. *Fork* repo ini ke akaun Github anda, contoh `https://github.com/<github-user>/e-masjid.my`, dengan menekan butang *Fork* di bahagian atas sebelah kanan laman web ini.
