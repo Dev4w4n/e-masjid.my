@@ -38,23 +38,29 @@ The main goals for this system are listed below.
 3. Maven
 4. Node 20 (ReactJS 18 + CoreUI + Tailwind CSS)
 5. VSCode (Recommended)
+6. GIT https://www.git-scm.com/downloads
 
 ## Minimum Requirement for System Development
+1. Processor: 1.6 GHz or faster 64-bit processor
+2. Memory: 4 GB RAM or higher
 
-  1. Processor: 1.6 GHz or faster 64-bit processor
-  2. Memory: 4 GB RAM or higher
-
-## Quickstart guide ( Docker compose )
-### Clone this repo
+## Quickstart guide (Docker compose)
+### Fork this repo
+1. Fork this repo to your personal GitHub account, example `https://github.com/<github-user>/e-masjid.my`, by pressing the Fork button on the top right part of this page.
+2. Once done, clone this repo to your computer.
 ```
-git clone https://github.com/Dev4w4n/e-masjid.my.git;
+git clone https://github.com/<github-user>/e-masjid.my.git
+```
+3. Once done, navigate to the e-masjid.my folder.
+```
 cd e-masjid.my
 ```
-### run-dev.sh (for Linux)
+4. Follow the instructions below depending on your computer's operating system.
+### Linux
 ```
 sh run-dev.sh
 ```
-### run-dev.sh (for Windows) - Use Git Bash terminal in VSCode
+### Windows - Use Git Bash terminal in VSCode
 ```
 sh run-dev.sh
 ```
