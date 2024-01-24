@@ -39,6 +39,45 @@ The main goals for this system are listed below.
 4. Node 20 (ReactJS 18 + CoreUI + Tailwind CSS)
 5. VSCode (Recommended)
 
+## Minimum Requirement for System Development
+
+1. Docker:
+    
+    > OS: Windows 10 64-bit: Home or Pro (build 19043 or later), Enterprise or Education (build 19042 or later). Windows 11 64-bit: Home, Pro, Enterprise, or Education version 21H2 or newer.
+    
+    > Processor: 1.6 GHz or faster 64-bit processor with Second Level Address Translation (SLAT)
+    
+    > Memory: 4 GB RAM
+    
+    > BIOS-level hardware virtualization support must be enabled in the BIOS settings
+    
+    > Hyper-V and Containers Windows features must be enabled
+
+2. Java:
+
+    > OS: Windows 10 and 11 (64-bit), macOS versions with Apple security update support, Linux (Debian): Ubuntu Desktop 20.04, Debian 10, Linux (Red Hat): Red Hat Enterprise Linux 8, Fedora 36
+    
+    > RAM: 128 MB
+    
+    > Disk space: 124 MB for JRE; 2 MB for Java Update
+    
+    > Processor: 1.6 GHz or faster 64-bit processor
+
+3. Maven:
+    > OS: Windows, macOS, Linux
+    
+    > Java SDK installed
+
+4. Node:
+    > OS: Windows 10 and 11 (64-bit), macOS versions with Apple security update support, Linux (Debian): Ubuntu Desktop 20.04, Debian 10, Linux (Red Hat): Red Hat Enterprise Linux 8, Fedora 36
+
+5. VSCode:
+    > OS: Windows 10 and 11 (64-bit), macOS versions with Apple security update support, Linux (Debian): Ubuntu Desktop 20.04, Debian 10, Linux (Red Hat): Red Hat Enterprise Linux 8, Fedora 36
+    
+    > Processor: 1.6 GHz or faster 64-bit processor
+    
+    > Memory: 1 GB of RAM
+
 ## Quickstart guide ( Docker compose )
 ### Clone this repo
 ```

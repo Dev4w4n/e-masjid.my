@@ -44,41 +44,41 @@ Matlamat-matlamat utama sistem ini ialah seperti berikut:
 ## Keperluan Minimum Sistem untuk tujuan Pembangunan Sistem
 
 1. Docker:
+
+    > Sistem Operasi: Windows 10 64-bit: Home atau Pro (build 19043 atau lebih baru), Enterprise atau Education (build 19042 atau lebih baru). Windows 11 64-bit: Home, Pro, Enterprise, atau Education versi 21H2 atau yang lebih baru.
     
-    > OS: Windows 10 64-bit: Home or Pro (build 19043 or later), Enterprise or Education (build 19042 or later). Windows 11 64-bit: Home, Pro, Enterprise, or Education version 21H2 or newer.
+    > Pemproses: 1.6 GHz atau lebih pantas, pemproses 64-bit dengan Second Level Address Translation (SLAT)
     
-    > Processor: 1.6 GHz or faster 64-bit processor with Second Level Address Translation (SLAT)
+    > Memori: 4 GB RAM
     
-    > Memory: 4 GB RAM
+    > Sokongan "Hardware Virtualization" peringkat BIOS mesti diaktifkan di dalam tetapan BIOS
     
-    > BIOS-level hardware virtualization support must be enabled in the BIOS settings
-    
-    > Hyper-V and Containers Windows features must be enabled
+    > Ciri Hyper-V dan Containers Windows mesti diaktifkan
 
 2. Java:
 
-    > OS: Windows 10 and 11 (64-bit), macOS versions with Apple security update support, Linux (Debian): Ubuntu Desktop 20.04, Debian 10, Linux (Red Hat): Red Hat Enterprise Linux 8, Fedora 36
+    > Sistem Operasi: Windows 10 dan 11 (64-bit), versi macOS dengan sokongan kemas kini keselamatan Apple, Linux (Debian): Ubuntu Desktop 20.04, Debian 10, Linux (Red Hat): Red Hat Enterprise Linux 8, Fedora 36
     
     > RAM: 128 MB
     
-    > Disk space: 124 MB for JRE; 2 MB for Java Update
+    > Ruang Disk: 124 MB untuk JRE; 2 MB untuk Java Update
     
-    > Processor: 1.6 GHz or faster 64-bit processor
+    > Pemproses: 1.6 GHz atau lebih pantas, pemproses 64-bit
 
 3. Maven:
-    > OS: Windows, macOS, Linux
+    > Sistem Operasi: Windows, macOS, Linux
     
-    > Java SDK installed
+    > SDK Java mesti dipasang di dalam sistem operasi
 
 4. Node:
-    > OS: Windows 10 and 11 (64-bit), macOS versions with Apple security update support, Linux (Debian): Ubuntu Desktop 20.04, Debian 10, Linux (Red Hat): Red Hat Enterprise Linux 8, Fedora 36
+    > Sistem Operasi: Windows 10 dan 11 (64-bit), versi macOS dengan sokongan kemas kini keselamatan Apple, Linux (Debian): Ubuntu Desktop 20.04, Debian 10, Linux (Red Hat): Red Hat Enterprise Linux 8, Fedora 36
 
 5. VSCode:
-    > OS: Windows 10 and 11 (64-bit), macOS versions with Apple security update support, Linux (Debian): Ubuntu Desktop 20.04, Debian 10, Linux (Red Hat): Red Hat Enterprise Linux 8, Fedora 36
+    > Sistem Operasi: Windows 10 dan 11 (64-bit), versi macOS dengan sokongan kemas kini keselamatan Apple, Linux (Debian): Ubuntu Desktop 20.04, Debian 10, Linux (Red Hat): Red Hat Enterprise Linux 8, Fedora 36
     
-    > Processor: 1.6 GHz or faster 64-bit processor
+    > Pemproses: 1.6 GHz atau lebih pantas, pemproses 64-bit
     
-    > Memory: 1 GB of RAM
+    > Memori: 1 GB RAM
 
 ## Panduan permulaan pantas (Docker compose)
 ### Klon repo ini
