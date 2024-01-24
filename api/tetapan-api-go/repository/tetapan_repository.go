@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api-go/model"
+	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/model"
 	"gorm.io/gorm"
 )
 

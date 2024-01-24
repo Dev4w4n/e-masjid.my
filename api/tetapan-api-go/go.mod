@@ -1,4 +1,4 @@
-module github.com/Dev4w4n/e-masjid.my/api/tetapan-api-go
+module github.com/Dev4w4n/e-masjid.my/api/tetapan-api
 
 go 1.19
 

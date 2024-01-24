@@ -2,12 +2,11 @@ package main
 
 import (
 	"log"
-	"net/http"
 
-	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api-go/config"
-	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api-go/controller"
-	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api-go/repository"
-	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api-go/utils"
+	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/config"
+	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/controller"
+	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/repository"
+	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/utils"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -31,33 +30,24 @@ func main() {
 	// CORS configuration
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{env.AllowOrigins}
-	config.AllowMethods = []string{"POST"}
+	config.AllowMethods = []string{"GET", "POST", "DELETE"}
 
 	gin.SetMode(gin.ReleaseMode)
 
 	r := gin.Default()
 
 	r.Use(cors.New(config))
-	r.Use(controllerMiddleware())
 
-	_ = controller.NewTetapanController(r, tetapanRepository)
+	_ = controller.NewTetapanController(r, tetapanRepository, env)
 
-	err = r.Run(":" + env.ServerPort)
-	if err != nil {
-		log.Fatal("Error starting the server:", err)
-	}
-}
-
-// Strictly allow from allowedOrigin
-func controllerMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		// Check if the request origin is allowed
-		allowedOrigin := ""
-		origin := c.GetHeader("Origin")
-		if origin != allowedOrigin {
-			c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
-			c.Abort()
-			return
+	go func() {
+		err = r.Run(":" + env.ServerPort)
+		if err != nil {
+			log.Fatal("Error starting the server:", err)
 		}
-	}
+	}()
+
+	log.Println("Server listening on port ", env.ServerPort)
+
+	select {} // Block indefinitely to keep the program running
 }

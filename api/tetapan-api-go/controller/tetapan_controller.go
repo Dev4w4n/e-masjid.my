@@ -3,9 +3,9 @@ package controller
 import (
 	"net/http"
 
-	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api-go/model"
-	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api-go/repository"
-	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api-go/utils"
+	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/model"
+	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/repository"
+	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
@@ -15,17 +15,19 @@ type TetapanController struct {
 	tetapanRepository repository.TetapanRepository
 }
 
-func NewTetapanController(engine *gin.Engine, repo repository.TetapanRepository) *TetapanController {
+func NewTetapanController(engine *gin.Engine, repo repository.TetapanRepository, env utils.Environment) *TetapanController {
 	controller := &TetapanController{
 		engine:            engine,
 		tetapanRepository: repo,
 	}
 
-	controller.engine.GET("/tetapan", controller.FindAll)
-	controller.engine.GET("/tetapan/:kunci", controller.FindByKunci)
-	controller.engine.POST("/tetapan", controller.Save)
-	controller.engine.POST("/tetapan/senarai", controller.SaveAll)
-	controller.engine.DELETE("/tetapan/:kunci", controller.Delete)
+	relativePath := env.DeployURL + "tetapan"
+
+	controller.engine.GET(relativePath, controller.FindAll)
+	controller.engine.GET(relativePath+"/:kunci", controller.FindByKunci)
+	controller.engine.POST(relativePath, controller.Save)
+	controller.engine.POST(relativePath+"/senarai", controller.SaveAll)
+	controller.engine.DELETE(relativePath+"/:kunci", controller.Delete)
 
 	return controller
 }

@@ -3,7 +3,7 @@ package config
 import (
 	"fmt"
 
-	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api-go/utils"
+	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
