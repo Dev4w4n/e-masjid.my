@@ -2,16 +2,36 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { logo } from "../assets/home";
 import Container from "./Container";
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import constants from '../constants/error.json';
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const loginAjk = () => {
-    window.location.href = "http://localhost:3000";
+    axios.get('/dashboard')
+    .then(response => {
+      window.location.href = "http://localhost:3000";
+    })
+    .catch(error => {
+      toast.error(constants.serviceDown, {
+        position: 'bottom-center',
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      })
+    });
   }
 
   return (
     <nav className="py-2 z-40">
+      <ToastContainer />
       <Container>
         <div className="flex items-center justify-between h-16">
           <div className="flex gap-4 items-center">

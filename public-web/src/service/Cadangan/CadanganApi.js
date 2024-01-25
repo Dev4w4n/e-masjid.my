@@ -7,6 +7,6 @@ export const saveCadangan = async (data) => {
     const response = await axios.post(`${apiServer}/cadangan`,data)
     return response.data
   } catch (error) {
-    console.error(error)
+    throw error;
   }
 }
