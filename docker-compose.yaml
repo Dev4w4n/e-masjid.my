@@ -51,11 +51,14 @@ services:
 
   tetapan-api:
     build:
-      context: ./api/tetapan-api
+      context: ./api/tetapan-api-go
     ports:
       - "8085:8085"
     depends_on:
       - postgres
+    environment:
+      - GO_ENV=dev
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "./tetapan-api"]
 
   dashboard:
     build:

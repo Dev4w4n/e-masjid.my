@@ -1,12 +1,6 @@
 # Stage 1: Build the application
 FROM golang:alpine3.19 AS builder
 
-# Define build-time argument for GO_ENV
-ARG GO_ENV=local
-
-# Set Go environment variables
-ENV GO_ENV=$GO_ENV
-
 # Set the working directory inside the container
 WORKDIR /app
 
@@ -23,6 +17,12 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o cadangan-public-a
 
 # Stage 2: Create a minimal runtime image
 FROM alpine:latest
+
+# Define build-time argument for GO_ENV
+ARG GO_ENV=local
+
+# Set Go environment variables
+ENV GO_ENV=$GO_ENV
 
 # Set the working directory inside the container
 WORKDIR /app
