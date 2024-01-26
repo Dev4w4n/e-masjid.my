@@ -15,7 +15,7 @@ type TetapanController struct {
 	tetapanRepository repository.TetapanRepository
 }
 
-func NewTetapanController(engine *gin.Engine, repo repository.TetapanRepository, env utils.Environment) *TetapanController {
+func NewTetapanController(engine *gin.Engine, repo repository.TetapanRepository, env *utils.Environment) *TetapanController {
 	controller := &TetapanController{
 		engine:            engine,
 		tetapanRepository: repo,

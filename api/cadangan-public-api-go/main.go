@@ -55,7 +55,7 @@ func main() {
 }
 
 // Strictly allow from allowedOrigin
-func controllerMiddleware(env utils.Environment) gin.HandlerFunc {
+func controllerMiddleware(env *utils.Environment) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Check if the request origin is allowed
 		allowedOrigin := env.AllowOrigins

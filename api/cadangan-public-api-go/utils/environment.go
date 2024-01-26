@@ -18,7 +18,7 @@ type Environment struct {
 	ServerPort   string
 }
 
-func GetEnvironment() (Environment, error) {
+func GetEnvironment() (*Environment, error) {
 	env := os.Getenv("GO_ENV")
 	if env == "" {
 		env = "local"
@@ -26,10 +26,10 @@ func GetEnvironment() (Environment, error) {
 
 	envFile := fmt.Sprintf(".env.%s", env)
 	if err := godotenv.Load(envFile); err != nil {
-		return Environment{}, fmt.Errorf("error loading %s file: %w", envFile, err)
+		return &Environment{}, fmt.Errorf("error loading %s file: %w", envFile, err)
 	}
 
-	return Environment{
+	return &Environment{
 		DbHost:       os.Getenv("DB_HOST"),
 		DbPort:       os.Getenv("DB_PORT"),
 		DbUser:       os.Getenv("DB_USER"),

@@ -16,7 +16,7 @@ type CadanganController struct {
 	cadanganRepository repository.CadanganRepository
 }
 
-func NewCadanganController(engine *gin.Engine, repo repository.CadanganRepository, env utils.Environment) *CadanganController {
+func NewCadanganController(engine *gin.Engine, repo repository.CadanganRepository, env *utils.Environment) *CadanganController {
 	controller := &CadanganController{
 		engine:             engine,
 		cadanganRepository: repo,

@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func DatabaseConnection(env utils.Environment) (*gorm.DB, error) {
+func DatabaseConnection(env *utils.Environment) (*gorm.DB, error) {
 	dbHost := env.DbHost
 	dbPort := env.DbPort
 	dbUser := env.DbUser
