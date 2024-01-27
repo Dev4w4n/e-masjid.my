@@ -5,6 +5,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "author": "Open Cloud Services (SA0604301-H)",
+  "proxy": "http://localhost:3000",
   "scripts": {
     "build": "echo \"Please use build:dev or build:prod \" && exit 1",
     "build:dev": "cross-env REACT_APP_ENV=development react-scripts build",

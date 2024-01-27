@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import axios from 'axios';
 import {
   CTabContent,
   CTabPane,
@@ -9,20 +10,25 @@ import {
 } from "@coreui/react";
 import Emoji from "../components/Cadangan/Emoji";
 import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import 'react-toastify/dist/ReactToastify.css';
 import { saveCadangan } from "../service/Cadangan/CadanganApi";
+import constants from '../constants/error.json';
 
 export default function Cadangan() {
   const [emojiValue, setEmojiValue] = useState(-1);
   const [activeKey, setActiveKey] = useState(1);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumberError, setPhoneNumberError] = useState('');
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const inputCadangan = useRef();
   const inputNama = useRef();
-  const inputPhone = useRef();
-  const inputEmail = useRef();
+  const inputPhone = useRef(null);
+  const inputEmail = useRef(null);
 
   const handleNextClick = () => {
     if(emojiValue === -1) {
-      toast.error('Sila berikan penilaian anda', {
+      toast.error(constants.penilaianError, {
         position: 'bottom-center',
         autoClose: 2000,
         hideProgressBar: false,
@@ -35,13 +41,55 @@ export default function Cadangan() {
     } else {
       setActiveKey(activeKey + 1);
     }
-  }
+  };
+
+  const handlePhoneChange = (event) => {
+    const inputValue = event.target.value;
+    // Check if the entered phone number is not blank
+    if (inputValue.trim() === '' || /^[0-9]*$/.test(inputValue)) {
+      setPhoneNumber(inputValue);
+      setPhoneNumberError('');
+    }
+    else
+    {
+      setPhoneNumberError(constants.invalidPhone);
+    }
+  };
+
+  const handlePhoneBlur = (event) => {
+    const inputValue = event.target.value;
+    if (inputValue.trim() === '')
+    {
+      setPhoneNumberError('');
+    }
+  };
+
+  const handleEmailChange = (event) => {
+    const inputValue = event.target.value;
+    if (inputValue.trim() === '') {
+      setEmail(inputValue);
+      setEmailError('');
+    } else if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputValue)) {
+      setEmail(inputValue);
+      setEmailError('');
+    } else {
+      setEmailError(constants.invalidEmail);
+    }
+  };
+
+  const handleEmailBlur = (event) => {
+    const inputValue = event.target.value;
+    if (inputValue.trim() === '')
+    {
+      setEmailError('');
+    }
+  };
 
   const handleSubmitClick = async () => {
     try {
-      const nama = inputNama.current.value ? inputNama.current.value : null
-      const email = inputEmail.current.value ? inputEmail.current.value : null
-      const phone = inputPhone.current.value ? inputPhone.current.value : null
+      const nama = inputNama.current.value ? inputNama.current.value : null;
+      const emailValue = inputEmail.current ? inputEmail.current.value : null;
+      const phoneValue = inputPhone.current ? inputPhone.current.value : null;
 
       const json ={
         "cadanganType": {
@@ -49,8 +97,8 @@ export default function Cadangan() {
         },
         "cadanganText": inputCadangan.current.value,
         "cadanganNama": nama,
-        "cadanganEmail": email,
-        "cadanganPhone": phone,
+        "cadanganEmail": emailValue,
+        "cadanganPhone": phoneValue,
         "tindakanText": null,
         "isOpen": true,
         "score": emojiValue+1,
@@ -60,7 +108,20 @@ export default function Cadangan() {
       await saveCadangan(json)
       setActiveKey(activeKey + 1);
     } catch (error) {
-      console.error(error)
+      console.log(error);
+      if (axios.isAxiosError(error) && !error.response) {
+        // It's a network error
+        toast.error(constants.serviceDown, {
+          position: 'bottom-center',
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+        });
+      } 
     }
   }
   const handleEmojiClickParent = (index) => {
@@ -116,23 +177,33 @@ export default function Cadangan() {
               </div>
               <div className="mb-6">
                 <CFormInput
-                  ref={inputPhone}
+                  value={phoneNumber}
+                  onChange={handlePhoneChange}
+                  onBlur={handlePhoneBlur}
                   maxLength="16"
                   type="text"
                   placeholder="No telefon"
                   name="mobile"
                   className="w-full px-4 py-3 rounded-md text-gray-700 font-medium border-solid border-2 border-gray-200"
                 />
+                 {phoneNumberError && (
+                    <p className="text-red-500 text-sm mt-2">{phoneNumberError}</p>
+                 )}
               </div>
               <div className="mb-6">
                 <CFormInput
-                  ref={inputEmail}
-                  maxLength="120"
-                  type="email"
-                  placeholder="Alamat email"
-                  name="address"
-                  className="w-full px-4 py-3 rounded-md text-gray-700 font-medium border-solid border-2 border-gray-200"
+                 ref={inputEmail}
+                 maxLength="120"
+                 type="email"
+                 placeholder="Alamat email"
+                 name="email"
+                 className="w-full px-4 py-3 rounded-md text-gray-700 font-medium border-solid border-2 border-gray-200"
+                 onChange={handleEmailChange}
+                 onBlur={handleEmailBlur}
                 />
+                 {emailError && (
+                    <p className="text-red-500 text-sm mt-2">{emailError}</p>
+                 )}
               </div>
             </CTabPane>
             <CTabPane role="tabpanel" aria-labelledby="thanks-tab-pane" visible={activeKey === 3} >
