@@ -29,27 +29,36 @@ services:
 
   cadangan-api:
     build:
-      context: ./api/cadangan-api
+      context: ./api/cadangan-api-go
     ports:
       - "8083:8083"
+    environment:
+      - GO_ENV=dev
     depends_on:
       - postgres
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "./cadangan-api"]
 
   cadangan-public-api:
     build:
-      context: ./api/cadangan-public-api
+      context: ./api/cadangan-public-api-go
     ports:
       - "8084:8084"
+    environment:
+      - GO_ENV=dev
     depends_on:
       - postgres
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "./cadangan-public-api"]
 
   tetapan-api:
     build:
-      context: ./api/tetapan-api
+      context: ./api/tetapan-api-go
     ports:
       - "8085:8085"
     depends_on:
       - postgres
+    environment:
+      - GO_ENV=dev
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "./tetapan-api"]
 
   dashboard:
     build:
