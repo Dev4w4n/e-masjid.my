@@ -41,10 +41,11 @@ Matlamat-matlamat utama sistem ini ialah seperti berikut.
 4. Node 20 https://nodejs.org/en/download
 5. VSCode https://code.visualstudio.com/download
 6. GIT https://www.git-scm.com/downloads
+7. Go https://go.dev/dl/
 
 ## Keperluan Minimum Sistem untuk tujuan Pembangunan Sistem
 1. Pemproses: 1.6 GHz atau lebih pantas
-2. Memori: 4 GB RAM atau lebih tinggi
+2. Memori: 8 GB RAM atau lebih tinggi
 
 ## Panduan permulaan pantas (Docker compose)
 ### Fork repo ini
