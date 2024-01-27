@@ -10,7 +10,7 @@ import {
 } from "@coreui/react";
 import Emoji from "../components/Cadangan/Emoji";
 import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import 'react-toastify/dist/ReactToastify.css';
 import { saveCadangan } from "../service/Cadangan/CadanganApi";
 import constants from '../constants/error.json';
 
@@ -41,7 +41,7 @@ export default function Cadangan() {
     } else {
       setActiveKey(activeKey + 1);
     }
-  }
+  };
 
   const handlePhoneChange = (event) => {
     const inputValue = event.target.value;
@@ -87,7 +87,7 @@ export default function Cadangan() {
 
   const handleSubmitClick = async () => {
     try {
-      const nama = inputNama.current.value ? inputNama.current.value : null
+      const nama = inputNama.current.value ? inputNama.current.value : null;
       const emailValue = inputEmail.current ? inputEmail.current.value : null;
       const phoneValue = inputPhone.current ? inputPhone.current.value : null;
 
