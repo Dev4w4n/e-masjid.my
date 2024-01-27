@@ -39,10 +39,11 @@ The main goals for this system are listed below.
 4. Node 20 https://nodejs.org/en/download
 5. VSCode https://code.visualstudio.com/download
 6. GIT https://www.git-scm.com/downloads
+7. Go https://go.dev/dl/
 
 ## Minimum Requirement for System Development
 1. Processor: 1.6 GHz or faster 64-bit processor
-2. Memory: 4 GB RAM or higher
+2. Memory: 8 GB RAM or higher
 
 ## Quickstart guide (Docker compose)
 ### Fork this repo
