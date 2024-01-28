@@ -25,12 +25,12 @@ func main() {
 		log.Fatalf("Error getting database connection: %v", err)
 	}
 
-	tetapanRepository := repository.NewTetapanRepository(db)
+	tagRepository := repository.NewTagRepository(db)
 
 	// CORS configuration
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{env.AllowOrigins}
-	config.AllowMethods = []string{"GET", "POST", "DELETE"}
+	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
 
 	gin.SetMode(gin.ReleaseMode)
 
@@ -38,7 +38,7 @@ func main() {
 
 	r.Use(cors.New(config))
 
-	_ = controller.NewTetapanController(r, tetapanRepository, env)
+	_ = controller.NewTagController(r, tagRepository, env)
 
 	go func() {
 		err = r.Run(":" + env.ServerPort)
