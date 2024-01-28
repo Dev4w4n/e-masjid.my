@@ -26,3 +26,8 @@ export const getMemberCount = async () => {
   const response = await axios.get(`${apiServer}/members/count`)
   return response.data
 }
+
+export const getPaidMemberCountCurrentYear = async () => {
+  const response = await axios.get(`${apiServer}/payment/totalMembersPaidForCurrentYear`)
+  return response.data
+}

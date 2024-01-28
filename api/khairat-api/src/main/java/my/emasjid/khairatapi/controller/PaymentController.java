@@ -4,12 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import my.emasjid.khairatapi.entity.PaymentHistory;
 import my.emasjid.khairatapi.service.PaymentService;
@@ -39,6 +34,17 @@ public class PaymentController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+    @GetMapping("/payment/totalMembersPaidForCurrentYear")
+    @ResponseBody
+    public ResponseEntity<Long> getTotalMembersPaidForCurrentYear() {
+        try {
+            Long totalMembersPaid = paymentService.getTotalMembersPaidForCurrentYear();
+            return ResponseEntity.ok(totalMembersPaid);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 }

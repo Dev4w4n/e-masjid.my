@@ -18,12 +18,14 @@ import {
 
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
 import { getMemberCount } from 'src/service/khairat/MembersApi'
+import { getPaidMemberCountCurrentYear } from 'src/service/khairat/MembersApi'
 import { getKutipanByTabung } from 'src/service/tabung/KutipanApi';
 import { getCadanganCount } from 'src/service/cadangan/CadanganApi'
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(false)
   const [memberCount, setMemberCount] = useState(0)
+  const [paidMemberCount, setPaidMemberCount] = useState(0)
   const [kutipanList, setKutipanList] = useState([])
   const [kutipanChartValue, setKutipanChartValue] = useState([])
   const [kutipanChartValueTop5, setKutipanChartValueTop5] = useState([])
@@ -69,6 +71,15 @@ const Dashboard = () => {
         console.error('Error fetching member count:', error);
       }
     }
+
+    async function fetchPaidMemberCountCurrentYear() {
+      try {
+        const count = await getPaidMemberCountCurrentYear();
+        setPaidMemberCount(count);
+      } catch (error) {
+        console.error('Error fetching Member Paid Current Year Total:', error);
+      }
+    }
   
     const fetchKutipan = async () => {
       if (true) {
@@ -102,6 +113,7 @@ const Dashboard = () => {
     fetchKutipan()
     fetchMemberCount();
     fetchCadanganCount();
+    fetchPaidMemberCountCurrentYear();
   }, []);
 
   if (loading) {
@@ -123,6 +135,7 @@ const Dashboard = () => {
     <>
       <WidgetsDropdown
         memberCount={memberCount}
+        paidMemberCount={paidMemberCount}
         kutipanList={kutipanList}
         kutipanChartValueTop5={kutipanChartValueTop5} 
         cadanganCount={cadanganCount} />
