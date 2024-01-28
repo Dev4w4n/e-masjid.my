@@ -33,13 +33,15 @@ const TetapanMasjid = () => {
       } finally {
         setLoading(false)
         //delay value assignment due to error occurs when values being set while page rendering
-        setTimeout(() => {
-          for(let t of data) {
-            if (t.kunci === 'NAMA_MASJID') inputNamaMasjid.current.value = t.nilai
-            if (t.kunci === 'ALAMAT_MASJID') inputAlamatMasjid.current.value = t.nilai
-            if (t.kunci === 'NO_TEL_MASJID') inputNoTelefonMasjid.current.value = t.nilai
-          }
-        }, 10);
+        if (Array.isArray(data)) {
+          setTimeout(() => {
+            for(let t of data) {
+              if (t.kunci === 'NAMA_MASJID') inputNamaMasjid.current.value = t.nilai
+              if (t.kunci === 'ALAMAT_MASJID') inputAlamatMasjid.current.value = t.nilai
+              if (t.kunci === 'NO_TEL_MASJID') inputNoTelefonMasjid.current.value = t.nilai
+            }
+          }, 10);
+        }
       }
     }
     

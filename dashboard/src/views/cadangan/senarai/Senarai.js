@@ -20,8 +20,12 @@ const Senarai = () => {
   const [cadanganCount, setCadanganCount] = useState([])
 
   const fetchCount = async () => {
-    const response = await getCadanganCount()
-    setCadanganCount(response)
+    try {
+      const response = await getCadanganCount()
+      setCadanganCount(response)
+    } catch (error) {
+      console.error('Error fetching getCadanganCount:', error)
+    }
   }
   useEffect(() => {
     fetchCount()
