@@ -38,4 +38,8 @@ public class PaymentService {
             return false;
         }
     }
+
+    public Long getTotalMembersPaidForCurrentYear() {
+        return paymentHistoryRepository.getTotalMembersPaidForCurrentYear();
+    }
 }

@@ -57,12 +57,17 @@ const CadanganList = ({ onEditorUpdated, ...props }) => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
-      if(props.activeKey === props.cadanganType) {
-        const response = (props.activeKey === 5 && props.cadanganType === 5) ? 
-        await getCadanganByOpen(page, size, props.isOpen) : await getCadanganByType(page, size, props.cadanganType, props.isOpen)
-        setData(response.content)
+      try {
+        if(props.activeKey === props.cadanganType) {
+          const response = (props.activeKey === 5 && props.cadanganType === 5) ? 
+          await getCadanganByOpen(page, size, props.isOpen) : await getCadanganByType(page, size, props.cadanganType, props.isOpen)
+          setData(response.content)
+        }
+      } catch (error) {
+        console.error('Error fetching getCadanganByOpen:', error)
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
     fetchData()
     

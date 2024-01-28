@@ -56,6 +56,12 @@
                 <activatedProperties>dev</activatedProperties>
             </properties>
         </profile>
+	<profile>
+	     <id>local</id>
+	     <properties>
+		 <activatedProperties>local</activatedProperties>
+	     </properties>
+	</profile>
         <profile>
             <id>prod</id>
             <properties>

@@ -107,7 +107,7 @@ const WidgetsDropdown = (props) => {
           // progress={{ value: 100 }}
           text="Ahli khairat"
           title="Ahli Khairat Berbayar"
-          value="??? %"
+          value={`${(props.paidMemberCount / props.memberCount * 100).toFixed(2)} %`}
         />
       </CCol>
       

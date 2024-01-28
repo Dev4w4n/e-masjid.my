@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import my.emasjid.khairatapi.entity.PaymentHistory;
+import org.springframework.data.jpa.repository.Query;
 
 public interface PaymentHistoryRepository extends JpaRepository<PaymentHistory, Long> {
     
@@ -17,4 +18,10 @@ public interface PaymentHistoryRepository extends JpaRepository<PaymentHistory, 
         List<PaymentHistory> paymentHistoryList = findByMemberIdAndPaymentDateGreaterThan(memberId, startEpoch * 1000);
         return paymentHistoryList.isEmpty() ? Optional.empty() : Optional.of(paymentHistoryList.get(0));
     }
+
+    @Query(value = "SELECT COUNT(DISTINCT member_id) AS total_members_paid " +
+            "FROM khairat_payment_history " +
+            "WHERE EXTRACT(YEAR FROM DATE_TRUNC('year', to_timestamp(payment_date/1000))) = EXTRACT(YEAR FROM CURRENT_DATE) ",
+            nativeQuery = true)
+    Long getTotalMembersPaidForCurrentYear();
 }
