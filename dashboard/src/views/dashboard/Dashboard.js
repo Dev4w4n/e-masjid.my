@@ -106,8 +106,15 @@ const Dashboard = () => {
     };
     
     const fetchCadanganCount = async () => {
-      const response = await getCadanganCount()
-      setCadanganCount(response[0])
+      setLoading(true)
+      try {
+        const response = await getCadanganCount()
+        setCadanganCount(response[0])
+      } catch (error) {
+        console.error('Error fetching cadangan count:', error)
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchKutipan()

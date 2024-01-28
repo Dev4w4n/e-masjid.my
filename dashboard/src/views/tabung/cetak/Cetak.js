@@ -65,19 +65,24 @@ const Cetak = () => {
     content: () => componentRef.current,
   });
 
-  useEffect(() => {
+   useEffect(() => {
     const fetchTabung = async () => {
       setLoading(true)
-      const data = await getTabung();
-      if (data.length > 0) {
-        const tabungList = data.map((tabung) => ({
-          label: tabung.name,
-          value: tabung.id,
-        }))
-        tabungList.unshift({ label: 'Pilih tabung', value: '' });
-        setTabungList(tabungList);
+      try {
+        const data = await getTabung()
+        if (data.length > 0) {
+          const tabungList = data.map((tabung) => ({
+            label: tabung.name,
+            value: tabung.id,
+          }))
+          tabungList.unshift({ label: 'Pilih tabung', value: '' })
+          setTabungList(tabungList)
+        }
+      } catch (error) {
+        console.error('Error fetchTabung:', error)
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
     fetchTabung()
   }, [])
