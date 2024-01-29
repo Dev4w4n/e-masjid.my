@@ -12,6 +12,7 @@ type PaymentHistoryRepository interface {
 	FindByMemberIdAndPaymentDateGreaterThan(memberId int, paymentDate int64) ([]model.PaymentHistory, error)
 	FindPaymentHistoryByMemberIdAndCurrentYear(memberId int) (model.PaymentHistory, error)
 	GetTotalMembersPaidForCurrentYear() (int, error)
+	Delete(paymentHistory model.PaymentHistory) error
 }
 
 type PaymentHistoryRepositoryImpl struct {
@@ -71,6 +72,17 @@ func (repo *PaymentHistoryRepositoryImpl) GetTotalMembersPaidForCurrentYear() (i
 // Save implements PaymentHistoryRepository.
 func (repo *PaymentHistoryRepositoryImpl) Save(paymentHistory model.PaymentHistory) error {
 	result := repo.Db.Save(&paymentHistory)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+// Delete implements PaymentHistoryRepository.
+func (repo *PaymentHistoryRepositoryImpl) Delete(paymentHistory model.PaymentHistory) error {
+	result := repo.Db.Delete(&paymentHistory)
 
 	if result.Error != nil {
 		return result.Error
