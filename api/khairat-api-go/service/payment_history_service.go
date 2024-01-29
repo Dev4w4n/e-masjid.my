@@ -15,6 +15,12 @@ type PaymentHistoryServiceImpl struct {
 	paymentHistoryRepository repository.PaymentHistoryRepository
 }
 
+func NewPaymentHistoryService(paymentHistoryRepository repository.PaymentHistoryRepository) PaymentHistoryService {
+	return &PaymentHistoryServiceImpl{
+		paymentHistoryRepository: paymentHistoryRepository,
+	}
+}
+
 // FindTotalMembersPaidForCurrentYear implements PaymentHistoryService.
 func (repo *PaymentHistoryServiceImpl) FindTotalMembersPaidForCurrentYear() (int, error) {
 	result, err := repo.paymentHistoryRepository.GetTotalMembersPaidForCurrentYear()
@@ -52,10 +58,4 @@ func (repo *PaymentHistoryServiceImpl) Save(paymentHistory model.PaymentHistory)
 	}
 
 	return repo.paymentHistoryRepository.Save(paymentHistory)
-}
-
-func NewPaymentHistoryService(paymentHistoryRepository repository.PaymentHistoryRepository) PaymentHistoryService {
-	return &PaymentHistoryServiceImpl{
-		paymentHistoryRepository: paymentHistoryRepository,
-	}
 }
