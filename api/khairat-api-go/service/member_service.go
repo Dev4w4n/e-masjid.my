@@ -11,8 +11,8 @@ type MemberService interface {
 	FindAll() (model.Response, error)
 	FindBy(person model.Person) ([]model.Member, error)
 	FindAllOrderbyPersonName() ([]model.Member, error)
-	CountAll() (int, error)
-	FindAllByTagIdOrderByMemberName(tagId int) ([]model.Member, error)
+	CountAll() (int64, error)
+	FindAllByTagIdOrderByMemberName(tagIdStr string) ([]model.Member, error)
 }
 
 type MemberServiceImpl struct {
@@ -38,17 +38,33 @@ func NewMemberService(memberRepository repository.MemberRepository,
 }
 
 // CountAll implements MemberService.
-func (repo *MemberServiceImpl) CountAll() (int, error) {
-	panic("unimplemented")
+func (repo *MemberServiceImpl) CountAll() (int64, error) {
+	result, err := repo.memberRepository.CountAll()
+
+	if err != nil {
+		return 0, err
+	}
+
+	return result, nil
 }
 
 // FindAll implements MemberService.
 func (repo *MemberServiceImpl) FindAll() (model.Response, error) {
-	panic("unimplemented")
+	var response model.Response
+
+	result, err := repo.memberRepository.FindAll()
+
+	if err != nil {
+		return response, err
+	}
+
+	response.Content = result
+
+	return response, nil
 }
 
 // FindAllByTagIdOrderByMemberName implements MemberService.
-func (repo *MemberServiceImpl) FindAllByTagIdOrderByMemberName(tagId int) ([]model.Member, error) {
+func (repo *MemberServiceImpl) FindAllByTagIdOrderByMemberName(tagIdStr string) ([]model.Member, error) {
 	panic("unimplemented")
 }
 

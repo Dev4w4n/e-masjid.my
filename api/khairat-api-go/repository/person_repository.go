@@ -47,7 +47,7 @@ func (repo *PersonRepositoryImpl) FindById(id int) (model.Person, error) {
 
 // Save implements PersonRepository.
 func (repo *PersonRepositoryImpl) Save(person model.Person) (model.Person, error) {
-	result := repo.Db.Create(&person)
+	result := repo.Db.Save(&person)
 
 	if result.Error != nil {
 		return model.Person{}, result.Error
