@@ -63,64 +63,37 @@ const Dashboard = () => {
   
 
   useEffect(() => {
-    async function fetchMemberCount() {
-      try {
-        const count = await getMemberCount();
-        setMemberCount(count);
-      } catch (error) {
-        console.error('Error fetching member count:', error);
-      }
-    }
-
-    async function fetchPaidMemberCountCurrentYear() {
-      try {
-        const count = await getPaidMemberCountCurrentYear();
-        setPaidMemberCount(count);
-      } catch (error) {
-        console.error('Error fetching Member Paid Current Year Total:', error);
-      }
-    }
-  
-    const fetchKutipan = async () => {
-      if (true) {
-        setLoading(true)
-        try {
-          const data = await getKutipanByTabung(1)
-          if (data.length > 0) {
-            const kutipanData = data.map((item) => ({
-              id: item.id,
-              tabung: item.tabung.name,
-              createDate: item.createDate,
-              total: item.total,
-            }))
-            setKutipanList(kutipanData)
-          } else {
-            setKutipanList([]);
-          }
-        } catch (error) {
-          console.error('Error fetching kutipan:', error)
-        } finally {
-          setLoading(false)
-        }
-      }
-    };
-    
-    const fetchCadanganCount = async () => {
+    const fetchDashboardData = async () => {
       setLoading(true)
       try {
+        const data = await getKutipanByTabung(1)
+        if (data.length > 0) {
+          const kutipanData = data.map((item) => ({
+            id: item.id,
+            tabung: item.tabung.name,
+            createDate: item.createDate,
+            total: item.total,
+          }))
+          setKutipanList(kutipanData)
+        } else {
+          setKutipanList([])
+        }
+
         const response = await getCadanganCount()
         setCadanganCount(response[0])
+        const count = await getPaidMemberCountCurrentYear();
+        setPaidMemberCount(count)
+        const countMember = await getMemberCount();
+        setMemberCount(countMember)
+
       } catch (error) {
-        console.error('Error fetching cadangan count:', error)
+        console.error('Error fetching dashboard data:', error)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchKutipan()
-    fetchMemberCount();
-    fetchCadanganCount();
-    fetchPaidMemberCountCurrentYear();
+    fetchDashboardData();
   }, []);
 
   if (loading) {
