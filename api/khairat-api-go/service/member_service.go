@@ -9,7 +9,7 @@ type MemberService interface {
 	Save(member model.Member) (model.Member, error)
 	FindOne(id int) (model.Member, error)
 	FindAll() (model.Response, error)
-	FindBy(person model.Person) ([]model.Member, error)
+	FindByQuery(query string) ([]model.Member, error)
 	FindAllOrderbyPersonName() ([]model.Member, error)
 	CountAll() (int64, error)
 	FindAllByTagIdOrderByMemberName(tagIdStr string) ([]model.Member, error)
@@ -65,25 +65,63 @@ func (repo *MemberServiceImpl) FindAll() (model.Response, error) {
 
 // FindAllByTagIdOrderByMemberName implements MemberService.
 func (repo *MemberServiceImpl) FindAllByTagIdOrderByMemberName(tagIdStr string) ([]model.Member, error) {
-	panic("unimplemented")
+	var result []model.Member
+
+	result, err := repo.memberRepository.FindByTagOrderByMemberNameAsc(tagIdStr)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 // FindAllOrderbyPersonName implements MemberService.
 func (repo *MemberServiceImpl) FindAllOrderbyPersonName() ([]model.Member, error) {
-	panic("unimplemented")
+	var result []model.Member
+
+	result, err := repo.memberRepository.FindAllOrderByPersonName()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 // FindBy implements MemberService.
-func (repo *MemberServiceImpl) FindBy(person model.Person) ([]model.Member, error) {
-	panic("unimplemented")
+func (repo *MemberServiceImpl) FindByQuery(query string) ([]model.Member, error) {
+	var result []model.Member
+
+	result, err := repo.memberRepository.FindByQuery(query)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 // FindOne implements MemberService.
 func (repo *MemberServiceImpl) FindOne(id int) (model.Member, error) {
-	panic("unimplemented")
+	var result model.Member
+
+	result, err := repo.memberRepository.FindById(id)
+
+	if err != nil {
+		return result, err
+	}
+
+	return result, nil
 }
 
 // Save implements MemberService.
 func (repo *MemberServiceImpl) Save(member model.Member) (model.Member, error) {
-	panic("unimplemented")
+	result, err := repo.memberRepository.Save(member)
+
+	if err != nil {
+		return model.Member{}, err
+	}
+
+	return result, nil
 }

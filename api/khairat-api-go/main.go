@@ -6,6 +6,7 @@ import (
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/config"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/controller"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/repository"
+	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/service"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/utils"
 
 	"github.com/gin-contrib/cors"
@@ -26,6 +27,15 @@ func main() {
 	}
 
 	tagRepository := repository.NewTagRepository(db)
+	memberRepository := repository.NewMemberRepository(db)
+	dependentRepository := repository.NewDependentRepository(db)
+	memberTagRepository := repository.NewMemberTagRepository(db)
+	paymentHistoryRepository := repository.NewPaymentHistoryRepository(db)
+	personRepository := repository.NewPersonRepository(db)
+
+	memberService := service.NewMemberService(memberRepository,
+		personRepository, dependentRepository,
+		memberTagRepository, paymentHistoryRepository)
 
 	// CORS configuration
 	config := cors.DefaultConfig()
@@ -38,7 +48,9 @@ func main() {
 
 	r.Use(cors.New(config))
 
+	_ = controller.NewMemberController(r, memberService, env)
 	_ = controller.NewTagController(r, tagRepository, env)
+	_ = controller.NewDependentController(r, dependentRepository, env)
 
 	go func() {
 		err = r.Run(":" + env.ServerPort)

@@ -9,9 +9,10 @@ type MemberRepository interface {
 	Save(member model.Member) (model.Member, error)
 	CountAll() (int64, error)
 	FindAll() ([]model.Member, error)
+	FindAllOrderByPersonName() ([]model.Member, error)
+	FindByTagOrderByMemberNameAsc(idStr string) ([]model.Member, error)
+	FindByQuery(query string) ([]model.Member, error)
 	FindById(id int) (model.Member, error)
-	FindBy(member model.Member) ([]model.Member, error)
-	FindByTag(tag model.Tag) ([]model.Member, error)
 }
 
 type MemberRepositoryImpl struct {
@@ -43,10 +44,34 @@ func (repo *MemberRepositoryImpl) FindAll() ([]model.Member, error) {
 	return members, nil
 }
 
-// FindBy implements MemberRepository.
-func (repo *MemberRepositoryImpl) FindBy(member model.Member) ([]model.Member, error) {
+// FindAllOrderByPersonName implements MemberRepository.
+func (repo *MemberRepositoryImpl) FindAllOrderByPersonName() ([]model.Member, error) {
 	var members []model.Member
-	result := repo.db.Where(&member).Find(&members)
+	result := repo.db.
+		Joins("JOIN person ON member.person_id = person.id").
+		Order("person.name ASC").
+		Find(&members)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return members, nil
+}
+
+// FindBy implements MemberRepository.
+func (repo *MemberRepositoryImpl) FindByQuery(query string) ([]model.Member, error) {
+	var members []model.Member
+
+	result := repo.db.
+		Joins("person ON member.person_id = person.id").
+		Where("person.name LIKE ?", "%"+query+"%").
+		Or("person.ic_number LIKE ?", "%"+query+"%").
+		Or("person.phone LIKE ?", "%"+query+"%").
+		Preload("Person").
+		Preload("MemberTags").
+		Preload("PaymentHistory").
+		Find(&members)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -57,22 +82,32 @@ func (repo *MemberRepositoryImpl) FindBy(member model.Member) ([]model.Member, e
 
 // FindById implements MemberRepository.
 func (repo *MemberRepositoryImpl) FindById(id int) (model.Member, error) {
-	result, err := repo.FindBy(model.Member{Id: id})
+	var member model.Member
 
-	if err != nil {
-		return model.Member{}, err
+	result := repo.db.
+		Where("id=?", id).
+		Preload("Person").
+		Preload("MemberTags").
+		Preload("Dependents").
+		Preload("PaymentHistory").
+		First(member)
+
+	if result.Error != nil {
+		return model.Member{}, result.Error
 	}
 
-	return result[0], nil
+	return member, nil
 }
 
 // FindByTag implements MemberRepository.
-func (repo *MemberRepositoryImpl) FindByTag(tag model.Tag) ([]model.Member, error) {
+func (repo *MemberRepositoryImpl) FindByTagOrderByMemberNameAsc(idStr string) ([]model.Member, error) {
 	var members []model.Member
 	result := repo.db.
 		Joins("JOIN member_tags ON members.id = member_tags.member_id").
 		Joins("JOIN tags ON member_tags.tag_id = tags.id").
-		Where("tags.id = ?", tag.Id).
+		Joins("JOIN person ON members.person_id = person.id").
+		Where("tags.id IN (?)", idStr).
+		Order("person.name ASC").
 		Find(&members)
 
 	if result.Error != nil {

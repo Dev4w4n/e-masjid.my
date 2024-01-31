@@ -77,11 +77,7 @@ func (controller *MemberController) FindBy(ctx *gin.Context) {
 		ctx.Header("Content-Type", "application/json")
 		ctx.JSON(http.StatusOK, result)
 	} else {
-		person := model.Person{}
-		person.Name = query
-		person.IcNumber = query
-
-		result, err := controller.memberService.FindBy(person)
+		result, err := controller.memberService.FindByQuery(query)
 
 		utils.WebError(ctx, err, "failed to retrieve member")
 
