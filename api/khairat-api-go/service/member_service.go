@@ -117,11 +117,99 @@ func (repo *MemberServiceImpl) FindOne(id int) (model.Member, error) {
 
 // Save implements MemberService.
 func (repo *MemberServiceImpl) Save(member model.Member) (model.Member, error) {
-	result, err := repo.memberRepository.Save(member)
 
-	if err != nil {
-		return model.Member{}, err
+	if member.Id == 0 {
+		payments := member.PaymentHistory
+		dependents := member.Dependents
+		tags := member.MemberTags
+		newPerson, err := repo.personRepository.Save(member.Person)
+
+		if err != nil {
+			return model.Member{}, err
+		}
+
+		member.PersonId = newPerson.Id
+		member.Dependents = nil
+		member.MemberTags = nil
+		member.PaymentHistory = nil
+
+		member, err := repo.memberRepository.Save(member)
+
+		if err != nil {
+			return model.Member{}, err
+		}
+
+		for _, dependent := range dependents {
+			person := dependent.Person
+			newPerson, err := repo.personRepository.Save(person)
+
+			if err != nil {
+				return model.Member{}, err
+			}
+
+			dependent.MemberId = member.Id
+			dependent.PersonId = newPerson.Id
+
+			err = repo.dependentRepository.Save(dependent, member.Id)
+
+			if err != nil {
+				return model.Member{}, err
+			}
+		}
+
+		for _, tag := range tags {
+			tag.MemberId = member.Id
+
+			_, err = repo.memberTagRepository.Save(tag)
+
+			if err != nil {
+				return model.Member{}, err
+			}
+		}
+
+		for _, payment := range payments {
+			payment.MemberId = member.Id
+
+			err = repo.paymentHistoryRepository.Save(payment)
+
+			if err != nil {
+				return model.Member{}, err
+			}
+		}
+
+	} else {
+		person := member.Person
+		memberTags := member.MemberTags
+
+		_, err := repo.personRepository.Save(person)
+
+		if err != nil {
+			return model.Member{}, err
+		}
+
+		err = repo.memberTagRepository.DeleteByMemberId(member.Id)
+
+		if err != nil {
+			return model.Member{}, err
+		}
+
+		for _, tag := range memberTags {
+			tag.MemberId = member.Id
+
+			_, err = repo.memberTagRepository.Save(tag)
+
+			if err != nil {
+				return model.Member{}, err
+			}
+		}
+
+		err = repo.paymentHistoryRepository.UpdatePaymentHistory(member.PaymentHistory,
+			member.Id)
+
+		if err != nil {
+			return model.Member{}, err
+		}
 	}
 
-	return result, nil
+	return member, nil
 }

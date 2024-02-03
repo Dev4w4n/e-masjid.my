@@ -6,9 +6,9 @@ import (
 )
 
 type PersonRepository interface {
-	FindById(id int) (model.Person, error)
+	FindById(id int64) (model.Person, error)
 	Save(person model.Person) (model.Person, error)
-	Delete(id int) error
+	Delete(id int64) error
 }
 
 type PersonRepositoryImpl struct {
@@ -22,7 +22,7 @@ func NewPersonRepository(db *gorm.DB) PersonRepository {
 }
 
 // Delete implements PersonRepository.
-func (repo *PersonRepositoryImpl) Delete(id int) error {
+func (repo *PersonRepositoryImpl) Delete(id int64) error {
 	result := repo.Db.Where("id = ?", id).Delete(&model.Person{})
 
 	if result.Error != nil {
@@ -33,7 +33,7 @@ func (repo *PersonRepositoryImpl) Delete(id int) error {
 }
 
 // FindById implements PersonRepository.
-func (repo *PersonRepositoryImpl) FindById(id int) (model.Person, error) {
+func (repo *PersonRepositoryImpl) FindById(id int64) (model.Person, error) {
 	var person model.Person
 
 	result := repo.Db.Where("id = ?", id).Find(&person)

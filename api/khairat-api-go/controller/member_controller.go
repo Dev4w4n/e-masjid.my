@@ -26,8 +26,8 @@ func NewMemberController(engine *gin.Engine, memberService service.MemberService
 
 	engine.GET(relativePath+"/findAll", controller.FindAll)
 	engine.GET(relativePath+"/find/:id", controller.FindById)
-	engine.GET(relativePath+"/findBy/:query", controller.FindBy)
-	engine.GET(relativePath+"/findByTag/:tagId", controller.FindByTagId)
+	engine.GET(relativePath+"/findBy", controller.FindBy)
+	engine.GET(relativePath+"/findByTag", controller.FindByTagId)
 	engine.GET(relativePath+"/count", controller.CountAll)
 	engine.POST(relativePath+"/save", controller.Save)
 
@@ -67,29 +67,20 @@ func (controller *MemberController) FindById(ctx *gin.Context) {
 func (controller *MemberController) FindBy(ctx *gin.Context) {
 	log.Info().Msg("find member by")
 
-	query := ctx.Param("query")
+	query := ctx.Query("query")
 
-	if query == "*" {
-		result, err := controller.memberService.FindAllOrderbyPersonName()
+	result, err := controller.memberService.FindByQuery(query)
 
-		utils.WebError(ctx, err, "failed to retrieve member")
+	utils.WebError(ctx, err, "failed to retrieve member")
 
-		ctx.Header("Content-Type", "application/json")
-		ctx.JSON(http.StatusOK, result)
-	} else {
-		result, err := controller.memberService.FindByQuery(query)
-
-		utils.WebError(ctx, err, "failed to retrieve member")
-
-		ctx.Header("Content-Type", "application/json")
-		ctx.JSON(http.StatusOK, result)
-	}
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(http.StatusOK, result)
 }
 
 func (controller *MemberController) FindByTagId(ctx *gin.Context) {
 	log.Info().Msg("find member by tag id")
 
-	tagIdStr := ctx.Param("tagId")
+	tagIdStr := ctx.Query("tagId")
 
 	result, err := controller.memberService.FindAllByTagIdOrderByMemberName(tagIdStr)
 

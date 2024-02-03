@@ -6,7 +6,8 @@ import (
 )
 
 type MemberTagRepository interface {
-	DeleteByMemberId(memberId int) error
+	DeleteByMemberId(memberId int64) error
+	Save(memberTag model.MemberTag) (model.MemberTag, error)
 }
 
 type MemberTagRepositoryImpl struct {
@@ -20,7 +21,7 @@ func NewMemberTagRepository(db *gorm.DB) MemberTagRepository {
 }
 
 // DeleteByMemberId implements MemberTagRepository.
-func (repo *MemberTagRepositoryImpl) DeleteByMemberId(memberId int) error {
+func (repo *MemberTagRepositoryImpl) DeleteByMemberId(memberId int64) error {
 	result := repo.Db.Where("member_id = ?", memberId).Delete(&model.MemberTag{})
 
 	if result.Error != nil {
@@ -28,4 +29,15 @@ func (repo *MemberTagRepositoryImpl) DeleteByMemberId(memberId int) error {
 	}
 
 	return nil
+}
+
+// Save implements MemberTagRepository.
+func (repo *MemberTagRepositoryImpl) Save(memberTag model.MemberTag) (model.MemberTag, error) {
+	result := repo.Db.Save(&memberTag)
+
+	if result.Error != nil {
+		return model.MemberTag{}, result.Error
+	}
+
+	return memberTag, nil
 }

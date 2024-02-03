@@ -67,7 +67,7 @@ func (repo *DependentServiceImpl) Save(dependent model.Dependent, memberId int) 
 	}
 	dependent.Member = member
 
-	err = repo.dependentRepository.Save(dependent)
+	err = repo.dependentRepository.Save(dependent, int64(memberId))
 	if err != nil {
 		return err
 	}

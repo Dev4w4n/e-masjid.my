@@ -6,7 +6,7 @@ import (
 )
 
 type DependentRepository interface {
-	Save(dependent model.Dependent) error
+	Save(dependent model.Dependent, memberId int64) error
 	Delete(dependent model.Dependent) error
 	DeleteById(id int) error
 	FindById(id int) (model.Dependent, error)
@@ -59,8 +59,9 @@ func (repo *DependentRepositoryImpl) FindById(id int) (model.Dependent, error) {
 }
 
 // Save implements DependentRepository.
-func (repo *DependentRepositoryImpl) Save(dependent model.Dependent) error {
-	result := repo.Db.Create(&dependent)
+func (repo *DependentRepositoryImpl) Save(dependent model.Dependent, memberId int64) error {
+	dependent.MemberId = memberId
+	result := repo.Db.Save(&dependent)
 
 	if result.Error != nil {
 		return result.Error
@@ -73,7 +74,10 @@ func (repo *DependentRepositoryImpl) Save(dependent model.Dependent) error {
 func (repo *DependentRepositoryImpl) FindAllByMemberId(memberId int) ([]model.Dependent, error) {
 	var dependents []model.Dependent
 
-	result := repo.Db.Where("member_id = ?", memberId).Find(&dependents)
+	result := repo.Db.
+		Where("member_id = ?", memberId).
+		Preload("Person").
+		Find(&dependents)
 
 	if result.Error != nil {
 		return dependents, result.Error

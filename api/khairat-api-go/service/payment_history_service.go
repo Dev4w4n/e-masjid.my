@@ -7,8 +7,8 @@ import (
 
 type PaymentHistoryService interface {
 	Save(paymentHistory model.PaymentHistory) error
-	FindTotalMembersPaidForCurrentYear() (int, error)
-	IsCurrentYearPaymentExist(memberId int) (bool, error)
+	FindTotalMembersPaidForCurrentYear() (int64, error)
+	IsCurrentYearPaymentExist(memberId int64) (bool, error)
 }
 
 type PaymentHistoryServiceImpl struct {
@@ -22,7 +22,7 @@ func NewPaymentHistoryService(paymentHistoryRepository repository.PaymentHistory
 }
 
 // FindTotalMembersPaidForCurrentYear implements PaymentHistoryService.
-func (repo *PaymentHistoryServiceImpl) FindTotalMembersPaidForCurrentYear() (int, error) {
+func (repo *PaymentHistoryServiceImpl) FindTotalMembersPaidForCurrentYear() (int64, error) {
 	result, err := repo.paymentHistoryRepository.GetTotalMembersPaidForCurrentYear()
 
 	if err != nil {
@@ -33,7 +33,7 @@ func (repo *PaymentHistoryServiceImpl) FindTotalMembersPaidForCurrentYear() (int
 }
 
 // IsCurrentYearPaymentExist implements PaymentHistoryService.
-func (repo *PaymentHistoryServiceImpl) IsCurrentYearPaymentExist(memberId int) (bool, error) {
+func (repo *PaymentHistoryServiceImpl) IsCurrentYearPaymentExist(memberId int64) (bool, error) {
 	result, err := repo.paymentHistoryRepository.FindPaymentHistoryByMemberIdAndCurrentYear(memberId)
 
 	if err != nil {

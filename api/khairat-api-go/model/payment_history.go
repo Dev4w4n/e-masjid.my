@@ -1,8 +1,8 @@
 package model
 
 type PaymentHistory struct {
-	Id          int    `gorm:"column:id;primaryKey" json:"id"`
-	MemberId    int    `gorm:"column:member_id;primaryKey" json:"-"`
+	Id          int64  `gorm:"column:id;primaryKey" json:"id"`
+	MemberId    int64  `gorm:"column:member_id;primaryKey" json:"-"`
 	Member      Member `gorm:"foreignKey:MemberId" json:"member"`
 	Amount      int64  `gorm:"column:amount" json:"amount"`
 	PaymentDate int64  `gorm:"column:payment_date" json:"paymentDate"`

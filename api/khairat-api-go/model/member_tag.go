@@ -1,12 +1,13 @@
 package model
 
 type MemberTag struct {
-	MemberId int    `gorm:"column:member_id;primaryKey" json:"-"`
-	TagId    int    `gorm:"column:tag_id;primaryKey" json:"-"`
-	Member   Member `gorm:"foreignKey:MemberId" json:"member"`
+	Id       int64  `gorm:"column:id;primaryKey" json:"id"`
+	MemberId int64  `gorm:"column:member_id" json:"-"`
+	TagId    int64  `gorm:"column:tags_id" json:"-"`
+	Member   Member `gorm:"foreignKey:MemberId" json:"-"`
 	Tag      Tag    `gorm:"foreignKey:TagId" json:"tag"`
 }
 
 func (MemberTag) TableName() string {
-	return "member_tags"
+	return "members_tags"
 }

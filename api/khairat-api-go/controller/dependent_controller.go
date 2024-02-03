@@ -38,7 +38,16 @@ func (controller *DependentController) Save(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&saveDependent)
 	utils.WebError(ctx, err, "failed to bind JSON")
 
-	err = controller.dependentRepository.Save(saveDependent)
+	memberIdStr := ctx.Param("memberId")
+
+	memberId, err := strconv.Atoi(memberIdStr)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
+		return
+	}
+
+	err = controller.dependentRepository.Save(saveDependent, int64(memberId))
 
 	utils.WebError(ctx, err, "failed to save dependent")
 

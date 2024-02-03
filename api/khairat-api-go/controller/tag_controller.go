@@ -22,11 +22,11 @@ func NewTagController(engine *gin.Engine, repo repository.TagRepository, env *ut
 		tagRepository: repo,
 	}
 
-	relativePath := env.DeployURL + "tag"
+	relativePath := env.DeployURL + "tags"
 
-	controller.engine.GET(relativePath, controller.FindAll)
-	controller.engine.POST(relativePath, controller.Save)
-	controller.engine.DELETE(relativePath+"/:id", controller.Delete)
+	controller.engine.GET(relativePath+"/findAll", controller.FindAll)
+	controller.engine.POST(relativePath+"/save", controller.Save)
+	controller.engine.DELETE(relativePath+"/delete/:id", controller.Delete)
 
 	return controller
 }

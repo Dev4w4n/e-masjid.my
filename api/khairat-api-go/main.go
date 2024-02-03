@@ -37,6 +37,8 @@ func main() {
 		personRepository, dependentRepository,
 		memberTagRepository, paymentHistoryRepository)
 
+	paymentHistoryService := service.NewPaymentHistoryService(paymentHistoryRepository)
+
 	// CORS configuration
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{env.AllowOrigins}
@@ -51,6 +53,7 @@ func main() {
 	_ = controller.NewMemberController(r, memberService, env)
 	_ = controller.NewTagController(r, tagRepository, env)
 	_ = controller.NewDependentController(r, dependentRepository, env)
+	_ = controller.NewPaymentHistoryController(r, paymentHistoryService, env)
 
 	go func() {
 		err = r.Run(":" + env.ServerPort)
