@@ -180,7 +180,7 @@ const Daftar = () => {
   // to handle dependents table
   useEffect(() => {
     if (typeof paramId !== 'undefined') {
-      setMemberId(paramId)
+      setMemberId(parseInt(paramId, 10))
     }
     async function loadMemberData() {
       try {
@@ -428,7 +428,7 @@ const Daftar = () => {
           name: item.Nama,
           icNumber: item.No_Ic,
         },
-        hubunganId: item.Hubungan_Id,
+        hubunganId: parseInt(item.Hubungan_Id, 10),
       }
     })
     try {
@@ -496,7 +496,7 @@ const Daftar = () => {
           name: item.Nama,
           icNumber: item.No_Ic,
         },
-        hubunganId: item.Hubungan_Id,
+        hubunganId: parseInt(item.Hubungan_Id, 10),
         id: item.key,
       }
     })
