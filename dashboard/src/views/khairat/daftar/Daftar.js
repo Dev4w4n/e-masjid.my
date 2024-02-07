@@ -648,6 +648,7 @@ const Daftar = () => {
                   feedbackInvalid="Masukkan nama ahli"
                   required
                   tabIndex={1}
+                  maxLength={128}
                 />
               </div>
               <div className="mb-3">
@@ -660,6 +661,7 @@ const Daftar = () => {
                   feedbackInvalid="Masukkan No I/C ahli. Nombor sahaja"
                   required
                   tabIndex={2}
+                  maxLength={12}
                 />
               </div>
               <div className="mb-3">
@@ -672,6 +674,7 @@ const Daftar = () => {
                   feedbackInvalid="Masukkan No telefon ahli. Nombor sahaja"
                   required
                   tabIndex={3}
+                  maxLength={12}
                 />
               </div>
               <div className="mb-3">
@@ -687,7 +690,7 @@ const Daftar = () => {
                   <CAccordionBody>
                     <div className="mb-3">
                       <CFormLabel htmlFor="txtAlamat">Alamat</CFormLabel>
-                      <CFormTextarea ref={inputAlamatAhli} id="txtAlamat" rows={3}></CFormTextarea>
+                      <CFormTextarea ref={inputAlamatAhli} id="txtAlamat" rows={3} maxLength={256}></CFormTextarea>
                     </div>
                   </CAccordionBody>
                 </CAccordionItem>
@@ -701,6 +704,7 @@ const Daftar = () => {
                         type="text"
                         id="txtNamaTanggungan"
                         placeholder="Masukkan nama tanggungan"
+                        maxLength={128}
                       />
                     </div>
                     <div className="mb-3">
@@ -710,6 +714,7 @@ const Daftar = () => {
                         type="text"
                         id="txtNoIcTanggungan"
                         placeholder="Masukkan No I/C tanggungan"
+                        maxLength={12}
                       />
                     </div>
                     <div className="mb-3">
