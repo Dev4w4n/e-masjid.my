@@ -13,11 +13,14 @@ services:
 
   khairat-api:
     build:
-      context: ./api/khairat-api
+      context: ./api/khairat-api-go
     ports:
       - "8081:8081"
+    environment:
+      - GO_ENV=dev
     depends_on:
       - postgres
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "./khairat-api"]
 
   tabung-api:
     build:

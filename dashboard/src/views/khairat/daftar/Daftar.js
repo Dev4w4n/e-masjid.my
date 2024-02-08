@@ -180,7 +180,7 @@ const Daftar = () => {
   // to handle dependents table
   useEffect(() => {
     if (typeof paramId !== 'undefined') {
-      setMemberId(paramId)
+      setMemberId(parseInt(paramId, 10))
     }
     async function loadMemberData() {
       try {
@@ -428,7 +428,7 @@ const Daftar = () => {
           name: item.Nama,
           icNumber: item.No_Ic,
         },
-        hubunganId: item.Hubungan_Id,
+        hubunganId: parseInt(item.Hubungan_Id, 10),
       }
     })
     try {
@@ -496,7 +496,7 @@ const Daftar = () => {
           name: item.Nama,
           icNumber: item.No_Ic,
         },
-        hubunganId: item.Hubungan_Id,
+        hubunganId: parseInt(item.Hubungan_Id, 10),
         id: item.key,
       }
     })
@@ -648,6 +648,7 @@ const Daftar = () => {
                   feedbackInvalid="Masukkan nama ahli"
                   required
                   tabIndex={1}
+                  maxLength={128}
                 />
               </div>
               <div className="mb-3">
@@ -660,6 +661,7 @@ const Daftar = () => {
                   feedbackInvalid="Masukkan No I/C ahli. Nombor sahaja"
                   required
                   tabIndex={2}
+                  maxLength={12}
                 />
               </div>
               <div className="mb-3">
@@ -672,6 +674,7 @@ const Daftar = () => {
                   feedbackInvalid="Masukkan No telefon ahli. Nombor sahaja"
                   required
                   tabIndex={3}
+                  maxLength={12}
                 />
               </div>
               <div className="mb-3">
@@ -687,7 +690,7 @@ const Daftar = () => {
                   <CAccordionBody>
                     <div className="mb-3">
                       <CFormLabel htmlFor="txtAlamat">Alamat</CFormLabel>
-                      <CFormTextarea ref={inputAlamatAhli} id="txtAlamat" rows={3}></CFormTextarea>
+                      <CFormTextarea ref={inputAlamatAhli} id="txtAlamat" rows={3} maxLength={256}></CFormTextarea>
                     </div>
                   </CAccordionBody>
                 </CAccordionItem>
@@ -701,6 +704,7 @@ const Daftar = () => {
                         type="text"
                         id="txtNamaTanggungan"
                         placeholder="Masukkan nama tanggungan"
+                        maxLength={128}
                       />
                     </div>
                     <div className="mb-3">
@@ -710,6 +714,7 @@ const Daftar = () => {
                         type="text"
                         id="txtNoIcTanggungan"
                         placeholder="Masukkan No I/C tanggungan"
+                        maxLength={12}
                       />
                     </div>
                     <div className="mb-3">

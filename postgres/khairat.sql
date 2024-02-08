@@ -23,13 +23,16 @@ CREATE TABLE members (
     person_id INTEGER REFERENCES person(id),
     FOREIGN KEY (person_id) REFERENCES person(id)
 );
-CREATE TABLE member_tags (
+CREATE TABLE members_tags (
+    id serial PRIMARY KEY,
     member_id INTEGER REFERENCES members(id),
     tags_id INTEGER REFERENCES tags(id)
 );
 CREATE TABLE dependents (
+    id serial PRIMARY KEY,
     member_id INTEGER REFERENCES members(id),
-    person_id INTEGER REFERENCES person(id)
+    person_id INTEGER REFERENCES person(id),
+    hubungan_id int4 NULL
 );
 
 CREATE TABLE khairat_payment_history (
