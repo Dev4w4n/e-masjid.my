@@ -191,7 +191,7 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
         aria-labelledby="OptionalSizesExample1"
       >
         <CModalBody>
-          <BorangAduan ref={componentRef} />
+          <BorangAduan ref={componentRef} data={data} />
         </CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => setVisiblePrint(false)}>

@@ -45,7 +45,7 @@ const BorangAduan = forwardRef((props, ref) => {
           <h4>TARIKH : </h4>
         </CCol>
         <CCol style={{ textAlign: 'left' }}>
-          <h4>12/4/1221</h4>
+          <h4>{new Date(props.data.createDate).toLocaleString('ms-MY')}</h4>
         </CCol>
       </CRow>
 
@@ -54,7 +54,7 @@ const BorangAduan = forwardRef((props, ref) => {
           <h4>NAMA : </h4>
         </CCol>
         <CCol style={{ textAlign: 'left' }}>
-          <h4>ROHAIZAN ROOSLEY</h4>
+          <h4>{props.data.cadanganNama}</h4>
         </CCol>
       </CRow>
 
@@ -63,7 +63,7 @@ const BorangAduan = forwardRef((props, ref) => {
           <h4>EMAIL : </h4>
         </CCol>
         <CCol style={{ textAlign: 'left' }}>
-          <h4>rohaizanr@gmail.com</h4>
+          <h4>{props.data.cadanganEmail}</h4>
         </CCol>
       </CRow>
 
@@ -72,7 +72,7 @@ const BorangAduan = forwardRef((props, ref) => {
           <h4>NO TELEFON : </h4>
         </CCol>
         <CCol style={{ textAlign: 'left' }}>
-          <h4>0124062988</h4>
+          <h4>{props.data.cadanganPhone}</h4>
         </CCol>
       </CRow>
 
@@ -81,7 +81,7 @@ const BorangAduan = forwardRef((props, ref) => {
           <h4>ADUAN/CADANGAN : </h4>
         </CCol>
         <CCol style={{ textAlign: 'left' }}>
-          <h4>Dalam sub topik cadangan kajian ini, ada beberapa perkara yang ingin dicadangkan oleh penyelidik, yang mana cadangan-cadangan ini adalah dianggap</h4>
+          <h4>{props.data.cadanganText}</h4>
         </CCol>
       </CRow>
 
@@ -90,7 +90,7 @@ const BorangAduan = forwardRef((props, ref) => {
           <h4>TINDAKAN / RUMUSAN : </h4>
         </CCol>
         <CCol style={{ textAlign: 'left' }}>
-          <h4>Dalam sub topik cadangan kajian ini, ada beberapa perkara yang ingin dicadangkan oleh penyelidik, yang mana cadangan-cadangan ini adalah dianggap</h4>
+          <h4>{props.data.tindakanText}</h4>
         </CCol>
       </CRow>
 
