@@ -11,6 +11,8 @@ import {
   CButtonGroup,
 } from '@coreui/react'
 import { getCadanganById, updateCadangan } from 'src/service/cadangan/CadanganApi'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import BorangAduan from '../print/cadangan/BorangAduan'
 import { useReactToPrint } from 'react-to-print'
 
@@ -20,6 +22,7 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
   const [visibleSM, setVisibleSM] = useState(false)
   const componentRef = useRef();
   const [visiblePrint, setVisiblePrint] = useState(false)
+  
 
   const [data, setData] = useState({})
   const inputTindakan = useRef()
@@ -101,8 +104,40 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
     props.rowClickedInfo.visibleXL = false
   }
 
+  const saveCadangan = async () => {
+    var tindakanText = inputTindakan.current.value ? inputTindakan.current.value : null
+    var updateData = data
+    updateData.tindakanText = tindakanText
+    
+    try {
+      await updateCadangan(updateData, updateData.id)
+      toast.success('Maklumat telah disimpan', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      })
+    } catch (error) {
+      toast.error('Tiada akses untuk menyimpan data', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      })
+    }
+  }
+
   return (
     <>
+      <ToastContainer />
       <CModal
         size="xl"
         visible={visibleXL}
@@ -147,7 +182,7 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
           <CButton color="secondary" onClick={() => resetModal()}>
             Tutup
           </CButton>
-          <CButton color="primary">
+          <CButton color="primary" onClick={() => saveCadangan()}>
             Simpan
           </CButton>
         </CModalFooter>
