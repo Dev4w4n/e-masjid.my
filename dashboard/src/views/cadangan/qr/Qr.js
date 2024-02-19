@@ -16,13 +16,20 @@ import { cilCloudDownload } from '@coreui/icons';
 
 import { config } from 'src/Config.js';
 
+import PosterBg1 from 'src/assets/bgpattern/bg1.webp';
+import PosterBg2 from 'src/assets/bgpattern/bg2.webp';
+import PosterBg3 from 'src/assets/bgpattern/bg3.png';
+import PosterBg4 from 'src/assets/bgpattern/bg4.png';
+import PosterBg5 from 'src/assets/bgpattern/bg5.png';
+import PosterBg6 from 'src/assets/bgpattern/bg6.png';
+
 const urlPetiCadangan = config.url.PETI_CADANGAN_URL;
 
 const Qr = () => {
   const componentRef = useRef();
 
   const [fontColor, setFontColor] = useState('black');
-  const [background, setBackground] = useState('../bgpattern/greek-vase.webp');
+  const [background, setBackground] = useState(PosterBg1);
   const [templateTitle, setTemplateTitle] = useState('Latar Belakang 1');
   const [selectedOption, setSelectedOption] = useState(1);
   const [instructCircleColor, setInstructCircleColor] = useState('black');
@@ -35,7 +42,7 @@ const Qr = () => {
       "fontColor": "black",
       "instructCircleColor": "black",
       "instructNumberColor": "white",
-      "relativePath": "../bgpattern/greek-vase.webp"
+      "relativePath": PosterBg1
     },
     {
       "id": 2,
@@ -43,7 +50,7 @@ const Qr = () => {
       "fontColor": "white",
       "instructCircleColor": "black",
       "instructNumberColor": "white",
-      "relativePath": "../bgpattern/fancy-cushion.webp"
+      "relativePath": PosterBg2
     },
     {
       "id": 3,
@@ -51,7 +58,7 @@ const Qr = () => {
       "fontColor": "tomato",
       "instructCircleColor": "black",
       "instructNumberColor": "white",
-      "relativePath": "../bgpattern/halftone-yellow.png"
+      "relativePath": PosterBg3
     },
     {
       "id": 4,
@@ -59,7 +66,7 @@ const Qr = () => {
       "fontColor": "SlateBlue",
       "instructCircleColor": "black",
       "instructNumberColor": "white",
-      "relativePath": "../bgpattern/light-veneer.png"
+      "relativePath": PosterBg4
     },
     {
       "id": 5,
@@ -67,7 +74,7 @@ const Qr = () => {
       "fontColor": "LemonChiffon",
       "instructCircleColor": "black",
       "instructNumberColor": "white",
-      "relativePath": "../bgpattern/oriental-tiles.png"
+      "relativePath": PosterBg5
     },
     {
       "id": 6,
@@ -75,7 +82,7 @@ const Qr = () => {
       "fontColor": "WhiteSmoke",
       "instructCircleColor": "black",
       "instructNumberColor": "white",
-      "relativePath": "../bgpattern/grey_wash_wall.png"
+      "relativePath": PosterBg6
     }
   ];
 
