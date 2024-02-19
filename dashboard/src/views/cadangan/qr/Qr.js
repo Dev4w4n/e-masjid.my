@@ -21,58 +21,71 @@ const urlPetiCadangan = config.url.PETI_CADANGAN_URL;
 const Qr = () => {
   const componentRef = useRef();
 
-  //const [fixedTemplates, setFixedTemplate] = useState([]);
   const [fontColor, setFontColor] = useState('black');
   const [background, setBackground] = useState('../bgpattern/greek-vase.webp');
-  const [templateTitle, setTemplateTitle] = useState('Style 1');
+  const [templateTitle, setTemplateTitle] = useState('Latar Belakang 1');
   const [selectedOption, setSelectedOption] = useState(1);
+  const [instructCircleColor, setInstructCircleColor] = useState('black');
+  const [instructNumberColor, setInstructNumberColor] = useState('white');
 
   const templates = [
     {
       "id": 1,
-      "name": "Style 1",
+      "name": "Latar Belakang 1",
       "fontColor": "black",
+      "instructCircleColor": "black",
+      "instructNumberColor": "white",
       "relativePath": "../bgpattern/greek-vase.webp"
     },
     {
       "id": 2,
-      "name": "Style 2",
+      "name": "Latar Belakang 2",
       "fontColor": "white",
+      "instructCircleColor": "black",
+      "instructNumberColor": "white",
       "relativePath": "../bgpattern/fancy-cushion.webp"
     },
     {
       "id": 3,
-      "name": "Style 3",
+      "name": "Latar Belakang 3",
       "fontColor": "tomato",
+      "instructCircleColor": "black",
+      "instructNumberColor": "white",
       "relativePath": "../bgpattern/halftone-yellow.png"
     },
     {
       "id": 4,
-      "name": "Style 4",
+      "name": "Latar Belakang 4",
       "fontColor": "SlateBlue",
+      "instructCircleColor": "black",
+      "instructNumberColor": "white",
       "relativePath": "../bgpattern/light-veneer.png"
     },
     {
       "id": 5,
-      "name": "Style 5",
+      "name": "Latar Belakang 5",
       "fontColor": "LemonChiffon",
+      "instructCircleColor": "black",
+      "instructNumberColor": "white",
       "relativePath": "../bgpattern/oriental-tiles.png"
     },
     {
       "id": 6,
-      "name": "Style 6",
+      "name": "Latar Belakang 6",
       "fontColor": "WhiteSmoke",
+      "instructCircleColor": "black",
+      "instructNumberColor": "white",
       "relativePath": "../bgpattern/grey_wash_wall.png"
     }
   ];
 
   const printableStyles = {
     position: 'relative',
-    width: '210mm',
-    height: '297mm',
+    width: '210mm', /* A4 width */
+    height: '297mm',  /* A4 height */
     maxHeight: '297mm',
-    maxWidth: '210mm', /* A4 width */
-    overflow: 'hidden', /* Ensure the image doesn't overflow */
+    maxWidth: '210mm', 
+    overflow: 'hidden',
   };
 
   const backgroundStyles = {
@@ -82,22 +95,23 @@ const Qr = () => {
   };
 
   const overlay = {
-    position: 'absolute', /* Position the overlay relative to its containing element */
-    left: '50%', /* Center horizontally */
-    transform: 'translate(-50%, -50%)', /* Center the overlay */
-    zIndex: '1', /* Ensure the overlay appears above the image */
+    position: 'absolute',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    zIndex: '1',
   };
 
   const overlayContainer = {
     ...overlay,
-    top: '50%', /* Center vertically */
+    top: '50%',
   };
 
   const qr = {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)', /* Semi-transparent white background */
-    padding: '10px', /* Add padding to the overlay content */
-    borderRadius: '10px', /* Add rounded corners */
-    border: '1px solid #ccc',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    padding: '10px',
+    borderRadius: '10px',
+    border: '1px solid', 
+    borderColor: `${fontColor}`,
     width: '100%',
   };
 
@@ -106,7 +120,7 @@ const Qr = () => {
     top: '10%',
     color: `${fontColor}`,
     fontWeight: 'bold',
-    fontSize: '100px',
+    fontSize: '105px',
     width: '95%',
     textAlign: 'center',
   };
@@ -131,6 +145,7 @@ const Qr = () => {
     textAlign: 'center',
     border: '1px solid #ccc',
     padding: '5px',
+    borderRadius: '10px', 
   };
 
   const handleExportAsPNG = () => {
@@ -147,12 +162,81 @@ const Qr = () => {
     }
   };
 
-  // Function to handle option button click
   const handleOptionClick = (option) => {
     setSelectedOption(option);
     setBackground(templates[option - 1].relativePath);
     setFontColor(templates[option - 1].fontColor);
     setTemplateTitle(templates[option - 1].name);
+    setInstructCircleColor(templates[option - 1].instructCircleColor);
+    setInstructNumberColor(templates[option - 1].instructNumberColor);
+  };
+
+  const drawCircle = (number, text, leftPosition) => {
+    const instruction = {
+      position: 'absolute', 
+      left: leftPosition, 
+      transform: 'translate(-50%, -50%)',
+      zIndex: '2',
+      top: '80%',
+      display: 'flex',
+      color: `${fontColor}`,
+      width: '18%',
+      height: '14%',
+      flexWrap: 'wrap',
+      fontWeight: 'bold',
+      fontSize: '16px',
+    };
+  
+    const circle = {
+      display: 'flex',
+      width: '60px',
+      height: '60px',
+      backgroundColor: `${instructCircleColor}`,
+      borderRadius: '50%',
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      fontWeight: 'bold',
+      fontSize: '30px',
+      color: `${instructNumberColor}`,
+      border: '5px solid', 
+      borderColor: `${fontColor}`,
+    };
+
+    return (
+      <div style={instruction}>
+        <CContainer>
+          <CRow>
+            <CCol>
+            <div style={{position: 'absolute',transform: 'translate(-50%, -50%)',left:'50%', top:'20%'}}>
+              <div style={circle}>{number}</div>
+              </div>
+            </CCol>
+          </CRow>
+          <CRow >
+            <CCol>
+            <div style={{position: 'absolute',transform: 'translate(-50%, -50%)',left:'50%', top:'70%'}}>
+              <br />
+              <div style={{textAlign:'center'}}>{text}</div>
+              </div>
+            </CCol>
+          </CRow>
+        </CContainer>
+      </div>
+    );
+  };
+
+  const lineConnectingCircles = () => {
+    const lineStyle = {
+      position: 'absolute',
+      backgroundColor: `${fontColor}`,
+      height: '1px',
+      width: '70%',
+      top:'76%',
+      left: '15%',
+      zIndex: '1',
+    };
+  
+    return <div style={lineStyle}></div>;
   };
 
   return (
@@ -183,9 +267,18 @@ const Qr = () => {
                         <CCol>
                           <div style={overlayContainer}>
                             <div style={qr}>
-                              <QRCode value={urlPetiCadangan} className="img-fluid" />
+                              <QRCode value={urlPetiCadangan} className="img-fluid" size="400" />
                             </div>
                           </div>
+                        </CCol>
+                      </CRow>
+                      <CRow>
+                        <CCol>
+                        {drawCircle(1, 'SCAN QR CODE DI ATAS', '15%')}
+                        {drawCircle(2, 'TULISKAN CADANGAN/ ADUAN', '38%')}
+                        {drawCircle(3, 'ISI MAKLUMAT JIKA INGIN DIHUBUNGI', '62%')}
+                        {drawCircle(4, 'TEKAN HANTAR', '85%')}
+                        {lineConnectingCircles ()}
                         </CCol>
                       </CRow>
                       <CRow>
@@ -205,11 +298,9 @@ const Qr = () => {
                         color="light"
                         onClick={() => handleOptionClick(button.id)}
                         active={selectedOption === button.id}
-                        key={button.id}
-                      >
+                        key={button.id}>
                         <CImage src={button.relativePath} className="rounded-circle" alt={button.name} width="30" height="30" />
                       </CButton>
-
                     ))}
                     </div>
                     <p />
@@ -220,10 +311,8 @@ const Qr = () => {
                 </CCol>
               </CRow>
             </CContainer>
-
           </CCardBody>
         </CCard>
-
       </CCol>
     </CRow>
   );
