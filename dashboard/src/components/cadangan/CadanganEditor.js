@@ -11,14 +11,25 @@ import {
   CButtonGroup,
 } from '@coreui/react'
 import { getCadanganById, updateCadangan } from 'src/service/cadangan/CadanganApi'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import BorangAduan from '../print/cadangan/BorangAduan'
+import { useReactToPrint } from 'react-to-print'
 
 const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
   const [confirmText, setConfirmText] = useState('')
   const [visibleXL, setVisibleXL] = useState(false)
   const [visibleSM, setVisibleSM] = useState(false)
+  const componentRef = useRef();
+  const [visiblePrint, setVisiblePrint] = useState(false)
   
+
   const [data, setData] = useState({})
   const inputTindakan = useRef()
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
   useEffect(() => {
     async function loadData() {
@@ -93,8 +104,40 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
     props.rowClickedInfo.visibleXL = false
   }
 
+  const saveCadangan = async () => {
+    var tindakanText = inputTindakan.current.value ? inputTindakan.current.value : null
+    var updateData = data
+    updateData.tindakanText = tindakanText
+    
+    try {
+      await updateCadangan(updateData, updateData.id)
+      toast.success('Maklumat telah disimpan', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      })
+    } catch (error) {
+      toast.error('Tiada akses untuk menyimpan data', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      })
+    }
+  }
+
   return (
     <>
+      <ToastContainer />
       <CModal
         size="xl"
         visible={visibleXL}
@@ -130,10 +173,16 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
           </CForm>
         </CModalBody>
         <CModalFooter>
+          <CButton color="secondary" onClick={() => {
+              setVisibleXL(false)
+              setVisiblePrint(true)
+            }}>
+            Cetak
+          </CButton>
           <CButton color="secondary" onClick={() => resetModal()}>
             Tutup
           </CButton>
-          <CButton color="primary">
+          <CButton color="primary" onClick={() => saveCadangan()}>
             Simpan
           </CButton>
         </CModalFooter>
@@ -168,6 +217,22 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
           >
             Ya
           </CButton>
+        </CModalFooter>
+      </CModal>
+      <CModal
+        size="xl"
+        visible={visiblePrint}
+        onClose={() => setVisiblePrint(false)}
+        aria-labelledby="OptionalSizesExample1"
+      >
+        <CModalBody>
+          <BorangAduan ref={componentRef} data={data} />
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setVisiblePrint(false)}>
+            Tutup
+          </CButton>
+          <CButton onClick={handlePrint} color="primary">Cetak</CButton>
         </CModalFooter>
       </CModal>
     </>

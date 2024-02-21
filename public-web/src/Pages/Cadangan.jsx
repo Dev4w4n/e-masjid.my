@@ -23,7 +23,6 @@ export default function Cadangan() {
   const [emailError, setEmailError] = useState('');
   const inputCadangan = useRef();
   const inputNama = useRef();
-  const inputPhone = useRef(null);
   const inputEmail = useRef(null);
 
   const handleNextClick = () => {
@@ -88,8 +87,8 @@ export default function Cadangan() {
   const handleSubmitClick = async () => {
     try {
       const nama = inputNama.current.value ? inputNama.current.value : null;
-      const emailValue = inputEmail.current ? inputEmail.current.value : null;
-      const phoneValue = inputPhone.current ? inputPhone.current.value : null;
+      const emailValue = email ? email : null;
+      const phoneValue = phoneNumber ? phoneNumber : null;
 
       const json ={
         "cadanganType": {
