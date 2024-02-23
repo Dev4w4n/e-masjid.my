@@ -27,3 +27,42 @@
   flex-wrap: wrap;
   white-space: nowrap;
 }
+
+//-------QR Code-------
+.panel {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 400px;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  overflow: hidden;
+  transition: all 0.5s ease;
+  z-index: 5;
+}
+
+.panel.open {
+  height: 70%;
+}
+
+.toggleButton {
+  width: 100%;
+  padding: 10px;
+  background-color: #2f64c7;
+  border: none;
+  cursor: pointer;
+  color:azure;
+}
+
+.panelContent {
+  height: 0;
+  overflow: hidden;
+}
+
+.panelContent.open {
+   height: 100%;
+ }
+ .panelContent.close {
+  height: 0;
+}
