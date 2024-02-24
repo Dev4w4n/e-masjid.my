@@ -22,8 +22,8 @@ import { HexColorPicker } from 'react-colorful';
 
 import { config } from 'src/Config.js';
 
-import PosterBg1 from 'src/assets/bgpattern/bg1.webp';
-import PosterBg2 from 'src/assets/bgpattern/bg2.webp';
+import PosterBg1 from 'src/assets/bgpattern/bg1.png';
+import PosterBg2 from 'src/assets/bgpattern/bg2.png';
 import PosterBg3 from 'src/assets/bgpattern/bg3.png';
 import PosterBg4 from 'src/assets/bgpattern/bg4.png';
 import PosterBg5 from 'src/assets/bgpattern/bg5.png';
@@ -58,7 +58,7 @@ const Qr = () => {
   //changable text
   const [titleValue, setTitleValue] = useState('SCAN DI SINI');
   const [descriptionValue, setDescriptionValue] = useState('PETI CADANGAN ONLINE');
-  const [footerValue, setFooterValue] = useState('AHLI JAWATANKUASA MASJID JAMEK SUNGAI RAMBAI, BUKIT MERTAJAM, PULAU PINANG');
+  const [footerValue, setFooterValue] = useState('AHLI JAWATANKUASA MASJID DEMO');
 
   //title
   const [titleFont, setTitleFont] = useState('');
@@ -579,7 +579,7 @@ const Qr = () => {
                                 aria-selected={activeKey === 3}
                                 onClick={() => setActiveKey(3)}
                               >
-                                Pengaki
+                                Nota Kaki
                               </CNavLink>
                             </CNavItem>
                           </CNav>
