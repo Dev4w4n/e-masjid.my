@@ -35,7 +35,7 @@ func (repo *TabungTypeRepositoryImpl) FindAll() ([]model.TabungType, error) {
 
 // Save implements TabungTypeRepository.
 func (repo *TabungTypeRepositoryImpl) Save(tabungType model.TabungType) error {
-	result := repo.Db.Save(tabungType)
+	result := repo.Db.Save(&tabungType)
 
 	if result.Error != nil {
 		return result.Error

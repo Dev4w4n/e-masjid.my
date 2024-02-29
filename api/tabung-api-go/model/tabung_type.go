@@ -1,7 +1,7 @@
 package model
 
 type TabungType struct {
-	Id   int64  `gorm:"column:id;primary_key" json:"id"`
+	Id   int64  `gorm:"column:id;primaryKey" json:"id"`
 	Name string `gorm:"column:name" json:"name"`
 }
 
