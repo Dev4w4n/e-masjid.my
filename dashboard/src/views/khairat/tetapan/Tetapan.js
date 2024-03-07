@@ -145,6 +145,26 @@ const Tetapan = () => {
                   <CTable columns={columns} items={tags} responsive="lg" />
                 </CAccordionBody>
               </CAccordionItem>
+              <CAccordionItem>
+                <CAccordionHeader>Import data</CAccordionHeader>
+                <CAccordionBody>
+                  <div className="mb-3">
+                    <CFormLabel htmlFor="txtNoHp">Sila pilih fail untuk di import ke modul khairat</CFormLabel>
+                    <CFormInput
+                      maxLength={12}
+                      ref={inputName}
+                      type="text"
+                      id="txtNoHp"
+                      placeholder="Nama tag"
+                    />
+                  </div>
+                  <div className="d-grid gap-2">
+                    <CButton color="primary" size="sm" onClick={addTag}>
+                      Import
+                    </CButton>
+                  </div>
+                </CAccordionBody>
+              </CAccordionItem>
             </CAccordion>
           </CCardBody>
         </CCard>
