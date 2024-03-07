@@ -11,7 +11,7 @@ import {
   CNavItem,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilMenu } from '@coreui/icons'
+import { cilMenu, cilBook } from '@coreui/icons'
 
 import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from './header/index'
@@ -33,6 +33,13 @@ const AppHeader = () => {
           <CNavItem>
             <CNavLink to="/dashboard" component={NavLink}>
               Dashboard
+            </CNavLink>
+          </CNavItem>
+        </CHeaderNav>
+        <CHeaderNav className="ms-auto">
+          <CNavItem>
+            <CNavLink href="https://docs.e-masjid.my" target="_blank" rel="noopener noreferrer">
+              <CIcon icon={cilBook} size="lg" /> Bahan Rujukan 
             </CNavLink>
           </CNavItem>
         </CHeaderNav>
