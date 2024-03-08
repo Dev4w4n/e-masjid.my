@@ -70,59 +70,6 @@ This will automatically build all the APIs, and run the docker-compose file wher
 
 Once the containers are up, you may stop any of the containers depending on what you will be working on to free up your local resources.
 
-## Gradle Build
-
-You may utilise ./gradlew (or gradlew.bat on windows) provided to configure/execute your build. The commands below will show available tasks on gradle:
-
-```sh
-./gradlew task
-
-./gradlew task --all
-```
-
-### Gradle build for each backend modules
-
-As seen in the output of the aforementioned `./gradlew task --all`, you may execute builds separately for each of the backend modules. Each backend modules are written in Spring boot, so you may use org.springframework.boot plugin as below:
-
-```sh
-./gradlew api:tabung-api:bootRun --args='--spring.profiles.active=local'
-```
-
-You may also generate the Jar file separately for the use with docker-compose. Follow the step below to generate Jar:
-
-```sh
-./gradlew api:tabung-api:bootJar
-```
-
-### The ultimateBuild
-
-To facilitate the build for overall project, there is ultimateBuild. ultimateBuild can be triggered by:
-
-```sh
-./gradlew ultimateBuild
-```
-
-The ultimateBuild was written as such:
-
-```groovy
-task ultimateBuild( type: Task,
-        dependsOn: ["api:buildapi","dashboard:publish","public-web:publish"]
-        ) {
-    description="Build all programs"
-    
-    doLast {
-        println  "build completed"
-    }
-}
-```
-
-Where: 
-  - `api:buildapi` builds all of the api projects, compile and package included.
-  - `dashboard:publish` compiles the dashboard and render its distribution files.
-  - `public-web:publish` compiles the public-web and render its distribution files.
-
-
-
 ## Contributing guide
 
 Please fork this repo and submit your Pull Request.
