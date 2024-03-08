@@ -14,10 +14,12 @@ import {
   CFormLabel,
   CFormInput,
   CSpinner,
+  CInputGroup,
 } from '@coreui/react'
 import { getTags, saveTag, deleteTag } from 'src/service/khairat/TagsApi'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { isValidCSV } from 'src/utils/Helpers'
 
 const columns = [
   {
@@ -34,8 +36,11 @@ const Tetapan = () => {
   const [tags, setTags] = useState([])
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
+  const [loadingFile, setLoadingFile] = useState(false)
+  const [csvFile, setCsvFile] = useState('')
   const [error, setError] = useState(null)
   const inputName = useRef()
+  const fileInput = useRef()
 
   useEffect(() => {
     async function fetchTags() {
@@ -102,6 +107,29 @@ const Tetapan = () => {
     }
   }
 
+  useEffect(() => {
+    
+    if (csvFile) {
+      isValidCSV(csvFile) ? console.log("valid csv") : console.log("invalid csv");
+      console.log("csvFile", csvFile);
+    }
+
+  },[csvFile])
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const contents = e.target.result;
+      setCsvFile(contents);
+
+
+    };
+
+    reader.readAsText(file);
+  };
+
   if (loading) {
     return <div><CSpinner color="primary" /></div>
   }
@@ -146,22 +174,41 @@ const Tetapan = () => {
                 </CAccordionBody>
               </CAccordionItem>
               <CAccordionItem>
-                <CAccordionHeader>Import data</CAccordionHeader>
+                <CAccordionHeader>Import masuk data</CAccordionHeader>
                 <CAccordionBody>
                   <div className="mb-3">
-                    <CFormLabel htmlFor="txtNoHp">Sila pilih fail untuk di import ke modul khairat</CFormLabel>
+                    <CFormLabel htmlFor="txtNoHp">
+                      Sila pilih fail untuk di import ke modul Khairat <br />
+                      Contoh fail: <a href="/downloads/import.csv">import.csv</a>
+                    </CFormLabel>
+                    <CInputGroup className="mb-3">
                     <CFormInput
-                      maxLength={12}
-                      ref={inputName}
-                      type="text"
-                      id="txtNoHp"
-                      placeholder="Nama tag"
+                      ref={fileInput}
+                      id="txtFileUpload"
+                      placeholder="Nama fail..."
+                      aria-label="Nama fail..."
+                      aria-describedby="button-addon2"
+                      type="file"
+                      accept='text/csv'
+                      onChange={handleFileUpload}
                     />
-                  </div>
-                  <div className="d-grid gap-2">
-                    <CButton color="primary" size="sm" onClick={addTag}>
-                      Import
+                    <CButton
+                      onClick={() => {}}
+                      type="button"
+                      color="info"
+                      variant="outline"
+                      id="button-addon2"
+                    >
+                      {loadingFile ? (
+                        <>
+                          <CSpinner size="sm" color="primary" /> 
+                          <span> Sila tunggu</span>
+                        </>
+                      ) : (
+                        "Muat naik"
+                      )}
                     </CButton>
+                  </CInputGroup>
                   </div>
                 </CAccordionBody>
               </CAccordionItem>
