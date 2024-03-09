@@ -3,6 +3,7 @@ const prod = {
       BUILD: 'v1.3-beta.1',
     },
     url: {
+      TETAPAN_API_BASE_URL: 'https://www.e-masjid.my/api',
       CADANGAN_API_BASE_URL: 'https://www.e-masjid.my/api',
       TETAPAN_API_BASE_URL: 'https://www.e-masjid.my/api',
     },
