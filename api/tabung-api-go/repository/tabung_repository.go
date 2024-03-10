@@ -8,7 +8,7 @@ import (
 type TabungRepository interface {
 	FindAll() ([]model.Tabung, error)
 	FindById(id int64) (model.Tabung, error)
-	Save(tabung model.Tabung) error
+	Save(tabung model.Tabung) (model.Tabung, error)
 	Delete(id int64) error
 }
 
@@ -25,7 +25,9 @@ func NewTabungRepository(db *gorm.DB) TabungRepository {
 // FindAll implements TabungRepository.
 func (repo *TabungRepositoryImpl) FindAll() ([]model.Tabung, error) {
 	var tabungList []model.Tabung
-	result := repo.Db.Find(&tabungList)
+	result := repo.Db.
+		Preload("TabungType").
+		Find(&tabungList)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -37,7 +39,9 @@ func (repo *TabungRepositoryImpl) FindAll() ([]model.Tabung, error) {
 // FindById implements TabungRepository.
 func (repo *TabungRepositoryImpl) FindById(id int64) (model.Tabung, error) {
 	var tabung model.Tabung
-	result := repo.Db.First(&tabung, "id = ?", id)
+	result := repo.Db.
+		Preload("TabungType").
+		First(&tabung, "id = ?", id)
 
 	if result.Error != nil {
 		return model.Tabung{}, result.Error
@@ -47,14 +51,20 @@ func (repo *TabungRepositoryImpl) FindById(id int64) (model.Tabung, error) {
 }
 
 // Save implements TabungRepository.
-func (repo *TabungRepositoryImpl) Save(tabung model.Tabung) error {
-	result := repo.Db.Save(tabung)
+func (repo *TabungRepositoryImpl) Save(tabung model.Tabung) (model.Tabung, error) {
+	result := repo.Db.Save(&tabung)
 
 	if result.Error != nil {
-		return result.Error
+		return model.Tabung{}, result.Error
 	}
 
-	return nil
+	tabung, err := repo.FindById(tabung.Id)
+
+	if err != nil {
+		return model.Tabung{}, err
+	}
+
+	return tabung, nil
 }
 
 // Delete implements TabungRepository.

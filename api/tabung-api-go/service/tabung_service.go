@@ -8,7 +8,7 @@ import (
 type TabungService interface {
 	FindAll() ([]model.Tabung, error)
 	FindById(id int64) (model.Tabung, error)
-	Save(tabung model.Tabung) error
+	Save(tabung model.Tabung) (model.Tabung, error)
 	Delete(id int64) error
 }
 
@@ -33,7 +33,7 @@ func (service *TabungServiceImpl) FindById(id int64) (model.Tabung, error) {
 }
 
 // Save implements TabungService.
-func (service *TabungServiceImpl) Save(tabung model.Tabung) error {
+func (service *TabungServiceImpl) Save(tabung model.Tabung) (model.Tabung, error) {
 	return service.tabungRepository.Save(tabung)
 }
 

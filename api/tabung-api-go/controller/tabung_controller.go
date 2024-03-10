@@ -63,11 +63,11 @@ func (controller *TabungController) Save(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&tabung)
 	utils.InternalServerError(ctx, err, "failed to bind JSON")
 
-	err = controller.tabungService.Save(tabung)
+	tabung, err = controller.tabungService.Save(tabung)
 	utils.InternalServerError(ctx, err, "failed to save tabung")
 
 	ctx.Header("Content-Type", "application/json")
-	ctx.Status(http.StatusOK)
+	ctx.JSON(http.StatusOK, tabung)
 }
 
 func (controller *TabungController) Delete(ctx *gin.Context) {
