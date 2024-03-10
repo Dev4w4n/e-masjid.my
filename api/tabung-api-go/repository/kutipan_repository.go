@@ -9,7 +9,7 @@ type KutipanRepository interface {
 	FindAllByTabungId(tabungId int64) ([]model.Kutipan, error)
 	FindAllByTabungIdBetweenCreateDate(tabungId int64, fromDate int64, toDate int64) ([]model.Kutipan, error)
 	FindById(id int64) (model.Kutipan, error)
-	Save(kutipan model.Kutipan) error
+	Save(kutipan model.Kutipan) (model.Kutipan, error)
 }
 
 type KutipanRepositoryImpl struct {
@@ -49,22 +49,42 @@ func (repo *KutipanRepositoryImpl) FindAllByTabungIdBetweenCreateDate(tabungId i
 // FindById implements KutipanRepository.
 func (repo *KutipanRepositoryImpl) FindById(id int64) (model.Kutipan, error) {
 	var kutipan model.Kutipan
-	result := repo.Db.First(&kutipan, "id = ?", id)
+	result := repo.Db.
+		Preload("Tabung.TabungType").
+		First(&kutipan, "id = ?", id)
 
 	if result.Error != nil {
 		return model.Kutipan{}, result.Error
 	}
 
+	kutipan.Total = float64(kutipan.Total1c)*0.01 +
+		float64(kutipan.Total5c)*0.05 +
+		float64(kutipan.Total10c)*0.1 +
+		float64(kutipan.Total20c)*0.2 +
+		float64(kutipan.Total50c)*0.5 +
+		float64(kutipan.Total1d) +
+		float64(kutipan.Total5d)*5 +
+		float64(kutipan.Total10d)*10 +
+		float64(kutipan.Total20d)*20 +
+		float64(kutipan.Total50d)*50 +
+		float64(kutipan.Total100d)*100
+
 	return kutipan, nil
 }
 
 // Save implements KutipanRepository.
-func (repo *KutipanRepositoryImpl) Save(kutipan model.Kutipan) error {
-	result := repo.Db.Save(kutipan)
+func (repo *KutipanRepositoryImpl) Save(kutipan model.Kutipan) (model.Kutipan, error) {
+	result := repo.Db.Save(&kutipan)
 
 	if result.Error != nil {
-		return result.Error
+		return model.Kutipan{}, result.Error
 	}
 
-	return nil
+	kutipan, err := repo.FindById(kutipan.Id)
+
+	if err != nil {
+		return model.Kutipan{}, err
+	}
+
+	return kutipan, nil
 }

@@ -84,15 +84,15 @@ func (controller *KutipanController) FindById(ctx *gin.Context) {
 }
 
 func (controller *KutipanController) Save(ctx *gin.Context) {
-	log.Info().Msg("save kutipan type")
+	log.Info().Msg("save kutipan")
 
 	kutipan := model.Kutipan{}
 	err := ctx.ShouldBindJSON(&kutipan)
 	utils.InternalServerError(ctx, err, "failed to bind JSON")
 
-	err = controller.kutipanService.Save(kutipan)
+	kutipan, err = controller.kutipanService.Save(kutipan)
 	utils.InternalServerError(ctx, err, "failed to save kutipan")
 
 	ctx.Header("Content-Type", "application/json")
-	ctx.Status(http.StatusOK)
+	ctx.JSON(http.StatusOK, kutipan)
 }

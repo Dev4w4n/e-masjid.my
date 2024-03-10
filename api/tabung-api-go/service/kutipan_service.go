@@ -9,7 +9,7 @@ type KutipanService interface {
 	FindAllByTabungId(id int64) ([]model.Kutipan, error)
 	FindAllByTabungIdBetweenCreateDate(id int64, fromDate int64, toDate int64) ([]model.Kutipan, error)
 	FindById(id int64) (model.Kutipan, error)
-	Save(kutipan model.Kutipan) error
+	Save(kutipan model.Kutipan) (model.Kutipan, error)
 }
 
 type KutipanServiceImpl struct {
@@ -38,6 +38,6 @@ func (service *KutipanServiceImpl) FindById(id int64) (model.Kutipan, error) {
 }
 
 // Save implements KutipanService.
-func (service *KutipanServiceImpl) Save(kutipan model.Kutipan) error {
+func (service *KutipanServiceImpl) Save(kutipan model.Kutipan) (model.Kutipan, error) {
 	return service.kutipanRepository.Save(kutipan)
 }

@@ -27,8 +27,13 @@ func main() {
 	}
 
 	tabungTypeRepository := repository.NewTabungTypeRepository(db)
-
 	tabungTypeService := service.NewTabungTypeService(tabungTypeRepository)
+
+	tabungRepository := repository.NewTabungRepository(db)
+	tabungService := service.NewTabungService(tabungRepository)
+
+	kutipanRepository := repository.NewKutipanRepository(db)
+	kutipanService := service.NewKutipanService(kutipanRepository)
 
 	// CORS configuration
 	config := cors.DefaultConfig()
@@ -42,6 +47,8 @@ func main() {
 	r.Use(cors.New(config))
 
 	_ = controller.NewTabungTypeController(r, tabungTypeService, env)
+	_ = controller.NewTabungController(r, tabungService, env)
+	_ = controller.NewKutipanController(r, kutipanService, env)
 
 	go func() {
 		err = r.Run(":" + env.ServerPort)
