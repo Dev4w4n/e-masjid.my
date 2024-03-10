@@ -19,7 +19,7 @@ import {
 import { getTags, saveTag, deleteTag, saveMemberCsv } from 'src/service/khairat/TagsApi'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { isValidCSV } from 'src/utils/Helpers'
+import { isValidKhairatCSV } from 'src/utils/Helpers'
 
 const columns = [
   {
@@ -114,13 +114,18 @@ const Tetapan = () => {
 
   useEffect(() => {
     if (csvFile) {
-      if (isValidCSV(csvFile)) {
+      if (isValidKhairatCSV(csvFile)) {
         setCsvUploadButtonStyle({
           disabled: false,
           color: 'primary',
           variant: 'outline',
         })
       } else {
+        setCsvUploadButtonStyle({
+          disabled: true,
+          color: 'light',
+          variant: 'outline',
+        })
         toast.error('File CSV tidak sah. Sila cuba sekali lagi.', {
           draggable: true,
           position: 'top-center',
@@ -135,16 +140,16 @@ const Tetapan = () => {
     }
   },[csvFile])
 
-  const handleFileUpload = (event) => {
+  const handleChooseFile = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
 
     reader.onload = (e) => {
       const contents = e.target.result;
-      setCsvFile(contents);
-    };
+      setCsvFile(contents)
+    }
 
-    reader.readAsText(file);
+    reader.readAsText(file)
   };
 
   if (loading) {
@@ -207,7 +212,7 @@ const Tetapan = () => {
                       aria-describedby="button-addon2"
                       type="file"
                       accept='text/csv'
-                      onChange={handleFileUpload}
+                      onChange={handleChooseFile}
                     />
                     <CButton
                       disabled={csvUploadButtonStyle.disabled}

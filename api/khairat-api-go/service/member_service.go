@@ -216,7 +216,12 @@ func (repo *MemberServiceImpl) Save(member model.Member) (model.Member, error) {
 }
 
 func (repo *MemberServiceImpl) SaveBulk(members []model.Member) (bool, error) {
-	// return repo.memberRepository.SaveBulk(cvs)
+	for _, member := range members {
+		_, err := repo.Save(member)
+		if err != nil {
+			return false, err
+		}
+	}
 
 	return true, nil
 }
