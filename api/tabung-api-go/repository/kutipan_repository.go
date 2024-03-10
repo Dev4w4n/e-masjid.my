@@ -25,10 +25,18 @@ func NewKutipanRepository(db *gorm.DB) KutipanRepository {
 // FindAllByTabungId implements KutipanRepository.
 func (repo *KutipanRepositoryImpl) FindAllByTabungId(tabungId int64) ([]model.Kutipan, error) {
 	var kutipanList []model.Kutipan
-	result := repo.Db.Find(&kutipanList)
+	result := repo.Db.
+		Where("tabung_id = ?", tabungId).
+		Preload("Tabung.TabungType").
+		Find(&kutipanList)
 
 	if result.Error != nil {
 		return nil, result.Error
+	}
+
+	for i, kutipan := range kutipanList {
+		sumTotal(&kutipan)
+		kutipanList[i] = kutipan
 	}
 
 	return kutipanList, nil
@@ -57,17 +65,7 @@ func (repo *KutipanRepositoryImpl) FindById(id int64) (model.Kutipan, error) {
 		return model.Kutipan{}, result.Error
 	}
 
-	kutipan.Total = float64(kutipan.Total1c)*0.01 +
-		float64(kutipan.Total5c)*0.05 +
-		float64(kutipan.Total10c)*0.1 +
-		float64(kutipan.Total20c)*0.2 +
-		float64(kutipan.Total50c)*0.5 +
-		float64(kutipan.Total1d) +
-		float64(kutipan.Total5d)*5 +
-		float64(kutipan.Total10d)*10 +
-		float64(kutipan.Total20d)*20 +
-		float64(kutipan.Total50d)*50 +
-		float64(kutipan.Total100d)*100
+	sumTotal(&kutipan)
 
 	return kutipan, nil
 }
@@ -87,4 +85,18 @@ func (repo *KutipanRepositoryImpl) Save(kutipan model.Kutipan) (model.Kutipan, e
 	}
 
 	return kutipan, nil
+}
+
+func sumTotal(kutipan *model.Kutipan) {
+	kutipan.Total = float64(kutipan.Total1c)*0.01 +
+		float64(kutipan.Total5c)*0.05 +
+		float64(kutipan.Total10c)*0.1 +
+		float64(kutipan.Total20c)*0.2 +
+		float64(kutipan.Total50c)*0.5 +
+		float64(kutipan.Total1d) +
+		float64(kutipan.Total5d)*5 +
+		float64(kutipan.Total10d)*10 +
+		float64(kutipan.Total20d)*20 +
+		float64(kutipan.Total50d)*50 +
+		float64(kutipan.Total100d)*100
 }
