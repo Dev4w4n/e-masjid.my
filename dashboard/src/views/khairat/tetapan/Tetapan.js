@@ -118,7 +118,7 @@ const Tetapan = () => {
         setCsvUploadButtonStyle({
           disabled: false,
           color: 'primary',
-          variant: '',
+          variant: 'outline',
         })
       } else {
         toast.error('File CSV tidak sah. Sila cuba sekali lagi.', {
