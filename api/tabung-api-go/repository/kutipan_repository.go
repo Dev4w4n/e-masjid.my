@@ -26,6 +26,7 @@ func NewKutipanRepository(db *gorm.DB) KutipanRepository {
 func (repo *KutipanRepositoryImpl) FindAllByTabungId(tabungId int64) ([]model.Kutipan, error) {
 	var kutipanList []model.Kutipan
 	result := repo.Db.
+		Order("id desc").
 		Where("tabung_id = ?", tabungId).
 		Preload("Tabung.TabungType").
 		Find(&kutipanList)
@@ -45,10 +46,19 @@ func (repo *KutipanRepositoryImpl) FindAllByTabungId(tabungId int64) ([]model.Ku
 // FindAllByTabungIdBetweenCreateDate implements KutipanRepository.
 func (repo *KutipanRepositoryImpl) FindAllByTabungIdBetweenCreateDate(tabungId int64, fromDate int64, toDate int64) ([]model.Kutipan, error) {
 	var kutipanList []model.Kutipan
-	result := repo.Db.Find(&kutipanList)
+	result := repo.Db.
+		Order("id").
+		Where("tabung_id = ? AND create_date BETWEEN ? AND ?", tabungId, fromDate, toDate).
+		Preload("Tabung.TabungType").
+		Find(&kutipanList)
 
 	if result.Error != nil {
 		return nil, result.Error
+	}
+
+	for i, kutipan := range kutipanList {
+		sumTotal(&kutipan)
+		kutipanList[i] = kutipan
 	}
 
 	return kutipanList, nil
