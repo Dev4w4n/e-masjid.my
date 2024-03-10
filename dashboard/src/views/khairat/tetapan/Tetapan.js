@@ -16,7 +16,7 @@ import {
   CSpinner,
   CInputGroup,
 } from '@coreui/react'
-import { getTags, saveTag, deleteTag } from 'src/service/khairat/TagsApi'
+import { getTags, saveTag, deleteTag, saveMemberCsv } from 'src/service/khairat/TagsApi'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { isValidCSV } from 'src/utils/Helpers'
@@ -37,6 +37,11 @@ const Tetapan = () => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadingFile, setLoadingFile] = useState(false)
+  const [csvUploadButtonStyle, setCsvUploadButtonStyle] = useState({
+    disabled: true,
+    color: 'light',
+    variant: 'outline',
+  })
   const [csvFile, setCsvFile] = useState('')
   const [error, setError] = useState(null)
   const inputName = useRef()
@@ -108,12 +113,26 @@ const Tetapan = () => {
   }
 
   useEffect(() => {
-    
     if (csvFile) {
-      isValidCSV(csvFile) ? console.log("valid csv") : console.log("invalid csv");
-      console.log("csvFile", csvFile);
+      if (isValidCSV(csvFile)) {
+        setCsvUploadButtonStyle({
+          disabled: false,
+          color: 'primary',
+          variant: '',
+        })
+      } else {
+        toast.error('File CSV tidak sah. Sila cuba sekali lagi.', {
+          draggable: true,
+          position: 'top-center',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          progress: undefined,
+          theme: 'light',
+        })
+      }
     }
-
   },[csvFile])
 
   const handleFileUpload = (event) => {
@@ -123,8 +142,6 @@ const Tetapan = () => {
     reader.onload = (e) => {
       const contents = e.target.result;
       setCsvFile(contents);
-
-
     };
 
     reader.readAsText(file);
@@ -193,10 +210,11 @@ const Tetapan = () => {
                       onChange={handleFileUpload}
                     />
                     <CButton
+                      disabled={csvUploadButtonStyle.disabled}
                       onClick={() => {}}
                       type="button"
-                      color="info"
-                      variant="outline"
+                      color={csvUploadButtonStyle.color}
+                      variant={csvUploadButtonStyle.variant}
                       id="button-addon2"
                     >
                       {loadingFile ? (

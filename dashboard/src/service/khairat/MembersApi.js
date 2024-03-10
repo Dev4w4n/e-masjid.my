@@ -31,3 +31,8 @@ export const getPaidMemberCountCurrentYear = async () => {
   const response = await axios.get(`${apiServer}/payment/totalMembersPaidForCurrentYear`)
   return response.data
 }
+
+export const saveMemberCsv = async (csvFile) => {
+  const response = await axios.post(`${apiServer}/members/saveCsv`, csvFile)
+  return response.data
+}
