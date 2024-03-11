@@ -1,10 +1,5 @@
 #!/bin/sh
 
-cd ./api
-mvn clean package -P dev -DskipTests
-cd ..
-
-
 cd public-web
 rm -rf ./build
 npm install
