@@ -13,7 +13,7 @@ services:
 
   khairat-api:
     build:
-      context: ./api/khairat-api-go
+      context: ./api/khairat-api
     ports:
       - "8081:8081"
     environment:
@@ -27,12 +27,15 @@ services:
       context: ./api/tabung-api
     ports:
       - "8082:8082"
+    environment:
+      - GO_ENV=dev
     depends_on:
       - postgres
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "./tabung-api"]
 
   cadangan-api:
     build:
-      context: ./api/cadangan-api-go
+      context: ./api/cadangan-api
     ports:
       - "8083:8083"
     environment:
@@ -43,7 +46,7 @@ services:
 
   cadangan-public-api:
     build:
-      context: ./api/cadangan-public-api-go
+      context: ./api/cadangan-public-api
     ports:
       - "8084:8084"
     environment:
@@ -54,7 +57,7 @@ services:
 
   tetapan-api:
     build:
-      context: ./api/tetapan-api-go
+      context: ./api/tetapan-api
     ports:
       - "8085:8085"
     depends_on:

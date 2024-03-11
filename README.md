@@ -35,13 +35,11 @@ Matlamat-matlamat utama sistem ini ialah seperti berikut.
 
 
 ## Prasyarat
-1. Docker Desktop https://docs.docker.com/get-docker/
-2. Java 17 https://www.oracle.com/java/technologies/downloads/#java17
-3. Maven (binary) https://maven.apache.org/download.cgi
-4. Node 20 https://nodejs.org/en/download
+1. GIT https://www.git-scm.com/downloads
+2. Docker Desktop https://docs.docker.com/get-docker/
+3. Node 20 https://nodejs.org/en/download
+4. Go https://go.dev/dl/
 5. VSCode https://code.visualstudio.com/download
-6. GIT https://www.git-scm.com/downloads
-7. Go https://go.dev/dl/
 
 ## Keperluan Minimum Sistem untuk tujuan Pembangunan Sistem
 1. Pemproses: 1.6 GHz atau lebih pantas
