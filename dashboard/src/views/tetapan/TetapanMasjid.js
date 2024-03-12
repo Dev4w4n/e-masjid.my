@@ -11,10 +11,16 @@ import {
   CButton,
   CCol,
   CRow,
+  CDropdown,
+  CDropdownMenu,
+  CDropdownItem,
+  CDropdownToggle,
+  CDropdownHeader,
 } from '@coreui/react'
 import { getTetapanMasjid, saveTetapanMasjid } from 'src/service/tetapan/TetapanMasjidApi'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { negeri, zones } from './senaraiZon'
 
 const TetapanMasjid = () => {
   const [loading, setLoading] = useState(true)
@@ -22,6 +28,11 @@ const TetapanMasjid = () => {
   const inputNamaMasjid = useRef('')
   const inputAlamatMasjid = useRef('')
   const inputNoTelefonMasjid = useRef('')
+  const [selectedZone, setSelectedZone] = useState({
+	jakimCode: "",
+	negeri: "",
+	daerah: ""
+})
 
   useEffect(() => {
     async function loadTetapan() {
@@ -39,6 +50,13 @@ const TetapanMasjid = () => {
               if (t.kunci === 'NAMA_MASJID') inputNamaMasjid.current.value = t.nilai
               if (t.kunci === 'ALAMAT_MASJID') inputAlamatMasjid.current.value = t.nilai
               if (t.kunci === 'NO_TEL_MASJID') inputNoTelefonMasjid.current.value = t.nilai
+			  if (t.kunci === 'ZON_MASJID') { 
+				zones.map((item) => {
+					if (item.jakimCode === t.nilai) {
+						setSelectedZone(item)
+					}
+				})
+			  }
             }
           }, 10);
         }
@@ -69,6 +87,7 @@ const TetapanMasjid = () => {
         tetapan.push({kunci: 'NAMA_MASJID', nilai: inputNamaMasjid.current.value})
         tetapan.push({kunci: 'ALAMAT_MASJID', nilai: inputAlamatMasjid.current.value})
         tetapan.push({kunci: 'NO_TEL_MASJID', nilai: inputNoTelefonMasjid.current.value})
+		tetapan.push( {kunci : 'ZON_MASJID', nilai : selectedZone.jakimCode })
 
         await saveTetapanMasjid(tetapan)
         saveNotification()
@@ -148,6 +167,30 @@ const TetapanMasjid = () => {
                   tabIndex={2}
                 />
               </div>
+			  <div style={{display:"flex", flexDirection:'column'}}>
+				<CFormLabel htmlFor="txtNamaMasjid">Daerah & Zon Masjid</CFormLabel>
+				<CDropdown alignment='start' direction='center'>
+				<CDropdownToggle href="#" color="secondary"> { (selectedZone.jakimCode !== "") ? (selectedZone.jakimCode + " : " + selectedZone.daerah) : "Pilih zon masjid" } </CDropdownToggle>
+				<CDropdownMenu style={{maxHeight:300, overflow:'scroll'}}>
+					{ negeri.map((itemN) => {
+						return (
+							<div>
+								<CDropdownHeader key={itemN}>{itemN}</CDropdownHeader>
+								{	zones.map((item) => {
+									if (item.negeri == itemN ) {
+									return (
+										<CDropdownItem onClick={()=> setSelectedZone(item)}>
+											{item.jakimCode} : {item.daerah}
+										</CDropdownItem>
+											)
+										}
+									})
+								}
+							</div>
+					)})}
+				</CDropdownMenu>
+				</CDropdown>
+			  </div>
               <br />
               <div className="button-action-container">
                 <CButton onClick={saveTetapan} color="primary" size="sm" tabIndex={4}

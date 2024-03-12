@@ -222,6 +222,7 @@ const Qr = () => {
     marginInline: '10px',
     padding: '3px',
     height: '100%',
+    overflow: 'auto',
   };
 
   const sectionTitle = {
@@ -464,7 +465,6 @@ const Qr = () => {
             </CCol>
           </CRow>
         </CContainer>
-        <br />
       </div>
     );
   };

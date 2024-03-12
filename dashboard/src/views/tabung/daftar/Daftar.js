@@ -154,7 +154,7 @@ const Daftar = () => {
 
   const callKutipanApi = async () => {
     const kutipan = {
-      tabung: { id: selectedTabung },
+      tabung: { id: parseInt(selectedTabung, 10) },
       createDate: startDate.getTime(),
       total1c: 0,
       total5c: 0,

@@ -35,13 +35,11 @@ Matlamat-matlamat utama sistem ini ialah seperti berikut.
 
 
 ## Prasyarat
-1. Docker Desktop https://docs.docker.com/get-docker/
-2. Java 17 https://www.oracle.com/java/technologies/downloads/#java17
-3. Maven (binary) https://maven.apache.org/download.cgi
-4. Node 20 https://nodejs.org/en/download
+1. GIT https://www.git-scm.com/downloads
+2. Docker Desktop https://docs.docker.com/get-docker/
+3. Node 20 https://nodejs.org/en/download
+4. Go https://go.dev/dl/
 5. VSCode https://code.visualstudio.com/download
-6. GIT https://www.git-scm.com/downloads
-7. Go https://go.dev/dl/
 
 ## Keperluan Minimum Sistem untuk tujuan Pembangunan Sistem
 1. Pemproses: 1.6 GHz atau lebih pantas
@@ -71,57 +69,6 @@ sh run-dev.sh
 Skrip ini akan membina semua API secara automatik dan melaksanakan arahan docker-compose yang akan menghidupkan 6 *container* untuk persekitaran pembangunan.
 
 Apabila kesemua *container* telah hidup, anda boleh menghentikan mana-mana *container* yang tidak diperlukan dalam tugasan anda.
-
-## Gradle Build
-
-Anda juga boleh menggunakan ./gradlew (atau gradlew.bat untuk windows) yg disediakan to memperinci/melaksanakan build. Perintah-perintah di bawah ini akan menunjukkan gradle tasks yang tersedia:
-
-```sh
-./gradlew task
-
-./gradlew task --all
-```
-
-### Gradle build utk setiap modul backend
-
-Sepertimana yang anda dapat lihat pada output `./gradlew task --all`, anda boleh melaksanakan build secara berasingan untuk setiap modul backend. Setiap modul backend ditulis dalam Spring boot, jadi anda boleh menggunakan plugin org.springframework.boot seperti berikut:
-
-```sh
-./gradlew api:tabung-api:bootRun  --args='--spring.profiles.active=local'
-```
-
-Anda juga boleh menjana fail Jar secara berasingan untuk digunakan pada docker-compose. Cara untuk menjana Jar adalah seperti berikut:
-
-```sh
-./gradlew api:tabung-api:bootJar
-```
-
-### Tugasan gradle: ultimateBuild
-
-Untuk binaan keseluruhan projek, kami menyediakan `ultimateBuild`. `ultimateBuild` boleh dijalankan dengan:
-
-```sh
-./gradlew ultimateBuild
-```
-
-`ultimateBuild` dikodkan seperti berikut:
-
-```groovy
-task ultimateBuild( type: Task,
-        dependsOn: ["api:buildapi","dashboard:publish","public-web:publish"]
-        ) {
-    description="Build all programs"
-    
-    doLast {
-        println  "build completed"
-    }
-}
-```
-
-Di mana: 
-  - `api:buildapi` membina kesemua projek api, termasuk menyusun dan menyediakan pakej yg terbina.
-  - `dashboard:publish` menyusun projek dashboard dan menyediakan fail2 untuk disiarkan oleh pelayan.
-  - `public-web:publish` menyusun projek public-web dan menyediakan fail2 untuk disiarkan oleh pelayan.
 
 ## Panduan untuk menyumbang
 *Fork* repo ini dan hantar *Pull Request* anda.
