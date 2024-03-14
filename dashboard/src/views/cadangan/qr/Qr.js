@@ -34,17 +34,20 @@ const urlPetiCadangan = config.url.PETI_CADANGAN_URL;
 const Qr = () => {
   const componentRef = useRef();
   const googleApiWithKey = "https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyCMKzf91TWwDhsLFHIPgT47Oy-I3jNrEEo";
-  const defaultTitleSize = 105;
-  const defaultDescriptionSize = 42;
-  const defaultFooterSize = 16;
+  const defaultTitleSize = 8;
+  const defaultDescriptionSize = 4;
+  const defaultFooterSize = 1.2;
   const defaultFontColor = '#000000';
   const defaultFont = 'system-ui';
   const defaultInstructionCircleColor = 'black';
   const defaultInstructionNumberColor = 'white';
+  const defaultPageWidth = 210;
+  const defaultPageHeight = 297;
+  const defaultViewPort = '50vw';
   //const [googleFontList, setGoogleFontList] = useState([]);
 
   //default templates
-  const [fontColor, setFontColor] = useState(defaultFontColor); //black
+  const [fontColor, setFontColor] = useState(defaultFontColor);
   const [background, setBackground] = useState(PosterBg1);
   const [templateTitle, setTemplateTitle] = useState('');
   const [selectedOption, setSelectedOption] = useState(1);
@@ -77,6 +80,10 @@ const Qr = () => {
   const [footerColor, setFooterColor] = useState(fontColor);
   const [footerSize, setFooterSize] = useState(defaultFooterSize);
   const [footerColorChanging, setFooterColorChanging] = useState(titleColor);
+
+  //dimension
+  const [pageWidth, setPageWidth] = useState(defaultPageWidth);
+  const [pageHeight, setPageHeight] = useState(defaultPageHeight);
 
   const templates = [
     {
@@ -148,10 +155,10 @@ const Qr = () => {
 
   const printableStyles = {
     position: 'relative',
-    width: '210mm', /* A4 width */
-    height: '297mm',  /* A4 height */
-    maxHeight: '297mm',
-    maxWidth: '210mm',
+    width: `${defaultViewPort}`,
+    height: `calc(${defaultViewPort} * (${pageHeight}/${pageWidth}))`, /* page aspect ratio on 50% of the viewport width */
+    maxWidth: `${pageWidth}mm`,
+    maxHeight: `${pageHeight}mm`,    
     overflow: 'hidden',
   };
 
@@ -170,14 +177,14 @@ const Qr = () => {
 
   const overlayContainer = {
     ...overlay,
-    top: '50%',
+    top: '48%',
   };
 
   const qr = {
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    padding: '10px',
-    borderRadius: '10px',
-    border: '1px solid',
+    padding: '0.5em',
+    borderRadius: '0.5em',
+    border: '0.05em solid',
     borderColor: `${fontColor}`,
     width: '100%',
   };
@@ -187,7 +194,7 @@ const Qr = () => {
     top: '10%',
     color: `${titleColor}`,
     fontWeight: 'bold',
-    fontSize: `${titleSize}px`,
+    fontSize: `calc((${titleSize}/100) * (${defaultViewPort} * (${pageHeight}/${pageWidth}))`,
     width: '95%',
     textAlign: 'center',
     fontFamily: `${titleFont}`,
@@ -198,7 +205,7 @@ const Qr = () => {
     top: '20%',
     color: `${descriptionColor}`,
     fontWeight: 'bold',
-    fontSize: `${descriptionSize}px`,
+    fontSize: `calc((${descriptionSize}/100) * (${defaultViewPort} * (${pageHeight}/${pageWidth}))`,
     width: '95%',
     textAlign: 'center',
     fontFamily: `${descriptionFont}`,
@@ -209,18 +216,18 @@ const Qr = () => {
     top: '94%',
     color: `${footerColor}`,
     fontWeight: 'bold',
-    fontSize: `${footerSize}px`,
+    fontSize: `calc((${footerSize}/100) * (${defaultViewPort} * (${pageHeight}/${pageWidth}))`,
     width: '95%',
     textAlign: 'center',
-    border: '1px solid #ccc',
-    padding: '5px',
-    borderRadius: '10px',
+    border: '0.08em solid #ccc',
+    padding: '0.3em',
+    borderRadius: '0.5em',
     fontFamily: `${footerFont}`,
   };
 
   const section = {
-    marginInline: '10px',
-    padding: '3px',
+    marginInline: '0.5em',
+    padding: '0.2em',
     height: '100%',
     overflow: 'auto',
   };
@@ -272,25 +279,25 @@ const Qr = () => {
       top: '80%',
       display: 'flex',
       color: `${fontColor}`,
-      width: '18%',
+      width: '21%',
       height: '14%',
       flexWrap: 'wrap',
       fontWeight: 'bold',
-      fontSize: '16px',
+      fontSize: `calc(0.015 * (${defaultViewPort} * (${pageHeight}/${pageWidth}))`,
     };
 
     const circle = {
       display: 'flex',
-      width: '60px',
-      height: '60px',
+      width: '4.5vw',
+      height: '4.5vw',
       backgroundColor: `${instructCircleColor}`,
       borderRadius: '50%',
       justifyContent: 'center',
       alignItems: 'center',
       fontWeight: 'bold',
-      fontSize: '30px',
+      fontSize: '2.2vw',
       color: `${instructNumberColor}`,
-      border: '5px solid',
+      border: '0.5vw solid',
       borderColor: `${fontColor}`,
     };
 
@@ -306,7 +313,7 @@ const Qr = () => {
           </CRow>
           <CRow >
             <CCol>
-              <div style={{ position: 'absolute', transform: 'translate(-50%, -50%)', left: '50%', top: '70%' }}>
+              <div style={{ position: 'absolute', transform: 'translate(-50%, -50%)', left: '50%', top: '75%' }}>
                 <br />
                 <div style={{ textAlign: 'center' }}>{text}</div>
               </div>
@@ -441,17 +448,17 @@ const Qr = () => {
             </CCol>
           </CRow>
           <CRow>
-            <CCol style={{ width: '70%' }}>
+            <CCol style={{ flex: '7'}}>
               <label style={sectionTitle}>Font</label><br />
-              <select value={font} onChange={handleFontChange} style={{ width: '250px', height: '28px' }}>
+              <select value={font} onChange={handleFontChange} style={{ width: '100%', height: '28px' }}>
                 <option value="">Select a font...</option>
                 {fixedFonts.map(font => (
                   <option key={font} value={font}>{font}</option>
                 ))}
               </select>
             </CCol>
-            <CCol>
-              <label style={sectionTitle}>Saiz</label><br />
+            <CCol style={{ flex: '3' }}>
+              <label style={sectionTitle}>Saiz %</label><br />
               <input type="text" value={size} onChange={handleSizeChange} style={{ width: '100%', height: '28px' }} />
             </CCol>
           </CRow>
@@ -543,7 +550,6 @@ const Qr = () => {
                         {isPanelOpen ? 'Tutup Panel Edit' : 'Buka Panel Edit'}
                       </button>
                       <div className={`panelContent ${isPanelOpen ? 'open' : 'close'}`}>
-                        <p />
                         <div>
                           <CNav variant="tabs" role="tablist">
                             <CNavItem role="presentation">
