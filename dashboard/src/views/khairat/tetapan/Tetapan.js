@@ -16,7 +16,8 @@ import {
   CSpinner,
   CInputGroup,
 } from '@coreui/react'
-import { getTags, saveTag, deleteTag, saveMemberCsv } from 'src/service/khairat/TagsApi'
+import { getTags, saveTag, deleteTag } from 'src/service/khairat/TagsApi'
+import { saveMemberCsv } from 'src/service/khairat/MembersApi'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { isValidKhairatCSV } from 'src/utils/Helpers'
@@ -152,11 +153,47 @@ const Tetapan = () => {
     reader.readAsText(file)
   };
 
+  const handleUploadCsv = async () => {
+
+    try {
+      setLoadingFile(true)
+      await saveMemberCsv(csvFile)
+      setLoadingFile(false)
+      setCsvUploadButtonStyle({
+        disabled: true,
+        color: 'light',
+        variant: 'outline',
+      })
+      toast.success('Fail berjaya diimport', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      })
+    } catch (error) {
+      setLoadingFile(false)
+      toast.error('Gagal untuk mengimport fail.', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      })
+    }
+
+  }
+
   if (loading) {
     return <div><CSpinner color="primary" /></div>
   }
   if (error) {
-    // return <div>Error: {error.message}</div>
     return <div>Tiada akses. Sila login kembali</div>
   }
 
@@ -216,7 +253,7 @@ const Tetapan = () => {
                     />
                     <CButton
                       disabled={csvUploadButtonStyle.disabled}
-                      onClick={() => {}}
+                      onClick={handleUploadCsv}
                       type="button"
                       color={csvUploadButtonStyle.color}
                       variant={csvUploadButtonStyle.variant}

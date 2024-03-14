@@ -2,6 +2,9 @@
 const MAX_CSV_SIZE = 10 * 1024 * 1024; // 10 MB
 const MIN_COLUMNS = 2; // Minimum required columns
 const MAX_COLUMNS = 10; // Maximum allowed columns
+const MAX_COLUMN_NAME_LENGTH = 128;
+const MAX_COLUMN_NUMBER_LENGTH = 12;
+
 
 export const handleLogError = (error) => {
   if (error.response) {
@@ -16,7 +19,7 @@ export const handleLogError = (error) => {
 export const isValidKhairatCSV = (csvContent) => {
   // Check if CSV content is empty or too large
   if (!csvContent || csvContent.length > MAX_CSV_SIZE) {
-    console.log('CSV content is empty or too large');
+    console.error('CSV content is empty or too large');
     return false;
   }
 
@@ -25,7 +28,7 @@ export const isValidKhairatCSV = (csvContent) => {
   
   // Check if CSV has header and at least one data row
   if (lines.length < 2) {
-    console.log('CSV has no data rows');
+    console.error('CSV has no data rows');
     return false;
   }
   
@@ -34,8 +37,7 @@ export const isValidKhairatCSV = (csvContent) => {
 
   // Check if header has valid column count
   if (headerColumns.length < MIN_COLUMNS || headerColumns.length > MAX_COLUMNS) {
-    console.log('headerColumns.length: ', headerColumns.length)
-    console.log('CSV header has invalid column count');
+    console.error('CSV header has invalid column count');
     return false;
   }
   
@@ -45,12 +47,18 @@ export const isValidKhairatCSV = (csvContent) => {
     
     // Optional: Implement additional checks for each column value
     for (let j = 0; j < rowColumns.length; j++) {
-      // Example: Check if the value is not too long
-      if (rowColumns[j].length > MAX_COLUMN_LENGTH) {
-        console.log('CSV column value is too long');
-        return false;
+      if (j == 0) {
+        // Check if column name is valid
+        if (rowColumns[j].length > MAX_COLUMN_NAME_LENGTH) {
+          console.error('Column name too long at row: ', j);
+          return false;
+        }
+      } else {
+        if (rowColumns[j].length > MAX_COLUMN_NUMBER_LENGTH) {
+          console.error('Column number too long at row: ', j);
+          return false;
+        }
       }
-      // Add more checks as needed
     }
   }
   
