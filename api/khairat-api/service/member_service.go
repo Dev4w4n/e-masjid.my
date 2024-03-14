@@ -7,6 +7,7 @@ import (
 
 type MemberService interface {
 	Save(member model.Member) (model.Member, error)
+	SaveBulk(members []model.Member) (bool, error)
 	FindOne(id int) (model.Member, error)
 	FindAll() (model.Response, error)
 	FindByQuery(query string) ([]model.Member, error)
@@ -212,4 +213,15 @@ func (repo *MemberServiceImpl) Save(member model.Member) (model.Member, error) {
 	}
 
 	return member, nil
+}
+
+func (repo *MemberServiceImpl) SaveBulk(members []model.Member) (bool, error) {
+	for _, member := range members {
+		_, err := repo.Save(member)
+		if err != nil {
+			return false, err
+		}
+	}
+
+	return true, nil
 }

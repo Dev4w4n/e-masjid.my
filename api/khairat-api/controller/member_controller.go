@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"io"
 	"net/http"
 	"strconv"
 
@@ -30,6 +31,7 @@ func NewMemberController(engine *gin.Engine, memberService service.MemberService
 	engine.GET(relativePath+"/findByTag", controller.FindByTagId)
 	engine.GET(relativePath+"/count", controller.CountAll)
 	engine.POST(relativePath+"/save", controller.Save)
+	engine.POST(relativePath+"/saveCsv", controller.SaveCsv)
 
 	return controller
 }
@@ -115,4 +117,31 @@ func (controller *MemberController) Save(ctx *gin.Context) {
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, member)
+}
+
+func (controller *MemberController) SaveCsv(ctx *gin.Context) {
+	log.Info().Msg("save csv")
+
+	requestBody, err := io.ReadAll(ctx.Request.Body)
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": "Failed to read request body"})
+		return
+	}
+
+	requestBodyString := string(requestBody)
+
+	members, err := utils.ConvertCsvToMembers(requestBodyString)
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": "Failed to convert CSV to members"})
+		return
+	}
+
+	result, err := controller.memberService.SaveBulk(members)
+	if err != nil || !result {
+		ctx.JSON(500, gin.H{"error": "Failed to save members"})
+		return
+	}
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(http.StatusCreated, members)
 }
