@@ -225,6 +225,34 @@ const Qr = () => {
     fontFamily: `${footerFont}`,
   };
 
+  const textEditorPanel = {
+    position: 'fixed',
+    bottom: '0.1vh',
+    right: '0.1vw',
+    width: 'auto',
+    maxWidth: '400px',
+    backgroundColor: '#ffffff',
+    border: '1px solid #cccccc',
+    borderRadius: '0.5vw',
+    overflow: 'hidden',
+    transition: 'all 0.5s ease',
+    zIndex: '9999',
+    height: 'auto',
+  };
+  
+  const toggleButton = {
+    width: '100%',
+    padding: '0.5vw',
+    backgroundColor: '#2f64c7',
+    border: 'none',
+    cursor: 'pointer',
+    color: 'azure',
+  };
+
+  const panelContent = {
+    height: isPanelOpen ? '100%' : '0',
+  };
+  
   const section = {
     marginInline: '0.5em',
     padding: '0.2em',
@@ -444,13 +472,13 @@ const Qr = () => {
           <CRow>
             <CCol>
               <label style={sectionTitle}>Ayat</label><br />
-              <input type="text" value={value} onChange={handleValueChange} style={{ width: '100%' }} />
+              <input type="text" value={value} onChange={handleValueChange} style={{ width: '100%', height: '1.7em' }} />
             </CCol>
           </CRow>
           <CRow>
             <CCol style={{ flex: '7'}}>
               <label style={sectionTitle}>Font</label><br />
-              <select value={font} onChange={handleFontChange} style={{ width: '100%', height: '28px' }}>
+              <select value={font} onChange={handleFontChange} style={{ width: '100%', height: '1.7em' }}>
                 <option value="">Select a font...</option>
                 {fixedFonts.map(font => (
                   <option key={font} value={font}>{font}</option>
@@ -459,15 +487,15 @@ const Qr = () => {
             </CCol>
             <CCol style={{ flex: '3' }}>
               <label style={sectionTitle}>Saiz %</label><br />
-              <input type="text" value={size} onChange={handleSizeChange} style={{ width: '100%', height: '28px' }} />
+              <input type="text" value={size} onChange={handleSizeChange} style={{ width: '100%', height: '1.7em' }} />
             </CCol>
           </CRow>
           <CRow>
             <CCol>
               <label style={sectionTitle}>Warna</label><br />
               <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-                <HexColorPicker color={color} onChange={handleColorChange} style={{ marginRight: '5px' }} />
-                <input type="text" value={colorChanging} onChange={handleColorChanging} style={{ padding: '5px', width: '100px', height: '100%' }} />
+                <HexColorPicker color={color} onChange={handleColorChange} style={{ marginRight: '0.2em' }} />
+                <input type="text" value={colorChanging} onChange={handleColorChanging} style={{ padding: '5px', width: '100px', height: '1.7em' }} />
               </div>
             </CCol>
           </CRow>
@@ -544,12 +572,12 @@ const Qr = () => {
                         </CButton>
                       ))}
                     </div>
-                    <p />
-                    <div className={`panel ${isPanelOpen ? 'open' : ''}`}>
-                      <button onClick={togglePanel} className="toggleButton">
+                    <p />                    
+                    <div style={textEditorPanel}>
+                      <button onClick={togglePanel} style={toggleButton}>
                         {isPanelOpen ? 'Tutup Panel Edit' : 'Buka Panel Edit'}
                       </button>
-                      <div className={`panelContent ${isPanelOpen ? 'open' : 'close'}`}>
+                      <div style={panelContent}>
                         <div>
                           <CNav variant="tabs" role="tablist">
                             <CNavItem role="presentation">
