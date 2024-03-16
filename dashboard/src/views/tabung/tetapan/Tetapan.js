@@ -14,6 +14,7 @@ import {
   CAccordionBody,
   CTable,
   CSpinner,
+  CFormCheck,
 } from '@coreui/react'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -27,6 +28,10 @@ const columns = [
   {
     key: 'JenisTabung',
     _props: { className: 'w-25', scope: 'col' },
+  },
+  {
+    key: 'Sen',
+    _props: { className: 'w-15', scope: 'col' },
   },
   {
     key: 'Tindakan',
@@ -46,6 +51,7 @@ const Tetapan = () => {
   const [error, setError] = useState(null)
   const inputName = useRef()
   const selectRef = useRef(null)
+  const enableCents = useRef(null)
   const [selectedTabung, setSelectedTabung] = useState('')
   const [tabung, setTabung] = useState([])
   const [data, setData] = useState([])
@@ -58,6 +64,7 @@ const Tetapan = () => {
           const items = data.map((tabung) => ({
             Nama: tabung.name,
             JenisTabung: tabung.tabungType.name,
+            Sen: tabung.cents ? 'Ya' : 'Tidak',
             Tindakan: (
               <CButton color="link" onClick={() => removeTabung(tabung.id)}>
                 Buang
@@ -80,8 +87,10 @@ const Tetapan = () => {
     try {
       const inputValue = inputName.current.value
       inputName.current.value = ''
+      const enableCentValue = enableCents.current.checked
+      enableCents.current.checked = false
       const tabung = {
-        isCents: false,
+        cents: enableCentValue,
         name: inputValue,
         tabungType : {
           id: parseInt(selectRef.current.value)
@@ -167,6 +176,13 @@ const Tetapan = () => {
                         value={selectedTabung}
                         ref={selectRef}
                         onChange={(e) => handleSelectChange(e.target.value)}
+                      />
+                    </CCol>
+                    <CCol className="mt-2">
+                      <CFormCheck 
+                        ref={enableCents}
+                        aria-label="Pilih untuk papar pecahan wang dalam sen"
+                        label="Sen?"
                       />
                     </CCol>
                     </CRow>
