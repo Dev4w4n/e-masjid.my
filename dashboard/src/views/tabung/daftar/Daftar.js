@@ -248,7 +248,7 @@ const Daftar = () => {
               </div>
               {moneyDenomination.map((value) => (
                 <CRow key={value}>
-                  <CCol>{`RM ${value}`}</CCol>
+                  <CCol>{value.endsWith('C') ? `${value.slice(0, -1)} Sen` : `RM ${value}`}</CCol>
                   <CCol>X</CCol>
                   <CCol>
                     <CFormInput
