@@ -23,7 +23,7 @@ const columns = [
 
 const DenominasiPrint = forwardRef((props, ref) => {
   const [namaMasjid, setNamaMasjid] = useState("")
-
+ 
   const items = [
     {
       denominasi: 'RM 100',
@@ -56,6 +56,31 @@ const DenominasiPrint = forwardRef((props, ref) => {
       jumlah: (props.penyata.total1d*1).toLocaleString('ms-MY', { style: 'currency', currency: 'MYR' }),
     },
     {
+      denominasi: '50 Sen',
+      bilangan: props.penyata.total50c,
+      jumlah: (props.penyata.total50c*0.50).toLocaleString('ms-MY', { style: 'currency', currency: 'MYR' }),
+    },
+    {
+      denominasi: '20 Sen',
+      bilangan: props.penyata.total20c,
+      jumlah: (props.penyata.total20c*0.20).toLocaleString('ms-MY', { style: 'currency', currency: 'MYR' }),
+    },
+    {
+      denominasi: '10 Sen',
+      bilangan: props.penyata.total10c,
+      jumlah: (props.penyata.total10c*0.10).toLocaleString('ms-MY', { style: 'currency', currency: 'MYR' }),
+    },
+    {
+      denominasi: '5 Sen',
+      bilangan: props.penyata.total5c,
+      jumlah: (props.penyata.total5c*0.05).toLocaleString('ms-MY', { style: 'currency', currency: 'MYR' }),
+    },
+    {
+      denominasi: '1 Sen',
+      bilangan: props.penyata.total1c,
+      jumlah: (props.penyata.total1c*0.01).toLocaleString('ms-MY', { style: 'currency', currency: 'MYR' }),
+    },
+    {
       denominasi: 'JUMLAH BESAR',
       bilangan: '',
       jumlah: props.penyata.total.toLocaleString('ms-MY', { style: 'currency', currency: 'MYR' }),
@@ -63,6 +88,9 @@ const DenominasiPrint = forwardRef((props, ref) => {
       _cellProps: { id: { scope: 'row' } },
     },
   ]
+
+  const itemsToDisplay = props.penyata.tabung.cents ? 
+  items: items.filter(item => !item.denominasi.endsWith('Sen'));
 
   useEffect(() => {
     async function loadNamaMasjid() {
@@ -105,7 +133,7 @@ const DenominasiPrint = forwardRef((props, ref) => {
       </CRow>
       <CRow>
         <CCol style={{ textAlign: 'center' }}>
-          <CTable columns={columns} items={items} />
+          <CTable columns={columns} items={itemsToDisplay} />
         </CCol>
       </CRow>
       <CRow>
