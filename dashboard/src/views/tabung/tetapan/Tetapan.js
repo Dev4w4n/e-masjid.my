@@ -49,12 +49,13 @@ const tabungList = [
 const Tetapan = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const inputName = useRef()
-  const selectRef = useRef(null)
-  const enableCents = useRef(null)
-  const [selectedTabung, setSelectedTabung] = useState('')
+  const [inputValue, setInputValue] = useState('');
+  const [selectedOption, setSelectedOption] = useState('');
+  const [enableCentsChecked, setEnableCentsChecked] = useState(false);
   const [tabung, setTabung] = useState([])
   const [data, setData] = useState([])
+  const [editID, setEditID] = useState(null)
+  const formContainerRef = useRef(null);
 
   useEffect(() => {
     async function fetchTabung() {
@@ -66,9 +67,14 @@ const Tetapan = () => {
             JenisTabung: tabung.tabungType.name,
             Sen: tabung.cents ? 'Ya' : 'Tidak',
             Tindakan: (
-              <CButton color="link" onClick={() => removeTabung(tabung.id)}>
-                Buang
-              </CButton>
+              <>
+                <CButton color="link" onClick={() => editTabung(tabung)}>
+                  Ubah
+                </CButton>
+                <CButton color="link" onClick={() => removeTabung(tabung.id)}>
+                  Buang
+                </CButton>
+              </>
             ),
           }))
           setTabung(items)
@@ -83,21 +89,28 @@ const Tetapan = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 
+  const resetForm = () => {
+    setInputValue('');
+    setSelectedOption('');
+    setEnableCentsChecked(false);
+  };
+
   const addTabung = async () => {
     try {
-      const inputValue = inputName.current.value
-      inputName.current.value = ''
-      const enableCentValue = enableCents.current.checked
-      enableCents.current.checked = false
       const tabung = {
-        cents: enableCentValue,
+        cents: enableCentsChecked,
         name: inputValue,
-        tabungType : {
-          id: parseInt(selectRef.current.value)
+        tabungType: {
+          id: parseInt(selectedOption)
         },
+      };
+      if (editID !== null) {
+        tabung.id = editID
+        setEditID(null)
       }
       await saveTabung(tabung)
       setData(tabung)
+      resetForm()
     } catch (error) {
       toast.error('Tiada akses untuk menyimpan rekod tabung.', {
         position: 'top-center',
@@ -129,11 +142,19 @@ const Tetapan = () => {
       })
     }
   }
-
-  const handleSelectChange = (value) => {
-    setSelectedTabung(value);
+  
+  const editTabung = async (row) => {
+    setEditID(row.id);
+    setInputValue(row.name);
+    setEnableCentsChecked(row.cents);
+    setSelectedOption(row.tabungType.id.toString());
+    formContainerRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const cancelEdit = () => {
+    setEditID(null);
+    resetForm();
+  }
 
   if (loading) {
     return <div><CSpinner color="primary" /></div>
@@ -142,14 +163,13 @@ const Tetapan = () => {
     return <div>Error: {error.message}</div>
   }
   return (
-    <CRow>
+    <CRow ref={formContainerRef}>
       <CCol xs={12}>
         <CCard className="mb-4">
           <CCardHeader>
             <ToastContainer />
             <strong>Tetapan</strong>
           </CCardHeader>
-
           <CCardBody>
             <p className="text-medium-emphasis small">
               Kemaskini semua tetapan untuk semua modul tabung.
@@ -158,39 +178,48 @@ const Tetapan = () => {
               <CAccordionItem>
                 <CAccordionHeader>Tabung</CAccordionHeader>
                 <CAccordionBody>
-                  <div className="mb-3">
-                    <CRow>
-                    <CCol>
-                      <CFormInput
-                        maxLength={32}
-                        ref={inputName}
-                        type="text"
-                        id="txtNama"
-                        placeholder="Nama tabung"
-                      />
-                    </CCol>
-                    <CCol>
-                      <CFormSelect
-                        aria-label="Pilih jenis tabung"
-                        options={tabungList}
-                        value={selectedTabung}
-                        ref={selectRef}
-                        onChange={(e) => handleSelectChange(e.target.value)}
-                      />
-                    </CCol>
-                    <CCol className="mt-2">
-                      <CFormCheck 
-                        ref={enableCents}
-                        aria-label="Pilih untuk papar pecahan wang dalam sen"
-                        label="Sen?"
-                      />
-                    </CCol>
-                    </CRow>
-                  </div>
-                  <div className="d-grid gap-2">
-                    <CButton color="primary" size="sm" onClick={addTabung}>
-                      Tambah tabung
-                    </CButton>
+                  <div style={{ backgroundColor: editID !== null ? 'beige' : 'transparent', padding: '0.3em' }}>
+                    {editID !== null ? <h6>Mod Ubah</h6> : <></>}
+                    <div className="mb-3">
+                      <CRow>
+                        <CCol>
+                          <CFormInput
+                            maxLength={32}
+                            type="text"
+                            id="txtNama"
+                            placeholder="Nama tabung"
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                          />
+                        </CCol>
+                        <CCol>
+                          <CFormSelect
+                            aria-label="Pilih jenis tabung"
+                            options={tabungList}
+                            value={selectedOption}
+                            onChange={(e) => setSelectedOption(e.target.value)}
+                          />
+                        </CCol>
+                        <CCol className="mt-2">
+                          <CFormCheck
+                            aria-label="Pilih untuk papar pecahan wang dalam sen"
+                            label="Sen?"
+                            checked={enableCentsChecked}
+                            onChange={(e) => setEnableCentsChecked(e.target.checked)}
+                          />
+                        </CCol>
+                      </CRow>
+                    </div>
+                    <div className="button-action-container">
+                      <CButton color="primary" size="sm" onClick={addTabung}
+                        className="custom-action-button">
+                        {editID !== null ? 'Simpan Perubahan' : 'Tambah tabung'}
+                      </CButton>
+                      <CButton color='secondary' size="sm" hidden={editID === null} onClick={() => cancelEdit()}
+                        className="custom-action-button">
+                        Batal
+                      </CButton>
+                    </div>
                   </div>
                   <CTable columns={columns} items={tabung} responsive="lg" />
                 </CAccordionBody>
@@ -202,6 +231,5 @@ const Tetapan = () => {
     </CRow>
   )
 }
-
 
 export default Tetapan
