@@ -39,7 +39,7 @@ const AppHeader = () => {
         <CHeaderNav className="ms-auto">
           <CNavItem>
             <CNavLink href="https://docs-e-masjid-my.pages.dev/" target="_blank" rel="noopener noreferrer">
-              <CIcon icon={cilBook} size="lg" /> Bahan Rujukan 
+              <CIcon icon={cilBook} size="lg" /> Bahan Rujukan
             </CNavLink>
           </CNavItem>
         </CHeaderNav>
