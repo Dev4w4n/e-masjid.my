@@ -1,0 +1,6 @@
+my\emasjid\cadanganpublicapi\service\CadanganService.class
+my\emasjid\cadanganpublicapi\repository\CadanganRepository.class
+my\emasjid\cadanganpublicapi\repository\CadanganTypeRepository.class
+my\emasjid\cadanganpublicapi\controller\CadanganController.class
+my\emasjid\cadanganpublicapi\security\CorsConfig.class
+my\emasjid\cadanganpublicapi\CadanganPublicApiApplication.class

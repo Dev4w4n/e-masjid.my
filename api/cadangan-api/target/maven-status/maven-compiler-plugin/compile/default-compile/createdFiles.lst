@@ -1,0 +1,6 @@
+my\emasjid\cadanganapi\repository\CadanganRepository.class
+my\emasjid\cadanganapi\controller\CadanganController.class
+my\emasjid\cadanganapi\repository\CadanganTypeRepository.class
+my\emasjid\cadanganapi\CadanganApiApplication.class
+my\emasjid\cadanganapi\security\CorsConfig.class
+my\emasjid\cadanganapi\service\CadanganService.class

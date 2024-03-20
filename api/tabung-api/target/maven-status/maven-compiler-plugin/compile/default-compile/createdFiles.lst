@@ -1,0 +1,11 @@
+my\emasjid\tabungapi\entity\Tabung.class
+my\emasjid\tabungapi\TabungApiApplication.class
+my\emasjid\tabungapi\controller\KutipanController.class
+my\emasjid\tabungapi\repository\KutipanRepository.class
+my\emasjid\tabungapi\repository\TabungTypeRepository.class
+my\emasjid\tabungapi\entity\Kutipan.class
+my\emasjid\tabungapi\controller\TabungController.class
+my\emasjid\tabungapi\controller\TabungTypeController.class
+my\emasjid\tabungapi\entity\TabungType.class
+my\emasjid\tabungapi\repository\TabungRepository.class
+my\emasjid\tabungapi\security\CorsConfig.class

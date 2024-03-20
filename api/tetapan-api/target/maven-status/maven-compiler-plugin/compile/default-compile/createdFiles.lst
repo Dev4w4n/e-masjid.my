@@ -1,0 +1,6 @@
+my\emasjid\tetapanapi\repository\TetapanRepository.class
+my\emasjid\tetapanapi\security\CorsConfig.class
+my\emasjid\tetapanapi\entity\Tetapan.class
+my\emasjid\tetapanapi\service\TetapanService.class
+my\emasjid\tetapanapi\TetapanApiApplication.class
+my\emasjid\tetapanapi\controller\TetapanController.class
