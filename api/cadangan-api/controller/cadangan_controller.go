@@ -53,13 +53,21 @@ func (controller *CadanganController) GetAllCadanganBy(ctx *gin.Context) {
 	cadanganTypeID := ctx.Query("cadanganTypeId")
 	isOpen := ctx.Query("isOpen")
 	open, err := strconv.ParseBool(isOpen)
+	page, _ := strconv.Atoi(ctx.Query("page"))
+	size, _ := strconv.Atoi(ctx.Query("size"))
+
+	paginate := model.Paginate{
+		Page: page,
+		Size: size,
+	}
+
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bool format"})
 		return
 	}
 
 	if cadanganTypeID == "" {
-		response, err = controller.cadanganRepository.GetCadanganByIsOpen(open)
+		response, err = controller.cadanganRepository.GetCadanganByIsOpen(open, paginate)
 		utils.WebError(ctx, err, "failed to get all cadangan by open")
 	} else {
 		id, err := strconv.Atoi(cadanganTypeID)
@@ -67,7 +75,7 @@ func (controller *CadanganController) GetAllCadanganBy(ctx *gin.Context) {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 			return
 		}
-		response, err = controller.cadanganRepository.GetCadanganById(id, open)
+		response, err = controller.cadanganRepository.GetCadanganById(id, open, paginate)
 		utils.WebError(ctx, err, "failed to get all cadangan by id")
 	}
 

@@ -2,6 +2,7 @@ package model
 
 type Response struct {
 	Content interface{} `json:"content"`
+	Total   int         `json:"total"`
 	// Empty            bool        `json:"empty"`
 	// First            bool        `json:"first"`
 	// Last             bool        `json:"last"`
