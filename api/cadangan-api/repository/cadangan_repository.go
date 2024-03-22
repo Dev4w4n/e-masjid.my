@@ -7,8 +7,8 @@ import (
 
 type CadanganRepository interface {
 	GetOne(id int) (model.Cadangan, error)
-	GetCadanganById(id int, isOpen bool) (model.Response, error)
-	GetCadanganByIsOpen(isOpen bool) (model.Response, error)
+	GetCadanganById(id int, isOpen bool, paginate model.Paginate) (model.Response, error)
+	GetCadanganByIsOpen(isOpen bool, paginate model.Paginate) (model.Response, error)
 	GetTotalCadanganByTypeCount() (interface{}, error)
 	Save(cadangan model.Cadangan) error
 }
@@ -34,32 +34,40 @@ func (repo *CadanganRepositoryImpl) GetOne(id int) (model.Cadangan, error) {
 	return cadangan, nil
 }
 
-func (repo *CadanganRepositoryImpl) GetCadanganById(id int, isOpen bool) (model.Response, error) {
+func (repo *CadanganRepositoryImpl) GetCadanganById(id int, isOpen bool, paginate model.Paginate) (model.Response, error) {
 	var response model.Response
 	var cadangan []model.Cadangan
+	var total int64
 
-	result := repo.Db.Where("cadangan_types_id = ? AND is_open = ?", id, isOpen).Preload("CadanganType").Find(&cadangan)
+	offset := (paginate.Page - 1) * paginate.Size
+	result := repo.Db.Offset(offset).Limit(paginate.Size).Where("cadangan_types_id = ? AND is_open = ?", id, isOpen).Order("id").Preload("CadanganType").Find(&cadangan)
+	repo.Db.Model(&model.Cadangan{}).Where("cadangan_types_id = ? AND is_open = ?", id, isOpen).Count(&total)
 
 	if result.Error != nil {
 		return response, result.Error
 	}
 
 	response.Content = cadangan
+	response.Total = int(total)
 
 	return response, nil
 }
 
-func (repo *CadanganRepositoryImpl) GetCadanganByIsOpen(isOpen bool) (model.Response, error) {
+func (repo *CadanganRepositoryImpl) GetCadanganByIsOpen(isOpen bool, paginate model.Paginate) (model.Response, error) {
 	var response model.Response
 	var cadangan []model.Cadangan
+	var total int64
 
-	result := repo.Db.Where("is_open = ?", isOpen).Preload("CadanganType").Find(&cadangan)
+	offset := (paginate.Page - 1) * paginate.Size
+	result := repo.Db.Offset(offset).Limit(paginate.Size).Where("is_open = ?", isOpen).Order("id").Preload("CadanganType").Find(&cadangan)
+	repo.Db.Model(&model.Cadangan{}).Where("is_open = ?", isOpen).Count(&total)
 
 	if result.Error != nil {
 		return response, result.Error
 	}
 
 	response.Content = cadangan
+	response.Total = int(total)
 
 	return response, nil
 }

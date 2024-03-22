@@ -48,29 +48,31 @@ const columns = [
 
 const CadanganList = ({ onEditorUpdated, ...props }) => {
   const [loading, setLoading] = useState(false)
-  const [page, setPage] = useState(0)
-  const [size, setSize] = useState(10)
+  const [page, setPage] = useState(1)
+  const [size, setSize] = useState(25)
+  const [totalRows, setTotalRows] = useState(0)
   const [rowClickedInfo, setRowClickedInfo] = useState(null)
   const [data, setData] = useState([])
   const [dataChanged, setDataChanged] = useState(false)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true)
-      try {
-        if(props.activeKey === props.cadanganType) {
-          const response = (props.activeKey === 5 && props.cadanganType === 5) ? 
-          await getCadanganByOpen(page, size, props.isOpen) : await getCadanganByType(page, size, props.cadanganType, props.isOpen)
-          setData(response.content)
-        }
-      } catch (error) {
-        console.error('Error fetching getCadanganByOpen:', error)
-      } finally {
-        setLoading(false)
+  const fetchData = async (page, size) => {
+    setLoading(true)
+    try {
+      if(props.activeKey === props.cadanganType) {
+        const response = (props.activeKey === 5 && props.cadanganType === 5) ?
+        await getCadanganByOpen(page, size, props.isOpen) : await getCadanganByType(page, size, props.cadanganType, props.isOpen)
+        setData(response.content);
+        setTotalRows(response.total);
       }
+    } catch (error) {
+      console.error('Error fetching getCadanganByOpen:', error)
+    } finally {
+      setLoading(false)
     }
-    fetchData()
-    
+  }
+
+  useEffect(() => {
+    fetchData(1, size)
   }, [props.activeKey, dataChanged])
 
   const resultEmpty = () => {
@@ -88,6 +90,14 @@ const CadanganList = ({ onEditorUpdated, ...props }) => {
     row.visibleXL = true
     setRowClickedInfo(row)
   }
+  const handlePageChange = page => {
+    fetchData(page, size);
+    setPage(page);
+  };
+  const handlePerRowsChange = async (newSize, page) => {
+    setSize(newSize)
+    fetchData(page, newSize)
+  };
 
   if (loading) {
     return (
@@ -111,6 +121,14 @@ const CadanganList = ({ onEditorUpdated, ...props }) => {
           data={data}
           pointerOnHover
           highlightOnHover
+          pagination
+          paginationServer
+          paginationTotalRows={totalRows}
+          paginationPerPage={size}
+          paginationDefaultPage={page}
+          paginationRowsPerPageOptions={[25 , 50 , 100, 200]}
+          onChangeRowsPerPage={handlePerRowsChange}
+          onChangePage={handlePageChange}
           // conditionalRowStyles={conditionalRowStyles}
           onRowClicked={(row) => {
             handleRowClick(row)
