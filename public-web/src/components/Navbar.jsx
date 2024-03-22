@@ -2,32 +2,33 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { logo } from "../assets/home";
 import Container from "./Container";
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import constants from '../constants/error.json';
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import constants from "../constants/error.json";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const loginAjk = () => {
-    axios.get('/dashboard')
-    .then(response => {
-      window.location.href = "http://localhost:3000";
-    })
-    .catch(error => {
-      toast.error(constants.serviceDown, {
-        position: 'bottom-center',
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
+    axios
+      .get("/dashboard")
+      .then((response) => {
+        window.location.href = "http://localhost:3000";
       })
-    });
-  }
+      .catch((error) => {
+        toast.error(constants.serviceDown, {
+          position: "bottom-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      });
+  };
 
   return (
     <nav className="py-2 z-40">
@@ -35,7 +36,11 @@ function Navbar() {
       <Container>
         <div className="flex items-center justify-between h-16">
           <div className="flex gap-4 items-center">
-            <img className="h-[64px] w-[64px]" src={logo} alt="Logo E-Masjid.My" />
+            <img
+              className="h-[64px] w-[64px]"
+              src={logo}
+              alt="Logo E-Masjid.My"
+            />
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
                 <Link
@@ -73,8 +78,8 @@ function Navbar() {
             </div>
           </div>
 
-          <Link onClick={() => loginAjk()}>
-            <div className="hidden md:block hover:bg-button-primary px-4 py-1 rounded-xl">
+          <Link className="ml-auto" onClick={() => loginAjk()}>
+            <div className="block hover:bg-button-primary px-3 md:px-4 py-1 rounded-xl">
               Log Masuk AJK
             </div>
           </Link>
@@ -125,12 +130,6 @@ function Navbar() {
                 className="hover:bg-primary-base hover:bg-button-primary hover:text-white block px-3 py-2 rounded-md text-base font-medium"
               >
                 Hubungi Kami
-              </Link>
-              <Link
-                onClick={() => loginAjk()}
-                className="hover:bg-primary-base bg-button-primary text-white block px-3 py-2 rounded-md text-base font-medium"
-              >
-                Log Masuk AJK
               </Link>
             </div>
           </div>
