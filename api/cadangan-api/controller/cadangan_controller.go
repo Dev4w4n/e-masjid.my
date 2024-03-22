@@ -49,21 +49,28 @@ func (controller *CadanganController) GetOne(ctx *gin.Context) {
 
 func (controller *CadanganController) GetAllCadanganBy(ctx *gin.Context) {
 	var response interface{}
+	var open bool
+	var page, size int
+	var err error
 
 	cadanganTypeID := ctx.Query("cadanganTypeId")
-	isOpen := ctx.Query("isOpen")
-	open, err := strconv.ParseBool(isOpen)
-	page, _ := strconv.Atoi(ctx.Query("page"))
-	size, _ := strconv.Atoi(ctx.Query("size"))
+
+	if open, err = strconv.ParseBool(ctx.Query("isOpen")); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bool format"})
+		return
+	}
+
+	if page, err = strconv.Atoi(ctx.Query("page")); err != nil {
+		page = 1
+	}
+
+	if size, err = strconv.Atoi(ctx.Query("size")); err != nil {
+		size = 10
+	}
 
 	paginate := model.Paginate{
 		Page: page,
 		Size: size,
-	}
-
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bool format"})
-		return
 	}
 
 	if cadanganTypeID == "" {
