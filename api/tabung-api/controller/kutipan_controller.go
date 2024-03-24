@@ -27,7 +27,8 @@ func NewKutipanController(engine *gin.Engine, svc service.KutipanService, env *u
 	controller.engine.GET(relativePath+"/tabung/:tabungId", controller.FindAllByTabungId)
 	controller.engine.GET(relativePath+"/tabung/:tabungId/betweenCreateDate", controller.FindAllByTabungIdBetweenCreateDate)
 	controller.engine.GET(relativePath+"/:id", controller.FindById)
-	controller.engine.POST(relativePath, controller.Save)
+	controller.engine.POST(relativePath, controller.Upsert)
+	controller.engine.PUT(relativePath+"/:id", controller.Upsert)
 
 	return controller
 }
@@ -103,12 +104,23 @@ func (controller *KutipanController) FindById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
-func (controller *KutipanController) Save(ctx *gin.Context) {
+func (controller *KutipanController) Upsert(ctx *gin.Context) {
 	log.Info().Msg("save kutipan")
 
 	kutipan := model.Kutipan{}
 	err := ctx.ShouldBindJSON(&kutipan)
 	utils.InternalServerError(ctx, err, "failed to bind JSON")
+
+	idStr := ctx.Param("id")
+	if idStr != "" {
+		log.Info().Msgf("update kutipan id= %s", idStr)
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
+			return
+		}
+		kutipan.Id = int64(id)
+	}
 
 	kutipan, err = controller.kutipanService.Save(kutipan)
 	utils.InternalServerError(ctx, err, "failed to save kutipan")
