@@ -81,10 +81,12 @@ const PenyataBulananSelector = ({ onModalClose, ...props }) => {
             selected={selectedMonth}
             renderMonthContent={renderMonthContent}
             showMonthYearPicker
+            showTwoColumnMonthYearPicker
             dateFormat="MM/yyyy"
             onChange={(date) => setSelectedMonth(date)}
             onCalendarOpen={() => setCalendarVisible(true)}
             onCalendarClose={() => setCalendarVisible(false)}
+            maxDate={new Date()}
           />
         </CModalBody>
         <CModalFooter>
@@ -97,9 +99,9 @@ const PenyataBulananSelector = ({ onModalClose, ...props }) => {
             Batal
           </CButton>
           <CButton color="primary" onClick={(e) => {
-              e.stopPropagation();
-              printPreview();
-            }}>
+            e.stopPropagation();
+            printPreview();
+          }}>
             Teruskan
           </CButton>
         </CModalFooter>

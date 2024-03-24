@@ -7,7 +7,7 @@ import (
 
 type KutipanService interface {
 	FindAllByTabungId(id int64) ([]model.Kutipan, error)
-	FindAllByTabungIdBetweenCreateDate(id int64, fromDate int64, toDate int64) ([]model.Kutipan, error)
+	FindAllByTabungIdBetweenCreateDate(params model.QueryParams, paginate model.Paginate) (model.Response, error)
 	FindById(id int64) (model.Kutipan, error)
 	Save(kutipan model.Kutipan) (model.Kutipan, error)
 }
@@ -28,8 +28,8 @@ func (service *KutipanServiceImpl) FindAllByTabungId(tabungId int64) ([]model.Ku
 }
 
 // FindAllByTabungIdBetweenCreateDate implements KutipanService.
-func (service *KutipanServiceImpl) FindAllByTabungIdBetweenCreateDate(tabungId int64, fromDate int64, toDate int64) ([]model.Kutipan, error) {
-	return service.kutipanRepository.FindAllByTabungIdBetweenCreateDate(tabungId, fromDate, toDate)
+func (service *KutipanServiceImpl) FindAllByTabungIdBetweenCreateDate(params model.QueryParams, paginate model.Paginate) (model.Response, error) {
+	return service.kutipanRepository.FindAllByTabungIdBetweenCreateDate(params, paginate)
 }
 
 // FindById implements KutipanService.

@@ -22,3 +22,9 @@ type Kutipan struct {
 func (Kutipan) TableName() string {
 	return "kutipan"
 }
+
+type QueryParams struct {
+	TabungId int64 `json:"tabungId"`
+	FromDate int64 `json:"fromDate"`
+	ToDate   int64 `json:"toDate"`
+}

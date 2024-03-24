@@ -62,7 +62,27 @@ func (controller *KutipanController) FindAllByTabungIdBetweenCreateDate(ctx *gin
 	toDate, err := strconv.ParseInt(toDateStr, 10, 64)
 	utils.BadRequestError(ctx, err, "invalid toDate")
 
-	result, err := controller.kutipanService.FindAllByTabungIdBetweenCreateDate(tabungId, fromDate, toDate)
+	var page, size int
+	if page, err = strconv.Atoi(ctx.Query("page")); err != nil {
+		page = 0
+	}
+
+	if size, err = strconv.Atoi(ctx.Query("size")); err != nil {
+		size = 0
+	}
+
+	paginate := model.Paginate{
+		Page: page,
+		Size: size,
+	}
+
+	params := model.QueryParams{
+		TabungId: tabungId,
+		FromDate: fromDate,
+		ToDate:   toDate,
+	}
+
+	result, err := controller.kutipanService.FindAllByTabungIdBetweenCreateDate(params, paginate)
 	utils.InternalServerError(ctx, err, "failed to retrieve kutipan list by tabung id between create date")
 
 	ctx.Header("Content-Type", "application/json")
