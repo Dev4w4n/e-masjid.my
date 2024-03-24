@@ -9,7 +9,7 @@ type KutipanRepository interface {
 	FindAllByTabungId(tabungId int64) ([]model.Kutipan, error)
 	FindAllByTabungIdBetweenCreateDate(params model.QueryParams, paginate model.Paginate) (model.Response, error)
 	FindById(id int64) (model.Kutipan, error)
-	Save(kutipan model.Kutipan) (model.Kutipan, error)
+	Upsert(kutipan model.Kutipan) (model.Kutipan, error)
 }
 
 type KutipanRepositoryImpl struct {
@@ -119,6 +119,28 @@ func (repo *KutipanRepositoryImpl) Save(kutipan model.Kutipan) (model.Kutipan, e
 	}
 
 	return kutipan, nil
+}
+
+// Save and Update implements KutipanRepository.
+func (repo *KutipanRepositoryImpl) Upsert(kutipan model.Kutipan) (model.Kutipan, error) {
+	var result *gorm.DB
+
+	if kutipan.Id > 0 {
+		result = repo.Db.Omit("tabung_id").Updates(&kutipan)
+	} else {
+		result = repo.Db.Save(&kutipan)
+	}
+
+	if result.Error != nil {
+		return model.Kutipan{}, result.Error
+	}
+
+	_kutipan, err := repo.FindById(kutipan.Id)
+	if err != nil {
+		return model.Kutipan{}, err
+	}
+
+	return _kutipan, nil
 }
 
 func sumTotal(kutipan *model.Kutipan) {

@@ -122,7 +122,7 @@ func (controller *KutipanController) Upsert(ctx *gin.Context) {
 		kutipan.Id = int64(id)
 	}
 
-	kutipan, err = controller.kutipanService.Save(kutipan)
+	kutipan, err = controller.kutipanService.Upsert(kutipan)
 	utils.InternalServerError(ctx, err, "failed to save kutipan")
 
 	ctx.Header("Content-Type", "application/json")
