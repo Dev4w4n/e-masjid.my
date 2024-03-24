@@ -12,7 +12,7 @@ import {
   CButton,
   CSpinner,
 } from '@coreui/react'
-import { getKutipan, getKutipanByTabung } from 'src/service/tabung/KutipanApi'
+import { getKutipan } from 'src/service/tabung/KutipanApi'
 import { getTabung } from 'src/service/tabung/TabungApi'
 import DataTable from 'react-data-table-component'
 import { cilInfo, cilPrint } from '@coreui/icons'
@@ -20,14 +20,18 @@ import CIcon from '@coreui/icons-react'
 import { useReactToPrint } from 'react-to-print'
 import DenominasiPrint from 'src/components/print/tabung/DenominasiPrint'
 import PenyataBulananSelector from 'src/components/tabung/PenyataBulananSelector'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+
+import { getKutipanByTabungBetweenCreateDate } from 'src/service/tabung/KutipanApi'
 
 const columns = [
   {
     name: 'Tarikh',
     selector: (row) => {
-      let date = new Date(row.createDate); 
+      let date = new Date(row.createDate);
       let day = date.getDate();
-      let month = date.getMonth() + 1; 
+      let month = date.getMonth() + 1;
       let year = date.getFullYear();
 
       day = day < 10 ? '0' + day : day;
@@ -60,12 +64,13 @@ const Cetak = () => {
   const [visibleXL, setVisibleXL] = useState(false)
   const [penyata, setPenyata] = useState()
   const [visibleBulanan, setVisibleBulanan] = useState(false)
+  const [selectedMonth, setSelectedMonth] = useState(new Date())
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
 
-   useEffect(() => {
+  useEffect(() => {
     const fetchTabung = async () => {
       setLoading(true)
       try {
@@ -87,45 +92,83 @@ const Cetak = () => {
     fetchTabung()
   }, [])
 
-  useEffect(() => {
-    const fetchKutipan = async () => {
-      if (selectedTabung) {
-        setLoading(true)
-        try {
-          const data = await getKutipanByTabung(selectedTabung)
-          if (data.length > 0) {
-            const kutipanData = data.map((item) => ({
-              id: item.id,
-              tabung: item.tabung.name,
-              createDate: item.createDate,
-              total: item.total,
-              action: (
-                <CIcon icon={cilPrint} className="me-2" onClick={() => printPreview(item.id)}/>
-              ),
-            }))
-            setKutipanList(kutipanData)
-          } else {
-            setKutipanList([]);
-          }
-        } catch (error) {
-          console.error('Error fetching kutipan:', error)
-        } finally {
-          setLoading(false)
-        }
+  const [page, setPage] = useState(1)
+  const [size, setSize] = useState(25)
+  const [totalRows, setTotalRows] = useState(0)
+
+  const fetchKutipan = async (_page, _size) => {
+    if (!selectedTabung) {
+      setKutipanList([]);
+      return;
+    }
+    setLoading(true)
+
+    const startOfMonth = new Date(
+      selectedMonth.getFullYear(),
+      selectedMonth.getMonth(),
+      1
+    );
+    const endOfMonth = new Date(
+      selectedMonth.getFullYear(),
+      selectedMonth.getMonth() + 1,
+      0
+    );
+
+    try {
+
+      const data = await getKutipanByTabungBetweenCreateDate(
+        selectedTabung,
+        startOfMonth.getTime(),
+        endOfMonth.getTime(),
+        _page, _size
+      );
+
+      setTotalRows(data?.total);
+
+
+      if (data?.content?.length > 0) {
+        const kutipanData = data?.content?.map((item) => ({
+          id: item.id,
+          tabung: item.tabung.name,
+          createDate: item.createDate,
+          total: item.total,
+          action: (
+            <CIcon icon={cilPrint} className="me-2" onClick={() => printPreview(item.id)} />
+          ),
+        }))
+        setKutipanList(kutipanData)
+      } else {
+        setKutipanList([]);
       }
-    };
-    
-    fetchKutipan()
-  }, [selectedTabung])
+    } catch (error) {
+      console.error('Error fetching kutipan:', error)
+    } finally {
+      setLoading(false)
+    }
+
+  };
 
   useEffect(() => {
-    if(penyata) {
+    fetchKutipan(1, size)
+  }, [selectedTabung, selectedMonth])
+
+  const handlePageChange = page => {
+    fetchKutipan(page, size);
+    setPage(page);
+  };
+  const handlePerRowsChange = async (newSize, page) => {
+    setSize(newSize)
+    fetchKutipan(page, newSize)
+  };
+
+  useEffect(() => {
+    if (penyata) {
       setVisibleXL(!visibleXL);
     }
   }, [penyata])
 
   const printPreview = async (id) => {
-    if(id) {
+    if (id) {
       try {
         const data = await getKutipan(id)
         if (data) {
@@ -158,11 +201,22 @@ const Cetak = () => {
   }
 
   const cetakBulanan = () => {
-    if (kutipanList.length > 0) {
+
+    if (selectedTabung) {
       return (
-        <CRow>
-          <CCol></CCol>
-          <CCol></CCol>
+        <CRow className='m-4 '>
+          <CCol align="left">
+            Sila pilih bulan & tahun
+            <DatePicker
+              selected={selectedMonth}
+              showMonthYearPicker
+              showTwoColumnMonthYearPicker
+              dateFormat="MM/yyyy"
+              onChange={(date) => setSelectedMonth(date)}
+              maxDate={new Date()}
+              className='mx-2'
+            />
+          </CCol>
           <CCol align="right" className="hover-effect" onClick={() => previewBulanan()}>
             <CIcon icon={cilPrint} className="me-2" />
             Cetak Penyata Bulanan
@@ -170,6 +224,7 @@ const Cetak = () => {
         </CRow>
       )
     }
+
   }
 
   return (
@@ -189,13 +244,21 @@ const Cetak = () => {
                 onChange={(e) => handleSelectChange(e.target.value)}
               />
             </div>
-            { cetakBulanan() }
+            {cetakBulanan()}
             <DataTable
               noDataComponent={resultEmpty()}
               columns={columns}
               data={kutipanList}
               pointerOnHover
               highlightOnHover
+              pagination
+              paginationServer
+              paginationTotalRows={totalRows}
+              paginationPerPage={size}
+              paginationDefaultPage={page}
+              paginationRowsPerPageOptions={[25, 50, 100, 200]}
+              onChangeRowsPerPage={handlePerRowsChange}
+              onChangePage={handlePageChange}
             />
             <CModal
               size="xl"
@@ -216,8 +279,8 @@ const Cetak = () => {
           </CCardBody>
         </CCard>
       </CCol>
-      <PenyataBulananSelector visible={visibleBulanan} tabung={selectedTabung} 
-      onModalClose={() => setVisibleBulanan(false)} />
+      <PenyataBulananSelector visible={visibleBulanan} tabung={selectedTabung}
+        onModalClose={() => setVisibleBulanan(false)} />
     </CRow>
   )
 }

@@ -7,7 +7,7 @@ import (
 
 type KutipanRepository interface {
 	FindAllByTabungId(tabungId int64) ([]model.Kutipan, error)
-	FindAllByTabungIdBetweenCreateDate(tabungId int64, fromDate int64, toDate int64) ([]model.Kutipan, error)
+	FindAllByTabungIdBetweenCreateDate(params model.QueryParams, paginate model.Paginate) (model.Response, error)
 	FindById(id int64) (model.Kutipan, error)
 	Save(kutipan model.Kutipan) (model.Kutipan, error)
 }
@@ -44,24 +44,48 @@ func (repo *KutipanRepositoryImpl) FindAllByTabungId(tabungId int64) ([]model.Ku
 }
 
 // FindAllByTabungIdBetweenCreateDate implements KutipanRepository.
-func (repo *KutipanRepositoryImpl) FindAllByTabungIdBetweenCreateDate(tabungId int64, fromDate int64, toDate int64) ([]model.Kutipan, error) {
+func (repo *KutipanRepositoryImpl) FindAllByTabungIdBetweenCreateDate(params model.QueryParams, paginate model.Paginate) (model.Response, error) {
+	var response model.Response
 	var kutipanList []model.Kutipan
-	result := repo.Db.
-		Order("id").
-		Where("tabung_id = ? AND create_date BETWEEN ? AND ?", tabungId, fromDate, toDate).
-		Preload("Tabung.TabungType").
-		Find(&kutipanList)
+	var total int64
+	var result *gorm.DB
+	offset := (paginate.Page - 1) * paginate.Size
+
+	if paginate.Page == 0 && paginate.Size == 0 {
+		result = repo.Db.
+			Order("id").
+			Where("tabung_id = ? AND create_date BETWEEN ? AND ?", params.TabungId, params.FromDate, params.ToDate).
+			Preload("Tabung.TabungType").
+			Find(&kutipanList)
+
+	} else {
+		result = repo.Db.
+			Offset(offset).
+			Limit(paginate.Size).
+			Order("id").
+			Where("tabung_id = ? AND create_date BETWEEN ? AND ?", params.TabungId, params.FromDate, params.ToDate).
+			Preload("Tabung.TabungType").
+			Find(&kutipanList)
+
+	}
 
 	if result.Error != nil {
-		return nil, result.Error
+		return response, result.Error
 	}
+
+	repo.Db.Model(&model.Kutipan{}).
+		Where("tabung_id = ? AND create_date BETWEEN ? AND ?", params.TabungId, params.FromDate, params.ToDate).
+		Count(&total)
 
 	for i, kutipan := range kutipanList {
 		sumTotal(&kutipan)
 		kutipanList[i] = kutipan
 	}
 
-	return kutipanList, nil
+	response.Content = kutipanList
+	response.Total = int(total)
+
+	return response, nil
 }
 
 // FindById implements KutipanRepository.

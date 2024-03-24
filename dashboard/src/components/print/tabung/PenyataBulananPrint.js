@@ -2,7 +2,7 @@ import React, { useState, forwardRef, useEffect } from 'react'
 import { CCol, CRow, CContainer, CTable } from '@coreui/react'
 import { getKutipanByTabungBetweenCreateDate } from 'src/service/tabung/KutipanApi'
 import { getTetapanNamaMasjid } from 'src/service/tetapan/TetapanMasjidApi'
-import constants  from '../../../constants/print.json';
+import constants from '../../../constants/print.json';
 
 const columns = [
   {
@@ -37,7 +37,7 @@ const PenyataBulananPrint = forwardRef((props, ref) => {
     }
     loadNamaMasjid();
   }, []);
-    
+
   useEffect(() => {
     async function loadPenyata() {
       const startOfMonth = new Date(
@@ -59,14 +59,14 @@ const PenyataBulananPrint = forwardRef((props, ref) => {
 
       let items = [];
       let total = 0;
-      for (let i = 0; i < response.length; i++) {
+      response?.content?.map((data, index) => {
         items.push({
-          minggu: "MINGGU " + (i + 1),
-          tarikh: new Intl.DateTimeFormat('en-GB').format(new Date(response[i].createDate)),
-          jumlah: response[i].total.toLocaleString('ms-MY', { style: 'currency', currency: 'MYR' }),
+          minggu: "MINGGU " + (index + 1),
+          tarikh: new Intl.DateTimeFormat('en-GB').format(new Date(data.createDate)),
+          jumlah: data.total.toLocaleString('ms-MY', { style: 'currency', currency: 'MYR' }),
         });
-        total = total + response[i].total;
-      }
+        total += data.total;
+      });
       items.push({
         minggu: 'JUMLAH',
         tarikh: '',
@@ -81,7 +81,7 @@ const PenyataBulananPrint = forwardRef((props, ref) => {
     loadPenyata();
   }, [props.penyata, namaMasjid]);
 
-  
+
   return (
     <CContainer
       fluid
@@ -91,7 +91,7 @@ const PenyataBulananPrint = forwardRef((props, ref) => {
       <CRow>
         <CCol style={{ textAlign: 'center' }}>
           <h3>PENYATA KUTIPAN DAN DERMA BULANAN</h3>
-        </CCol> 
+        </CCol>
       </CRow>
       <CRow>
         <CCol style={{ textAlign: 'center' }}>
