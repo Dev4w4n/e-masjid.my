@@ -9,8 +9,8 @@ import {
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { useReactToPrint } from 'react-to-print'
-import PenyataBulananPrint from 'src/components/print/tabung/PenyataBulananPrint'
-import { getTabungById } from 'src/service/tabung/TabungApi'
+import PenyataBulananPrint from '@/components/print/tabung/PenyataBulananPrint'
+import { getTabungById } from '@/service/tabung/TabungApi'
 
 const PenyataBulananSelector = ({ onModalClose, ...props }) => {
   const componentRef = useRef();

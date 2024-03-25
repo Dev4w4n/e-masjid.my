@@ -17,10 +17,10 @@ import {
 } from '@coreui/icons'
 
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
-import { getMemberCount } from 'src/service/khairat/MembersApi'
-import { getPaidMemberCountCurrentYear } from 'src/service/khairat/MembersApi'
-import { getKutipanByTabung } from 'src/service/tabung/KutipanApi';
-import { getCadanganCount } from 'src/service/cadangan/CadanganApi'
+import { getMemberCount } from '@/service/khairat/MembersApi'
+import { getPaidMemberCountCurrentYear } from '@/service/khairat/MembersApi'
+import { getKutipanByTabung } from '@/service/tabung/KutipanApi';
+import { getCadanganCount } from '@/service/cadangan/CadanganApi'
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(false)
@@ -46,7 +46,7 @@ const Dashboard = () => {
 
       return day + '/' + month + '/' + year
     }
-  
+
     const calculateForKutipanWidget = () => {
       if (kutipanList.length > 1) {
         const data = kutipanList.map((kutipan) => ({
@@ -60,7 +60,7 @@ const Dashboard = () => {
 
     calculateForKutipanWidget()
   }, [kutipanList])
-  
+
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -117,7 +117,7 @@ const Dashboard = () => {
         memberCount={memberCount}
         paidMemberCount={paidMemberCount}
         kutipanList={kutipanList}
-        kutipanChartValueTop5={kutipanChartValueTop5} 
+        kutipanChartValueTop5={kutipanChartValueTop5}
         cadanganCount={cadanganCount} />
       <CCard className="mb-4">
         <CCardBody>

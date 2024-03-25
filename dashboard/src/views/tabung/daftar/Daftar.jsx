@@ -12,8 +12,8 @@ import {
 } from '@coreui/react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { getTabung } from 'src/service/tabung/TabungApi';
-import { saveKutipan } from 'src/service/tabung/KutipanApi';
+import { getTabung } from '@/service/tabung/TabungApi';
+import { saveKutipan } from '@/service/tabung/KutipanApi';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -93,7 +93,7 @@ const Daftar = () => {
         input5C * 0.05 +
         input10C * 0.10 +
         input20C * 0.20 +
-        input50C * 0.50 
+        input50C * 0.50
       );
     };
     updateTotal();

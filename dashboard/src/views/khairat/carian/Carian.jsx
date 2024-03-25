@@ -19,14 +19,14 @@ import {
   CModalFooter,
 } from '@coreui/react'
 import DataTable from 'react-data-table-component'
-import { searchMember, searchMemberByTagId } from 'src/service/khairat/MembersApi'
-import { getTags } from 'src/service/khairat/TagsApi'
+import { searchMember, searchMemberByTagId } from '@/service/khairat/MembersApi'
+import { getTags } from '@/service/khairat/TagsApi'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { cilMagnifyingGlass, cilInfo, cilPrint } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import { useNavigate } from 'react-router-dom'
-import SenaraiAhli from 'src/components/print/khairat/SenaraiAhli'
+import SenaraiAhli from '@/components/print/khairat/SenaraiAhli'
 import { useReactToPrint } from 'react-to-print'
 
 const columns = [
@@ -99,7 +99,7 @@ const Carian = () => {
   const [tagIds, setTagIds] = useState([])
   const [visibleXL, setVisibleXL] = useState(false)
   const componentRef = useRef();
-  
+
   useEffect(() => {
     setTimeout(() => {
       searchInput.current.focus();
@@ -151,7 +151,7 @@ const Carian = () => {
     generateButtons()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagItems])
-  
+
   function changeTagColor(id) {
     const newTagItems = tagItems.map((tag) => {
       if (tag.id === id) {
@@ -159,7 +159,7 @@ const Carian = () => {
       }
       return tag
     })
-    
+
     const tagIds = newTagItems
     .map((tag) => (tag.mode ? tag.id : undefined))
     .filter((id) => id !== undefined);
@@ -181,7 +181,7 @@ const Carian = () => {
                 const paymentDateYear = new Date(item.paymentDate).getFullYear();
                 return paymentDateYear === currentYear;
               }) ? `Sudah${paymentHistory.find(item => new Date(item.paymentDate).getFullYear() === currentYear)?.noResit ? ` (#${paymentHistory.find(item => new Date(item.paymentDate).getFullYear() === currentYear).noResit})` : ''}` : 'Belum';
-              
+
               const person = item.person
               const tags = item.memberTags.map(tag => tag.tag.name);
               const commaSeparatedTags = tags.join(', ');
@@ -273,7 +273,7 @@ const Carian = () => {
         setLoading(false)
       })
   }
-  
+
   const resultEmpty = () => {
     return (
       <p>
@@ -281,19 +281,19 @@ const Carian = () => {
       </p>
     )
   }
-  
+
   const renderHelp = () => {
     if(items.length !== 0) {
       return (
         <div className="mb-3">
-          <CRow>            
-            <CCol align="right" className="mt-2 hover-effect d-none d-lg-block" 
+          <CRow>
+            <CCol align="right" className="mt-2 hover-effect d-none d-lg-block"
               onClick={() => setVisibleXL(true)}>
               <CIcon icon={cilPrint} className="me-2" />
               Cetak senarai ini
             </CCol>
           </CRow>
-          
+
         </div>
       )
     }
@@ -341,8 +341,8 @@ const Carian = () => {
             </CNavItem>
           </CNav>
             <CTabContent>
-              <CTabPane role="tabpanel" 
-                aria-labelledby="textsearch-tab-pane" 
+              <CTabPane role="tabpanel"
+                aria-labelledby="textsearch-tab-pane"
                 visible={activeKey === 1}>
                   <p className="text-medium-emphasis mt-3">
                     Carian ahli khairat dengan menggunakan nama, no ic, no hp atau alamat.
@@ -370,7 +370,7 @@ const Carian = () => {
                     >
                       {loading ? (
                         <>
-                          <CSpinner size="sm" color="primary" /> 
+                          <CSpinner size="sm" color="primary" />
                           <span> Sila tunggu</span>
                         </>
                       ) : (
@@ -379,8 +379,8 @@ const Carian = () => {
                     </CButton>
                   </CInputGroup>
               </CTabPane>
-              <CTabPane role="tabpanel" 
-                aria-labelledby="tagsearch-tab-pane" 
+              <CTabPane role="tabpanel"
+                aria-labelledby="tagsearch-tab-pane"
                 visible={activeKey === 2}>
                   <p className="text-medium-emphasis mt-3">
                     Pilih jenis penanda untuk dipaparkan.
@@ -388,7 +388,7 @@ const Carian = () => {
                   {tagsButtons}
               </CTabPane>
             </CTabContent>
-            
+
             {renderHelp()}
             <DataTable
               noDataComponent={resultEmpty()}

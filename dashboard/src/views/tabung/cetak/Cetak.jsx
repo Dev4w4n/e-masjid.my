@@ -12,18 +12,18 @@ import {
   CButton,
   CSpinner,
 } from '@coreui/react'
-import { getKutipan } from 'src/service/tabung/KutipanApi'
-import { getTabung } from 'src/service/tabung/TabungApi'
+import { getKutipan } from '@/service/tabung/KutipanApi'
+import { getTabung } from '@/service/tabung/TabungApi'
 import DataTable from 'react-data-table-component'
 import { cilInfo, cilPrint } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import { useReactToPrint } from 'react-to-print'
-import DenominasiPrint from 'src/components/print/tabung/DenominasiPrint'
-import PenyataBulananSelector from 'src/components/tabung/PenyataBulananSelector'
+import DenominasiPrint from '@/components/print/tabung/DenominasiPrint'
+import PenyataBulananSelector from '@/components/tabung/PenyataBulananSelector'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
-import { getKutipanByTabungBetweenCreateDate } from 'src/service/tabung/KutipanApi'
+import { getKutipanByTabungBetweenCreateDate } from '@/service/tabung/KutipanApi'
 
 const columns = [
   {

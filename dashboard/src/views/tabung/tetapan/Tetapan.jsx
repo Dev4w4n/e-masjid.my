@@ -18,7 +18,7 @@ import {
 } from '@coreui/react'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { getTabung, saveTabung, deleteTabung } from 'src/service/tabung/TabungApi'
+import { getTabung, saveTabung, deleteTabung } from '@/service/tabung/TabungApi'
 
 const columns = [
   {
@@ -142,7 +142,7 @@ const Tetapan = () => {
       })
     }
   }
-  
+
   const editTabung = async (row) => {
     setEditID(row.id);
     setInputValue(row.name);

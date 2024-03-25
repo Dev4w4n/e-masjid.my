@@ -16,11 +16,11 @@ import {
   CSpinner,
   CInputGroup,
 } from '@coreui/react'
-import { getTags, saveTag, deleteTag } from 'src/service/khairat/TagsApi'
-import { saveMemberCsv } from 'src/service/khairat/MembersApi'
+import { getTags, saveTag, deleteTag } from '@/service/khairat/TagsApi'
+import { saveMemberCsv } from '@/service/khairat/MembersApi'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { isValidKhairatCSV } from 'src/utils/Helpers'
+import { isValidKhairatCSV } from '@/utils/Helpers'
 
 const columns = [
   {
@@ -261,7 +261,7 @@ const Tetapan = () => {
                     >
                       {loadingFile ? (
                         <>
-                          <CSpinner size="sm" color="primary" /> 
+                          <CSpinner size="sm" color="primary" />
                           <span> Sila tunggu</span>
                         </>
                       ) : (

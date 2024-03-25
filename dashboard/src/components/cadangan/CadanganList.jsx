@@ -8,7 +8,7 @@ import {
 } from '@coreui/react'
 import DataTable from 'react-data-table-component'
 import 'react-toastify/dist/ReactToastify.css'
-import {getCadanganByType, getCadanganByOpen} from 'src/service/cadangan/CadanganApi'
+import {getCadanganByType, getCadanganByOpen} from '@/service/cadangan/CadanganApi'
 import { cilMagnifyingGlass } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import CadanganEditor from './CadanganEditor'
@@ -18,9 +18,9 @@ const columns = [
   {
     name: 'Tarikh',
     selector: (row) => {
-      let date = new Date(row.createDate); 
+      let date = new Date(row.createDate);
       let day = date.getDate();
-      let month = date.getMonth() + 1; 
+      let month = date.getMonth() + 1;
       let year = date.getFullYear();
 
       let time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
@@ -135,7 +135,7 @@ const CadanganList = ({ onEditorUpdated, ...props }) => {
           }}
         />
       </CCol>
-      <CadanganEditor onHandleRefreshData={handleRefreshData} 
+      <CadanganEditor onHandleRefreshData={handleRefreshData}
       onEditorUpdated={onEditorUpdated} rowClickedInfo={rowClickedInfo} />
     </CRow>
   )
