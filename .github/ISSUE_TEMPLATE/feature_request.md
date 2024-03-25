@@ -12,7 +12,7 @@ assignees: ''
 2.
 3.
 
-***Expected delivery time: ***
+***Expected delivery time:***
 ? weeks
 
 ***Comment: "Assign this to me", if you wish to pick this up***
