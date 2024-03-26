@@ -6,7 +6,7 @@ module.exports = {
         xs: "410px",
       },
       backgroundImage: {
-        homefrontbg: "url(./assets/home/front.png)",
+        homefrontbg: "url(https://cdn.e-masjid.my/images/main.jpg)",
       },
       colors: {
         "button-primary": "#D9CAB3",
