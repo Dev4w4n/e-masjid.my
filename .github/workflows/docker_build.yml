@@ -1,0 +1,64 @@
+name: Docker Build and Push
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup QEMU
+      uses: docker/setup-qemu-action@v1
+
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Get release tag name
+      id: get_tag
+      run: echo "::set-output name=tag_name::${GITHUB_REF##*/}"
+
+    - name: Build and push Docker images for each project
+      run: |
+        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7,darwin/amd64,darwin/arm64,windows/amd64 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-cadangan-api-dev:${{ steps.get_tag.outputs.tag_name }} --push api/cadangan-api
+        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7,darwin/amd64,darwin/arm64,windows/amd64 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-cadangan-public-api-dev:${{ steps.get_tag.outputs.tag_name }} --push api/cadangan-public-api
+        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7,darwin/amd64,darwin/arm64,windows/amd64 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-khairat-api-dev:${{ steps.get_tag.outputs.tag_name }} --push api/khairat-api
+        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7,darwin/amd64,darwin/arm64,windows/amd64 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-tabung-api-dev:${{ steps.get_tag.outputs.tag_name }} --push api/tabung-api
+        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7,darwin/amd64,darwin/arm64,windows/amd64 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-tetapan-api-dev:${{ steps.get_tag.outputs.tag_name }} --push api/tetapan-api
+        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7,darwin/amd64,darwin/arm64,windows/amd64 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-dashboard-dev:${{ steps.get_tag.outputs.tag_name }} --push dashboard
+        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7,darwin/amd64,darwin/arm64,windows/amd64 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-public-web-dev:${{ steps.get_tag.outputs.tag_name }} --push public-web
+        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7,darwin/amd64,darwin/arm64,windows/amd64 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-postgres-dev:${{ steps.get_tag.outputs.tag_name }} --push postgres
+
+    - name: Tag latest release for each project
+      run: |
+        docker tag ${{ secrets.DOCKER_USERNAME }}/emasjidmy-cadangan-api-dev:${{ steps.get_tag.outputs.tag_name }} ${{ secrets.DOCKER_USERNAME }}/emasjidmy-cadangan-api-dev:latest
+        docker tag ${{ secrets.DOCKER_USERNAME }}/emasjidmy-cadangan-public-api-dev:${{ steps.get_tag.outputs.tag_name }} ${{ secrets.DOCKER_USERNAME }}/emasjidmy-cadangan-public-api-dev:latest
+        docker tag ${{ secrets.DOCKER_USERNAME }}/emasjidmy-khairat-api-dev:${{ steps.get_tag.outputs.tag_name }} ${{ secrets.DOCKER_USERNAME }}/emasjidmy-khairat-api-dev:latest
+        docker tag ${{ secrets.DOCKER_USERNAME }}/emasjidmy-tabung-api-dev:${{ steps.get_tag.outputs.tag_name }} ${{ secrets.DOCKER_USERNAME }}/emasjidmy-tabung-api-dev:latest
+        docker tag ${{ secrets.DOCKER_USERNAME }}/emasjidmy-tetapan-api-dev:${{ steps.get_tag.outputs.tag_name }} ${{ secrets.DOCKER_USERNAME }}/emasjidmy-tetapan-api-dev:latest
+        docker tag ${{ secrets.DOCKER_USERNAME }}/emasjidmy-dashboard-dev:${{ steps.get_tag.outputs.tag_name }} ${{ secrets.DOCKER_USERNAME }}/emasjidmy-dashboard-dev:latest
+        docker tag ${{ secrets.DOCKER_USERNAME }}/emasjidmy-public-web-dev:${{ steps.get_tag.outputs.tag_name }} ${{ secrets.DOCKER_USERNAME }}/emasjidmy-public-web-dev:latest
+        docker tag ${{ secrets.DOCKER_USERNAME }}/emasjidmy-postgres-dev:${{ steps.get_tag.outputs.tag_name }} ${{ secrets.DOCKER_USERNAME }}/emasjidmy-postgres-dev:latest
+
+        docker push ${{ secrets.DOCKER_USERNAME }}/emasjidmy-cadangan-api-dev:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/emasjidmy-cadangan-public-api-dev:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/emasjidmy-khairat-api-dev:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/emasjidmy-tabung-api-dev:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/emasjidmy-tetapan-api-dev:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/emasjidmy-dashboard-dev:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/emasjidmy-public-web-dev:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/emasjidmy-postgres-dev:latest
+
