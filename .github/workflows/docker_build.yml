@@ -33,14 +33,14 @@ jobs:
 
     - name: Build and push Docker images for each project
       run: |
-        docker buildx build --platform linux/amd64,linux/arm/v5,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-cadangan-api-dev:${{ steps.get_tag.outputs.tag_name }} --push api/cadangan-api
-        docker buildx build --platform linux/amd64,linux/arm/v5,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-cadangan-public-api-dev:${{ steps.get_tag.outputs.tag_name }} --push api/cadangan-public-api
-        docker buildx build --platform linux/amd64,linux/arm/v5,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-khairat-api-dev:${{ steps.get_tag.outputs.tag_name }} --push api/khairat-api
-        docker buildx build --platform linux/amd64,linux/arm/v5,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-tabung-api-dev:${{ steps.get_tag.outputs.tag_name }} --push api/tabung-api
-        docker buildx build --platform linux/amd64,linux/arm/v5,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-tetapan-api-dev:${{ steps.get_tag.outputs.tag_name }} --push api/tetapan-api
-        docker buildx build --platform linux/amd64,linux/arm/v5,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-dashboard-dev:${{ steps.get_tag.outputs.tag_name }} --push dashboard
-        docker buildx build --platform linux/amd64,linux/arm/v5,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-public-web-dev:${{ steps.get_tag.outputs.tag_name }} --push public-web
-        docker buildx build --platform linux/amd64,linux/arm/v5,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-postgres-dev:${{ steps.get_tag.outputs.tag_name }} --push postgres
+        docker buildx build --platform linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-cadangan-api-dev:${{ steps.get_tag.outputs.tag_name }} --push api/cadangan-api
+        docker buildx build --platform linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-cadangan-public-api-dev:${{ steps.get_tag.outputs.tag_name }} --push api/cadangan-public-api
+        docker buildx build --platform linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-khairat-api-dev:${{ steps.get_tag.outputs.tag_name }} --push api/khairat-api
+        docker buildx build --platform linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-tabung-api-dev:${{ steps.get_tag.outputs.tag_name }} --push api/tabung-api
+        docker buildx build --platform linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-tetapan-api-dev:${{ steps.get_tag.outputs.tag_name }} --push api/tetapan-api
+        docker buildx build --platform linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-dashboard-dev:${{ steps.get_tag.outputs.tag_name }} --push dashboard
+        docker buildx build --platform linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-public-web-dev:${{ steps.get_tag.outputs.tag_name }} --push public-web
+        docker buildx build --platform linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-postgres-dev:${{ steps.get_tag.outputs.tag_name }} --push postgres
 
     - name: Tag latest release for each project
       run: |
