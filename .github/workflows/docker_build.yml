@@ -46,6 +46,17 @@ jobs:
         docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-public-web-dev:${{ steps.get_tag.outputs.tag_name }} --push public-web
         docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKER_USERNAME }}/emasjidmy-postgres-dev:${{ steps.get_tag.outputs.tag_name }} --push postgres
 
+    - name: Docker pull images
+      run: |
+        docker pull ${{ secrets.DOCKER_USERNAME }}/emasjidmy-dashboard-dev:${{ steps.get_tag.outputs.tag_name }}
+        docker pull ${{ secrets.DOCKER_USERNAME }}/emasjidmy-public-web-dev:${{ steps.get_tag.outputs.tag_name }}
+        docker pull ${{ secrets.DOCKER_USERNAME }}/emasjidmy-postgres-dev:${{ steps.get_tag.outputs.tag_name }} 
+        docker pull ${{ secrets.DOCKER_USERNAME }}/emasjidmy-cadangan-api-dev:${{ steps.get_tag.outputs.tag_name }}
+        docker pull ${{ secrets.DOCKER_USERNAME }}/emasjidmy-cadangan-public-api-dev:${{ steps.get_tag.outputs.tag_name }} 
+        docker pull ${{ secrets.DOCKER_USERNAME }}/emasjidmy-khairat-api-dev:${{ steps.get_tag.outputs.tag_name }}
+        docker pull ${{ secrets.DOCKER_USERNAME }}/emasjidmy-tabung-api-dev:${{ steps.get_tag.outputs.tag_name }} 
+        docker pull ${{ secrets.DOCKER_USERNAME }}/emasjidmy-tetapan-api-dev:${{ steps.get_tag.outputs.tag_name }}
+
     - name: Tag latest release for each project
       run: |
         docker tag ${{ secrets.DOCKER_USERNAME }}/emasjidmy-dashboard-dev:${{ steps.get_tag.outputs.tag_name }} ${{ secrets.DOCKER_USERNAME }}/emasjidmy-dashboard-dev:latest
