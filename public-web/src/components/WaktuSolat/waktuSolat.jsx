@@ -14,6 +14,7 @@ export default function WaktuSolat() {
 	}
 
 	function formatHijri(input) {
+		if (input !== undefined) {		
 		const dateParts = input.split('-');	
 		const year = parseInt(dateParts[0], 10);
 		const month = parseInt(dateParts[1], 10);
@@ -35,6 +36,7 @@ export default function WaktuSolat() {
 		const output = day + " " + hijriMonths[month] + " " + year + "H"
 		return output;
 	}
+}
 
 	function convertTime(epoch) {
 		let date = new Date(epoch * 1000);
