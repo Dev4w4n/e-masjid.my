@@ -9,7 +9,7 @@ export default function WaktuSolat() {
 
 	function getZone(zon) {
 		if (zon !== "") {
-			return zones.find((zone) => zone.jakimCode === zon).negeri
+			return zones.find((zone) => zone.jakimCode === zon).daerah
 		}
 	}
 

@@ -11,11 +11,9 @@ export async function fetchSolat(zon) {
 
 export const getTetapanMasjid = async () => {
 	try {
-	const response = await axios.get(`${apiServer}/tetapan`)
-	//   const response = { 
-	// 	data : [{ kunci : 'ZON_MASJID', nilai : "WLY01" }]
-	//   }
-	  return response.data
+	// const response = await axios.get(`${apiServer}/tetapan`)
+	  const response = [{ kunci : 'ZON_MASJID', nilai : "PNG01" }] // hardcoded for now
+	  return response
 	} catch (error) {
 	  console.error(error)
 	}
