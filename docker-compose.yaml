@@ -20,7 +20,7 @@ services:
       - GO_ENV=dev
     depends_on:
       - postgres
-    command: ["./wait-for-it.sh", "postgres:5432", "--", "./khairat-api"]
+    command: ["./khairat-api"]
 
   tabung-api:
     build:
@@ -31,7 +31,7 @@ services:
       - GO_ENV=dev
     depends_on:
       - postgres
-    command: ["./wait-for-it.sh", "postgres:5432", "--", "./tabung-api"]
+    command: ["./tabung-api"]
 
   cadangan-api:
     build:
@@ -42,7 +42,7 @@ services:
       - GO_ENV=dev
     depends_on:
       - postgres
-    command: ["./wait-for-it.sh", "postgres:5432", "--", "./cadangan-api"]
+    command: ["./cadangan-api"]
 
   cadangan-public-api:
     build:
@@ -53,7 +53,7 @@ services:
       - GO_ENV=dev
     depends_on:
       - postgres
-    command: ["./wait-for-it.sh", "postgres:5432", "--", "./cadangan-public-api"]
+    command: ["./cadangan-public-api"]
 
   tetapan-api:
     build:
@@ -64,7 +64,7 @@ services:
       - postgres
     environment:
       - GO_ENV=dev
-    command: ["./wait-for-it.sh", "postgres:5432", "--", "./tetapan-api"]
+    command: ["./tetapan-api"]
 
   dashboard:
     build:
