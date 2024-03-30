@@ -19,3 +19,19 @@ export const getTetapanNamaMasjid = async () => {
     console.error(error)
   }
 }
+
+export const getTetapanZonMasjid = async () => {
+	try {
+		const response =await axios.get(`${apiServer}/tetapan/ZON_MASJID`)
+		.then((response) => {
+			return response.data.nilai
+		})
+		.catch((error) => {
+			console.log("Error " + error.response.status + ": Tetapan Zon Masjid Tidak Dijumpai")
+			return null
+		})
+		return response
+	  } catch (error) {
+		console.error(error)
+	  }
+	}
