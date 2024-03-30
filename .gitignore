@@ -9,4 +9,6 @@
 build
 
 #Ignore Github directory
-.github
+.github/ISSUE_TEMPLATE
+.github/FUNDINGS.yml
+.github/workflows/codeql.yml
