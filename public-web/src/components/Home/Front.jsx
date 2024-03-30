@@ -1,28 +1,7 @@
 import { useEffect, useState } from "react";
 import { getTetapanNamaMasjid } from "../../service/Tetapan/TetapanMasjidApi";
-import { useEffect, useState } from "react";
-import { getTetapanNamaMasjid } from "../../service/Tetapan/TetapanMasjidApi";
 
 export default function Front() {
-  
-  const [namaMasjid, setNamaMasjid] = useState("")
-  
-  useEffect(() => {
-    async function loadNamaMasjid() {
-      try {
-        const response = await getTetapanNamaMasjid();
-        setNamaMasjid(response.nilai);
-      } catch (error) {
-        console.error("Error fetching nama masjid:", error);
-      }
-    }
-    loadNamaMasjid();
-  }, []);
-  
-  useEffect(() => {
-    document.title = `E-Masjid - ${namaMasjid || 'Masjid Demo'}`;
-  }, [namaMasjid]);
-  
   
   const [namaMasjid, setNamaMasjid] = useState("")
   
