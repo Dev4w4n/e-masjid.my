@@ -8,9 +8,6 @@ import (
 type TetapanRepository interface {
 	FindAll() ([]model.Tetapan, error)
 	FindByKunci(kunci string) (model.Tetapan, error)
-	Save(tetapan model.Tetapan) error
-	SaveAll(tetapanList []model.Tetapan) error
-	Delete(kunci string) error
 }
 
 type TetapanRepositoryImpl struct {
@@ -43,35 +40,4 @@ func (repo *TetapanRepositoryImpl) FindByKunci(kunci string) (model.Tetapan, err
 	}
 
 	return tetapan, nil
-}
-
-func (repo *TetapanRepositoryImpl) Save(tetapan model.Tetapan) error {
-	result := repo.Db.Save(tetapan)
-
-	if result.Error != nil {
-		return result.Error
-	}
-
-	return nil
-}
-
-func (repo *TetapanRepositoryImpl) SaveAll(tetapanList []model.Tetapan) error {
-	result := repo.Db.Save(tetapanList)
-
-	if result.Error != nil {
-		return result.Error
-	}
-
-	return nil
-}
-
-func (repo *TetapanRepositoryImpl) Delete(kunci string) error {
-	var tetapan model.Tetapan
-	result := repo.Db.Where("kunci = ?", kunci).Delete(&tetapan)
-
-	if result.Error != nil {
-		return result.Error
-	}
-
-	return nil
 }

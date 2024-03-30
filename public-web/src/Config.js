@@ -4,6 +4,7 @@ const prod = {
     },
     url: {
       CADANGAN_API_BASE_URL: 'https://www.e-masjid.my/api',
+      TETAPAN_API_BASE_URL: 'https://www.e-masjid.my/api',
     },
   }
   
@@ -13,6 +14,7 @@ const prod = {
     },
     url: {
       CADANGAN_API_BASE_URL: 'http://localhost:8084',
+      TETAPAN_API_BASE_URL: 'http://localhost:8086',
     },
   }
   
