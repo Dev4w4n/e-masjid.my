@@ -48,8 +48,8 @@ export default function WaktuSolat() {
 			fetchSolat(tetapanZon)
 			.then((response) => {
 				const hariIni = new Date().getDate()
-				console.log(response.prayers[hariIni]);
-				setSolatToday(response.prayers[hariIni])
+				// console.log(response.prayers[hariIni]);
+				setSolatToday(response.prayers[hariIni-1])
 			})
 			.catch((error) => {
 				console.error(error)
