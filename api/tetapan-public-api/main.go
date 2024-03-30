@@ -38,7 +38,7 @@ func main() {
 	r := gin.Default()
 
 	r.Use(cors.New(config))
-	r.Use(controllerMiddleware(env))
+	r.Use(controllerMiddleware())
 
 	_ = controller.NewTetapanController(r, tetapanRepository, env)
 
@@ -55,14 +55,14 @@ func main() {
 }
 
 // Strictly allow from allowedOrigin
-func controllerMiddleware(env *utils.Environment) gin.HandlerFunc {
+func controllerMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Check if the request origin is allowed
-		allowedOrigin := env.AllowOrigins
-		origin := c.GetHeader("Origin")
+		// Check if the request same-origin is allowed
+		secFetchSite := c.Request.Header.Get("Sec-Fetch-Site")
 
-		log.Println("Origin: ", origin)
-		if origin != allowedOrigin {
+		log.Println("secFetchSite: ", secFetchSite)
+
+		if secFetchSite != "same-origin" {
 			c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
 			c.Abort()
 			return
