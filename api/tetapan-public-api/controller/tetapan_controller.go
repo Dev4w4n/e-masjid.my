@@ -3,7 +3,6 @@ package controller
 import (
 	"net/http"
 
-	"github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api/repository"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api/utils"
 	"github.com/gin-gonic/gin"
@@ -25,9 +24,6 @@ func NewTetapanController(engine *gin.Engine, repo repository.TetapanRepository,
 
 	controller.engine.GET(relativePath, controller.FindAll)
 	controller.engine.GET(relativePath+"/:kunci", controller.FindByKunci)
-	controller.engine.POST(relativePath, controller.Save)
-	controller.engine.POST(relativePath+"/senarai", controller.SaveAll)
-	controller.engine.DELETE(relativePath+"/:kunci", controller.Delete)
 
 	return controller
 }
@@ -51,43 +47,4 @@ func (controller *TetapanController) FindByKunci(ctx *gin.Context) {
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
-}
-
-func (controller *TetapanController) Save(ctx *gin.Context) {
-	log.Info().Msg("save tetapan")
-
-	saveTetapan := model.Tetapan{}
-	err := ctx.ShouldBindJSON(&saveTetapan)
-	utils.WebError(ctx, err, "failed to bind JSON")
-
-	err = controller.tetapanRepository.Save(saveTetapan)
-	utils.WebError(ctx, err, "failed to save tetapan")
-
-	ctx.Header("Content-Type", "application/json")
-	ctx.Status(http.StatusOK)
-}
-
-func (controller *TetapanController) SaveAll(ctx *gin.Context) {
-	log.Info().Msg("save all tetapan")
-
-	saveTetapanList := []model.Tetapan{}
-	err := ctx.ShouldBindJSON(&saveTetapanList)
-	utils.WebError(ctx, err, "failed to bind JSON")
-
-	err = controller.tetapanRepository.SaveAll(saveTetapanList)
-	utils.WebError(ctx, err, "failed to save tetapan")
-
-	ctx.Header("Content-Type", "application/json")
-	ctx.Status(http.StatusOK)
-}
-
-func (controller *TetapanController) Delete(ctx *gin.Context) {
-	log.Info().Msg("delete tetapan")
-
-	kunci := ctx.Param("kunci")
-	err := controller.tetapanRepository.Delete(kunci)
-	utils.WebError(ctx, err, "failed to delete tetapan")
-
-	ctx.Header("Content-Type", "application/json")
-	ctx.Status(http.StatusOK)
 }
