@@ -9,4 +9,4 @@
 build
 
 #Ignore Github directory
-.github
+.github/

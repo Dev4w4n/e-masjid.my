@@ -66,6 +66,17 @@ services:
       - GO_ENV=dev
     command: ["./wait-for-it.sh", "postgres:5432", "--", "./tetapan-api"]
 
+  tetapan-public-api:
+    build:
+      context: ./api/tetapan-public-api
+    ports:
+      - "8086:8086"
+    depends_on:
+      - postgres
+    environment:
+      - GO_ENV=dev
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "./tetapan-public-api"]
+
   dashboard:
     build:
       context: ./dashboard
