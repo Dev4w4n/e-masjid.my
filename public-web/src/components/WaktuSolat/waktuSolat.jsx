@@ -1,11 +1,19 @@
 import { useState, useEffect } from "react";
-import { getTetapanMasjid, fetchSolat } from "./apiSolat";
 import { zones } from "./senaraiZon"
+import { getTetapanZonMasjid } from "../../service/Tetapan/TetapanMasjidApi";
+
+
 
 export default function WaktuSolat() {
 	const [tetapanZon, setTetapanZon] = useState("")
 	const [solatToday, setSolatToday] = useState([])
 	const [error, setError]= useState(false)
+
+	async function fetchSolat(zon) {
+		const response = await fetch('https://api.waktusolat.app/v2/solat/' + zon)
+		const data = await response.json()
+		return data
+	}
 
 	function getZone(zon) {
 		if (zon !== "") {
@@ -48,7 +56,6 @@ export default function WaktuSolat() {
 			fetchSolat(tetapanZon)
 			.then((response) => {
 				const hariIni = new Date().getDate()
-				// console.log(response.prayers[hariIni]);
 				setSolatToday(response.prayers[hariIni-1])
 			})
 			.catch((error) => {
@@ -59,20 +66,19 @@ export default function WaktuSolat() {
 	},[tetapanZon])
 
 	useEffect(() => {
-		getTetapanMasjid()
+		getTetapanZonMasjid()
 		.then((response) => {
-			response.forEach((tetapan) => {
-				if (tetapan.kunci === 'ZON_MASJID') {
-					setTetapanZon(tetapan.nilai)
-				}
-			})
+			if (response) {
+				setTetapanZon(response)
+			} else {
+				setError(true)
+			}
 		})
 		.catch((error) => {
 			console.error(error)
 			setError(true)
 		})
 	  }, [])
-
 
 	return (
 		<div>
