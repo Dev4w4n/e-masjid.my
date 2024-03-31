@@ -62,7 +62,7 @@ func controllerMiddleware() gin.HandlerFunc {
 
 		log.Println("secFetchSite: ", secFetchSite)
 
-		if secFetchSite != "same-origin" || secFetchSite == "same-site" {
+		if secFetchSite != "same-origin" && secFetchSite != "same-site" {
 			c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
 			c.Abort()
 			return
