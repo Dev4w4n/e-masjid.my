@@ -1,0 +1,89 @@
+version: '3'
+
+services:
+  postgres:
+    image: dev4w4n/emasjidmy-postgres-dev:v1.10-beta.9
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+
+  khairat-api:
+    image: dev4w4n/emasjidmy-khairat-api-dev:v1.10-beta.9
+    ports:
+      - "8081:8081"
+    environment:
+      - GO_ENV=dev
+    depends_on:
+      - postgres
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "./khairat-api"]
+
+  tabung-api:
+    image: dev4w4n/emasjidmy-tabung-api-dev:v1.10-beta.9
+    ports:
+      - "8082:8082"
+    environment:
+      - GO_ENV=dev
+    depends_on:
+      - postgres
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "./tabung-api"]
+
+  cadangan-api:
+    image: dev4w4n/emasjidmy-cadangan-api-dev:v1.10-beta.9
+    ports:
+      - "8083:8083"
+    environment:
+      - GO_ENV=dev
+    depends_on:
+      - postgres
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "./cadangan-api"]
+
+  cadangan-public-api:
+    image: dev4w4n/emasjidmy-cadangan-public-api-dev:v1.10-beta.9
+    ports:
+      - "8084:8084"
+    environment:
+      - GO_ENV=dev
+    depends_on:
+      - postgres
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "./cadangan-public-api"]
+
+  tetapan-api:
+    image: dev4w4n/emasjidmy-tetapan-api-dev:v1.10-beta.9
+    ports:
+      - "8085:8085"
+    depends_on:
+      - postgres
+    environment:
+      - GO_ENV=dev
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "./tetapan-api"]
+
+  tetapan-public-api:
+    image: dev4w4n/emasjidmy-tetapan-public-api-dev:v1.10-beta.9
+    ports:
+      - "8086:8086"
+    depends_on:
+      - postgres
+    environment:
+      - GO_ENV=dev
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "./tetapan-public-api"]
+
+  dashboard:
+    image: dev4w4n/emasjidmy-dashboard-dev:v1.10-beta.9
+    ports:
+      - "3000:3000"
+    depends_on:
+      - khairat-api
+      - tabung-api
+      - cadangan-api
+      - tetapan-api
+
+  public-web:
+    image: dev4w4n/emasjidmy-public-web-dev:v1.10-beta.9
+    ports:
+      - "3001:3000"
+    depends_on:
+      - cadangan-public-api
+
