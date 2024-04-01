@@ -26,6 +26,7 @@ func main() {
 	}
 
 	tetapanRepository := repository.NewTetapanRepository(db)
+	tetapanTypeRepository := repository.NewTetapanTypeRepository(db)
 
 	// CORS configuration
 	config := cors.DefaultConfig()
@@ -39,6 +40,7 @@ func main() {
 	r.Use(cors.New(config))
 
 	_ = controller.NewTetapanController(r, tetapanRepository, env)
+	_ = controller.NewTetapanTypeController(r, tetapanTypeRepository, env)
 
 	go func() {
 		err = r.Run(":" + env.ServerPort)
