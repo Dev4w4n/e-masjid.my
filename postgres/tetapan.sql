@@ -25,8 +25,7 @@ VALUES
     ('HUBUNGAN_TYPE',5,'Datuk'),
     ('HUBUNGAN_TYPE',6,'Isteri'),
     ('HUBUNGAN_TYPE',7,'Suami'),
-    ('HUBUNGAN_TYPE',8,'Lain-lain');
-/*
+    ('HUBUNGAN_TYPE',8,'Lain-lain'),
     ('PENYAKIT_TYPE',1,'AIDS'),
     ('PENYAKIT_TYPE',2,'GOUT'),
     ('PENYAKIT_TYPE',3,'HEPETITIS-A'),
@@ -35,4 +34,4 @@ VALUES
     ('BANTUAN_TYPE',3,'NGO'),
     ('NEGERI_TYPE',1,'PULAU PINANG'),
     ('NEGERI_TYPE',2,'PERAK');
-*/
+
