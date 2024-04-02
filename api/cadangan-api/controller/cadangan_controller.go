@@ -26,6 +26,7 @@ func NewCadanganController(engine *gin.Engine, repo repository.CadanganRepositor
 	controller.engine.GET(env.DeployURL+"cadangan/:id", controller.GetOne)
 	controller.engine.GET(env.DeployURL+"cadangan/count", controller.GetCadanganCount)
 	controller.engine.PUT(env.DeployURL+"cadangan/:id", controller.Save)
+	controller.engine.DELETE(env.DeployURL+"cadangan/:id", controller.Delete)
 
 	return controller
 }
@@ -109,6 +110,24 @@ func (controller *CadanganController) Save(ctx *gin.Context) {
 
 	err = controller.cadanganRepository.Save(saveCadangan)
 	utils.WebError(ctx, err, "failed to save cadangan")
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.Status(http.StatusOK)
+}
+
+func (controller *CadanganController) Delete(ctx *gin.Context) {
+	log.Info().Msg("delete cadangan")
+
+	idStr := ctx.Param("id")
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
+		return
+	}
+
+	err2 := controller.cadanganRepository.Delete(id)
+	utils.WebError(ctx, err2, "failed to delete cadangan")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.Status(http.StatusOK)
