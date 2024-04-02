@@ -77,6 +77,7 @@ const Cetak = () => {
   const [selectedTabungName, setSelectedTabungName] = useState('')
 
   const [visibleEditModal, setVisibleEditModal] = useState(false)
+  const [jumlahKutipan, setJumlahKutipan] = useState(false)
 
   const [moneyDenomination, setMoneyDenomination] = useState(['1', '5', '10', '20', '50', '100']);
   const [input1, setInput1] = useState({ mask: Number });
@@ -185,7 +186,7 @@ const Cetak = () => {
 
   useEffect(() => {
     fetchKutipan(1, size)
-  }, [selectedTabung, selectedMonth])
+  }, [selectedTabung, selectedMonth, jumlahKutipan])
 
   const handlePageChange = page => {
     fetchKutipan(page, size);
@@ -260,8 +261,8 @@ const Cetak = () => {
       progress: undefined,
       theme: 'light',
     })
-
     handleReset()
+    setVisibleEditModal(false)
   };
 
   const handleReset = () => {
@@ -309,6 +310,8 @@ const Cetak = () => {
     try {
       await updateKutipan(idNumber, updatedKutipanData);
       console.log(updatedKutipanData)
+      setJumlahKutipan(prevState => !prevState)
+
     } catch (error) {
       console.log(updatedKutipanData)
       console.error(error)
@@ -361,14 +364,8 @@ const Cetak = () => {
           setInput20C(data.total20c);
           setInput50C(data.total50c);
           setSelectedTabungName(data.tabung.name);
-
-
-
-
-
-
         }
-        console.log(data);
+
       } catch (error) {
         console.error('Error fetching kutipan:', error)
       }
@@ -501,21 +498,12 @@ const Cetak = () => {
             >
               <CModalBody>
                 <h3>Edit Kutipan Tabung</h3>
-                <h4>{selectedTabungName}</h4>
+                <h4 className="text-muted mb-2 mt-3">{selectedTabungName}</h4>
                 <CForm
                   id="editForm"
                   validated={validated}
                   onSubmit={handleSubmit}
                 >
-                  <div className="mb-3">
-                    <CFormSelect
-                      aria-label="Pilih tabung"
-                      options={tabungList}
-                      value={selectedTabung}
-                      ref={selectRef}
-                      onChange={(e) => handleSelectChange(e.target.value)}
-                    />
-                  </div>
                   {moneyDenomination.map((value) => (
                     <CRow key={value}>
                       <CCol>{value.endsWith('C') ? `${value.slice(0, -1)} Sen` : `RM ${value}`}</CCol>
@@ -569,9 +557,8 @@ const Cetak = () => {
                         'Simpan'
                       )}
                     </CButton>
-                    <CButton onClick={handleReset} color="secondary" size="sm"
-                      className="custom-action-button">
-                      Kosongkan semua
+                    <CButton color="secondary" size='sm' className='custom-action-button' onClick={() => setVisibleEditModal(false)}>
+                      Tutup
                     </CButton>
                   </div>
                 </CForm>
