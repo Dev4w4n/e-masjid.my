@@ -30,7 +30,7 @@ func main() {
 	// CORS configuration
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{env.AllowOrigins}
-	config.AllowMethods = []string{"PUT", "GET"}
+	config.AllowMethods = []string{"PUT", "GET", "DELETE"}
 
 	gin.SetMode(gin.ReleaseMode)
 
