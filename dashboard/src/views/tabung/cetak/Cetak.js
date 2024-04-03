@@ -25,10 +25,8 @@ import DenominasiPrint from 'src/components/print/tabung/DenominasiPrint'
 import PenyataBulananSelector from 'src/components/tabung/PenyataBulananSelector'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import { getKutipanByTabungBetweenCreateDate } from 'src/service/tabung/KutipanApi'
 import { updateKutipan } from 'src/service/tabung/KutipanApi'
 
@@ -71,14 +69,11 @@ const Cetak = () => {
   const componentRef = useRef();
   const [visibleXL, setVisibleXL] = useState(false)
   const [penyata, setPenyata] = useState()
-  const [penyataCuba, setPenyataCuba] = useState()
   const [visibleBulanan, setVisibleBulanan] = useState(false)
   const [selectedMonth, setSelectedMonth] = useState(new Date())
   const [selectedTabungName, setSelectedTabungName] = useState('')
-
   const [visibleEditModal, setVisibleEditModal] = useState(false)
   const [jumlahKutipan, setJumlahKutipan] = useState(false)
-
   const [moneyDenomination, setMoneyDenomination] = useState(['1', '5', '10', '20', '50', '100']);
   const [input1, setInput1] = useState({ mask: Number });
   const [input5, setInput5] = useState({ mask: Number });
@@ -86,12 +81,12 @@ const Cetak = () => {
   const [input20, setInput20] = useState({ mask: Number });
   const [input50, setInput50] = useState({ mask: Number });
   const [input100, setInput100] = useState({ mask: Number });
-  const [centList, setCentList] = useState([]);
   const [input1C, setInput1C] = useState({ mask: Number });
   const [input5C, setInput5C] = useState({ mask: Number });
   const [input10C, setInput10C] = useState({ mask: Number });
   const [input20C, setInput20C] = useState({ mask: Number });
   const [input50C, setInput50C] = useState({ mask: Number });
+  const [isCents, setIsCents]=useState()
   const [total, setTotal] = useState(0);
   const [startDate, setStartDate] = useState(new Date());
   const [validated, setValidated] = useState(false);
@@ -183,6 +178,14 @@ const Cetak = () => {
     }
 
   };
+
+  useEffect(()=>{
+    if (isCents===true) {
+      setMoneyDenomination(['1', '5', '10', '20', '50', '100','1C', '5C', '10C', '20C', '50C']);
+    } else {
+      setMoneyDenomination(['1', '5', '10', '20', '50', '100']);
+    }
+  },[visibleEditModal])
 
   useEffect(() => {
     fetchKutipan(1, size)
@@ -292,7 +295,6 @@ const Cetak = () => {
 
   const updateKutipanApi = async () => {
     const updatedKutipanData = {
-      // tabung: { id: parseInt(selectedTabung, 10) },
       createDate: startDate.getTime(),
       total1c: input1C,
       total5c: input5C,
@@ -308,18 +310,13 @@ const Cetak = () => {
     }
 
     try {
-      await updateKutipan(idNumber, updatedKutipanData);
-      console.log(updatedKutipanData)
+      await updateKutipan(idNumber, updatedKutipanData);  
       setJumlahKutipan(prevState => !prevState)
-
     } catch (error) {
-      console.log(updatedKutipanData)
       console.error(error)
     }
   }
 
-
-  // //test nazhan
   useEffect(() => {
     const updateTotal = () => {
       setTotal(
@@ -339,18 +336,11 @@ const Cetak = () => {
     updateTotal();
   }, [input1, input5, input10, input20, input50, input100, input1C, input5C, input10C, input20C, input50C]);
 
-  useEffect(() => {
-    if (penyataCuba) {
-      setVisibleEditModal(!visibleEditModal);
-    }
-  }, [penyataCuba])
-
   const editPreview = async (id) => {
     if (id) {
       try {
         const data = await getKutipan(id)
         if (data) {
-          setPenyataCuba(data)
           setIdNumber(data.id)
           setInput1(data.total1d);
           setInput5(data.total5d);
@@ -364,6 +354,8 @@ const Cetak = () => {
           setInput20C(data.total20c);
           setInput50C(data.total50c);
           setSelectedTabungName(data.tabung.name);
+          setIsCents(data.tabung.cents)
+          setVisibleEditModal(true);
         }
 
       } catch (error) {
