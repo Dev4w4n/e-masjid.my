@@ -33,7 +33,7 @@ import { updateKutipan } from 'src/service/tabung/KutipanApi'
 
 const columns = [
   {
-    name: 'Tarikh',
+    name: 'Tarikh Kutipan',
     selector: (row) => {
       let date = new Date(row.createDate);
       let day = date.getDate();
@@ -356,8 +356,8 @@ const Cetak = () => {
           setSelectedTabungName(data.tabung.name);
           setIsCents(data.tabung.cents)
           setVisibleEditModal(true);
+          setStartDate(data.createDate)
         }
-
       } catch (error) {
         console.error('Error fetching kutipan:', error)
       }
@@ -527,7 +527,7 @@ const Cetak = () => {
                   <br />
                   <CRow>
                     <CCol>
-                      Tarikh:{' '}
+                      Tarikh Kutipan:{' '}
                       <DatePicker
                         id="startDate"
                         dateFormat="dd/MM/yyyy"
