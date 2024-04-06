@@ -11,8 +11,8 @@ services:
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypassword
     volumes:
-      - ./postgres/zz_dummy.sql:/docker-entrypoint-initdb.d/zz_dummy.sql:ro
-      - ./postgres/zz_tetapan_types.sql:/docker-entrypoint-initdb.d/zz_tetapan_types.sql:ro
+      - ./postgres/901_zz_tetapan_types.sql:/docker-entrypoint-initdb.d/901_zz_tetapan_types.sql:ro
+      - ./postgres/902_zz_dummy.sql:/docker-entrypoint-initdb.d/902_zz_dummy.sql:ro
 
   khairat-api:
     build:

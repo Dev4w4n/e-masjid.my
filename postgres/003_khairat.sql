@@ -47,3 +47,10 @@ CREATE TABLE khairat_payment_history (
 -----
 ALTER TABLE public.person ALTER COLUMN "name" SET NOT NULL;
 ALTER TABLE public.person ALTER COLUMN ic_number SET NOT NULL;
+
+--- changes in v1.10-beta.11 (current release)
+ALTER TABLE public.person 
+    ADD COLUMN jantina_types_id INTEGER REFERENCES tetapan_types(id),
+    ADD COLUMN birth_date BIGINT,
+    ADD COLUMN email_address VARCHAR(320);
+        
