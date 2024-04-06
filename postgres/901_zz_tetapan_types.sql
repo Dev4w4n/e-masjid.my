@@ -30,3 +30,8 @@ VALUES
     ('NEGERI_TYPE',1,'PULAU PINANG'),
     ('NEGERI_TYPE',2,'PERAK');
 
+-- JANTINA_TYPE
+INSERT INTO tetapan_types (group_name, int_val, str_val)
+VALUES
+    ('JANTINA_TYPE',1,'LELAKI'),
+    ('JANTINA_TYPE',2,'PEREMPUAN');
