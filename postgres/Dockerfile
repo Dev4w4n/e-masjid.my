@@ -11,6 +11,7 @@ WORKDIR /docker-entrypoint-initdb.d
 
 # Copy the SQL files into the container
 COPY 001_tetapan.sql /docker-entrypoint-initdb.d/
+COPY 001_files_cdn.sql /docker-entrypoint-initdb.d/
 COPY 002_cadangan.sql /docker-entrypoint-initdb.d/
 COPY 003_khairat.sql /docker-entrypoint-initdb.d/
 COPY 004_tabung.sql /docker-entrypoint-initdb.d/
