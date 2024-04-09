@@ -15,6 +15,7 @@ COPY 001_files_cdn.sql /docker-entrypoint-initdb.d/
 COPY 002_cadangan.sql /docker-entrypoint-initdb.d/
 COPY 003_khairat.sql /docker-entrypoint-initdb.d/
 COPY 004_tabung.sql /docker-entrypoint-initdb.d/
+COPY 005_kariah.sql /docker-entrypoint-initdb.d/
 
 # Create a volume for persistent storage
 VOLUME /var/lib/postgresql/data
