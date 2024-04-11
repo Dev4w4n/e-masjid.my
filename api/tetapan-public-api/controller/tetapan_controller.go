@@ -3,8 +3,8 @@ package controller
 import (
 	"net/http"
 
+	"github.com/Dev4w4n/e-masjid.my/api/core/utils"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api/repository"
-	"github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
