@@ -3,7 +3,8 @@ package controller
 import (
 	"net/http"
 
-	"github.com/Dev4w4n/e-masjid.my/api/core/utils"
+	"github.com/Dev4w4n/e-masjid.my/api/core/env"
+	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/repository"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
@@ -14,7 +15,7 @@ type TetapanTypeController struct {
 	tetapanTypeRepository repository.TetapanTypeRepository
 }
 
-func NewTetapanTypeController(engine *gin.Engine, repo repository.TetapanTypeRepository, env *utils.Environment) *TetapanTypeController {
+func NewTetapanTypeController(engine *gin.Engine, repo repository.TetapanTypeRepository, env *env.Environment) *TetapanTypeController {
 	controller := &TetapanTypeController{
 		engine:                engine,
 		tetapanTypeRepository: repo,
@@ -32,7 +33,7 @@ func (controller *TetapanTypeController) FindAllGroupNames(ctx *gin.Context) {
 	log.Info().Msg("find all tetapan type group names")
 
 	result, err := controller.tetapanTypeRepository.FindAllGroupNames()
-	utils.WebError(ctx, err, "failed to retrieve tetapan type group names")
+	errors.InternalServerError(ctx, err, "failed to retrieve tetapan type group names")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
@@ -43,7 +44,7 @@ func (controller *TetapanTypeController) FindByGroupName(ctx *gin.Context) {
 
 	groupName := ctx.Param("group_name")
 	result, err := controller.tetapanTypeRepository.FindByGroupName(groupName)
-	utils.WebError(ctx, err, "failed to retrieve tetapan type by group name")
+	errors.InternalServerError(ctx, err, "failed to retrieve tetapan type by group name")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)

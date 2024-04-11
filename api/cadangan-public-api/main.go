@@ -7,7 +7,7 @@ import (
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/config"
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/controller"
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/repository"
-	"github.com/Dev4w4n/e-masjid.my/api/core/utils"
+	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -16,7 +16,7 @@ import (
 func main() {
 	log.Println("Starting server ...")
 
-	env, err := utils.GetEnvironment()
+	env, err := env.GetEnvironment()
 	if err != nil {
 		log.Fatalf("Error getting environment: %v", err)
 	}
@@ -55,7 +55,7 @@ func main() {
 }
 
 // Strictly allow from allowedOrigin
-func controllerMiddleware(env *utils.Environment) gin.HandlerFunc {
+func controllerMiddleware(env *env.Environment) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Check if the request origin is allowed
 		allowedOrigin := env.AllowOrigins

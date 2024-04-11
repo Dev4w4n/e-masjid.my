@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Dev4w4n/e-masjid.my/api/core/env"
+	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/repository"
-	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
@@ -16,7 +17,7 @@ type TagController struct {
 	tagRepository repository.TagRepository
 }
 
-func NewTagController(engine *gin.Engine, repo repository.TagRepository, env *utils.Environment) *TagController {
+func NewTagController(engine *gin.Engine, repo repository.TagRepository, env *env.Environment) *TagController {
 	controller := &TagController{
 		engine:        engine,
 		tagRepository: repo,
@@ -35,7 +36,7 @@ func (controller *TagController) FindAll(ctx *gin.Context) {
 	log.Info().Msg("find all tag")
 
 	result, err := controller.tagRepository.FindAll()
-	utils.WebError(ctx, err, "failed to retrieve tag list")
+	errors.InternalServerError(ctx, err, "failed to retrieve tag list")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
@@ -46,10 +47,10 @@ func (controller *TagController) Save(ctx *gin.Context) {
 
 	saveTag := model.Tag{}
 	err := ctx.ShouldBindJSON(&saveTag)
-	utils.WebError(ctx, err, "failed to bind JSON")
+	errors.BadRequestError(ctx, err, "failed to bind JSON")
 
 	err = controller.tagRepository.Save(saveTag)
-	utils.WebError(ctx, err, "failed to save tag")
+	errors.InternalServerError(ctx, err, "failed to save tag")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.Status(http.StatusOK)
@@ -67,7 +68,7 @@ func (controller *TagController) Delete(ctx *gin.Context) {
 	}
 
 	err2 := controller.tagRepository.Delete(id)
-	utils.WebError(ctx, err2, "failed to delete tag")
+	errors.InternalServerError(ctx, err2, "failed to delete tag")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.Status(http.StatusOK)

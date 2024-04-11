@@ -3,12 +3,12 @@ package config
 import (
 	"fmt"
 
-	"github.com/Dev4w4n/e-masjid.my/api/core/utils"
+	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func DatabaseConnection(env *utils.Environment) (*gorm.DB, error) {
+func DatabaseConnection(env *env.Environment) (*gorm.DB, error) {
 	dbHost := env.DbHost
 	dbPort := env.DbPort
 	dbUser := env.DbUser

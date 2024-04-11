@@ -6,7 +6,7 @@ import (
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-api/config"
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-api/controller"
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-api/repository"
-	"github.com/Dev4w4n/e-masjid.my/api/core/utils"
+	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -15,7 +15,7 @@ import (
 func main() {
 	log.Println("Starting server ...")
 
-	env, err := utils.GetEnvironment()
+	env, err := env.GetEnvironment()
 	if err != nil {
 		log.Fatalf("Error getting environment: %v", err)
 	}
