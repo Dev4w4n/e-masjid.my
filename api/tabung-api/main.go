@@ -45,6 +45,10 @@ func main() {
 	r := gin.Default()
 
 	r.Use(cors.New(config))
+	// isLocalEnv := os.Getenv("GO_ENV")
+	// if isLocalEnv != "" && isLocalEnv != "dev" {
+	// 	r.Use()
+	// }
 
 	_ = controller.NewTabungTypeController(r, tabungTypeService, env)
 	_ = controller.NewTabungController(r, tabungService, env)
