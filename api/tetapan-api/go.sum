@@ -1,5 +1,7 @@
-github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20240411110941-78a36843ae30 h1:7ReQDTwpK1VlrkoSz4RNR6atwoy3f4K1A8/dma9mikU=
-github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20240411110941-78a36843ae30/go.mod h1:iXY89EubpIeRpRIf1k3QQ4/8IaDUv3/wlxoG2wln+3I=
+github.com/Dev4w4n/e-masjid.my/api/core/config v0.0.0-20240411182332-3ea75a30b3d1 h1:Ar76Aq3bS3cg2Esv3j4yd9RkGIni0gwge8uC4TObr9c=
+github.com/Dev4w4n/e-masjid.my/api/core/config v0.0.0-20240411182332-3ea75a30b3d1/go.mod h1:vkkr9HG7NDkZFeU1CX6xdfTGweUuuNMqbF0eNZPNM94=
+github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20240411121454-731297b5f8fe h1:ulgtomh5bRsVO7HE49Y4NFAIvbimGvZJlSxo5Z8279w=
+github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20240411121454-731297b5f8fe/go.mod h1:iXY89EubpIeRpRIf1k3QQ4/8IaDUv3/wlxoG2wln+3I=
 github.com/Dev4w4n/e-masjid.my/api/core/error v0.0.0-20240411110941-78a36843ae30 h1:rUixA5tlNIsgf6hG5SiYbCL2TANLj08X5Rs7mf789Gc=
 github.com/Dev4w4n/e-masjid.my/api/core/error v0.0.0-20240411110941-78a36843ae30/go.mod h1:haLv7XI/msqqlgWqUYAVuCrQVfvnLfEQa+d5ZJsx3q8=
 github.com/bytedance/sonic v1.5.0/go.mod h1:ED5hyg4y6t3/9Ku1R6dU/4KyJ48DZ4jPhfY1O2AihPM=
@@ -125,9 +127,9 @@ gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c/go.mod h1:JHkPIbrfpd72SG/EV
 gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
 gopkg.in/yaml.v3 v3.0.1/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
-gorm.io/driver/postgres v1.5.4 h1:Iyrp9Meh3GmbSuyIAGyjkN+n9K+GHX9b9MqsTL4EJCo=
-gorm.io/driver/postgres v1.5.4/go.mod h1:Bgo89+h0CRcdA33Y6frlaHHVuTdOf87pmyzwW9C/BH0=
-gorm.io/gorm v1.25.5 h1:zR9lOiiYf09VNh5Q1gphfyia1JpiClIWG9hQaxB/mls=
-gorm.io/gorm v1.25.5/go.mod h1:hbnx/Oo0ChWMn1BIhpy1oYozzpM15i4YPuHDmfYtwg8=
+gorm.io/driver/postgres v1.5.7 h1:8ptbNJTDbEmhdr62uReG5BGkdQyeasu/FZHxI0IMGnM=
+gorm.io/driver/postgres v1.5.7/go.mod h1:3e019WlBaYI5o5LIdNV+LyxCMNtLOQETBXL2h4chKpA=
+gorm.io/gorm v1.25.9 h1:wct0gxZIELDk8+ZqF/MVnHLkA1rvYlBWUMv2EdsK1g8=
+gorm.io/gorm v1.25.9/go.mod h1:hbnx/Oo0ChWMn1BIhpy1oYozzpM15i4YPuHDmfYtwg8=
 nullprogram.com/x/optparse v1.0.0/go.mod h1:KdyPE+Igbe0jQUrVfMqDMeJQIJZEuyV7pjYmp6pbG50=
 rsc.io/pdf v0.1.1/go.mod h1:n8OzWcQ6Sp37PL01nO98y4iUCRdTGarVfzxY20ICaU4=

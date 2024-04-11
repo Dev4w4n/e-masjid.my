@@ -5,7 +5,7 @@ go 1.21.6
 require (
 	github.com/gin-contrib/cors v1.5.0
 	github.com/joho/godotenv v1.5.1
-	gorm.io/gorm v1.25.5
+	gorm.io/gorm v1.25.9
 )
 
 require (
@@ -19,7 +19,8 @@ require (
 )
 
 require (
-	github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20240411110941-78a36843ae30
+	github.com/Dev4w4n/e-masjid.my/api/core/config v0.0.0-20240411182332-3ea75a30b3d1
+	github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20240411121454-731297b5f8fe
 	github.com/Dev4w4n/e-masjid.my/api/core/error v0.0.0-20240411110941-78a36843ae30
 	github.com/bytedance/sonic v1.10.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
@@ -48,5 +49,5 @@ require (
 	golang.org/x/text v0.13.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	gorm.io/driver/postgres v1.5.4
+	gorm.io/driver/postgres v1.5.7 // indirect
 )
