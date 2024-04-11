@@ -1,17 +1,18 @@
 module github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api
 
-go 1.20
+go 1.21.6
 
 require (
 	github.com/gin-contrib/cors v1.5.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/joho/godotenv v1.5.1
-	github.com/rs/zerolog v1.31.0
+	github.com/rs/zerolog v1.32.0
 	gorm.io/driver/postgres v1.5.4
 	gorm.io/gorm v1.25.5
 )
 
 require (
+	github.com/Dev4w4n/e-masjid.my/api/core/utils v0.0.0-20240411092811-d21232e23c19
 	github.com/bytedance/sonic v1.10.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.1 // indirect

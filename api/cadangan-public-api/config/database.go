@@ -3,7 +3,7 @@ package config
 import (
 	"fmt"
 
-	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/utils"
+	"github.com/Dev4w4n/e-masjid.my/api/core/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

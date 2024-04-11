@@ -1,6 +1,6 @@
 module github.com/Dev4w4n/e-masjid.my/api/tetapan-api
 
-go 1.19
+go 1.21.6
 
 require github.com/gin-gonic/gin v1.9.1
 
@@ -32,6 +32,7 @@ require (
 )
 
 require (
+	github.com/Dev4w4n/e-masjid.my/api/core/utils v0.0.0-20240411092811-d21232e23c19
 	github.com/gin-contrib/cors v1.5.0
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
@@ -41,7 +42,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/kr/text v0.2.0 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
-	github.com/rs/zerolog v1.31.0
+	github.com/rs/zerolog v1.32.0
 	golang.org/x/crypto v0.14.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
 	gorm.io/driver/postgres v1.5.4

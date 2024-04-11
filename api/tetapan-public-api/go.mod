@@ -5,6 +5,7 @@ go 1.21.6
 require gorm.io/driver/postgres v1.5.7
 
 require (
+	github.com/Dev4w4n/e-masjid.my/api/core/utils v0.0.0-20240411092811-d21232e23c19 // indirect
 	github.com/bytedance/sonic v1.11.3 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.1 // indirect

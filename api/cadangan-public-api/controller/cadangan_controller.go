@@ -5,7 +5,7 @@ import (
 
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/repository"
-	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/utils"
+	"github.com/Dev4w4n/e-masjid.my/api/core/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
