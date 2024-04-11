@@ -6,14 +6,17 @@ require (
 	github.com/gin-contrib/cors v1.5.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/rs/zerolog v1.32.0
-	gorm.io/driver/postgres v1.5.4
-	gorm.io/gorm v1.25.5
+	gorm.io/gorm v1.25.9
 )
 
-require github.com/joho/godotenv v1.5.1 // indirect
+require (
+	github.com/joho/godotenv v1.5.1 // indirect
+	gorm.io/driver/postgres v1.5.7 // indirect
+)
 
 require (
-	github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20240411110941-78a36843ae30
+	github.com/Dev4w4n/e-masjid.my/api/core/config v0.0.0-20240411182332-3ea75a30b3d1
+	github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20240411121454-731297b5f8fe
 	github.com/Dev4w4n/e-masjid.my/api/core/error v0.0.0-20240411110941-78a36843ae30
 	github.com/bytedance/sonic v1.10.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect

@@ -2,7 +2,7 @@ module github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api
 
 go 1.21.6
 
-require gorm.io/driver/postgres v1.5.7
+require gorm.io/driver/postgres v1.5.7 // indirect
 
 require (
 	github.com/bytedance/sonic v1.11.3 // indirect
@@ -33,7 +33,8 @@ require (
 )
 
 require (
-	github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20240411110941-78a36843ae30
+	github.com/Dev4w4n/e-masjid.my/api/core/config v0.0.0-20240411182332-3ea75a30b3d1
+	github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20240411121454-731297b5f8fe
 	github.com/Dev4w4n/e-masjid.my/api/core/error v0.0.0-20240411110941-78a36843ae30
 	github.com/gin-contrib/cors v1.7.1
 	github.com/gin-gonic/gin v1.9.1
@@ -46,5 +47,5 @@ require (
 	github.com/rs/zerolog v1.32.0
 	golang.org/x/crypto v0.21.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	gorm.io/gorm v1.25.7-0.20240204074919-46816ad31dde
+	gorm.io/gorm v1.25.9
 )

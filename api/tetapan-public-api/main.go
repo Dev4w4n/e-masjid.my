@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Dev4w4n/e-masjid.my/api/core/config"
 	"github.com/Dev4w4n/e-masjid.my/api/core/env"
-	"github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api/config"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api/controller"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api/repository"
 

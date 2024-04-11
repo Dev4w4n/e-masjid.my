@@ -32,7 +32,8 @@ require (
 )
 
 require (
-	github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20240411110941-78a36843ae30
+	github.com/Dev4w4n/e-masjid.my/api/core/config v0.0.0-20240411182332-3ea75a30b3d1
+	github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20240411121454-731297b5f8fe
 	github.com/Dev4w4n/e-masjid.my/api/core/error v0.0.0-20240411110941-78a36843ae30
 	github.com/gin-contrib/cors v1.5.0
 	github.com/jackc/pgpassfile v1.0.0 // indirect
@@ -46,6 +47,6 @@ require (
 	github.com/rs/zerolog v1.32.0
 	golang.org/x/crypto v0.14.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
-	gorm.io/driver/postgres v1.5.4
-	gorm.io/gorm v1.25.5
+	gorm.io/driver/postgres v1.5.7 // indirect
+	gorm.io/gorm v1.25.9
 )

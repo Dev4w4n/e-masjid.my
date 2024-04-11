@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"github.com/Dev4w4n/e-masjid.my/api/cadangan-api/config"
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-api/controller"
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-api/repository"
+	"github.com/Dev4w4n/e-masjid.my/api/core/config"
 	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 
 	"github.com/gin-contrib/cors"

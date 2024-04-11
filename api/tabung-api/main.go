@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
+	"github.com/Dev4w4n/e-masjid.my/api/core/config"
 	"github.com/Dev4w4n/e-masjid.my/api/core/env"
-	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/config"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/controller"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/repository"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/service"
