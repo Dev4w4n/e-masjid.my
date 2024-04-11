@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Dev4w4n/e-masjid.my/api/core/env"
+	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/service"
-	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
@@ -16,7 +17,7 @@ type TabungTypeController struct {
 	tabungTypeService service.TabungTypeService
 }
 
-func NewTabungTypeController(engine *gin.Engine, svc service.TabungTypeService, env *utils.Environment) *TabungTypeController {
+func NewTabungTypeController(engine *gin.Engine, svc service.TabungTypeService, env *env.Environment) *TabungTypeController {
 	controller := &TabungTypeController{
 		engine:            engine,
 		tabungTypeService: svc,
@@ -35,7 +36,7 @@ func (controller *TabungTypeController) FindAll(ctx *gin.Context) {
 	log.Info().Msg("get tabung types")
 
 	result, err := controller.tabungTypeService.FindAll()
-	utils.InternalServerError(ctx, err, "failed to retrieve tabung types")
+	errors.InternalServerError(ctx, err, "failed to retrieve tabung types")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
@@ -46,10 +47,10 @@ func (controller *TabungTypeController) Save(ctx *gin.Context) {
 
 	tabungType := model.TabungType{}
 	err := ctx.ShouldBindJSON(&tabungType)
-	utils.InternalServerError(ctx, err, "failed to bind JSON")
+	errors.InternalServerError(ctx, err, "failed to bind JSON")
 
 	err = controller.tabungTypeService.Save(tabungType)
-	utils.InternalServerError(ctx, err, "failed to save tabung type")
+	errors.InternalServerError(ctx, err, "failed to save tabung type")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.Status(http.StatusOK)
@@ -60,10 +61,10 @@ func (controller *TabungTypeController) Delete(ctx *gin.Context) {
 
 	idStr := ctx.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
-	utils.BadRequestError(ctx, err, "invalid id format")
+	errors.BadRequestError(ctx, err, "invalid id format")
 
 	err = controller.tabungTypeService.Delete(id)
-	utils.InternalServerError(ctx, err, "failed to delete tabung type")
+	errors.InternalServerError(ctx, err, "failed to delete tabung type")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.Status(http.StatusOK)

@@ -3,7 +3,8 @@ package controller
 import (
 	"net/http"
 
-	"github.com/Dev4w4n/e-masjid.my/api/core/utils"
+	"github.com/Dev4w4n/e-masjid.my/api/core/env"
+	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/repository"
 	"github.com/gin-gonic/gin"
@@ -15,7 +16,7 @@ type TetapanController struct {
 	tetapanRepository repository.TetapanRepository
 }
 
-func NewTetapanController(engine *gin.Engine, repo repository.TetapanRepository, env *utils.Environment) *TetapanController {
+func NewTetapanController(engine *gin.Engine, repo repository.TetapanRepository, env *env.Environment) *TetapanController {
 	controller := &TetapanController{
 		engine:            engine,
 		tetapanRepository: repo,
@@ -36,7 +37,7 @@ func (controller *TetapanController) FindAll(ctx *gin.Context) {
 	log.Info().Msg("find all tetapan")
 
 	result, err := controller.tetapanRepository.FindAll()
-	utils.WebError(ctx, err, "failed to retrieve tetapan list")
+	errors.InternalServerError(ctx, err, "failed to retrieve tetapan list")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
@@ -47,7 +48,7 @@ func (controller *TetapanController) FindByKunci(ctx *gin.Context) {
 
 	kunci := ctx.Param("kunci")
 	result, err := controller.tetapanRepository.FindByKunci(kunci)
-	utils.WebError(ctx, err, "failed to retrieve tetapan")
+	errors.InternalServerError(ctx, err, "failed to retrieve tetapan")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
@@ -58,10 +59,10 @@ func (controller *TetapanController) Save(ctx *gin.Context) {
 
 	saveTetapan := model.Tetapan{}
 	err := ctx.ShouldBindJSON(&saveTetapan)
-	utils.WebError(ctx, err, "failed to bind JSON")
+	errors.BadRequestError(ctx, err, "failed to bind JSON")
 
 	err = controller.tetapanRepository.Save(saveTetapan)
-	utils.WebError(ctx, err, "failed to save tetapan")
+	errors.InternalServerError(ctx, err, "failed to save tetapan")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.Status(http.StatusOK)
@@ -72,10 +73,10 @@ func (controller *TetapanController) SaveAll(ctx *gin.Context) {
 
 	saveTetapanList := []model.Tetapan{}
 	err := ctx.ShouldBindJSON(&saveTetapanList)
-	utils.WebError(ctx, err, "failed to bind JSON")
+	errors.BadRequestError(ctx, err, "failed to bind JSON")
 
 	err = controller.tetapanRepository.SaveAll(saveTetapanList)
-	utils.WebError(ctx, err, "failed to save tetapan")
+	errors.InternalServerError(ctx, err, "failed to save tetapan")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.Status(http.StatusOK)
@@ -86,7 +87,7 @@ func (controller *TetapanController) Delete(ctx *gin.Context) {
 
 	kunci := ctx.Param("kunci")
 	err := controller.tetapanRepository.Delete(kunci)
-	utils.WebError(ctx, err, "failed to delete tetapan")
+	errors.InternalServerError(ctx, err, "failed to delete tetapan")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.Status(http.StatusOK)

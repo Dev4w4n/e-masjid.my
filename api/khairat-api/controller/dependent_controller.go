@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Dev4w4n/e-masjid.my/api/core/env"
+	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/repository"
-	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
@@ -16,7 +17,7 @@ type DependentController struct {
 	dependentRepository repository.DependentRepository
 }
 
-func NewDependentController(engine *gin.Engine, repo repository.DependentRepository, env *utils.Environment) *DependentController {
+func NewDependentController(engine *gin.Engine, repo repository.DependentRepository, env *env.Environment) *DependentController {
 	controller := &DependentController{
 		engine:              engine,
 		dependentRepository: repo,
@@ -36,7 +37,7 @@ func (controller *DependentController) Save(ctx *gin.Context) {
 
 	saveDependent := model.Dependent{}
 	err := ctx.ShouldBindJSON(&saveDependent)
-	utils.WebError(ctx, err, "failed to bind JSON")
+	errors.BadRequestError(ctx, err, "failed to bind JSON")
 
 	memberIdStr := ctx.Param("memberId")
 
@@ -49,7 +50,7 @@ func (controller *DependentController) Save(ctx *gin.Context) {
 
 	err = controller.dependentRepository.Save(saveDependent, int64(memberId))
 
-	utils.WebError(ctx, err, "failed to save dependent")
+	errors.InternalServerError(ctx, err, "failed to save dependent")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.Status(http.StatusOK)
@@ -69,7 +70,7 @@ func (controller *DependentController) Delete(ctx *gin.Context) {
 
 	err = controller.dependentRepository.DeleteById(id)
 
-	utils.WebError(ctx, err, "failed to delete dependent")
+	errors.InternalServerError(ctx, err, "failed to delete dependent")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.Status(http.StatusOK)
@@ -89,7 +90,7 @@ func (controller *DependentController) FindAllByMemberId(ctx *gin.Context) {
 
 	result, err := controller.dependentRepository.FindAllByMemberId(memberId)
 
-	utils.WebError(ctx, err, "failed to find all dependent")
+	errors.InternalServerError(ctx, err, "failed to find all dependent")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)

@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Dev4w4n/e-masjid.my/api/core/env"
+	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/service"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/utils"
@@ -17,7 +19,7 @@ type MemberController struct {
 	memberService service.MemberService
 }
 
-func NewMemberController(engine *gin.Engine, memberService service.MemberService, env *utils.Environment) *MemberController {
+func NewMemberController(engine *gin.Engine, memberService service.MemberService, env *env.Environment) *MemberController {
 	controller := &MemberController{
 		engine:        engine,
 		memberService: memberService,
@@ -41,7 +43,7 @@ func (controller *MemberController) FindAll(ctx *gin.Context) {
 
 	result, err := controller.memberService.FindAll()
 
-	utils.WebError(ctx, err, "failed to retrieve member list")
+	errors.InternalServerError(ctx, err, "failed to retrieve member list")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
@@ -60,7 +62,7 @@ func (controller *MemberController) FindById(ctx *gin.Context) {
 
 	result, err := controller.memberService.FindOne(id)
 
-	utils.WebError(ctx, err, "failed to retrieve member")
+	errors.InternalServerError(ctx, err, "failed to retrieve member")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
@@ -73,7 +75,7 @@ func (controller *MemberController) FindBy(ctx *gin.Context) {
 
 	result, err := controller.memberService.FindByQuery(query)
 
-	utils.WebError(ctx, err, "failed to retrieve member")
+	errors.InternalServerError(ctx, err, "failed to retrieve member")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
@@ -86,7 +88,7 @@ func (controller *MemberController) FindByTagId(ctx *gin.Context) {
 
 	result, err := controller.memberService.FindAllByTagIdOrderByMemberName(tagIdStr)
 
-	utils.WebError(ctx, err, "failed to retrieve member")
+	errors.InternalServerError(ctx, err, "failed to retrieve member")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
@@ -97,7 +99,7 @@ func (controller *MemberController) CountAll(ctx *gin.Context) {
 
 	result, err := controller.memberService.CountAll()
 
-	utils.WebError(ctx, err, "failed to count member")
+	errors.InternalServerError(ctx, err, "failed to count member")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
@@ -109,11 +111,11 @@ func (controller *MemberController) Save(ctx *gin.Context) {
 	member := model.Member{}
 	err := ctx.ShouldBindJSON(&member)
 
-	utils.WebError(ctx, err, "failed to bind JSON")
+	errors.BadRequestError(ctx, err, "failed to bind JSON")
 
 	member, err = controller.memberService.Save(member)
 
-	utils.WebError(ctx, err, "failed to save member")
+	errors.InternalServerError(ctx, err, "failed to save member")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, member)

@@ -5,7 +5,8 @@ import (
 
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/repository"
-	"github.com/Dev4w4n/e-masjid.my/api/core/utils"
+	"github.com/Dev4w4n/e-masjid.my/api/core/env"
+	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
@@ -15,7 +16,7 @@ type CadanganController struct {
 	cadanganRepository repository.CadanganRepository
 }
 
-func NewCadanganController(engine *gin.Engine, repo repository.CadanganRepository, env *utils.Environment) *CadanganController {
+func NewCadanganController(engine *gin.Engine, repo repository.CadanganRepository, env *env.Environment) *CadanganController {
 	controller := &CadanganController{
 		engine:             engine,
 		cadanganRepository: repo,
@@ -31,10 +32,10 @@ func (controller *CadanganController) Save(ctx *gin.Context) {
 
 	saveCadangan := model.Cadangan{}
 	err := ctx.ShouldBindJSON(&saveCadangan)
-	utils.WebError(ctx, err, "failed to bind JSON")
+	errors.BadRequestError(ctx, err, "failed to bind JSON")
 
 	err = controller.cadanganRepository.Save(saveCadangan)
-	utils.WebError(ctx, err, "failed to save cadangan")
+	errors.InternalServerError(ctx, err, "failed to save cadangan")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.Status(http.StatusOK)

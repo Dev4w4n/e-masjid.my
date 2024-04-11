@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Dev4w4n/e-masjid.my/api/core/env"
+	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/service"
-	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
@@ -16,7 +17,7 @@ type KutipanController struct {
 	kutipanService service.KutipanService
 }
 
-func NewKutipanController(engine *gin.Engine, svc service.KutipanService, env *utils.Environment) *KutipanController {
+func NewKutipanController(engine *gin.Engine, svc service.KutipanService, env *env.Environment) *KutipanController {
 	controller := &KutipanController{
 		engine:         engine,
 		kutipanService: svc,
@@ -38,10 +39,10 @@ func (controller *KutipanController) FindAllByTabungId(ctx *gin.Context) {
 
 	tabungIdStr := ctx.Param("tabungId")
 	tabungId, err := strconv.ParseInt(tabungIdStr, 10, 64)
-	utils.BadRequestError(ctx, err, "invalid id format")
+	errors.BadRequestError(ctx, err, "invalid id format")
 
 	result, err := controller.kutipanService.FindAllByTabungId(tabungId)
-	utils.InternalServerError(ctx, err, "failed to retrieve kutipan list by tabung id")
+	errors.InternalServerError(ctx, err, "failed to retrieve kutipan list by tabung id")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
@@ -52,16 +53,16 @@ func (controller *KutipanController) FindAllByTabungIdBetweenCreateDate(ctx *gin
 
 	tabungIdStr := ctx.Param("tabungId")
 	tabungId, err := strconv.ParseInt(tabungIdStr, 10, 64)
-	utils.BadRequestError(ctx, err, "invalid id format")
+	errors.BadRequestError(ctx, err, "invalid id format")
 
 	queryParams := ctx.Request.URL.Query()
 	fromDateStr := queryParams.Get("fromDate")
 	fromDate, err := strconv.ParseInt(fromDateStr, 10, 64)
-	utils.BadRequestError(ctx, err, "invalid fromDate")
+	errors.BadRequestError(ctx, err, "invalid fromDate")
 
 	toDateStr := queryParams.Get("toDate")
 	toDate, err := strconv.ParseInt(toDateStr, 10, 64)
-	utils.BadRequestError(ctx, err, "invalid toDate")
+	errors.BadRequestError(ctx, err, "invalid toDate")
 
 	var page, size int
 	if page, err = strconv.Atoi(ctx.Query("page")); err != nil {
@@ -84,7 +85,7 @@ func (controller *KutipanController) FindAllByTabungIdBetweenCreateDate(ctx *gin
 	}
 
 	result, err := controller.kutipanService.FindAllByTabungIdBetweenCreateDate(params, paginate)
-	utils.InternalServerError(ctx, err, "failed to retrieve kutipan list by tabung id between create date")
+	errors.InternalServerError(ctx, err, "failed to retrieve kutipan list by tabung id between create date")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
@@ -95,10 +96,10 @@ func (controller *KutipanController) FindById(ctx *gin.Context) {
 
 	idStr := ctx.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
-	utils.BadRequestError(ctx, err, "invalid id format")
+	errors.BadRequestError(ctx, err, "invalid id format")
 
 	result, err := controller.kutipanService.FindById(id)
-	utils.InternalServerError(ctx, err, "failed to retrieve kutipan by id")
+	errors.InternalServerError(ctx, err, "failed to retrieve kutipan by id")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
@@ -109,7 +110,7 @@ func (controller *KutipanController) Upsert(ctx *gin.Context) {
 
 	kutipan := model.Kutipan{}
 	err := ctx.ShouldBindJSON(&kutipan)
-	utils.InternalServerError(ctx, err, "failed to bind JSON")
+	errors.InternalServerError(ctx, err, "failed to bind JSON")
 
 	idStr := ctx.Param("id")
 	if idStr != "" {
@@ -123,7 +124,7 @@ func (controller *KutipanController) Upsert(ctx *gin.Context) {
 	}
 
 	kutipan, err = controller.kutipanService.Upsert(kutipan)
-	utils.InternalServerError(ctx, err, "failed to save kutipan")
+	errors.InternalServerError(ctx, err, "failed to save kutipan")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, kutipan)

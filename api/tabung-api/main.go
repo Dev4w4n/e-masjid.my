@@ -3,11 +3,11 @@ package main
 import (
 	"log"
 
+	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/config"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/controller"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/repository"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/service"
-	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/utils"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -16,7 +16,7 @@ import (
 func main() {
 	log.Println("Starting server ...")
 
-	env, err := utils.GetEnvironment()
+	env, err := env.GetEnvironment()
 	if err != nil {
 		log.Fatalf("Error getting environment: %v", err)
 	}
@@ -38,7 +38,7 @@ func main() {
 	// CORS configuration
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{env.AllowOrigins}
-	config.AllowMethods = []string{"GET", "POST", "DELETE","PUT"}
+	config.AllowMethods = []string{"GET", "POST", "DELETE", "PUT"}
 
 	gin.SetMode(gin.ReleaseMode)
 

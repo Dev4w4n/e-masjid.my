@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Dev4w4n/e-masjid.my/api/core/utils"
+	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api/config"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api/controller"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api/repository"
@@ -16,7 +16,7 @@ import (
 func main() {
 	log.Println("Starting server ...")
 
-	env, err := utils.GetEnvironment()
+	env, err := env.GetEnvironment()
 	if err != nil {
 		log.Fatalf("Error getting environment: %v", err)
 	}
