@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -30,6 +31,7 @@ func NewKutipanController(engine *gin.Engine, svc service.KutipanService, env *e
 	controller.engine.GET(relativePath+"/:id", controller.FindById)
 	controller.engine.POST(relativePath, controller.Upsert)
 	controller.engine.PUT(relativePath+"/:id", controller.Upsert)
+	controller.engine.DELETE(relativePath+"/:id", controller.Delete)
 
 	return controller
 }
@@ -128,4 +130,20 @@ func (controller *KutipanController) Upsert(ctx *gin.Context) {
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, kutipan)
+}
+
+
+func (controller *KutipanController) Delete(ctx *gin.Context) {
+	idStr := ctx.Param("id")
+
+	log.Info().Msg(fmt.Sprintf("delete kutipan by id : %s",idStr))
+	
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	errors.BadRequestError(ctx, err, "invalid id format")
+
+	result,errResp := controller.kutipanService.Delete(id)
+	errors.InternalServerError(ctx, errResp, fmt.Sprintf("failed to Delete kutipan by id: %s",idStr))
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(http.StatusOK, result)
 }
