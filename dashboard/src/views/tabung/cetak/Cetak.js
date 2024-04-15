@@ -585,7 +585,7 @@ const Cetak = () => {
               onClose={() => setOpenDeleteDialog(false)}
               aria-labelledby="OptionalSizesExample3"
             >
-              <CModalHeader onClose={() => setVisible(false)}>
+              <CModalHeader onClose={() => setOpenDeleteDialog(false)}>
                 <CModalTitle id="LiveDemoExampleLabel">Buang Kutipan</CModalTitle>
               </CModalHeader>
               <CModalBody>
