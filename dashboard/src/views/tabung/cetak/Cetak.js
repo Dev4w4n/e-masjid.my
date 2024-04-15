@@ -18,7 +18,7 @@ import {
 import { getKutipan } from 'src/service/tabung/KutipanApi'
 import { getTabung } from 'src/service/tabung/TabungApi'
 import DataTable from 'react-data-table-component'
-import { cilInfo, cilPrint, cilPencil, cilBasket } from '@coreui/icons'
+import { cilInfo, cilPrint, cilPencil, cilTrash } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import { useReactToPrint } from 'react-to-print'
 import DenominasiPrint from 'src/components/print/tabung/DenominasiPrint'
@@ -180,7 +180,7 @@ const Cetak = () => {
           action: (
             <>
               <CIcon icon={cilPencil} className="me-4 " onClick={() => editPreview(item.id)} size="lg" />
-              <CIcon icon={cilBasket} className="me-4" onClick={() => deleteConfirmation(item)} title="Delete" size="lg" />
+              <CIcon icon={cilTrash} className="me-4" onClick={() => deleteConfirmation(item)} title="Delete" size="lg" />
               <CIcon icon={cilPrint} className="me-4" onClick={() => printPreview(item.id)} size="lg" />
             </>
           ),
