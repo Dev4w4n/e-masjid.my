@@ -1,11 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
-	"os"
 
-	_ "github.com/Dev4w4n/e-masjid.my/api/api-docs/docs"
-	"github.com/gin-gonic/gin"
+	_ "github.com/Dev4w4n/e-masjid.my/api-docs/docs"
 	"github.com/gorilla/mux"
 
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -26,17 +25,28 @@ import (
 func main(){
 	
 	r := mux.NewRouter()
+	r.HandleFunc("/", HealthCheck).Methods("GET")
 	r.PathPrefix("/api/").Handler(httpSwagger.Handler(
 		httpSwagger.URL("http://localhost:8082/docs/doc.json"), //The url pointing to API definition"
 	))
-	http.ListenAndServe(":"+ os.Getenv("SERVER_PORT"), r)
+	http.ListenAndServe(":4000", r)
+
 }
 
+func HealthCheck(w http.ResponseWriter, r *http.Request) {
+	//specify status code
+	w.WriteHeader(http.StatusOK)
+  
+ 	//update response writer 
+	fmt.Fprintln(w, "API is up and running")
+	fmt.Fprintln(w, "Tabung-api : " + checkStatus("http://localhost:8082/docs/doc.json")) 
+}
 
-func HealthCheck(c *gin.Context) {
-	res := map[string]interface{}{
-	   "data": "Server is up and running",
+func checkStatus(url string) string {
+	response, err := http.Get(url)
+	if err != nil {
+	   return err.Error()
 	}
- 
-	c.JSON(http.StatusOK, res)
+	defer response.Body.Close()
+	return response.Status
  }

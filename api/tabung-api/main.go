@@ -55,7 +55,7 @@ func main() {
 
 	// CORS configuration
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{env.AllowOrigins,os.Getenv("API_DOC_URL")}
+	config.AllowOrigins = []string{env.AllowOrigins,"http://localhost:4000"}
 	config.AllowMethods = []string{"GET", "POST", "DELETE", "PUT"}
 
 	// Router
@@ -69,7 +69,8 @@ func main() {
 		_router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 
-	routes := router.NewTabungRouter(tabungController,_router)
+	var routes *gin.Engine = _router
+	routes = router.NewTabungRouter(tabungController,routes)
 	routes = router.NewTabungTypeRouter(tabungTypeController,routes)
 	routes = router.NewKutipanRouter(kutipanController,routes)
 

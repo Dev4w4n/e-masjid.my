@@ -36,7 +36,7 @@ COPY --from=builder /app/api-docs .
 COPY --from=builder /app/docs ./docs
 
 # Expose the port that your application will run on
-EXPOSE 8087
+EXPOSE 4000
 
 # Command to run your application
 CMD ["./api-docs", "-env", "$GO_ENV"]

@@ -1,4 +1,4 @@
-module github.com/Dev4w4n/e-masjid.my/api/api-docs
+module github.com/Dev4w4n/e-masjid.my/api-docs
 
 go 1.22.1
 

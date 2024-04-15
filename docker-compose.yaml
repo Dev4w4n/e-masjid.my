@@ -104,9 +104,9 @@ services:
 
   api-docs:
     build:
-      context: ./api/api-docs
+      context: ./api-docs
     ports:
-      - "8087:8087"
+      - "4000:4000"
     environment:
       - GO_ENV=dev
     depends_on:
