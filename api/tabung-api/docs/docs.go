@@ -463,7 +463,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "",
-	BasePath:         "/api",
+	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "Tabung Service API",
 	Description:      "A Tabung service API in Go using Gin framework",

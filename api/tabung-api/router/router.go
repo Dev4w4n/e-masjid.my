@@ -7,8 +7,7 @@ import (
 
 func NewTabungRouter(controller *controller.TabungController, router *gin.Engine) *gin.Engine {
 	
-	baseRouter := router.Group("/api")
-	controllerRouter := baseRouter.Group("/tabung")
+	controllerRouter := router.Group("/tabung")
 	controllerRouter.GET("", controller.FindAll)
 	controllerRouter.GET("/:id", controller.FindById)
 	controllerRouter.POST("", controller.Save)
@@ -19,8 +18,7 @@ func NewTabungRouter(controller *controller.TabungController, router *gin.Engine
 
 func NewTabungTypeRouter(controller *controller.TabungTypeController, router *gin.Engine) *gin.Engine {
 	
-	baseRouter := router.Group("/api")
-	controllerRouter := baseRouter.Group("/tabung-types")
+	controllerRouter := router.Group("/tabung-types")
 	controllerRouter.GET("", controller.FindAll)
 	controllerRouter.POST("", controller.Save)
 	controllerRouter.DELETE("/:id", controller.Delete)
@@ -31,8 +29,7 @@ func NewTabungTypeRouter(controller *controller.TabungTypeController, router *gi
 
 func NewKutipanRouter(controller *controller.KutipanController, router *gin.Engine) *gin.Engine {
 	
-	baseRouter := router.Group("/api")
-	controllerRouter := baseRouter.Group("/kutipan")
+	controllerRouter := router.Group("/kutipan")
 	controllerRouter.GET("/tabung/:tabungId", controller.FindAllByTabungId)
 	controllerRouter.GET("/tabung/:tabungId/betweenCreateDate", controller.FindAllByTabungIdBetweenCreateDate)
 	controllerRouter.GET("/:id", controller.FindById)

@@ -23,7 +23,6 @@ import (
 //	@title			Tabung Service API
 //	@version		1.0
 //	@description	A Tabung service API in Go using Gin framework
-//	@BasePath		/api
 func main() {
 
 	log.Println("Starting server ...")
@@ -54,27 +53,25 @@ func main() {
 	tabungTypeController := controller.NewTabungTypeController(tabungTypeService)
 	kutipanController := controller.NewKutipanController(kutipanService)
 
+	// CORS configuration
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{env.AllowOrigins,os.Getenv("API_DOC_URL")}
+	config.AllowMethods = []string{"GET", "POST", "DELETE", "PUT"}
 
 	// Router
 	gin.SetMode(gin.ReleaseMode)
 	_router := gin.Default()
-	routes := router.NewTabungRouter(tabungController,_router)
-	routes = router.NewTabungTypeRouter(tabungTypeController,routes)
-	routes = router.NewKutipanRouter(kutipanController,routes)
+	_router.Use(cors.New(config))
 
 	// enable swagger for dev env
 	isLocalEnv := os.Getenv("GO_ENV")
 	if (isLocalEnv == "local" || isLocalEnv == "dev") {
-		routes.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		_router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
-	
 
-	// CORS configuration
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{env.AllowOrigins}
-	config.AllowMethods = []string{"GET", "POST", "DELETE", "PUT"}
-	
-	routes.Use(cors.New(config))
+	routes := router.NewTabungRouter(tabungController,_router)
+	routes = router.NewTabungTypeRouter(tabungTypeController,routes)
+	routes = router.NewKutipanRouter(kutipanController,routes)
 
 	server := &http.Server{
 		Addr:    ":" + env.ServerPort,

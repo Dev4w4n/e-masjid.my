@@ -1,4 +1,3 @@
-basePath: /api
 definitions:
   model.Kutipan:
     properties:
@@ -10,13 +9,11 @@ definitions:
         $ref: '#/definitions/model.Tabung'
       total:
         type: number
-      total50c:
+      total1d:
         type: integer
       total5c:
         type: integer
       total5d:
-        type: integer
-      total100d:
         type: integer
       total10c:
         type: integer
@@ -24,13 +21,15 @@ definitions:
         type: integer
       total1c:
         type: integer
-      total1d:
-        type: integer
       total20c:
         type: integer
       total20d:
         type: integer
+      total50c:
+        type: integer
       total50d:
+        type: integer
+      total100d:
         type: integer
     type: object
   model.Response:

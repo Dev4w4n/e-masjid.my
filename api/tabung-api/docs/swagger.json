@@ -6,7 +6,6 @@
         "contact": {},
         "version": "1.0"
     },
-    "basePath": "/api",
     "paths": {
         "/kutipan": {
             "post": {
