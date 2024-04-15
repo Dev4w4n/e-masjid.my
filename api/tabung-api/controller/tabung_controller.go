@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/service"
@@ -13,26 +12,22 @@ import (
 )
 
 type TabungController struct {
-	engine        *gin.Engine
 	tabungService service.TabungService
 }
 
-func NewTabungController(engine *gin.Engine, svc service.TabungService, env *env.Environment) *TabungController {
-	controller := &TabungController{
-		engine:        engine,
-		tabungService: svc,
+func NewTabungController(service service.TabungService) *TabungController {
+	return &TabungController{
+		tabungService: service,
 	}
-
-	relativePath := env.DeployURL + "tabung"
-
-	controller.engine.GET(relativePath, controller.FindAll)
-	controller.engine.GET(relativePath+"/:id", controller.FindById)
-	controller.engine.POST(relativePath, controller.Save)
-	controller.engine.DELETE(relativePath+"/:id", controller.Delete)
-
-	return controller
 }
 
+// FindAll		godoc
+//	@Summary		Get All tabung.
+//	@Description	Return the all Tabung.
+//	@Produce		application/json
+//	@Tags			tabung
+//	@Success		200	{object}	[]model.Tabung
+//	@Router			/tabung [get]
 func (controller *TabungController) FindAll(ctx *gin.Context) {
 	log.Info().Msg("get tabung list")
 
@@ -43,6 +38,14 @@ func (controller *TabungController) FindAll(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
+// FindById 			godoc
+//	@Summary		Get  tabung by ID.
+//	@Description	Return the Tabung.
+//	@Produce		application/json
+//	@Param			id	path	string	true	"get tabung by id"
+//	@Tags			tabung
+//	@Success		200	{object}	model.Tabung
+//	@Router			/tabung/{id} [get]
 func (controller *TabungController) FindById(ctx *gin.Context) {
 	log.Info().Msg("get tabung by id")
 
@@ -57,6 +60,14 @@ func (controller *TabungController) FindById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
+// CreateTabung		godoc
+//	@Summary		Create tabung
+//	@Description	Save tabung data in Db.
+//	@Param			tags	body	model.Tabung	true	"Create Tabung"
+//	@Produce		application/json
+//	@Tags			tabung
+//	@Success		200	{object}	model.Tabung{}
+//	@Router			/tabung [post]
 func (controller *TabungController) Save(ctx *gin.Context) {
 	log.Info().Msg("save tabung type")
 
@@ -71,6 +82,13 @@ func (controller *TabungController) Save(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, tabung)
 }
 
+// DeleteTabung		godoc
+//	@Summary		Delete tabung
+//	@Description	Remove tabung data by id.
+//	@Param			id	path	string	true	"delete tabung by id"
+//	@Produce		application/json
+//	@Tags			tabung
+//	@Router			/tabung/{id} [delete]
 func (controller *TabungController) Delete(ctx *gin.Context) {
 	log.Info().Msg("delete tabung type")
 

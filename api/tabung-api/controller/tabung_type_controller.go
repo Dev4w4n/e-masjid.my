@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/service"
@@ -12,26 +11,25 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+
 type TabungTypeController struct {
-	engine            *gin.Engine
 	tabungTypeService service.TabungTypeService
 }
 
-func NewTabungTypeController(engine *gin.Engine, svc service.TabungTypeService, env *env.Environment) *TabungTypeController {
-	controller := &TabungTypeController{
-		engine:            engine,
-		tabungTypeService: svc,
+func NewTabungTypeController(service service.TabungTypeService) *TabungTypeController {
+	return &TabungTypeController{
+		tabungTypeService: service,
 	}
-
-	relativePath := env.DeployURL + "tabung-types"
-
-	controller.engine.GET(relativePath, controller.FindAll)
-	controller.engine.POST(relativePath, controller.Save)
-	controller.engine.DELETE(relativePath+"/:id", controller.Delete)
-
-	return controller
 }
+ 
 
+// FindAll		godoc
+//	@Summary		Get All tabung type.
+//	@Description	Return the all Tabung type.
+//	@Produce		application/json
+//	@Tags			tabung type
+//	@Success		200	{object}	[]model.TabungType
+//	@Router			/tabung-types [get]
 func (controller *TabungTypeController) FindAll(ctx *gin.Context) {
 	log.Info().Msg("get tabung types")
 
@@ -42,6 +40,14 @@ func (controller *TabungTypeController) FindAll(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
+// CreateTabung		godoc
+//	@Summary		Create tabung type
+//	@Description	Save tabung type data in Db.
+//	@Param			tags	body	model.TabungType	true	"Create Tabung type"
+//	@Produce		application/json
+//	@Tags			tabung type
+//	@Success		200	{object}	model.TabungType{}
+//	@Router			/tabung-types [post]
 func (controller *TabungTypeController) Save(ctx *gin.Context) {
 	log.Info().Msg("save tabung type")
 
@@ -56,6 +62,13 @@ func (controller *TabungTypeController) Save(ctx *gin.Context) {
 	ctx.Status(http.StatusOK)
 }
 
+// DeleteTabung		godoc
+//	@Summary		Delete tabung type
+//	@Description	Remove tabung type data by id.
+//	@Param			id	path	string	true	"delete tabung type by id"
+//	@Produce		application/json
+//	@Tags			tabung type
+//	@Router			/tabung-types/{id} [delete]
 func (controller *TabungTypeController) Delete(ctx *gin.Context) {
 	log.Info().Msg("delete tabung type")
 
