@@ -64,7 +64,7 @@ func main() {
 
 	// enable swagger for dev env
 	isLocalEnv := os.Getenv("GO_ENV")
-	if isLocalEnv != "production" || isLocalEnv != "prod" {
+	if (isLocalEnv == "local" || isLocalEnv == "dev") {
 		routes.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 	
