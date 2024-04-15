@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   postgres:
@@ -56,7 +56,8 @@ services:
       - GO_ENV=dev
     depends_on:
       - postgres
-    command: ["./wait-for-it.sh", "postgres:5432", "--", "./cadangan-public-api"]
+    command:
+      ["./wait-for-it.sh", "postgres:5432", "--", "./cadangan-public-api"]
 
   tetapan-api:
     build:
@@ -101,3 +102,13 @@ services:
     depends_on:
       - cadangan-public-api
 
+  api-docs:
+    build:
+      context: ./api/api-docs
+    ports:
+      - "8087:8087"
+    environment:
+      - GO_ENV=dev
+    depends_on:
+      - tabung-api
+    command: ["./api-docs"]
