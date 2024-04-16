@@ -1,42 +1,20 @@
-# Stage 1: Build the application
-FROM golang:alpine3.19 AS builder
-
-# Set the working directory inside the container
+FROM node:20.12-alpine3.19 AS builder
 WORKDIR /app
-
-# Copy the local code to the container
 COPY . .
-COPY .env.* .
+RUN npm install  webpack-cli -g
+RUN npm install
+RUN npm run build
+RUN npm prune --omit=dev
+RUN ls -lah
 
-# Install any dependencies your application might need
-RUN go get -d -v ./...
-RUN go install -v ./...
-RUN go install github.com/swaggo/swag/cmd/swag@latest
+FROM nginx:1.25.2-alpine-slim as production
+ENV NODE_ENV production
+COPY --from=builder /app/dist /usr/share/nginx/html
+RUN echo $(ls -1 /usr/share/nginx/html)
+RUN chown nginx:nginx -R /usr/share/nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+RUN echo $(ls -1 /etc/nginx/conf.d/)
 
-# Build the Go application
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o api-docs
-
-#Generate api doc
-RUN swag init
-
-# Stage 2: Create a minimal runtime image
-FROM alpine:latest
-
-# Define build-time argument for GO_ENV
-ARG GO_ENV=local
-
-# Set Go environment variables
-ENV GO_ENV=$GO_ENV
-
-# Set the working directory inside the container
-WORKDIR /app
-
-# Copy only the built binary from the builder stage
-COPY --from=builder /app/api-docs .
-COPY --from=builder /app/docs ./docs
-
-# Expose the port that your application will run on
 EXPOSE 4000
 
-# Command to run your application
-CMD ["./api-docs", "-env", "$GO_ENV"]
+CMD ["nginx", "-g", "daemon off;"]

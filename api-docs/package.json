@@ -1,0 +1,31 @@
+{
+  "name": "api-docs",
+  "version": "0.0.1",
+  "description": "e-masjid api docs",
+  "main": "index.js",
+  "scripts": {
+    "build": "NODE_ENV=production  webpack  --mode=production --progress",
+    "start": "webpack-dev-server --open"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^12.0.2",
+    "html-webpack-plugin": "^5.6.0",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.4"
+  },
+  "dependencies": {
+    "browserify": "^17.0.0",
+    "css-loader": "^7.1.1",
+    "file-loader": "^6.2.0",
+    "json-loader": "^0.5.7",
+    "mini-css-extract-plugin": "^2.8.1",
+    "style-loader": "^4.0.0",
+    "swagger-ui": "^5.15.2",
+    "swagger-ui-dist": "^5.15.2",
+    "swagger-ui-themes": "^3.0.1"
+  }
+}

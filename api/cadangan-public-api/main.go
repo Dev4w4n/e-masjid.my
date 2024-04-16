@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"slices"
 
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/controller"
 	_ "github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/docs"
@@ -49,7 +48,7 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	_router := gin.Default()
 	_router.Use(cors.New(config))
-	_router.Use(controllerMiddleware(env))
+	_router.Use(controllerMiddleware())
 
 	// enable swagger for dev env
 	isLocalEnv := os.Getenv("GO_ENV")
@@ -72,14 +71,14 @@ func main() {
 }
 
 // Strictly allow from allowedOrigin
-func controllerMiddleware(env *env.Environment) gin.HandlerFunc {
+func controllerMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Check if the request origin is allowed
-		allowedOrigin := []string{env.AllowOrigins,"http://localhost:4000"}
-		origin := c.GetHeader("Origin")
+		// Check if the request same-origin is allowed
+		secFetchSite := c.Request.Header.Get("Sec-Fetch-Site")
 
-		log.Println("Origin: ", origin)
-		if slices.Contains(allowedOrigin, origin) {
+		log.Println("secFetchSite: ", secFetchSite)
+
+		if secFetchSite != "same-origin" && secFetchSite != "same-site" {
 			c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
 			c.Abort()
 			return
