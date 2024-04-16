@@ -1,0 +1,298 @@
+definitions:
+  model.Kutipan:
+    properties:
+      createDate:
+        type: integer
+      id:
+        type: integer
+      tabung:
+        $ref: '#/definitions/model.Tabung'
+      total:
+        type: number
+      total1d:
+        type: integer
+      total5c:
+        type: integer
+      total5d:
+        type: integer
+      total10c:
+        type: integer
+      total10d:
+        type: integer
+      total1c:
+        type: integer
+      total20c:
+        type: integer
+      total20d:
+        type: integer
+      total50c:
+        type: integer
+      total50d:
+        type: integer
+      total100d:
+        type: integer
+    type: object
+  model.Response:
+    properties:
+      content: {}
+      total:
+        type: integer
+    type: object
+  model.Tabung:
+    properties:
+      cents:
+        type: boolean
+      id:
+        type: integer
+      name:
+        type: string
+      tabungType:
+        $ref: '#/definitions/model.TabungType'
+    type: object
+  model.TabungType:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: A Tabung service API in Go using Gin framework
+  title: Tabung Service API
+  version: "1.0"
+paths:
+  /kutipan:
+    post:
+      description: Save kutipan data in Db.
+      parameters:
+      - description: Create kutipan
+        in: body
+        name: tags
+        required: true
+        schema:
+          $ref: '#/definitions/model.Kutipan'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Kutipan'
+      summary: Create kutipan
+      tags:
+      - kutipan
+  /kutipan/{id}:
+    delete:
+      description: Remove kutipan data by id.
+      parameters:
+      - description: delete kutipan by id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Delete kutipan
+      tags:
+      - kutipan
+    get:
+      description: Return the all  Kutipan by id.
+      parameters:
+      - description: get kutipan by id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Kutipan'
+      summary: Get All Kutipan by id.
+      tags:
+      - kutipan
+    put:
+      description: Save kutipan data in Db.
+      parameters:
+      - description: update by id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: update kutipan
+        in: body
+        name: kutipan
+        required: true
+        schema:
+          $ref: '#/definitions/model.Kutipan'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Kutipan'
+      summary: Create kutipan
+      tags:
+      - kutipan
+  /kutipan/tabung/{tabungId}:
+    get:
+      description: Return the all  Kutipan by tabungId.
+      parameters:
+      - description: get kutipan by tabungId
+        in: path
+        name: tabungId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Kutipan'
+            type: array
+      summary: Get All Kutipan by tabungId.
+      tags:
+      - kutipan
+  /kutipan/tabung/{tabungId}/betweenCreateDate:
+    get:
+      description: Return the all  Kutipan by tabungId.
+      parameters:
+      - description: get kutipan by tabungId
+        in: path
+        name: tabungId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Get All Kutipan by tabungId.
+      tags:
+      - kutipan
+  /tabung:
+    get:
+      description: Return the all Tabung.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Tabung'
+            type: array
+      summary: Get All tabung.
+      tags:
+      - tabung
+    post:
+      description: Save tabung data in Db.
+      parameters:
+      - description: Create Tabung
+        in: body
+        name: tags
+        required: true
+        schema:
+          $ref: '#/definitions/model.Tabung'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Tabung'
+      summary: Create tabung
+      tags:
+      - tabung
+  /tabung-types:
+    get:
+      description: Return the all Tabung type.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.TabungType'
+            type: array
+      summary: Get All tabung type.
+      tags:
+      - tabung type
+    post:
+      description: Save tabung type data in Db.
+      parameters:
+      - description: Create Tabung type
+        in: body
+        name: tags
+        required: true
+        schema:
+          $ref: '#/definitions/model.TabungType'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.TabungType'
+      summary: Create tabung type
+      tags:
+      - tabung type
+  /tabung-types/{id}:
+    delete:
+      description: Remove tabung type data by id.
+      parameters:
+      - description: delete tabung type by id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Delete tabung type
+      tags:
+      - tabung type
+  /tabung/{id}:
+    delete:
+      description: Remove tabung data by id.
+      parameters:
+      - description: delete tabung by id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Delete tabung
+      tags:
+      - tabung
+    get:
+      description: Return the Tabung.
+      parameters:
+      - description: get tabung by id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Tabung'
+      summary: Get  tabung by ID.
+      tags:
+      - tabung
+swagger: "2.0"

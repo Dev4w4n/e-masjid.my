@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/service"
@@ -14,28 +13,24 @@ import (
 )
 
 type KutipanController struct {
-	engine         *gin.Engine
 	kutipanService service.KutipanService
 }
 
-func NewKutipanController(engine *gin.Engine, svc service.KutipanService, env *env.Environment) *KutipanController {
-	controller := &KutipanController{
-		engine:         engine,
-		kutipanService: svc,
+func NewKutipanController(service service.KutipanService) *KutipanController {
+	return &KutipanController{
+		kutipanService: service,
 	}
-
-	relativePath := env.DeployURL + "kutipan"
-
-	controller.engine.GET(relativePath+"/tabung/:tabungId", controller.FindAllByTabungId)
-	controller.engine.GET(relativePath+"/tabung/:tabungId/betweenCreateDate", controller.FindAllByTabungIdBetweenCreateDate)
-	controller.engine.GET(relativePath+"/:id", controller.FindById)
-	controller.engine.POST(relativePath, controller.Upsert)
-	controller.engine.PUT(relativePath+"/:id", controller.Upsert)
-	controller.engine.DELETE(relativePath+"/:id", controller.Delete)
-
-	return controller
 }
+ 
 
+// FindAll		godoc
+//	@Summary		Get All Kutipan by tabungId.
+//	@Description	Return the all  Kutipan by tabungId.
+//	@Produce		application/json
+//	@Param			tabungId	path	string	true	"get kutipan by tabungId"
+//	@Tags			kutipan
+//	@Success		200	{object}	[]model.Kutipan
+//	@Router			/kutipan/tabung/{tabungId} [get]
 func (controller *KutipanController) FindAllByTabungId(ctx *gin.Context) {
 	log.Info().Msg("get kutipan list by tabung id")
 
@@ -50,6 +45,14 @@ func (controller *KutipanController) FindAllByTabungId(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
+// FindAll		godoc
+//	@Summary		Get All Kutipan by tabungId.
+//	@Description	Return the all  Kutipan by tabungId.
+//	@Produce		application/json
+//	@Param			tabungId	path	string	true	"get kutipan by tabungId"
+//	@Tags			kutipan
+//	@Success		200	{object}	model.Response
+//	@Router			/kutipan/tabung/{tabungId}/betweenCreateDate [get]
 func (controller *KutipanController) FindAllByTabungIdBetweenCreateDate(ctx *gin.Context) {
 	log.Info().Msg("get kutipan list by tabung id between create date")
 
@@ -93,6 +96,14 @@ func (controller *KutipanController) FindAllByTabungIdBetweenCreateDate(ctx *gin
 	ctx.JSON(http.StatusOK, result)
 }
 
+// FindById		godoc
+//	@Summary		Get All Kutipan by id.
+//	@Description	Return the all  Kutipan by id.
+//	@Produce		application/json
+//	@Param			id	path	string	true	"get kutipan by id"
+//	@Tags			kutipan
+//	@Success		200	{object}	model.Kutipan{}
+//	@Router			/kutipan/{id} [get]
 func (controller *KutipanController) FindById(ctx *gin.Context) {
 	log.Info().Msg("get kutipan by id")
 
@@ -107,7 +118,38 @@ func (controller *KutipanController) FindById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
-func (controller *KutipanController) Upsert(ctx *gin.Context) {
+// CreateKutipan	godoc
+//	@Summary		Create kutipan
+//	@Description	Save kutipan data in Db.
+//	@Param			tags	body	model.Kutipan	true	"Create kutipan"
+//	@Produce		application/json
+//	@Tags			kutipan
+//	@Success		200	{object}	model.Kutipan{}
+//	@Router			/kutipan [post]
+func (controller *KutipanController) Create(ctx *gin.Context) {
+	log.Info().Msg("save kutipan")
+
+	kutipan := model.Kutipan{}
+	err := ctx.ShouldBindJSON(&kutipan)
+	errors.InternalServerError(ctx, err, "failed to bind JSON")
+
+	kutipan, err = controller.kutipanService.Upsert(kutipan)
+	errors.InternalServerError(ctx, err, "failed to save kutipan")
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(http.StatusOK, kutipan)
+}
+
+// Update Kutipan		godoc
+//	@Summary		Update kutipan
+//	@Description	Save kutipan data in Db.
+//	@Param			id		path	string			true	"update by id"
+//	@Param			kutipan	body	model.Kutipan	true	"update kutipan"
+//	@Produce		application/json
+//	@Tags			kutipan
+//	@Success		200	{object}	model.Kutipan{}
+//	@Router			/kutipan/{id} [put]
+func (controller *KutipanController) Update(ctx *gin.Context) {
 	log.Info().Msg("save kutipan")
 
 	kutipan := model.Kutipan{}
@@ -132,7 +174,13 @@ func (controller *KutipanController) Upsert(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, kutipan)
 }
 
-
+// DeleteKutipan		godoc
+//	@Summary		Delete kutipan
+//	@Description	Remove kutipan data by id.
+//	@Param			id	path	string	true	"delete kutipan by id"
+//	@Produce		application/json
+//	@Tags			kutipan
+//	@Router			/kutipan/{id} [delete]
 func (controller *KutipanController) Delete(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 

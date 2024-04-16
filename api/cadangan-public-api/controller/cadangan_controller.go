@@ -5,28 +5,29 @@ import (
 
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/repository"
-	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
 
-type CadanganController struct {
-	engine             *gin.Engine
+type CadanganController struct { 
 	cadanganRepository repository.CadanganRepository
 }
 
-func NewCadanganController(engine *gin.Engine, repo repository.CadanganRepository, env *env.Environment) *CadanganController {
-	controller := &CadanganController{
-		engine:             engine,
+func NewCadanganController(repo repository.CadanganRepository) *CadanganController {
+	return &CadanganController{ 
 		cadanganRepository: repo,
 	}
-
-	controller.engine.POST(env.DeployURL+"cadangan", controller.Save)
-
-	return controller
+ 
 }
 
+// Save	godoc
+//	@Summary		Save cadangan
+//	@Description	Save cadangan data in Db.
+//	@Param			cadangan	body	model.Cadangan	true	"Save cadangan"
+//	@Produce		application/json
+//	@Tags			cadangan
+//	@Router			/cadangan [post]
 func (controller *CadanganController) Save(ctx *gin.Context) {
 	log.Info().Msg("save cadangan")
 

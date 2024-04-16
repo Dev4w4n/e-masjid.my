@@ -3,16 +3,26 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/Dev4w4n/e-masjid.my/api/core/config"
 	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api/controller"
+	_ "github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api/docs"
+	"github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api/helper"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api/repository"
+	"github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api/router"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+//	@title			Tetapan Public Service API
+//	@version		1.0
+//	@description	A Tetapan Public service API in Go using Gin framework
 func main() {
 	log.Println("Starting server ...")
 
@@ -27,31 +37,37 @@ func main() {
 	}
 
 	tetapanRepository := repository.NewTetapanRepository(db)
+	tetapanController := controller.NewTetapanController(tetapanRepository)
 
 	// CORS configuration
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{env.AllowOrigins}
+	config.AllowOrigins = []string{env.AllowOrigins,"http://localhost:4000"}
 	config.AllowMethods = []string{"GET", "POST", "DELETE"}
 
+	// Router
 	gin.SetMode(gin.ReleaseMode)
+	_router := gin.Default()
+	_router.Use(cors.New(config))
+	_router.Use(controllerMiddleware())
 
-	r := gin.Default()
+	// enable swagger for dev env
+	isLocalEnv := os.Getenv("GO_ENV")
+	if (isLocalEnv == "local" || isLocalEnv == "dev") {
+		_router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	}
 
-	r.Use(cors.New(config))
-	r.Use(controllerMiddleware())
+	var routes *gin.Engine = _router
+	routes = router.NewTetapanPublicRouter(tetapanController,routes)
 
-	_ = controller.NewTetapanController(r, tetapanRepository, env)
-
-	go func() {
-		err = r.Run(":" + env.ServerPort)
-		if err != nil {
-			log.Fatal("Error starting the server:", err)
-		}
-	}()
-
+	server := &http.Server{
+		Addr:    ":" + env.ServerPort,
+		Handler: routes,
+	}
+	
 	log.Println("Server listening on port ", env.ServerPort)
 
-	select {} // Block indefinitely to keep the program running
+	err = server.ListenAndServe()
+	helper.ErrorPanic(err)
 }
 
 // Strictly allow from allowedOrigin

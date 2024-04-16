@@ -3,7 +3,6 @@ package controller
 import (
 	"net/http"
 
-	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/repository"
@@ -12,27 +11,22 @@ import (
 )
 
 type TetapanController struct {
-	engine            *gin.Engine
 	tetapanRepository repository.TetapanRepository
 }
 
-func NewTetapanController(engine *gin.Engine, repo repository.TetapanRepository, env *env.Environment) *TetapanController {
-	controller := &TetapanController{
-		engine:            engine,
+func NewTetapanController(repo repository.TetapanRepository) *TetapanController {
+	return &TetapanController{
 		tetapanRepository: repo,
 	}
-
-	relativePath := env.DeployURL + "tetapan"
-
-	controller.engine.GET(relativePath, controller.FindAll)
-	controller.engine.GET(relativePath+"/:kunci", controller.FindByKunci)
-	controller.engine.POST(relativePath, controller.Save)
-	controller.engine.POST(relativePath+"/senarai", controller.SaveAll)
-	controller.engine.DELETE(relativePath+"/:kunci", controller.Delete)
-
-	return controller
 }
 
+// FindAll		godoc
+//	@Summary		find all tetapan
+//	@Description	Return  all tetapan
+//	@Produce		application/json
+//	@Tags			tetapan
+//	@Success		200	{array}	model.Tetapan
+//	@Router			/tetapan [get]
 func (controller *TetapanController) FindAll(ctx *gin.Context) {
 	log.Info().Msg("find all tetapan")
 
@@ -43,6 +37,14 @@ func (controller *TetapanController) FindAll(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
+// FindByKunci		godoc
+//	@Summary		find tetapan by kunci
+//	@Description	Return  all tetapan by kunci
+//	@Produce		application/json
+//	@Param			kunci	path	string	true	"get tetapan by kunci"
+//	@Tags			tetapan
+//	@Success		200	{object}	model.Tetapan
+//	@Router			/tetapan/{kunci} [get]
 func (controller *TetapanController) FindByKunci(ctx *gin.Context) {
 	log.Info().Msg("findbykunci tetapan")
 
@@ -54,6 +56,13 @@ func (controller *TetapanController) FindByKunci(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
+// Save	godoc
+//	@Summary		Save tetapan
+//	@Description	Save tetapan data in Db.
+//	@Param			tetapan	body	model.Tetapan	true	"Save Tetapan"
+//	@Produce		application/json
+//	@Tags			tetapan
+//	@Router			/tetapan [post]
 func (controller *TetapanController) Save(ctx *gin.Context) {
 	log.Info().Msg("save tetapan")
 
@@ -68,6 +77,13 @@ func (controller *TetapanController) Save(ctx *gin.Context) {
 	ctx.Status(http.StatusOK)
 }
 
+// SaveAll	godoc
+//	@Summary		BulkSave tetapan
+//	@Description	BulkSave tetapan data in Db.
+//	@Param			tetapan	body	[]model.Tetapan	true	"BulkSave Tetapan"
+//	@Produce		application/json
+//	@Tags			tetapan
+//	@Router			/tetapan/senarai [post]
 func (controller *TetapanController) SaveAll(ctx *gin.Context) {
 	log.Info().Msg("save all tetapan")
 
@@ -82,6 +98,13 @@ func (controller *TetapanController) SaveAll(ctx *gin.Context) {
 	ctx.Status(http.StatusOK)
 }
 
+// Delete		godoc
+//	@Summary		Delete tetapan
+//	@Description	Remove tetapan data by kunci.
+//	@Param			kunci	path	string	true	"delete tetapan by kunci"
+//	@Produce		application/json
+//	@Tags			tetapan
+//	@Router			/tetapan/{kunci} [delete]
 func (controller *TetapanController) Delete(ctx *gin.Context) {
 	log.Info().Msg("delete tetapan")
 

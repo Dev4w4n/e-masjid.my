@@ -1,0 +1,225 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "A Tetapan service API in Go using Gin framework",
+        "title": "Tetapan Service API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/tetapan": {
+            "get": {
+                "description": "Return  all tetapan",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tetapan"
+                ],
+                "summary": "find all tetapan",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Tetapan"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Save tetapan data in Db.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tetapan"
+                ],
+                "summary": "Save tetapan",
+                "parameters": [
+                    {
+                        "description": "Save Tetapan",
+                        "name": "tetapan",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Tetapan"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/tetapan-types": {
+            "get": {
+                "description": "Return  all tetapan type group names",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tetapan-types"
+                ],
+                "summary": "find all tetapan type group names",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.TetapanTypeGroupNames"
+                        }
+                    }
+                }
+            }
+        },
+        "/tetapan-types/:group_name": {
+            "get": {
+                "description": "Return groupname by tetapan type.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tetapan-types"
+                ],
+                "summary": "find groupname by tetapan type",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "get tetapan by group_name",
+                        "name": "group_name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.TetapanType"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tetapan/senarai": {
+            "post": {
+                "description": "BulkSave tetapan data in Db.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tetapan"
+                ],
+                "summary": "BulkSave tetapan",
+                "parameters": [
+                    {
+                        "description": "BulkSave Tetapan",
+                        "name": "tetapan",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Tetapan"
+                            }
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/tetapan/{kunci}": {
+            "get": {
+                "description": "Return  all tetapan by kunci",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tetapan"
+                ],
+                "summary": "find tetapan by kunci",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "get tetapan by kunci",
+                        "name": "kunci",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Tetapan"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Remove tetapan data by kunci.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tetapan"
+                ],
+                "summary": "Delete tetapan",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "delete tetapan by kunci",
+                        "name": "kunci",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        }
+    },
+    "definitions": {
+        "model.Tetapan": {
+            "type": "object",
+            "properties": {
+                "kunci": {
+                    "type": "string"
+                },
+                "nilai": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.TetapanType": {
+            "type": "object",
+            "properties": {
+                "group_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "int_val": {
+                    "type": "integer"
+                },
+                "str_val": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.TetapanTypeGroupNames": {
+            "type": "object",
+            "properties": {
+                "group_names": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

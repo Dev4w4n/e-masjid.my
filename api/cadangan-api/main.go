@@ -2,16 +2,25 @@ package main
 
 import (
 	"log"
+	"net/http"
+	"os"
 
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-api/controller"
+	_ "github.com/Dev4w4n/e-masjid.my/api/cadangan-api/docs"
+	"github.com/Dev4w4n/e-masjid.my/api/cadangan-api/helper"
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-api/repository"
+	"github.com/Dev4w4n/e-masjid.my/api/cadangan-api/router"
 	"github.com/Dev4w4n/e-masjid.my/api/core/config"
 	"github.com/Dev4w4n/e-masjid.my/api/core/env"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+//	@title			Cadangan Service API
+//	@version		1.0
+//	@description	A Cadangan service API in Go using Gin framework
 func main() {
 	log.Println("Starting server ...")
 
@@ -26,28 +35,33 @@ func main() {
 	}
 
 	cadanganRepository := repository.NewCadanganRepository(db)
+	cadanganController := controller.NewCadanganController(cadanganRepository);
 
 	// CORS configuration
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{env.AllowOrigins}
+	config.AllowOrigins = []string{env.AllowOrigins,"http://localhost:4000"}
 	config.AllowMethods = []string{"PUT", "GET", "DELETE"}
 
+	// Router
 	gin.SetMode(gin.ReleaseMode)
+	_router := gin.Default()
+	_router.Use(cors.New(config))
 
-	r := gin.Default()
+	// enable swagger for dev env
+	isLocalEnv := os.Getenv("GO_ENV")
+	if (isLocalEnv == "local" || isLocalEnv == "dev") {
+		_router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	}
 
-	r.Use(cors.New(config))
+	routes := router.NewCadanganRouter(cadanganController,_router)
 
-	_ = controller.NewCadanganController(r, cadanganRepository, env)
-
-	go func() {
-		err := r.Run(":" + env.ServerPort)
-		if err != nil {
-			log.Fatal("Error starting the server:", err)
-		}
-	}()
+	server := &http.Server{
+		Addr:    ":" + env.ServerPort,
+		Handler: routes,
+	}
 
 	log.Println("Server listening on port ", env.ServerPort)
 
-	select {} // Block indefinitely to keep the program running
+	err = server.ListenAndServe()
+	helper.ErrorPanic(err)
 }

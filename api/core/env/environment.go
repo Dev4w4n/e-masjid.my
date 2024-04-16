@@ -16,6 +16,7 @@ type Environment struct {
 	AllowOrigins string
 	DeployURL    string
 	ServerPort   string
+	ApiDocUrl	 string
 }
 
 func GetEnvironment() (*Environment, error) {
@@ -38,5 +39,6 @@ func GetEnvironment() (*Environment, error) {
 		AllowOrigins: os.Getenv("ALLOWED_ORIGIN"),
 		DeployURL:    os.Getenv("DEPLOY_URL"),
 		ServerPort:   os.Getenv("SERVER_PORT"),
+		ApiDocUrl:    os.Getenv("API_DOC_URL"),
 	}, nil
 }
