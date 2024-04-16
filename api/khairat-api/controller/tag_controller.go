@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/repository"
@@ -13,25 +12,22 @@ import (
 )
 
 type TagController struct {
-	engine        *gin.Engine
 	tagRepository repository.TagRepository
 }
 
-func NewTagController(engine *gin.Engine, repo repository.TagRepository, env *env.Environment) *TagController {
-	controller := &TagController{
-		engine:        engine,
+func NewTagController( repo repository.TagRepository) *TagController {
+	return &TagController{
 		tagRepository: repo,
 	}
-
-	relativePath := env.DeployURL + "tags"
-
-	controller.engine.GET(relativePath+"/findAll", controller.FindAll)
-	controller.engine.POST(relativePath+"/save", controller.Save)
-	controller.engine.DELETE(relativePath+"/delete/:id", controller.Delete)
-
-	return controller
 }
 
+// FindAll		godoc
+//	@Summary		find all tag
+//	@Description	Return the all tag.
+//	@Produce		application/json
+//	@Tags			tags
+//	@Success		200	{object}	model.Response
+//	@Router			/tags/findAll [get]
 func (controller *TagController) FindAll(ctx *gin.Context) {
 	log.Info().Msg("find all tag")
 
@@ -42,6 +38,13 @@ func (controller *TagController) FindAll(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
+// Save	godoc
+//	@Summary		save tag
+//	@Description	save tag data in Db.
+//	@Param			tags	body	model.Tag	true	"save tag"
+//	@Produce		application/json
+//	@Tags			tags
+//	@Router			/tags/save [post]
 func (controller *TagController) Save(ctx *gin.Context) {
 	log.Info().Msg("save tag")
 
@@ -56,6 +59,13 @@ func (controller *TagController) Save(ctx *gin.Context) {
 	ctx.Status(http.StatusOK)
 }
 
+// Delete		godoc
+//	@Summary		Delete tag
+//	@Description	Remove tag data by id.
+//	@Param			id	path	string	true	"delete tag by id"
+//	@Produce		application/json
+//	@Tags			tags
+//	@Router			/tags/delete/{id} [delete]
 func (controller *TagController) Delete(ctx *gin.Context) {
 	log.Info().Msg("delete tag")
 

@@ -16,6 +16,7 @@ docker run -d \
 3. [optional] to create api doc
 
 ```
+go get -u github.com/swaggo/swag
 https://github.com/swaggo/swag#how-to-use-it-with-gin
 
 swag init

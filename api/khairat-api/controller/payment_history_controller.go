@@ -3,7 +3,6 @@ package controller
 import (
 	"net/http"
 
-	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/service"
 	"github.com/gin-gonic/gin"
@@ -11,23 +10,21 @@ import (
 )
 
 type PaymentHistoryController struct {
-	engine                *gin.Engine
 	paymentHistoryService service.PaymentHistoryService
 }
 
-func NewPaymentHistoryController(engine *gin.Engine, svc service.PaymentHistoryService, env *env.Environment) *PaymentHistoryController {
-	controller := &PaymentHistoryController{
-		engine:                engine,
+func NewPaymentHistoryController(svc service.PaymentHistoryService) *PaymentHistoryController {
+	return &PaymentHistoryController{
 		paymentHistoryService: svc,
 	}
-
-	relativePath := env.DeployURL + "payment"
-
-	controller.engine.GET(relativePath+"/totalMembersPaidForCurrentYear", controller.GetTotalMembersPaidForCurrentYear)
-
-	return controller
 }
 
+// GetTotalMembersPaidForCurrentYear		godoc
+//	@Summary		get total members paid for current year
+//	@Description	get total members paid for current year
+//	@Produce		application/json
+//	@Tags			payment
+//	@Router			/payment/totalMembersPaidForCurrentYear [get]
 func (controller *PaymentHistoryController) GetTotalMembersPaidForCurrentYear(ctx *gin.Context) {
 	log.Info().Msg("get total members paid for current year")
 

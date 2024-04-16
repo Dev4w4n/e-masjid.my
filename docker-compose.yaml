@@ -112,4 +112,5 @@ services:
     depends_on:
       - tabung-api
       - cadangan-api
+      - khairat-api
     command: ["./api-docs"]
