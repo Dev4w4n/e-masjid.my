@@ -96,7 +96,7 @@ func (controller *KutipanController) FindAllByTabungIdBetweenCreateDate(ctx *gin
 	ctx.JSON(http.StatusOK, result)
 }
 
-// FindAll		godoc
+// FindById		godoc
 //	@Summary		Get All Kutipan by id.
 //	@Description	Return the all  Kutipan by id.
 //	@Produce		application/json
@@ -118,7 +118,7 @@ func (controller *KutipanController) FindById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
-// CreateTabung		godoc
+// CreateKutipan	godoc
 //	@Summary		Create kutipan
 //	@Description	Save kutipan data in Db.
 //	@Param			tags	body	model.Kutipan	true	"Create kutipan"
@@ -140,8 +140,8 @@ func (controller *KutipanController) Create(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, kutipan)
 }
 
-// CreateTabung		godoc
-//	@Summary		Create kutipan
+// Update Kutipan		godoc
+//	@Summary		Update kutipan
 //	@Description	Save kutipan data in Db.
 //	@Param			id		path	string			true	"update by id"
 //	@Param			kutipan	body	model.Kutipan	true	"update kutipan"
@@ -174,7 +174,7 @@ func (controller *KutipanController) Update(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, kutipan)
 }
 
-// DeleteTabung		godoc
+// DeleteKutipan		godoc
 //	@Summary		Delete kutipan
 //	@Description	Remove kutipan data by id.
 //	@Param			id	path	string	true	"delete kutipan by id"

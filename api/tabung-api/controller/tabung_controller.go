@@ -63,7 +63,7 @@ func (controller *TabungController) FindById(ctx *gin.Context) {
 // CreateTabung		godoc
 //	@Summary		Create tabung
 //	@Description	Save tabung data in Db.
-//	@Param			tags	body	model.Tabung	true	"Create Tabung"
+//	@Param			tabung	body	model.Tabung	true	"Create Tabung"
 //	@Produce		application/json
 //	@Tags			tabung
 //	@Success		200	{object}	model.Tabung{}

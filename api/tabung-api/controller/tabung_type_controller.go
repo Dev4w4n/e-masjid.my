@@ -43,7 +43,7 @@ func (controller *TabungTypeController) FindAll(ctx *gin.Context) {
 // CreateTabung		godoc
 //	@Summary		Create tabung type
 //	@Description	Save tabung type data in Db.
-//	@Param			tags	body	model.TabungType	true	"Create Tabung type"
+//	@Param			tabung	body	model.TabungType	true	"Create Tabung type"
 //	@Produce		application/json
 //	@Tags			tabung type
 //	@Success		200	{object}	model.TabungType{}

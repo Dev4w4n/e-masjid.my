@@ -6,32 +6,28 @@ import (
 
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-api/repository"
-	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
 
 type CadanganController struct {
-	engine             *gin.Engine
 	cadanganRepository repository.CadanganRepository
 }
 
-func NewCadanganController(engine *gin.Engine, repo repository.CadanganRepository, env *env.Environment) *CadanganController {
-	controller := &CadanganController{
-		engine:             engine,
+func NewCadanganController( repo repository.CadanganRepository) *CadanganController {
+	return &CadanganController{
 		cadanganRepository: repo,
 	}
-
-	controller.engine.GET(env.DeployURL+"cadangan", controller.GetAllCadanganBy)
-	controller.engine.GET(env.DeployURL+"cadangan/:id", controller.GetOne)
-	controller.engine.GET(env.DeployURL+"cadangan/count", controller.GetCadanganCount)
-	controller.engine.PUT(env.DeployURL+"cadangan/:id", controller.Save)
-	controller.engine.DELETE(env.DeployURL+"cadangan/:id", controller.Delete)
-
-	return controller
 }
 
+// FindById		godoc
+//	@Summary		Get All Cadangan by id.
+//	@Description	Return the all  Cadangan by id.
+//	@Produce		application/json
+//	@Param			id	path	string	true	"get cadangan by id"
+//	@Tags			cadangan
+//	@Router			/cadangan/{id} [get]
 func (controller *CadanganController) GetOne(ctx *gin.Context) {
 	log.Info().Msg("get all cadangan")
 	idStr := ctx.Param("id")
@@ -49,6 +45,16 @@ func (controller *CadanganController) GetOne(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
+// FindBycadanganTypeId		godoc
+//	@Summary		Get All Cadangan by cadanganTypeId.
+//	@Description	Return the all  Cadangan by id.
+//	@Produce		application/json
+//	@Param			cadanganTypeId	query	string	false	"cadanganTypeId"
+//	@Param			isOpen	query	boolean	true	"isOpen"
+//	@Param			page	query	int	false	"page"
+//	@Param			size	query	int	false	"size"
+//	@Tags			cadangan
+//	@Router			/cadangan [get]
 func (controller *CadanganController) GetAllCadanganBy(ctx *gin.Context) {
 	var response interface{}
 	var open bool
@@ -92,6 +98,12 @@ func (controller *CadanganController) GetAllCadanganBy(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+// GetCount		godoc
+//	@Summary		total count of cadangan.
+//	@Description	Return Cadangan count.
+//	@Produce		application/json
+//	@Tags			cadangan
+//	@Router			/cadangan/count [get]
 func (controller *CadanganController) GetCadanganCount(ctx *gin.Context) {
 	log.Info().Msg("get cadangan count")
 
@@ -102,6 +114,13 @@ func (controller *CadanganController) GetCadanganCount(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
+// CreateCadangan		godoc
+//	@Summary		Create Cadangan
+//	@Description	Save Cadangan data in Db.
+//	@Param			Cadangan	body	model.Cadangan	true	"Create Cadangan"
+//	@Produce		application/json
+//	@Tags			cadangan
+//	@Router			/cadangan [put]
 func (controller *CadanganController) Save(ctx *gin.Context) {
 	log.Info().Msg("save cadangan")
 
@@ -116,6 +135,13 @@ func (controller *CadanganController) Save(ctx *gin.Context) {
 	ctx.Status(http.StatusOK)
 }
 
+// DeleteCadangan		godoc
+//	@Summary		Delete Cadangan
+//	@Description	Remove Cadangandata by id.
+//	@Param			id	path	string	true	"delete Cadangan by id"
+//	@Produce		application/json
+//	@Tags			cadangan
+//	@Router			/cadangan/{id} [delete]
 func (controller *CadanganController) Delete(ctx *gin.Context) {
 	log.Info().Msg("delete cadangan")
 
