@@ -23,3 +23,9 @@ func InternalServerError(ctx *gin.Context, err error, message string) {
 func BadRequestError(ctx *gin.Context, err error, message string) {
 	WebError(ctx, http.StatusBadRequest, err, message)
 }
+
+func ErrorPanic(err error) {
+	if err != nil {
+		panic(err)
+	}
+}

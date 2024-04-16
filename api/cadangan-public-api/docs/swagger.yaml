@@ -31,7 +31,7 @@ definitions:
     type: object
 info:
   contact: {}
-  description: A Tabung service API in Go using Gin framework
+  description: A Cadangan Public  service API in Go using Gin framework
   title: Cadangan Public Service API
   version: "1.0"
 paths:

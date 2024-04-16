@@ -97,7 +97,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "Cadangan Public Service API",
-	Description:      "A Tabung service API in Go using Gin framework",
+	Description:      "A Cadangan Public  service API in Go using Gin framework",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

@@ -23,7 +23,7 @@ import (
 
 //	@title			Cadangan Public Service API
 //	@version		1.0
-//	@description	A Tabung service API in Go using Gin framework
+//	@description	A Cadangan Public  service API in Go using Gin framework
 func main() {
 	log.Println("Starting server ...")
 

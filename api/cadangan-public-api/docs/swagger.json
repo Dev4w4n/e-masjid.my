@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "A Tabung service API in Go using Gin framework",
+        "description": "A Cadangan Public  service API in Go using Gin framework",
         "title": "Cadangan Public Service API",
         "contact": {},
         "version": "1.0"

@@ -32,6 +32,7 @@ func main(){
 		httpSwagger.URL("http://localhost:8083/docs/doc.json"),
 		httpSwagger.URL("http://localhost:8084/docs/doc.json"),
 		httpSwagger.URL("http://localhost:8085/docs/doc.json"),
+		httpSwagger.URL("http://localhost:8086/docs/doc.json"),
 	))
 	http.ListenAndServe(":4000", r)
 
@@ -48,6 +49,7 @@ func HealthCheck(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Cadangan-api : " + checkStatus("http://0.0.0.0:8083/docs/doc.json")) 
 	fmt.Fprintln(w, "Cadangan-public-api : " + checkStatus("http://0.0.0.0:8084/docs/doc.json")) 
 	fmt.Fprintln(w, "Tetapan-api : " + checkStatus("http://0.0.0.0:8085/docs/doc.json")) 
+	fmt.Fprintln(w, "Tetapan-public-api : " + checkStatus("http://0.0.0.0:8086/docs/doc.json")) 
 }
 
 func checkStatus(url string) string {

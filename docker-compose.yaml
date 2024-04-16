@@ -115,4 +115,5 @@ services:
       - cadangan-public-api
       - khairat-api
       - tetapan-api
+      - tetapan-public-api
     command: ["./api-docs"]

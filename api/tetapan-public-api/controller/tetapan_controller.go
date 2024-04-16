@@ -3,7 +3,6 @@ package controller
 import (
 	"net/http"
 
-	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api/repository"
 	"github.com/gin-gonic/gin"
@@ -11,24 +10,22 @@ import (
 )
 
 type TetapanController struct {
-	engine            *gin.Engine
 	tetapanRepository repository.TetapanRepository
 }
 
-func NewTetapanController(engine *gin.Engine, repo repository.TetapanRepository, env *env.Environment) *TetapanController {
-	controller := &TetapanController{
-		engine:            engine,
+func NewTetapanController(repo repository.TetapanRepository) *TetapanController {
+	return &TetapanController{
 		tetapanRepository: repo,
 	}
-
-	relativePath := env.DeployURL + "tetapan"
-
-	controller.engine.GET(relativePath, controller.FindAll)
-	controller.engine.GET(relativePath+"/:kunci", controller.FindByKunci)
-
-	return controller
 }
 
+// FindAll		godoc
+//	@Summary		find all tetapan
+//	@Description	Return the all tetapan.
+//	@Produce		application/json
+//	@Tags			tetapan
+//	@Success		200	{array}	model.Tetapan
+//	@Router			/tetapan [get]
 func (controller *TetapanController) FindAll(ctx *gin.Context) {
 	log.Info().Msg("find all tetapan")
 
@@ -39,6 +36,14 @@ func (controller *TetapanController) FindAll(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
+// FindByKunci		godoc
+//	@Summary		find tetapan by kunci
+//	@Description	Return the  tetapan by kunci
+//	@Produce		application/json
+//	@Param			kunci	path	string	true	"kunci"
+//	@Tags			tetapan
+//	@Success		200	{object}	model.Tetapan
+//	@Router			/tetapan/{kunci} [get]
 func (controller *TetapanController) FindByKunci(ctx *gin.Context) {
 	log.Info().Msg("findbykunci tetapan")
 
