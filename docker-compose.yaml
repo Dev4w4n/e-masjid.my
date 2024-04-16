@@ -112,6 +112,7 @@ services:
     depends_on:
       - tabung-api
       - cadangan-api
+      - cadangan-public-api
       - khairat-api
       - tetapan-api
     command: ["./api-docs"]

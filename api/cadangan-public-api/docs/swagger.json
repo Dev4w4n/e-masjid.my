@@ -1,0 +1,83 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "A Tabung service API in Go using Gin framework",
+        "title": "Cadangan Public Service API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/cadangan": {
+            "post": {
+                "description": "Save cadangan data in Db.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cadangan"
+                ],
+                "summary": "Save cadangan",
+                "parameters": [
+                    {
+                        "description": "Save cadangan",
+                        "name": "cadangan",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Cadangan"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        }
+    },
+    "definitions": {
+        "model.Cadangan": {
+            "type": "object",
+            "properties": {
+                "cadanganEmail": {
+                    "type": "string"
+                },
+                "cadanganNama": {
+                    "type": "string"
+                },
+                "cadanganPhone": {
+                    "type": "string"
+                },
+                "cadanganText": {
+                    "type": "string"
+                },
+                "cadanganType": {
+                    "$ref": "#/definitions/model.CadanganType"
+                },
+                "createDate": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isOpen": {
+                    "type": "boolean"
+                },
+                "score": {
+                    "type": "integer"
+                },
+                "tindakanText": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CadanganType": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
