@@ -111,4 +111,5 @@ services:
       - GO_ENV=dev
     depends_on:
       - tabung-api
+      - cadangan-api
     command: ["./api-docs"]
