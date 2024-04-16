@@ -113,4 +113,5 @@ services:
       - tabung-api
       - cadangan-api
       - khairat-api
+      - tetapan-api
     command: ["./api-docs"]

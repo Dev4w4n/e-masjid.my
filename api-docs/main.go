@@ -27,9 +27,10 @@ func main(){
 	r := mux.NewRouter()
 	r.HandleFunc("/", HealthCheck).Methods("GET")
 	r.PathPrefix("/api/").Handler(httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:8081/docs/doc.json"), //The url pointing to API definition"
-		httpSwagger.URL("http://localhost:8082/docs/doc.json"), //The url pointing to API definition"
-		httpSwagger.URL("http://localhost:8083/docs/doc.json"), //The url pointing to API definition"
+		httpSwagger.URL("http://localhost:8081/docs/doc.json"),
+		httpSwagger.URL("http://localhost:8082/docs/doc.json"),
+		httpSwagger.URL("http://localhost:8083/docs/doc.json"),
+		httpSwagger.URL("http://localhost:8085/docs/doc.json"),
 	))
 	http.ListenAndServe(":4000", r)
 
@@ -44,6 +45,7 @@ func HealthCheck(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Khairat-api : " + checkStatus("http://0.0.0.0:8081/docs/doc.json")) 
 	fmt.Fprintln(w, "Tabung-api : " + checkStatus("http://0.0.0.0:8082/docs/doc.json")) 
 	fmt.Fprintln(w, "Cadangan-api : " + checkStatus("http://0.0.0.0:8083/docs/doc.json")) 
+	fmt.Fprintln(w, "Tetapan-api : " + checkStatus("http://0.0.0.0:8085/docs/doc.json")) 
 }
 
 func checkStatus(url string) string {

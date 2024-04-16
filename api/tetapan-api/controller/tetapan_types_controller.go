@@ -3,7 +3,6 @@ package controller
 import (
 	"net/http"
 
-	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/repository"
 	"github.com/gin-gonic/gin"
@@ -11,24 +10,22 @@ import (
 )
 
 type TetapanTypeController struct {
-	engine                *gin.Engine
 	tetapanTypeRepository repository.TetapanTypeRepository
 }
 
-func NewTetapanTypeController(engine *gin.Engine, repo repository.TetapanTypeRepository, env *env.Environment) *TetapanTypeController {
-	controller := &TetapanTypeController{
-		engine:                engine,
+func NewTetapanTypeController(repo repository.TetapanTypeRepository) *TetapanTypeController {
+	return &TetapanTypeController{
 		tetapanTypeRepository: repo,
 	}
-
-	relativePath := env.DeployURL + "tetapan-types"
-
-	controller.engine.GET(relativePath, controller.FindAllGroupNames)
-	controller.engine.GET(relativePath+"/:group_name", controller.FindByGroupName)
-
-	return controller
 }
 
+// FindAllGroupNames		godoc
+//	@Summary		find all tetapan type group names
+//	@Description	Return  all tetapan type group names
+//	@Produce		application/json
+//	@Tags			tetapan-types
+//	@Success		200	{object}	model.TetapanTypeGroupNames
+//	@Router			/tetapan-types [get]
 func (controller *TetapanTypeController) FindAllGroupNames(ctx *gin.Context) {
 	log.Info().Msg("find all tetapan type group names")
 
@@ -39,6 +36,14 @@ func (controller *TetapanTypeController) FindAllGroupNames(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
+// FindByGroupName		godoc
+//	@Summary		find groupname by tetapan type
+//	@Description	Return groupname by tetapan type.
+//	@Produce		application/json
+//	@Param			group_name	path	string	true	"get tetapan by group_name"
+//	@Tags			tetapan-types
+//	@Success		200	{array}	model.TetapanType
+//	@Router			/tetapan-types/:group_name [get]
 func (controller *TetapanTypeController) FindByGroupName(ctx *gin.Context) {
 	log.Info().Msg("findbygroupname tetapan type")
 
