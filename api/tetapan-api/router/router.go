@@ -1,13 +1,14 @@
 package router
 
 import (
+	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/controller"
 	"github.com/gin-gonic/gin"
 )
 
-func NewTetapanRouter(controller *controller.TetapanController, router *gin.Engine) *gin.Engine {
-	
-	controllerRouter := router.Group("/tetapan")
+func NewTetapanRouter(controller *controller.TetapanController, router *gin.Engine, env *env.Environment) *gin.Engine {
+
+	controllerRouter := router.Group(env.DeployURL + "tetapan")
 	controllerRouter.GET("", controller.FindAll)
 	controllerRouter.GET("/:kunci", controller.FindByKunci)
 	controllerRouter.POST("", controller.Save)
@@ -17,9 +18,9 @@ func NewTetapanRouter(controller *controller.TetapanController, router *gin.Engi
 	return router
 }
 
-func NewTetapanTypeRouter(controller *controller.TetapanTypeController, router *gin.Engine) *gin.Engine {
-	
-	controllerRouter := router.Group("/tetapan-types")
+func NewTetapanTypeRouter(controller *controller.TetapanTypeController, router *gin.Engine, env *env.Environment) *gin.Engine {
+
+	controllerRouter := router.Group(env.DeployURL + "tetapan-types")
 	controllerRouter.GET("", controller.FindAllGroupNames)
 	controllerRouter.GET("/:group_name", controller.FindByGroupName)
 

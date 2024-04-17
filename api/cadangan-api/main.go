@@ -18,9 +18,9 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-//	@title			Cadangan Service API
-//	@version		1.0
-//	@description	A Cadangan service API in Go using Gin framework
+// @title			Cadangan Service API
+// @version		1.0
+// @description	A Cadangan service API in Go using Gin framework
 func main() {
 	log.Println("Starting server ...")
 
@@ -35,11 +35,11 @@ func main() {
 	}
 
 	cadanganRepository := repository.NewCadanganRepository(db)
-	cadanganController := controller.NewCadanganController(cadanganRepository);
+	cadanganController := controller.NewCadanganController(cadanganRepository)
 
 	// CORS configuration
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{env.AllowOrigins,"http://localhost:4000"}
+	config.AllowOrigins = []string{env.AllowOrigins, "http://localhost:4000"}
 	config.AllowMethods = []string{"PUT", "GET", "DELETE"}
 
 	// Router
@@ -49,11 +49,11 @@ func main() {
 
 	// enable swagger for dev env
 	isLocalEnv := os.Getenv("GO_ENV")
-	if (isLocalEnv == "local" || isLocalEnv == "dev") {
+	if isLocalEnv == "local" || isLocalEnv == "dev" {
 		_router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 
-	routes := router.NewCadanganRouter(cadanganController,_router)
+	routes := router.NewCadanganRouter(cadanganController, _router, env)
 
 	server := &http.Server{
 		Addr:    ":" + env.ServerPort,
