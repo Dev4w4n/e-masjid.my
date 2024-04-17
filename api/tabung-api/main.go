@@ -20,9 +20,9 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-//	@title			Tabung Service API
-//	@version		1.0
-//	@description	A Tabung service API in Go using Gin framework
+// @title			Tabung Service API
+// @version		1.0
+// @description	A Tabung service API in Go using Gin framework
 func main() {
 
 	log.Println("Starting server ...")
@@ -55,7 +55,7 @@ func main() {
 
 	// CORS configuration
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{env.AllowOrigins,"http://localhost:4000"}
+	config.AllowOrigins = []string{env.AllowOrigins, "http://localhost:4000"}
 	config.AllowMethods = []string{"GET", "POST", "DELETE", "PUT"}
 
 	// Router
@@ -65,20 +65,20 @@ func main() {
 
 	// enable swagger for dev env
 	isLocalEnv := os.Getenv("GO_ENV")
-	if (isLocalEnv == "local" || isLocalEnv == "dev") {
+	if isLocalEnv == "local" || isLocalEnv == "dev" {
 		_router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 
 	var routes *gin.Engine = _router
-	routes = router.NewTabungRouter(tabungController,routes)
-	routes = router.NewTabungTypeRouter(tabungTypeController,routes)
-	routes = router.NewKutipanRouter(kutipanController,routes)
+	routes = router.NewTabungRouter(tabungController, routes, env)
+	routes = router.NewTabungTypeRouter(tabungTypeController, routes, env)
+	routes = router.NewKutipanRouter(kutipanController, routes, env)
 
 	server := &http.Server{
 		Addr:    ":" + env.ServerPort,
 		Handler: routes,
 	}
-	
+
 	log.Println("Server listening on port ", env.ServerPort)
 
 	err = server.ListenAndServe()

@@ -19,9 +19,9 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-//	@title			Tetapan Service API
-//	@version		1.0
-//	@description	A Tetapan service API in Go using Gin framework
+// @title			Tetapan Service API
+// @version		1.0
+// @description	A Tetapan service API in Go using Gin framework
 func main() {
 	log.Println("Starting server ...")
 
@@ -40,12 +40,12 @@ func main() {
 	tetapanTypeRepository := repository.NewTetapanTypeRepository(db)
 
 	//controller
-	tetapanController := controller.NewTetapanController(tetapanRepository);
-	tetapanTypeController := controller.NewTetapanTypeController(tetapanTypeRepository);
+	tetapanController := controller.NewTetapanController(tetapanRepository)
+	tetapanTypeController := controller.NewTetapanTypeController(tetapanTypeRepository)
 
 	// CORS configuration
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{env.AllowOrigins,"http://localhost:4000"}
+	config.AllowOrigins = []string{env.AllowOrigins, "http://localhost:4000"}
 	config.AllowMethods = []string{"GET", "POST", "DELETE"}
 
 	// Router
@@ -55,13 +55,13 @@ func main() {
 
 	// enable swagger for dev env
 	isLocalEnv := os.Getenv("GO_ENV")
-	if (isLocalEnv == "local" || isLocalEnv == "dev") {
+	if isLocalEnv == "local" || isLocalEnv == "dev" {
 		_router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 
 	var routes *gin.Engine = _router
-	routes = router.NewTetapanRouter(tetapanController,routes)
-	routes = router.NewTetapanTypeRouter(tetapanTypeController,routes)
+	routes = router.NewTetapanRouter(tetapanController, routes, env)
+	routes = router.NewTetapanTypeRouter(tetapanTypeController, routes, env)
 
 	server := &http.Server{
 		Addr:    ":" + env.ServerPort,

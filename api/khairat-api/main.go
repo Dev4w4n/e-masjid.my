@@ -21,9 +21,9 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-//	@title			Khairat Service API
-//	@version		1.0
-//	@description	A Tabung service API in Go using Gin framework
+// @title			Khairat Service API
+// @version		1.0
+// @description	A Tabung service API in Go using Gin framework
 func main() {
 	log.Println("Starting server ...")
 
@@ -59,7 +59,7 @@ func main() {
 
 	// CORS configuration
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{env.AllowOrigins,"http://localhost:4000"}
+	config.AllowOrigins = []string{env.AllowOrigins, "http://localhost:4000"}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
 
 	// Router
@@ -69,21 +69,21 @@ func main() {
 
 	// enable swagger for dev env
 	isLocalEnv := os.Getenv("GO_ENV")
-	if (isLocalEnv == "local" || isLocalEnv == "dev") {
+	if isLocalEnv == "local" || isLocalEnv == "dev" {
 		_router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 
 	var routes *gin.Engine = _router
-	routes = router.NewMemberRouter(memberController,routes)
-	routes = router.NewTagRouter(tagController,routes)
-	routes = router.NewDependentRouter(dependentController,routes)
-	routes = router.NewPaymentHistoryRouter(paymentHistoryController,routes)
+	routes = router.NewMemberRouter(memberController, routes, env)
+	routes = router.NewTagRouter(tagController, routes, env)
+	routes = router.NewDependentRouter(dependentController, routes, env)
+	routes = router.NewPaymentHistoryRouter(paymentHistoryController, routes, env)
 
 	server := &http.Server{
 		Addr:    ":" + env.ServerPort,
 		Handler: routes,
 	}
-	
+
 	log.Println("Server listening on port ", env.ServerPort)
 
 	err = server.ListenAndServe()

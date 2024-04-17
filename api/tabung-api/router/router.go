@@ -1,13 +1,14 @@
 package router
 
 import (
+	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/controller"
 	"github.com/gin-gonic/gin"
 )
 
-func NewTabungRouter(controller *controller.TabungController, router *gin.Engine) *gin.Engine {
-	
-	controllerRouter := router.Group("/tabung")
+func NewTabungRouter(controller *controller.TabungController, router *gin.Engine, env *env.Environment) *gin.Engine {
+
+	controllerRouter := router.Group(env.DeployURL + "tabung")
 	controllerRouter.GET("", controller.FindAll)
 	controllerRouter.GET("/:id", controller.FindById)
 	controllerRouter.POST("", controller.Save)
@@ -16,9 +17,9 @@ func NewTabungRouter(controller *controller.TabungController, router *gin.Engine
 	return router
 }
 
-func NewTabungTypeRouter(controller *controller.TabungTypeController, router *gin.Engine) *gin.Engine {
-	
-	controllerRouter := router.Group("/tabung-types")
+func NewTabungTypeRouter(controller *controller.TabungTypeController, router *gin.Engine, env *env.Environment) *gin.Engine {
+
+	controllerRouter := router.Group(env.DeployURL + "tabung-types")
 	controllerRouter.GET("", controller.FindAll)
 	controllerRouter.POST("", controller.Save)
 	controllerRouter.DELETE("/:id", controller.Delete)
@@ -26,10 +27,9 @@ func NewTabungTypeRouter(controller *controller.TabungTypeController, router *gi
 	return router
 }
 
+func NewKutipanRouter(controller *controller.KutipanController, router *gin.Engine, env *env.Environment) *gin.Engine {
 
-func NewKutipanRouter(controller *controller.KutipanController, router *gin.Engine) *gin.Engine {
-	
-	controllerRouter := router.Group("/kutipan")
+	controllerRouter := router.Group(env.DeployURL + "kutipan")
 	controllerRouter.GET("/tabung/:tabungId", controller.FindAllByTabungId)
 	controllerRouter.GET("/tabung/:tabungId/betweenCreateDate", controller.FindAllByTabungIdBetweenCreateDate)
 	controllerRouter.GET("/:id", controller.FindById)
