@@ -59,7 +59,7 @@ func main() {
 
 	// CORS configuration
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{env.AllowOrigins, "http://localhost:4000"}
+	config.AllowOrigins = []string{env.AllowOrigins}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
 
 	// Router
