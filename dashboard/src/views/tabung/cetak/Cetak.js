@@ -73,7 +73,6 @@ const Cetak = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date())
   const [selectedTabungName, setSelectedTabungName] = useState('')
   const [visibleEditModal, setVisibleEditModal] = useState(false)
-  const [jumlahKutipan, setJumlahKutipan] = useState(false)
   const [moneyDenomination, setMoneyDenomination] = useState(['1', '5', '10', '20', '50', '100']);
   const [input1, setInput1] = useState({ mask: Number });
   const [input5, setInput5] = useState({ mask: Number });
@@ -168,6 +167,7 @@ const Cetak = () => {
           ),
         }))
         setKutipanList(kutipanData)
+        
       } else {
         setKutipanList([]);
       }
@@ -189,7 +189,7 @@ const Cetak = () => {
 
   useEffect(() => {
     fetchKutipan(1, size)
-  }, [selectedTabung, selectedMonth, jumlahKutipan])
+  }, [selectedTabung, selectedMonth, visibleEditModal])
 
   const handlePageChange = page => {
     fetchKutipan(page, size);
@@ -252,8 +252,8 @@ const Cetak = () => {
       })
     } else {
       updateKutipanApi()
+      
     }
-
     toast.success('Kutipan tabung berjaya disimpan', {
       position: 'top-right',
       autoClose: 5000,
@@ -264,8 +264,6 @@ const Cetak = () => {
       progress: undefined,
       theme: 'light',
     })
-    handleReset()
-    setVisibleEditModal(false)
   };
 
   const handleReset = () => {
@@ -311,7 +309,6 @@ const Cetak = () => {
 
     try {
       await updateKutipan(idNumber, updatedKutipanData);  
-      setJumlahKutipan(prevState => !prevState)
     } catch (error) {
       console.error(error)
     }
@@ -354,15 +351,16 @@ const Cetak = () => {
           setInput20C(data.total20c);
           setInput50C(data.total50c);
           setSelectedTabungName(data.tabung.name);
-          setIsCents(data.tabung.cents)
+          setIsCents(data.tabung.cents);
           setVisibleEditModal(true);
-          setStartDate(data.createDate)
+          setStartDate(new Date(data.createDate));
         }
       } catch (error) {
         console.error('Error fetching kutipan:', error)
       }
     }
   }
+
 
   useEffect(() => {
     if (penyata) {
