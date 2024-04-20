@@ -16,7 +16,7 @@ CREATE TABLE tetapan_types (
     str_val VARCHAR(128)
 );
 
-- HUBUNGAN_TYPE
+-- HUBUNGAN_TYPE
 INSERT INTO tetapan_types (group_name, int_val, str_val)
 VALUES
     ('HUBUNGAN_TYPE',1,'Anak'),
@@ -139,8 +139,8 @@ VALUES
 INSERT INTO tetapan_types (group_name, int_val, str_val)
 VALUES
     ('BANGSA_TYPE',1,'MELAYU'),
-    ('BANGSA_TYPE',2,'CINA');
-    ('BANGSA_TYPE',3,'INDIA');
+    ('BANGSA_TYPE',2,'CINA'),
+    ('BANGSA_TYPE',3,'INDIA'),
     ('BANGSA_TYPE',4,'LAIN-LAIN');
 
 -- KAHWIN_TYPE
@@ -149,7 +149,7 @@ VALUES
     ('KAHWIN_TYPE',1,'BUJANG'),
     ('KAHWIN_TYPE',2,'BERKAHWIN'),
     ('KAHWIN_TYPE',3,'DUDA'),
-    ('KAHWIN_TYPE',4,'JANDA'),
+    ('KAHWIN_TYPE',4,'JANDA');
 
 -- KERJA_TYPE
 INSERT INTO tetapan_types (group_name, int_val, str_val)
@@ -160,7 +160,7 @@ VALUES
     ('KERJA_TYPE',4,'PENCEN'),
     ('KERJA_TYPE',5,'SURI RUMAH'),
     ('KERJA_TYPE',6,'PELAJAR'),
-    ('KERJA_TYPE',7,'TIDAK BEKERJA'),
+    ('KERJA_TYPE',7,'TIDAK BEKERJA');
 
 -- ISIRUMAH_TYPE
 INSERT INTO tetapan_types (group_name, int_val, str_val)
@@ -169,7 +169,7 @@ VALUES
     ('ISIRUMAH_TYPE',2,'1000 - 2000'),
     ('ISIRUMAH_TYPE',3,'2000 - 3000'),
     ('ISIRUMAH_TYPE',4,'3000 - 4000'),
-    ('ISIRUMAH_TYPE',5,'LEBIH DARI 4000'),
+    ('ISIRUMAH_TYPE',5,'LEBIH DARI 4000');
 
 -- OKU_TYPE
 INSERT INTO tetapan_types (group_name, int_val, str_val)
@@ -181,4 +181,4 @@ VALUES
     ('OKU_TYPE',5,'KURANG UPAYA PEMBELAJARAN'),
     ('OKU_TYPE',6,'KURANG UPAYA PERTUTURAN'),
     ('OKU_TYPE',7,'KURANG UPAYA MENTAL'),
-    ('OKU_TYPE',8,'LAIN-LAIN KURANG UPAYA'),
+    ('OKU_TYPE',8,'LAIN-LAIN KURANG UPAYA');
