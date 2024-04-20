@@ -12,13 +12,13 @@ import {
   CButton,
   CSpinner,
   CForm,
-  CFormInput,
+  CFormInput, CModalHeader, CModalTitle
 
 } from '@coreui/react'
 import { getKutipan } from 'src/service/tabung/KutipanApi'
 import { getTabung } from 'src/service/tabung/TabungApi'
 import DataTable from 'react-data-table-component'
-import { cilInfo, cilPrint, cilPencil } from '@coreui/icons'
+import { cilInfo, cilPrint, cilPencil, cilTrash } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import { useReactToPrint } from 'react-to-print'
 import DenominasiPrint from 'src/components/print/tabung/DenominasiPrint'
@@ -28,8 +28,35 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getKutipanByTabungBetweenCreateDate } from 'src/service/tabung/KutipanApi'
-import { updateKutipan } from 'src/service/tabung/KutipanApi'
+import { updateKutipan, deleteKutipan } from 'src/service/tabung/KutipanApi'
 
+const toastConfig = {
+  position: 'top-right',
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: 'light',
+}
+
+
+const dateIntParse = (dateVal) => {
+  let date = new Date(dateVal);
+  let day = date.getDate();
+  let month = date.getMonth() + 1;
+  let year = date.getFullYear();
+
+  day = day < 10 ? '0' + day : day;
+  month = month < 10 ? '0' + month : month;
+
+  return day + '/' + month + '/' + year;
+}
+
+const amountFormatter = (total) => {
+  return total ? total.toLocaleString('ms-MY', { style: 'currency', currency: 'MYR' }) : ''
+}
 
 const columns = [
   {
@@ -52,7 +79,7 @@ const columns = [
   },
   {
     name: 'Jumlah',
-    selector: (row) => (row.total ? row.total.toLocaleString('ms-MY', { style: 'currency', currency: 'MYR' }) : ''),
+    selector: (row) => amountFormatter(row.total),
   },
   {
     name: 'Tindakan',
@@ -85,7 +112,7 @@ const Cetak = () => {
   const [input10C, setInput10C] = useState({ mask: Number });
   const [input20C, setInput20C] = useState({ mask: Number });
   const [input50C, setInput50C] = useState({ mask: Number });
-  const [isCents, setIsCents]=useState()
+  const [isCents, setIsCents] = useState()
   const [total, setTotal] = useState(0);
   const [startDate, setStartDate] = useState(new Date());
   const [validated, setValidated] = useState(false);
@@ -161,8 +188,9 @@ const Cetak = () => {
           total: item.total,
           action: (
             <>
-              <CIcon icon={cilPencil} className="me-2" onClick={() => editPreview(item.id)} />
-              <CIcon icon={cilPrint} className="me-2" onClick={() => printPreview(item.id)} />
+              <CIcon icon={cilPencil} className="me-4 " onClick={() => editPreview(item.id)} size="lg" />
+              <CIcon icon={cilTrash} className="me-4" onClick={() => deleteConfirmation(item)} title="Delete" size="lg" />
+              <CIcon icon={cilPrint} className="me-4" onClick={() => printPreview(item.id)} size="lg" />
             </>
           ),
         }))
@@ -179,13 +207,13 @@ const Cetak = () => {
 
   };
 
-  useEffect(()=>{
-    if (isCents===true) {
-      setMoneyDenomination(['1', '5', '10', '20', '50', '100','1C', '5C', '10C', '20C', '50C']);
+  useEffect(() => {
+    if (isCents === true) {
+      setMoneyDenomination(['1', '5', '10', '20', '50', '100', '1C', '5C', '10C', '20C', '50C']);
     } else {
       setMoneyDenomination(['1', '5', '10', '20', '50', '100']);
     }
-  },[visibleEditModal])
+  }, [visibleEditModal])
 
   useEffect(() => {
     fetchKutipan(1, size)
@@ -240,16 +268,7 @@ const Cetak = () => {
       input50C === '' ||
       input50C === null ||
       input50C === 'undefined') {
-      toast.error('Kutipan tabung gagal disimpan', {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-      })
+      toast.error('Kutipan tabung gagal disimpan', toastConfig)
     } else {
       updateKutipanApi()
       
@@ -385,6 +404,23 @@ const Cetak = () => {
     setSelectedTabung(value);
   };
 
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [kutipan, setKutipan] = useState();
+  const deleteConfirmation = (props) => {
+    if (!props) return
+
+    setOpenDeleteDialog(true);
+    setKutipan(props)
+  }
+  const onDeleteConfirm = async () => {
+    await deleteKutipan(kutipan.id)
+    const tempKutipanList = kutipanList?.filter(function (d) { return d.id != kutipan.id; });
+    setKutipanList(tempKutipanList);
+    toast.success(`Kutipan tarikh ${dateIntParse(kutipan.createDate)} berjaya dibuang`, toastConfig)
+    setOpenDeleteDialog(false);
+  };
+
   if (loading) {
     return <div><CSpinner color="primary" /></div>
   }
@@ -462,6 +498,9 @@ const Cetak = () => {
               onChangeRowsPerPage={handlePerRowsChange}
               onChangePage={handlePageChange}
             />
+
+
+
             <CModal
               size="xl"
               visible={visibleXL}
@@ -556,6 +595,27 @@ const Cetak = () => {
               </CModalBody>
 
             </CModal>
+
+            <CModal
+              size="xl"
+              visible={openDeleteDialog}
+              onClose={() => setOpenDeleteDialog(false)}
+              aria-labelledby="OptionalSizesExample3"
+            >
+              <CModalHeader onClose={() => setOpenDeleteDialog(false)}>
+                <CModalTitle id="LiveDemoExampleLabel">Buang Kutipan</CModalTitle>
+              </CModalHeader>
+              <CModalBody>
+                <p>Buang Kutipan bertarikh {dateIntParse(kutipan?.createDate)} bersama jumlah {amountFormatter(kutipan?.total)}</p>
+              </CModalBody>
+              <CModalFooter>
+                <CButton color="secondary" onClick={() => setOpenDeleteDialog(false)}>
+                  Tutup
+                </CButton>
+                <CButton onClick={onDeleteConfirm} color="primary">Buang</CButton>
+              </CModalFooter>
+            </CModal>
+
           </CCardBody>
         </CCard>
       </CCol>

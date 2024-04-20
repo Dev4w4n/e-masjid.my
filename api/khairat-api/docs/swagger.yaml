@@ -1,0 +1,311 @@
+definitions:
+  model.Dependent:
+    properties:
+      hubunganId:
+        type: integer
+      id:
+        type: integer
+      person:
+        $ref: '#/definitions/model.Person'
+    type: object
+  model.Member:
+    properties:
+      dependents:
+        items:
+          $ref: '#/definitions/model.Dependent'
+        type: array
+      id:
+        type: integer
+      memberTags:
+        items:
+          $ref: '#/definitions/model.MemberTag'
+        type: array
+      paymentHistories:
+        items:
+          $ref: '#/definitions/model.PaymentHistory'
+        type: array
+      person:
+        $ref: '#/definitions/model.Person'
+    type: object
+  model.MemberTag:
+    properties:
+      id:
+        type: integer
+      tag:
+        $ref: '#/definitions/model.Tag'
+    type: object
+  model.PaymentHistory:
+    properties:
+      amount:
+        type: integer
+      id:
+        type: integer
+      member:
+        $ref: '#/definitions/model.Member'
+      noResit:
+        type: string
+      paymentDate:
+        type: integer
+    type: object
+  model.Person:
+    properties:
+      address:
+        type: string
+      icNumber:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      phone:
+        type: string
+    type: object
+  model.Response:
+    properties:
+      content: {}
+    type: object
+  model.Tag:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: A Tabung service API in Go using Gin framework
+  title: Khairat Service API
+  version: "1.0"
+paths:
+  /dependents/delete/{memberId}:
+    delete:
+      description: Remove dependents data by memberId.
+      parameters:
+      - description: delete dependents by memberId
+        in: path
+        name: memberId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Delete dependents
+      tags:
+      - dependents
+  /dependents/findByMemberId/{memberid}:
+    get:
+      description: Return the all dependent by memberid.
+      parameters:
+      - description: get all dependent by memberid
+        in: path
+        name: memberid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Dependent'
+            type: array
+      summary: Get All Kutipan by id.
+      tags:
+      - dependents
+  /dependents/save/{memberId}:
+    post:
+      description: Save dependents data in Db.
+      parameters:
+      - description: memberId
+        in: path
+        name: memberId
+        required: true
+        type: string
+      - description: dependents
+        in: body
+        name: dependents
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dependent'
+      produces:
+      - application/json
+      responses: {}
+      summary: Update dependents
+      tags:
+      - dependents
+  /members/count:
+    get:
+      description: Return member count.
+      produces:
+      - application/json
+      responses: {}
+      summary: total count of member.
+      tags:
+      - members
+  /members/find/{id}:
+    get:
+      description: Return the member by id.
+      parameters:
+      - description: get member by id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Member'
+      summary: Get member by id.
+      tags:
+      - members
+  /members/findAll:
+    get:
+      description: Return the all member.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: find all member
+      tags:
+      - members
+  /members/findBy:
+    get:
+      description: Return the member by id.
+      parameters:
+      - description: query
+        in: query
+        name: query
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Member'
+      summary: Get member by id.
+      tags:
+      - members
+  /members/findByTag/{tagId}:
+    get:
+      description: Return the member by tag-id.
+      parameters:
+      - description: get member by tagId
+        in: query
+        name: tagId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Member'
+      summary: Get member by tag-id.
+      tags:
+      - members
+  /members/save:
+    post:
+      description: Save Member data in Db.
+      parameters:
+      - description: Create Member
+        in: body
+        name: tags
+        required: true
+        schema:
+          $ref: '#/definitions/model.Member'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Member'
+      summary: Create Member
+      tags:
+      - members
+  /members/saveCsv:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Save Member data in Db.
+      operationId: file.upload
+      parameters:
+      - description: csv file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Member'
+            type: array
+      summary: SaveCsv
+      tags:
+      - members
+  /payment/totalMembersPaidForCurrentYear:
+    get:
+      description: get total members paid for current year
+      produces:
+      - application/json
+      responses: {}
+      summary: get total members paid for current year
+      tags:
+      - payment
+  /tags/delete/{id}:
+    delete:
+      description: Remove tag data by id.
+      parameters:
+      - description: delete tag by id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Delete tag
+      tags:
+      - tags
+  /tags/findAll:
+    get:
+      description: Return the all tag.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: find all tag
+      tags:
+      - tags
+  /tags/save:
+    post:
+      description: save tag data in Db.
+      parameters:
+      - description: save tag
+        in: body
+        name: tags
+        required: true
+        schema:
+          $ref: '#/definitions/model.Tag'
+      produces:
+      - application/json
+      responses: {}
+      summary: save tag
+      tags:
+      - tags
+swagger: "2.0"

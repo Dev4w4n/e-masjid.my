@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/service"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/utils"
@@ -13,40 +14,41 @@ import (
 )
 
 type MemberController struct {
-	engine        *gin.Engine
 	memberService service.MemberService
 }
 
-func NewMemberController(engine *gin.Engine, memberService service.MemberService, env *utils.Environment) *MemberController {
-	controller := &MemberController{
-		engine:        engine,
+func NewMemberController( memberService service.MemberService) *MemberController {
+	return &MemberController{
 		memberService: memberService,
 	}
-
-	relativePath := env.DeployURL + "members"
-
-	engine.GET(relativePath+"/findAll", controller.FindAll)
-	engine.GET(relativePath+"/find/:id", controller.FindById)
-	engine.GET(relativePath+"/findBy", controller.FindBy)
-	engine.GET(relativePath+"/findByTag", controller.FindByTagId)
-	engine.GET(relativePath+"/count", controller.CountAll)
-	engine.POST(relativePath+"/save", controller.Save)
-	engine.POST(relativePath+"/saveCsv", controller.SaveCsv)
-
-	return controller
 }
 
+// FindAll		godoc
+//	@Summary		find all member
+//	@Description	Return the all member.
+//	@Produce		application/json
+//	@Tags			members
+//	@Success		200	{object}	model.Response
+//	@Router			/members/findAll [get]
 func (controller *MemberController) FindAll(ctx *gin.Context) {
 	log.Info().Msg("find all member")
 
 	result, err := controller.memberService.FindAll()
 
-	utils.WebError(ctx, err, "failed to retrieve member list")
+	errors.InternalServerError(ctx, err, "failed to retrieve member list")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
 }
 
+// FindById		godoc
+//	@Summary		Get member by id.
+//	@Description	Return the member by id.
+//	@Produce		application/json
+//	@Param			id	path	string	true	"get member by id"
+//	@Tags			members
+//	@Success		200	{object}	model.Member{}
+//	@Router			/members/find/{id} [get]
 func (controller *MemberController) FindById(ctx *gin.Context) {
 	log.Info().Msg("find member by id")
 
@@ -60,12 +62,20 @@ func (controller *MemberController) FindById(ctx *gin.Context) {
 
 	result, err := controller.memberService.FindOne(id)
 
-	utils.WebError(ctx, err, "failed to retrieve member")
+	errors.InternalServerError(ctx, err, "failed to retrieve member")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
 }
 
+// FindBy		godoc
+//	@Summary		Get member by id.
+//	@Description	Return the member by id.
+//	@Produce		application/json
+//	@Param			query	query	string	false	"query"
+//	@Tags			members
+//	@Success		200	{object}	model.Member{}
+//	@Router			/members/findBy [get]
 func (controller *MemberController) FindBy(ctx *gin.Context) {
 	log.Info().Msg("find member by")
 
@@ -73,12 +83,20 @@ func (controller *MemberController) FindBy(ctx *gin.Context) {
 
 	result, err := controller.memberService.FindByQuery(query)
 
-	utils.WebError(ctx, err, "failed to retrieve member")
+	errors.InternalServerError(ctx, err, "failed to retrieve member")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
 }
 
+// FindByTagId		godoc
+//	@Summary		Get member by tag-id.
+//	@Description	Return the member by tag-id.
+//	@Produce		application/json
+//	@Param			tagId	query	string	false	"get member by tagId"
+//	@Tags			members
+//	@Success		200	{object}	model.Member[]
+//	@Router			/members/findByTag/{tagId} [get]
 func (controller *MemberController) FindByTagId(ctx *gin.Context) {
 	log.Info().Msg("find member by tag id")
 
@@ -86,39 +104,63 @@ func (controller *MemberController) FindByTagId(ctx *gin.Context) {
 
 	result, err := controller.memberService.FindAllByTagIdOrderByMemberName(tagIdStr)
 
-	utils.WebError(ctx, err, "failed to retrieve member")
+	errors.InternalServerError(ctx, err, "failed to retrieve member")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
 }
 
+// CountAll		godoc
+//	@Summary		total count of member.
+//	@Description	Return member count.
+//	@Produce		application/json
+//	@Tags			members
+//	@Router			/members/count [get]
 func (controller *MemberController) CountAll(ctx *gin.Context) {
 	log.Info().Msg("count all member")
 
 	result, err := controller.memberService.CountAll()
 
-	utils.WebError(ctx, err, "failed to count member")
+	errors.InternalServerError(ctx, err, "failed to count member")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)
 }
 
+// Save	godoc
+//	@Summary		Create Member
+//	@Description	Save Member data in Db.
+//	@Param			tags	body	model.Member	true	"Create Member"
+//	@Produce		application/json
+//	@Tags			members
+//	@Success		200	{object}	model.Member{}
+//	@Router			/members/save [post]
 func (controller *MemberController) Save(ctx *gin.Context) {
 	log.Info().Msg("save member")
 
 	member := model.Member{}
 	err := ctx.ShouldBindJSON(&member)
 
-	utils.WebError(ctx, err, "failed to bind JSON")
+	errors.BadRequestError(ctx, err, "failed to bind JSON")
 
 	member, err = controller.memberService.Save(member)
 
-	utils.WebError(ctx, err, "failed to save member")
+	errors.InternalServerError(ctx, err, "failed to save member")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, member)
 }
 
+// SaveCsv	godoc
+//	@Summary		SaveCsv
+//	@Description	Save Member data in Db.
+//	@ID				file.upload
+//	@Accept			multipart/form-data
+//	@Param			file	formData	file	true	"csv file"
+//	@Produce		application/json
+//	@Tags			members
+//	@Success		200	{object}	[]model.Member
+//	@Router			/members/saveCsv [post]
 func (controller *MemberController) SaveCsv(ctx *gin.Context) {
 	log.Info().Msg("save csv")
 
