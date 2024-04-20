@@ -60,8 +60,18 @@ const amountFormatter = (total) => {
 
 const columns = [
   {
-    name: 'Tarikh',
-    selector: (row) => dateIntParse(row.createDate)
+    name: 'Tarikh Kutipan',
+    selector: (row) => {
+      let date = new Date(row.createDate);
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      let year = date.getFullYear();
+
+      day = day < 10 ? '0' + day : day;
+      month = month < 10 ? '0' + month : month;
+
+      return day + '/' + month + '/' + year;
+    },
   },
   {
     name: 'Jenis Tabung',
@@ -90,7 +100,6 @@ const Cetak = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date())
   const [selectedTabungName, setSelectedTabungName] = useState('')
   const [visibleEditModal, setVisibleEditModal] = useState(false)
-  const [jumlahKutipan, setJumlahKutipan] = useState(false)
   const [moneyDenomination, setMoneyDenomination] = useState(['1', '5', '10', '20', '50', '100']);
   const [input1, setInput1] = useState({ mask: Number });
   const [input5, setInput5] = useState({ mask: Number });
@@ -186,6 +195,7 @@ const Cetak = () => {
           ),
         }))
         setKutipanList(kutipanData)
+        
       } else {
         setKutipanList([]);
       }
@@ -207,7 +217,7 @@ const Cetak = () => {
 
   useEffect(() => {
     fetchKutipan(1, size)
-  }, [selectedTabung, selectedMonth, jumlahKutipan])
+  }, [selectedTabung, selectedMonth, visibleEditModal])
 
   const handlePageChange = page => {
     fetchKutipan(page, size);
@@ -261,11 +271,18 @@ const Cetak = () => {
       toast.error('Kutipan tabung gagal disimpan', toastConfig)
     } else {
       updateKutipanApi()
+      
     }
-
-    toast.success('Kutipan tabung berjaya disimpan', toastConfig)
-    handleReset()
-    setVisibleEditModal(false)
+    toast.success('Kutipan tabung berjaya disimpan', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    })
   };
 
   const handleReset = () => {
@@ -310,8 +327,7 @@ const Cetak = () => {
     }
 
     try {
-      await updateKutipan(idNumber, updatedKutipanData);
-      setJumlahKutipan(prevState => !prevState)
+      await updateKutipan(idNumber, updatedKutipanData);  
     } catch (error) {
       console.error(error)
     }
@@ -354,15 +370,16 @@ const Cetak = () => {
           setInput20C(data.total20c);
           setInput50C(data.total50c);
           setSelectedTabungName(data.tabung.name);
-          setIsCents(data.tabung.cents)
+          setIsCents(data.tabung.cents);
           setVisibleEditModal(true);
+          setStartDate(new Date(data.createDate));
         }
-
       } catch (error) {
         console.error('Error fetching kutipan:', error)
       }
     }
   }
+
 
   useEffect(() => {
     if (penyata) {
@@ -547,7 +564,7 @@ const Cetak = () => {
                   <br />
                   <CRow>
                     <CCol>
-                      Tarikh:{' '}
+                      Tarikh Kutipan:{' '}
                       <DatePicker
                         id="startDate"
                         dateFormat="dd/MM/yyyy"
