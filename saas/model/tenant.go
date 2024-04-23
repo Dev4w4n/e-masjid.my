@@ -2,25 +2,19 @@ package model
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type Tenant struct {
-	ID string `gorm:"type:varchar(36)" json:"id"`
-	//unique name. usually for domain name
-	Name string `gorm:"column:name;index;size:255;"`
-	//localed display name
-	DisplayName string `gorm:"column:display_name;index;size:255;"`
-	//region of this tenant
-	Region    string `gorm:"column:region;index;size:255;"`
-	Logo      string
-	CreatedAt time.Time      `gorm:"column:created_at;index;"`
-	UpdatedAt time.Time      `gorm:"column:updated_at;index;"`
-	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;index;"`
-
-	//connection
-	Conn []TenantConn `gorm:"foreignKey:TenantId"`
+	ID               string       `gorm:"type:varchar(36)" json:"id"`
+	Name             string       `gorm:"column:name;index;size:255;"`
+	Namespace        string       `gorm:"column:name;index;size:32;"`
+	ManagerRole      string       `gorm:"column:manager_role"`
+	UserRole         string       `gorm:"column:user_role"`
+	KeycloakClientId string       `gorm:"column:keycloak_client_id"`
+	KeycloakServer   string       `gorm:"column:keycloak_server"`
+	KeycloakJwksUrl  string       `gorm:"column:keycloak_jwks_url"`
+	CreatedAt        int64        `gorm:"column:created_at"`
+	Conn             []TenantConn `gorm:"foreignKey:TenantId"`
 }
 
 // TenantConn connection string info

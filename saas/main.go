@@ -59,6 +59,7 @@ func main() {
 	r.POST("/tenant", func(c *gin.Context) {
 		type CreateTenant struct {
 			Name       string `form:"name" json:"name" binding:"required"`
+			Namespace  string `form:"namespace" json:"namespace" binding:"required"`
 			SeparateDb bool   `form:"separateDb" json:"separateDb"`
 		}
 		var json CreateTenant
@@ -71,9 +72,9 @@ func main() {
 		ctx = saas.NewCurrentTenant(ctx, "", "")
 		db := emasjidsaas.DbProvider.Get(ctx, "")
 		t := &model.Tenant{
-			ID:          uuid.New().String(),
-			Name:        json.Name,
-			DisplayName: json.Name,
+			ID:        uuid.New().String(),
+			Name:      json.Name,
+			Namespace: json.Namespace,
 		}
 		if json.SeparateDb {
 			t3Conn, _ := emasjidsaas.ConnStrGen.Gen(ctx, saas.NewBasicTenantInfo(t.ID, t.Name))

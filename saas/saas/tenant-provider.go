@@ -18,6 +18,11 @@ type TenantStore struct {
 	DbProvider sgorm.DbProvider
 }
 
+var _ saas.TenantStore = (*TenantStore)(nil)
+var ConnStrGen saas.ConnStrGenerator
+var ConnStrResolver data.ConnStrResolver
+var TenantStorage *TenantStore
+
 func InitSaas(sharedDsn string) {
 	InitCache()
 	InitConnStrResolver(sharedDsn)
@@ -32,7 +37,6 @@ func InitConnStrResolver(sharedDsn string) {
 	conn := make(data.ConnStrings, 1)
 	//default database
 	conn.SetDefault(sharedDsn)
-
 	ConnStrResolver = conn
 }
 
@@ -40,24 +44,6 @@ func InitConnStrGenerator(sharedDsn string) {
 	suffix := "%s"
 	modifiedDSN := utils.AddSuffixToDBName(sharedDsn, suffix)
 	ConnStrGen = saas.NewConnStrGenerator(modifiedDSN)
-}
-
-func NewTenantStore(sharedDsn string) *TenantStore {
-
-	suffix := "%s"
-	modifiedDSN := utils.AddSuffixToDBName(sharedDsn, suffix)
-	ConnStrGen = saas.NewConnStrGenerator(modifiedDSN)
-
-	ConnStrResolver := make(data.ConnStrings, 1)
-	//default database
-	ConnStrResolver.SetDefault(sharedDsn)
-
-	//tenantStore use connection string from conn
-	tenantStore := &TenantStore{
-		DbProvider: sgorm.NewDbProvider(ConnStrResolver, NewClientProvider()),
-	}
-
-	return tenantStore
 }
 
 func (t *TenantStore) GetByNameOrId(ctx context.Context, nameOrId string) (*saas.TenantConfig, error) {
@@ -73,14 +59,9 @@ func (t *TenantStore) GetByNameOrId(ctx context.Context, nameOrId string) (*saas
 			return nil, err
 		}
 	}
-	ret := saas.NewTenantConfig(tenant.ID, tenant.Name, tenant.Region, "")
+	ret := saas.NewTenantConfig(tenant.ID, tenant.Name, tenant.Namespace, "")
 	for _, conn := range tenant.Conn {
 		ret.Conn[conn.Key] = conn.Value
 	}
 	return ret, nil
 }
-
-var _ saas.TenantStore = (*TenantStore)(nil)
-var ConnStrGen saas.ConnStrGenerator
-var ConnStrResolver data.ConnStrResolver
-var TenantStorage *TenantStore

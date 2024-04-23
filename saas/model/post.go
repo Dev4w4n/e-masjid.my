@@ -9,5 +9,6 @@ type Post struct {
 	gorm.Model
 	Title       string `json:"title"`
 	Description string `json:"description"`
+	Summary     string `json:"summary"`
 	gorm2.MultiTenancy
 }
