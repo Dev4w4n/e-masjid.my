@@ -3,35 +3,33 @@ package controller
 import (
 	"net/http"
 
+	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/service"
-	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
 
 type PaymentHistoryController struct {
-	engine                *gin.Engine
 	paymentHistoryService service.PaymentHistoryService
 }
 
-func NewPaymentHistoryController(engine *gin.Engine, svc service.PaymentHistoryService, env *utils.Environment) *PaymentHistoryController {
-	controller := &PaymentHistoryController{
-		engine:                engine,
+func NewPaymentHistoryController(svc service.PaymentHistoryService) *PaymentHistoryController {
+	return &PaymentHistoryController{
 		paymentHistoryService: svc,
 	}
-
-	relativePath := env.DeployURL + "payment"
-
-	controller.engine.GET(relativePath+"/totalMembersPaidForCurrentYear", controller.GetTotalMembersPaidForCurrentYear)
-
-	return controller
 }
 
+// GetTotalMembersPaidForCurrentYear		godoc
+//	@Summary		get total members paid for current year
+//	@Description	get total members paid for current year
+//	@Produce		application/json
+//	@Tags			payment
+//	@Router			/payment/totalMembersPaidForCurrentYear [get]
 func (controller *PaymentHistoryController) GetTotalMembersPaidForCurrentYear(ctx *gin.Context) {
 	log.Info().Msg("get total members paid for current year")
 
 	result, err := controller.paymentHistoryService.FindTotalMembersPaidForCurrentYear()
-	utils.WebError(ctx, err, "failed to retrieve total members paid for current year")
+	errors.InternalServerError(ctx, err, "failed to retrieve total members paid for current year")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)

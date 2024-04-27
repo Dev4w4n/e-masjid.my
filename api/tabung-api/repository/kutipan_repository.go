@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/model"
 	"gorm.io/gorm"
 )
@@ -10,6 +12,7 @@ type KutipanRepository interface {
 	FindAllByTabungIdBetweenCreateDate(params model.QueryParams, paginate model.Paginate) (model.Response, error)
 	FindById(id int64) (model.Kutipan, error)
 	Upsert(kutipan model.Kutipan) (model.Kutipan, error)
+	Delete(id int64) (string,error)
 }
 
 type KutipanRepositoryImpl struct {
@@ -155,4 +158,16 @@ func sumTotal(kutipan *model.Kutipan) {
 		float64(kutipan.Total20d)*20 +
 		float64(kutipan.Total50d)*50 +
 		float64(kutipan.Total100d)*100
+}
+
+
+// Remove Kutipan
+func (repo *KutipanRepositoryImpl) Delete(id int64) (string,error) {
+	result := repo.Db.Where("id = ?", id).Delete(&model.Kutipan{})
+
+	if result.Error != nil {
+		return "",result.Error
+	}
+
+	return  fmt.Sprintf("Kutipan id: %d is removed", id),nil
 }

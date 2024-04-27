@@ -1,0 +1,54 @@
+definitions:
+  model.Cadangan:
+    properties:
+      cadanganEmail:
+        type: string
+      cadanganNama:
+        type: string
+      cadanganPhone:
+        type: string
+      cadanganText:
+        type: string
+      cadanganType:
+        $ref: '#/definitions/model.CadanganType'
+      createDate:
+        type: integer
+      id:
+        type: integer
+      isOpen:
+        type: boolean
+      score:
+        type: integer
+      tindakanText:
+        type: string
+    type: object
+  model.CadanganType:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: A Cadangan Public  service API in Go using Gin framework
+  title: Cadangan Public Service API
+  version: "1.0"
+paths:
+  /cadangan:
+    post:
+      description: Save cadangan data in Db.
+      parameters:
+      - description: Save cadangan
+        in: body
+        name: cadangan
+        required: true
+        schema:
+          $ref: '#/definitions/model.Cadangan'
+      produces:
+      - application/json
+      responses: {}
+      summary: Save cadangan
+      tags:
+      - cadangan
+swagger: "2.0"

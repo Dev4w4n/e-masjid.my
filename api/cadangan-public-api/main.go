@@ -3,20 +3,30 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
-	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/config"
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/controller"
+	_ "github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/docs"
+	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/helper"
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/repository"
-	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/utils"
+	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/router"
+	"github.com/Dev4w4n/e-masjid.my/api/core/config"
+	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title			Cadangan Public Service API
+// @version		1.0
+// @description	A Cadangan Public  service API in Go using Gin framework
 func main() {
 	log.Println("Starting server ...")
 
-	env, err := utils.GetEnvironment()
+	env, err := env.GetEnvironment()
 	if err != nil {
 		log.Fatalf("Error getting environment: %v", err)
 	}
@@ -27,42 +37,48 @@ func main() {
 	}
 
 	cadanganRepository := repository.NewCadanganRepository(db)
+	cadanganController := controller.NewCadanganController(cadanganRepository)
 
 	// CORS configuration
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{env.AllowOrigins}
 	config.AllowMethods = []string{"POST"}
 
+	// Router
 	gin.SetMode(gin.ReleaseMode)
+	_router := gin.Default()
+	_router.Use(cors.New(config))
+	_router.Use(controllerMiddleware())
 
-	r := gin.Default()
+	// enable swagger for dev env
+	isLocalEnv := os.Getenv("GO_ENV")
+	if isLocalEnv == "local" || isLocalEnv == "dev" {
+		_router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	}
 
-	r.Use(cors.New(config))
-	r.Use(controllerMiddleware(env))
+	var routes *gin.Engine = _router
+	routes = router.NewCadanganPublicRouter(cadanganController, routes, env)
 
-	_ = controller.NewCadanganController(r, cadanganRepository, env)
-
-	go func() {
-		err := r.Run(":" + env.ServerPort)
-		if err != nil {
-			log.Fatal("Error starting the server:", err)
-		}
-	}()
+	server := &http.Server{
+		Addr:    ":" + env.ServerPort,
+		Handler: routes,
+	}
 
 	log.Println("Server listening on port ", env.ServerPort)
 
-	select {} // Block indefinitely to keep the program running
+	err = server.ListenAndServe()
+	helper.ErrorPanic(err)
 }
 
 // Strictly allow from allowedOrigin
-func controllerMiddleware(env *utils.Environment) gin.HandlerFunc {
+func controllerMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Check if the request origin is allowed
-		allowedOrigin := env.AllowOrigins
-		origin := c.GetHeader("Origin")
+		// Check if the request same-origin is allowed
+		secFetchSite := c.Request.Header.Get("Sec-Fetch-Site")
 
-		log.Println("Origin: ", origin)
-		if origin != allowedOrigin {
+		log.Println("secFetchSite: ", secFetchSite)
+
+		if secFetchSite != "same-origin" && secFetchSite != "same-site" {
 			c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
 			c.Abort()
 			return

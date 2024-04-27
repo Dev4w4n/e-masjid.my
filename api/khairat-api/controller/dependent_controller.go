@@ -4,39 +4,37 @@ import (
 	"net/http"
 	"strconv"
 
+	errors "github.com/Dev4w4n/e-masjid.my/api/core/error"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/repository"
-	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
 
 type DependentController struct {
-	engine              *gin.Engine
 	dependentRepository repository.DependentRepository
 }
 
-func NewDependentController(engine *gin.Engine, repo repository.DependentRepository, env *utils.Environment) *DependentController {
-	controller := &DependentController{
-		engine:              engine,
+func NewDependentController( repo repository.DependentRepository) *DependentController {
+	return &DependentController{
 		dependentRepository: repo,
 	}
-
-	relativePath := env.DeployURL + "dependents"
-
-	controller.engine.POST(relativePath+"/save/:memberId", controller.Save)
-	controller.engine.DELETE(relativePath+"/delete/:memberId", controller.Delete)
-	controller.engine.GET(relativePath+"/findByMemberId/:memberId", controller.FindAllByMemberId)
-
-	return controller
 }
 
+// Update dependents		godoc
+//	@Summary		Update dependents
+//	@Description	Save dependents data in Db.
+//	@Param			memberId		path	string			true	"memberId"
+//	@Param			dependents	body	model.Dependent{}	true	"dependents"
+//	@Produce		application/json
+//	@Tags			dependents
+//	@Router			/dependents/save/{memberId} [post]
 func (controller *DependentController) Save(ctx *gin.Context) {
 	log.Info().Msg("save dependent")
 
 	saveDependent := model.Dependent{}
 	err := ctx.ShouldBindJSON(&saveDependent)
-	utils.WebError(ctx, err, "failed to bind JSON")
+	errors.BadRequestError(ctx, err, "failed to bind JSON")
 
 	memberIdStr := ctx.Param("memberId")
 
@@ -49,12 +47,19 @@ func (controller *DependentController) Save(ctx *gin.Context) {
 
 	err = controller.dependentRepository.Save(saveDependent, int64(memberId))
 
-	utils.WebError(ctx, err, "failed to save dependent")
+	errors.InternalServerError(ctx, err, "failed to save dependent")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.Status(http.StatusOK)
 }
 
+// Delete		godoc
+//	@Summary		Delete dependents
+//	@Description	Remove dependents data by memberId.
+//	@Param			memberId	path	string	true	"delete dependents by memberId"
+//	@Produce		application/json
+//	@Tags			dependents
+//	@Router			/dependents/delete/{memberId} [delete]
 func (controller *DependentController) Delete(ctx *gin.Context) {
 	log.Info().Msg("delete dependent")
 
@@ -69,12 +74,20 @@ func (controller *DependentController) Delete(ctx *gin.Context) {
 
 	err = controller.dependentRepository.DeleteById(id)
 
-	utils.WebError(ctx, err, "failed to delete dependent")
+	errors.InternalServerError(ctx, err, "failed to delete dependent")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.Status(http.StatusOK)
 }
 
+// FindAllByMemberId		godoc
+//	@Summary		Get All Kutipan by id.
+//	@Description	Return the all dependent by memberid.
+//	@Produce		application/json
+//	@Param			memberid	path	string	true	"get all dependent by memberid"
+//	@Tags			dependents
+//	@Success		200	{object}	[]model.Dependent
+//	@Router			/dependents/findByMemberId/{memberid} [get]
 func (controller *DependentController) FindAllByMemberId(ctx *gin.Context) {
 	log.Info().Msg("find all dependent by member id")
 
@@ -89,7 +102,7 @@ func (controller *DependentController) FindAllByMemberId(ctx *gin.Context) {
 
 	result, err := controller.dependentRepository.FindAllByMemberId(memberId)
 
-	utils.WebError(ctx, err, "failed to find all dependent")
+	errors.InternalServerError(ctx, err, "failed to find all dependent")
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)

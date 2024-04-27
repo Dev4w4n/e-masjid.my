@@ -1,0 +1,473 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "A Tabung service API in Go using Gin framework",
+        "title": "Khairat Service API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/dependents/delete/{memberId}": {
+            "delete": {
+                "description": "Remove dependents data by memberId.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dependents"
+                ],
+                "summary": "Delete dependents",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "delete dependents by memberId",
+                        "name": "memberId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/dependents/findByMemberId/{memberid}": {
+            "get": {
+                "description": "Return the all dependent by memberid.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dependents"
+                ],
+                "summary": "Get All Kutipan by id.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "get all dependent by memberid",
+                        "name": "memberid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Dependent"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/dependents/save/{memberId}": {
+            "post": {
+                "description": "Save dependents data in Db.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dependents"
+                ],
+                "summary": "Update dependents",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "memberId",
+                        "name": "memberId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "dependents",
+                        "name": "dependents",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dependent"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/members/count": {
+            "get": {
+                "description": "Return member count.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "members"
+                ],
+                "summary": "total count of member.",
+                "responses": {}
+            }
+        },
+        "/members/find/{id}": {
+            "get": {
+                "description": "Return the member by id.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "members"
+                ],
+                "summary": "Get member by id.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "get member by id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Member"
+                        }
+                    }
+                }
+            }
+        },
+        "/members/findAll": {
+            "get": {
+                "description": "Return the all member.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "members"
+                ],
+                "summary": "find all member",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/members/findBy": {
+            "get": {
+                "description": "Return the member by id.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "members"
+                ],
+                "summary": "Get member by id.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "query",
+                        "name": "query",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Member"
+                        }
+                    }
+                }
+            }
+        },
+        "/members/findByTag/{tagId}": {
+            "get": {
+                "description": "Return the member by tag-id.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "members"
+                ],
+                "summary": "Get member by tag-id.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "get member by tagId",
+                        "name": "tagId",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Member"
+                        }
+                    }
+                }
+            }
+        },
+        "/members/save": {
+            "post": {
+                "description": "Save Member data in Db.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "members"
+                ],
+                "summary": "Create Member",
+                "parameters": [
+                    {
+                        "description": "Create Member",
+                        "name": "tags",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Member"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Member"
+                        }
+                    }
+                }
+            }
+        },
+        "/members/saveCsv": {
+            "post": {
+                "description": "Save Member data in Db.",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "members"
+                ],
+                "summary": "SaveCsv",
+                "operationId": "file.upload",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "csv file",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Member"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/payment/totalMembersPaidForCurrentYear": {
+            "get": {
+                "description": "get total members paid for current year",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payment"
+                ],
+                "summary": "get total members paid for current year",
+                "responses": {}
+            }
+        },
+        "/tags/delete/{id}": {
+            "delete": {
+                "description": "Remove tag data by id.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tags"
+                ],
+                "summary": "Delete tag",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "delete tag by id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/tags/findAll": {
+            "get": {
+                "description": "Return the all tag.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tags"
+                ],
+                "summary": "find all tag",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/tags/save": {
+            "post": {
+                "description": "save tag data in Db.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tags"
+                ],
+                "summary": "save tag",
+                "parameters": [
+                    {
+                        "description": "save tag",
+                        "name": "tags",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Tag"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        }
+    },
+    "definitions": {
+        "model.Dependent": {
+            "type": "object",
+            "properties": {
+                "hubunganId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "person": {
+                    "$ref": "#/definitions/model.Person"
+                }
+            }
+        },
+        "model.Member": {
+            "type": "object",
+            "properties": {
+                "dependents": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Dependent"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "memberTags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.MemberTag"
+                    }
+                },
+                "paymentHistories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.PaymentHistory"
+                    }
+                },
+                "person": {
+                    "$ref": "#/definitions/model.Person"
+                }
+            }
+        },
+        "model.MemberTag": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "tag": {
+                    "$ref": "#/definitions/model.Tag"
+                }
+            }
+        },
+        "model.PaymentHistory": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "member": {
+                    "$ref": "#/definitions/model.Member"
+                },
+                "noResit": {
+                    "type": "string"
+                },
+                "paymentDate": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Person": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "icNumber": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Response": {
+            "type": "object",
+            "properties": {
+                "content": {}
+            }
+        },
+        "model.Tag": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   postgres:
@@ -10,6 +10,9 @@ services:
       POSTGRES_DB: mydatabase
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypassword
+    volumes:
+      - ./postgres/901_zz_tetapan_types.sql:/docker-entrypoint-initdb.d/901_zz_tetapan_types.sql:ro
+      - ./postgres/902_zz_dummy.sql:/docker-entrypoint-initdb.d/902_zz_dummy.sql:ro
 
   khairat-api:
     build:
@@ -53,7 +56,8 @@ services:
       - GO_ENV=dev
     depends_on:
       - postgres
-    command: ["./wait-for-it.sh", "postgres:5432", "--", "./cadangan-public-api"]
+    command:
+      ["./wait-for-it.sh", "postgres:5432", "--", "./cadangan-public-api"]
 
   tetapan-api:
     build:
@@ -98,3 +102,17 @@ services:
     depends_on:
       - cadangan-public-api
 
+  api-docs:
+    build:
+      context: ./api-docs
+    ports:
+      - "4000:4000"
+    environment:
+      - GO_ENV=dev
+    depends_on:
+      - tabung-api
+      - cadangan-api
+      - cadangan-public-api
+      - khairat-api
+      - tetapan-api
+      - tetapan-public-api
