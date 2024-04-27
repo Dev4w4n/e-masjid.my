@@ -15,6 +15,19 @@ const AppFooter = () => {
           &copy; 2023-2024{' '} ({BUILD})
         </span>
       </div>
+
+      <div>
+        <span className="ms-2">
+          <a href="https://cdn.e-masjid.my/volume/DASAR.PRIVASI.pdf" target="_blank" rel="noreferrer">
+          Dasar Privasi
+          </a>
+        </span>
+        <span className="ms-2">
+          <a href="https://cdn.e-masjid.my/volume/TERMA.PERKHIDMATAN.pdf" target="_blank" rel="noreferrer">
+          Terma Perkhidmatan
+          </a>
+        </span>
+      </div>
     </CFooter>
   )
 }
