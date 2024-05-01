@@ -53,4 +53,9 @@ ALTER TABLE public.person
     ADD COLUMN jantina_types_id INTEGER REFERENCES tetapan_types(id),
     ADD COLUMN birth_date BIGINT,
     ADD COLUMN email_address VARCHAR(320);
-        
+
+--- changes in v1.13-beta.1 (current release)
+ALTER TABLE  members RENAME TO khairat_members;
+ALTER TABLE  members_tags RENAME TO khairat_members_tags;
+ALTER TABLE  tags RENAME TO khairat_tags;
+ALTER TABLE  dependents RENAME TO khairat_dependents;

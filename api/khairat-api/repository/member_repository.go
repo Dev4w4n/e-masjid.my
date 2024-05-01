@@ -56,7 +56,7 @@ func (repo *MemberRepositoryImpl) FindAll() ([]model.Member, error) {
 func (repo *MemberRepositoryImpl) FindAllOrderByPersonName() ([]model.Member, error) {
 	var members []model.Member
 	result := repo.db.
-		Joins("JOIN person ON members.person_id = person.id").
+		Joins("JOIN person ON khairat_members.person_id = person.id").
 		Preload("Person").
 		Preload("MemberTags.Tag").
 		Preload("PaymentHistory").
@@ -79,7 +79,7 @@ func (repo *MemberRepositoryImpl) FindByQuery(query string) ([]model.Member, err
 	}
 
 	result := repo.db.
-		Joins("JOIN person ON members.person_id = person.id").
+		Joins("JOIN person ON khairat_members.person_id = person.id").
 		Where("person.name LIKE ?", "%"+query+"%").
 		Or("person.ic_number LIKE ?", "%"+query+"%").
 		Or("person.phone LIKE ?", "%"+query+"%").
@@ -136,9 +136,9 @@ func (repo *MemberRepositoryImpl) FindByTagOrderByMemberNameAsc(idStr string) ([
 	}
 
 	result := repo.db.
-		Joins("JOIN members_tags ON members.id = members_tags.member_id").
-		Joins("JOIN tags ON members_tags.tags_id = tags.id").
-		Joins("JOIN person ON members.person_id = person.id").
+		Joins("JOIN khairat_members_tags ON khairat_members.id = khairat_members_tags.member_id").
+		Joins("JOIN tags ON khairat_members_tags.tags_id = tags.id").
+		Joins("JOIN person ON khairat_members.person_id = person.id").
 		Where("tags.id IN (?)", idInt64Slice).
 		Preload("Person").
 		Preload("MemberTags.Tag").
