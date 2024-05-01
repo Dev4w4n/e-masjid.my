@@ -11,9 +11,13 @@ COPY .env.* .
 # Install any dependencies your application might need
 RUN go get -d -v ./...
 RUN go install -v ./...
+RUN go install github.com/swaggo/swag/cmd/swag@latest
 
 # Build the Go application
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o cadangan-public-api
+
+#Generate api doc
+RUN swag init
 
 # Stage 2: Create a minimal runtime image
 FROM alpine:latest

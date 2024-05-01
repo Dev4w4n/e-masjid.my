@@ -11,11 +11,14 @@ import {
   CFormSelect,
   CButton,
   CSpinner,
+  CForm,
+  CFormInput, CModalHeader, CModalTitle
+
 } from '@coreui/react'
 import { getKutipan } from '@/service/tabung/KutipanApi'
 import { getTabung } from '@/service/tabung/TabungApi'
 import DataTable from 'react-data-table-component'
-import { cilInfo, cilPrint } from '@coreui/icons'
+import { cilInfo, cilPrint, cilPencil, cilTrash } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import { useReactToPrint } from 'react-to-print'
 import DenominasiPrint from '@/components/print/tabung/DenominasiPrint'
@@ -23,11 +26,41 @@ import PenyataBulananSelector from '@/components/tabung/PenyataBulananSelector'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
-import { getKutipanByTabungBetweenCreateDate } from '@/service/tabung/KutipanApi'
+import { getKutipanByTabungBetweenCreateDate,  updateKutipan, deleteKutipan  } from '@/service/tabung/KutipanApi'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const toastConfig = {
+  position: 'top-right',
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: 'light',
+}
+
+
+const dateIntParse = (dateVal) => {
+  let date = new Date(dateVal);
+  let day = date.getDate();
+  let month = date.getMonth() + 1;
+  let year = date.getFullYear();
+
+  day = day < 10 ? '0' + day : day;
+  month = month < 10 ? '0' + month : month;
+
+  return day + '/' + month + '/' + year;
+}
+
+const amountFormatter = (total) => {
+  return total ? total.toLocaleString('ms-MY', { style: 'currency', currency: 'MYR' }) : ''
+}
 
 const columns = [
   {
-    name: 'Tarikh',
+    name: 'Tarikh Kutipan',
     selector: (row) => {
       let date = new Date(row.createDate);
       let day = date.getDate();
@@ -46,7 +79,7 @@ const columns = [
   },
   {
     name: 'Jumlah',
-    selector: (row) => (row.total ? row.total.toLocaleString('ms-MY', { style: 'currency', currency: 'MYR' }) : ''),
+    selector: (row) => amountFormatter(row.total),
   },
   {
     name: 'Tindakan',
@@ -65,6 +98,28 @@ const Cetak = () => {
   const [penyata, setPenyata] = useState()
   const [visibleBulanan, setVisibleBulanan] = useState(false)
   const [selectedMonth, setSelectedMonth] = useState(new Date())
+  const [selectedTabungName, setSelectedTabungName] = useState('')
+  const [visibleEditModal, setVisibleEditModal] = useState(false)
+  const [moneyDenomination, setMoneyDenomination] = useState(['1', '5', '10', '20', '50', '100']);
+  const [input1, setInput1] = useState({ mask: Number });
+  const [input5, setInput5] = useState({ mask: Number });
+  const [input10, setInput10] = useState({ mask: Number });
+  const [input20, setInput20] = useState({ mask: Number });
+  const [input50, setInput50] = useState({ mask: Number });
+  const [input100, setInput100] = useState({ mask: Number });
+  const [input1C, setInput1C] = useState({ mask: Number });
+  const [input5C, setInput5C] = useState({ mask: Number });
+  const [input10C, setInput10C] = useState({ mask: Number });
+  const [input20C, setInput20C] = useState({ mask: Number });
+  const [input50C, setInput50C] = useState({ mask: Number });
+  const [isCents, setIsCents] = useState()
+  const [total, setTotal] = useState(0);
+  const [startDate, setStartDate] = useState(new Date());
+  const [validated, setValidated] = useState(false);
+  const [idNumber, setIdNumber] = useState();
+  const formRef = useRef(null);
+
+
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -122,7 +177,6 @@ const Cetak = () => {
         endOfMonth.getTime(),
         _page, _size
       );
-
       setTotalRows(data?.total);
 
 
@@ -133,10 +187,15 @@ const Cetak = () => {
           createDate: item.createDate,
           total: item.total,
           action: (
-            <CIcon icon={cilPrint} className="me-2" onClick={() => printPreview(item.id)} />
+            <>
+              <CIcon icon={cilPencil} className="me-4 " onClick={() => editPreview(item.id)} size="lg" />
+              <CIcon icon={cilTrash} className="me-4" onClick={() => deleteConfirmation(item)} title="Delete" size="lg" />
+              <CIcon icon={cilPrint} className="me-4" onClick={() => printPreview(item.id)} size="lg" />
+            </>
           ),
         }))
         setKutipanList(kutipanData)
+
       } else {
         setKutipanList([]);
       }
@@ -149,8 +208,16 @@ const Cetak = () => {
   };
 
   useEffect(() => {
+    if (isCents === true) {
+      setMoneyDenomination(['1', '5', '10', '20', '50', '100', '1C', '5C', '10C', '20C', '50C']);
+    } else {
+      setMoneyDenomination(['1', '5', '10', '20', '50', '100']);
+    }
+  }, [visibleEditModal])
+
+  useEffect(() => {
     fetchKutipan(1, size)
-  }, [selectedTabung, selectedMonth])
+  }, [selectedTabung, selectedMonth, visibleEditModal])
 
   const handlePageChange = page => {
     fetchKutipan(page, size);
@@ -160,6 +227,159 @@ const Cetak = () => {
     setSize(newSize)
     fetchKutipan(page, newSize)
   };
+
+  const handleInputChange = (value, setInput) => {
+    setInput(parseInt(value, 10) || 0);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (input1 === '' ||
+      input1 === null ||
+      input1 === 'undefined' ||
+      input5 === '' ||
+      input5 === null ||
+      input5 === 'undefined' ||
+      input10 === '' ||
+      input10 === null ||
+      input10 === 'undefined' ||
+      input20 === '' ||
+      input20 === null ||
+      input20 === 'undefined' ||
+      input50 === '' ||
+      input50 === null ||
+      input50 === 'undefined' ||
+      input100 === '' ||
+      input100 === null ||
+      input100 === 'undefined' ||
+      input1C === '' ||
+      input1C === null ||
+      input1C === 'undefined' ||
+      input5C === '' ||
+      input5C === null ||
+      input5C === 'undefined' ||
+      input10C === '' ||
+      input10C === null ||
+      input10C === 'undefined' ||
+      input20C === '' ||
+      input20C === null ||
+      input20C === 'undefined' ||
+      input50C === '' ||
+      input50C === null ||
+      input50C === 'undefined') {
+      toast.error('Kutipan tabung gagal disimpan', toastConfig)
+    } else {
+      updateKutipanApi()
+
+    }
+    toast.success('Kutipan tabung berjaya disimpan', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    })
+  };
+
+  const handleReset = () => {
+    // Reset the form fields
+    if (formRef.current) {
+      formRef.current.reset();
+    }
+    setInput1(0);
+    setInput5(0);
+    setInput10(0);
+    setInput20(0);
+    setInput50(0);
+    setInput100(0);
+    setInput1C(0);
+    setInput5C(0);
+    setInput10C(0);
+    setInput20C(0);
+    setInput50C(0);
+    setTotal(0);
+    setStartDate(new Date());
+    selectRef.current.focus()
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  };
+
+  const updateKutipanApi = async () => {
+    const updatedKutipanData = {
+      createDate: startDate.getTime(),
+      total1c: input1C,
+      total5c: input5C,
+      total10c: input10C,
+      total20c: input20C,
+      total50c: input50C,
+      total1d: input1,
+      total5d: input5,
+      total10d: input10,
+      total20d: input20,
+      total50d: input50,
+      total100d: input100,
+    }
+
+    try {
+      await updateKutipan(idNumber, updatedKutipanData);
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    const updateTotal = () => {
+      setTotal(
+        input1 * 1 +
+        input5 * 5 +
+        input10 * 10 +
+        input20 * 20 +
+        input50 * 50 +
+        input100 * 100 +
+        input1C * 0.01 +
+        input5C * 0.05 +
+        input10C * 0.10 +
+        input20C * 0.20 +
+        input50C * 0.50
+      );
+    };
+    updateTotal();
+  }, [input1, input5, input10, input20, input50, input100, input1C, input5C, input10C, input20C, input50C]);
+
+  const editPreview = async (id) => {
+    if (id) {
+      try {
+        const data = await getKutipan(id)
+        if (data) {
+          setIdNumber(data.id)
+          setInput1(data.total1d);
+          setInput5(data.total5d);
+          setInput10(data.total10d);
+          setInput20(data.total20d);
+          setInput50(data.total50d);
+          setInput100(data.total100d);
+          setInput1C(data.total1c);
+          setInput5C(data.total5c);
+          setInput10C(data.total10c);
+          setInput20C(data.total20c);
+          setInput50C(data.total50c);
+          setSelectedTabungName(data.tabung.name);
+          setIsCents(data.tabung.cents);
+          setVisibleEditModal(true);
+          setStartDate(new Date(data.createDate));
+        }
+      } catch (error) {
+        console.error('Error fetching kutipan:', error)
+      }
+    }
+  }
+
 
   useEffect(() => {
     if (penyata) {
@@ -182,6 +402,23 @@ const Cetak = () => {
 
   const handleSelectChange = (value) => {
     setSelectedTabung(value);
+  };
+
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [kutipan, setKutipan] = useState();
+  const deleteConfirmation = (props) => {
+    if (!props) return
+
+    setOpenDeleteDialog(true);
+    setKutipan(props)
+  }
+  const onDeleteConfirm = async () => {
+    await deleteKutipan(kutipan.id)
+    const tempKutipanList = kutipanList?.filter(function (d) { return d.id != kutipan.id; });
+    setKutipanList(tempKutipanList);
+    toast.success(`Kutipan tarikh ${dateIntParse(kutipan.createDate)} berjaya dibuang`, toastConfig)
+    setOpenDeleteDialog(false);
   };
 
   if (loading) {
@@ -229,6 +466,7 @@ const Cetak = () => {
 
   return (
     <CRow>
+      <ToastContainer />
       <CCol xs={12}>
         <CCard className="mb-4">
           <CCardHeader>
@@ -260,6 +498,9 @@ const Cetak = () => {
               onChangeRowsPerPage={handlePerRowsChange}
               onChangePage={handlePageChange}
             />
+
+
+
             <CModal
               size="xl"
               visible={visibleXL}
@@ -276,6 +517,105 @@ const Cetak = () => {
                 <CButton onClick={handlePrint} color="primary">Cetak</CButton>
               </CModalFooter>
             </CModal>
+
+
+            <CModal
+              size='xl'
+              visible={visibleEditModal}
+              onClose={() => setVisibleEditModal(false)}
+              aria-labelledby="OptionalSizesExample2"
+            >
+              <CModalBody>
+                <h3>Edit Kutipan Tabung</h3>
+                <h4 className="text-muted mb-2 mt-3">{selectedTabungName}</h4>
+                <CForm
+                  id="editForm"
+                  validated={validated}
+                  onSubmit={handleSubmit}
+                >
+                  {moneyDenomination.map((value) => (
+                    <CRow key={value}>
+                      <CCol>{value.endsWith('C') ? `${value.slice(0, -1)} Sen` : `RM ${value}`}</CCol>
+                      <CCol>X</CCol>
+                      <CCol>
+                        <CFormInput
+                          id={`txtInput${value}`}
+                          placeholder='0'
+                          value={eval(`input${value}`)}
+                          onChange={(e) =>
+                            handleInputChange(e.target.value, eval(`setInput${value}`))
+                          }
+                        />
+                      </CCol>
+                    </CRow>
+                  ))}
+                  <br />
+                  <CRow>
+                    <CCol></CCol>
+                    <CCol></CCol>
+                    <CCol>
+                      JUMLAH ={' '}
+                      {total.toLocaleString('en-MY', {
+                        style: 'currency',
+                        currency: 'MYR',
+                      })}
+                    </CCol>
+                  </CRow>
+                  <br />
+                  <CRow>
+                    <CCol>
+                      Tarikh Kutipan:{' '}
+                      <DatePicker
+                        id="startDate"
+                        dateFormat="dd/MM/yyyy"
+                        selected={startDate}
+                        onChange={(date) => setStartDate(date)}
+                      />
+                    </CCol>
+                  </CRow>
+                  <br />
+                  <div className="button-action-container">
+                    <CButton color="primary" size="sm" type="submit"
+                      className={`custom-action-button ${loading ? 'loading' : ''}`}>
+                      {loading ? (
+                        <>
+                          {/* <CSpinner size="sm" color="primary" /> */}
+                          <span> Sila tunggu</span>
+                        </>
+                      ) : (
+                        'Simpan'
+                      )}
+                    </CButton>
+                    <CButton color="secondary" size='sm' className='custom-action-button' onClick={() => setVisibleEditModal(false)}>
+                      Tutup
+                    </CButton>
+                  </div>
+                </CForm>
+
+              </CModalBody>
+
+            </CModal>
+
+            <CModal
+              size="xl"
+              visible={openDeleteDialog}
+              onClose={() => setOpenDeleteDialog(false)}
+              aria-labelledby="OptionalSizesExample3"
+            >
+              <CModalHeader onClose={() => setOpenDeleteDialog(false)}>
+                <CModalTitle id="LiveDemoExampleLabel">Buang Kutipan</CModalTitle>
+              </CModalHeader>
+              <CModalBody>
+                <p>Buang Kutipan bertarikh {dateIntParse(kutipan?.createDate)} bersama jumlah {amountFormatter(kutipan?.total)}</p>
+              </CModalBody>
+              <CModalFooter>
+                <CButton color="secondary" onClick={() => setOpenDeleteDialog(false)}>
+                  Tutup
+                </CButton>
+                <CButton onClick={onDeleteConfirm} color="primary">Buang</CButton>
+              </CModalFooter>
+            </CModal>
+
           </CCardBody>
         </CCard>
       </CCol>

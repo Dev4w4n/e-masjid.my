@@ -21,3 +21,13 @@ export const saveKutipan = async (kutipan) => {
   const response = await axios.post(`${apiServer}/kutipan`, kutipan)
   return response.data
 }
+
+export const updateKutipan = async (id, updatedKutipanData) => {
+  const response = await axios.put(`${apiServer}/kutipan/${id}`, updatedKutipanData);
+  return response.data
+}
+
+export const deleteKutipan = async (id) => {
+  const response = await axios.delete(`${apiServer}/kutipan/${id}`);
+  return response.data
+}

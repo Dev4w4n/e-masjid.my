@@ -10,10 +10,12 @@ ENV POSTGRES_PASSWORD=mypassword
 WORKDIR /docker-entrypoint-initdb.d
 
 # Copy the SQL files into the container
-COPY khairat.sql /docker-entrypoint-initdb.d/
-COPY tabung.sql /docker-entrypoint-initdb.d/
-COPY cadangan.sql /docker-entrypoint-initdb.d/
-COPY tetapan.sql /docker-entrypoint-initdb.d/
+COPY 001_tetapan.sql /docker-entrypoint-initdb.d/
+COPY 001_files_cdn.sql /docker-entrypoint-initdb.d/
+COPY 002_cadangan.sql /docker-entrypoint-initdb.d/
+COPY 003_khairat.sql /docker-entrypoint-initdb.d/
+COPY 004_tabung.sql /docker-entrypoint-initdb.d/
+COPY 005_kariah.sql /docker-entrypoint-initdb.d/
 
 # Create a volume for persistent storage
 VOLUME /var/lib/postgresql/data

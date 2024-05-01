@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-api/model"
 	"gorm.io/gorm"
 )
@@ -11,6 +13,7 @@ type CadanganRepository interface {
 	GetCadanganByIsOpen(isOpen bool, paginate model.Paginate) (model.Response, error)
 	GetTotalCadanganByTypeCount() (interface{}, error)
 	Save(cadangan model.Cadangan) error
+	Delete(id int) error
 }
 
 type CadanganRepositoryImpl struct {
@@ -101,6 +104,23 @@ func (repo *CadanganRepositoryImpl) GetTotalCadanganByTypeCount() (interface{}, 
 
 func (repo *CadanganRepositoryImpl) Save(cadangan model.Cadangan) error {
 	result := repo.Db.Save(&cadangan)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+func (repo *CadanganRepositoryImpl) Delete(id int) error {
+	var count int64
+	repo.Db.Model(&model.Cadangan{}).Where("id = ?", id).Count(&count)
+	if count == 0 {
+		return errors.New("cadangan not found")
+	}
+
+	var cadangan model.Cadangan
+	result := repo.Db.Where("id = ?", id).Delete(&cadangan)
 
 	if result.Error != nil {
 		return result.Error

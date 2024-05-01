@@ -1,0 +1,76 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "A Tetapan Public service API in Go using Gin framework",
+        "title": "Tetapan Public Service API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/tetapan": {
+            "get": {
+                "description": "Return the all tetapan.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tetapan"
+                ],
+                "summary": "find all tetapan",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Tetapan"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tetapan/{kunci}": {
+            "get": {
+                "description": "Return the  tetapan by kunci",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tetapan"
+                ],
+                "summary": "find tetapan by kunci",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "kunci",
+                        "name": "kunci",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Tetapan"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.Tetapan": {
+            "type": "object",
+            "properties": {
+                "kunci": {
+                    "type": "string"
+                },
+                "nilai": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

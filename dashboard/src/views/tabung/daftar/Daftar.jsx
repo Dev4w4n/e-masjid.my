@@ -277,7 +277,7 @@ const Daftar = () => {
               <br />
               <CRow>
                 <CCol>
-                  Tarikh:{' '}
+                  Tarikh Kutipan:{' '}
                   <DatePicker
                     id="startDate"
                     dateFormat="dd/MM/yyyy"

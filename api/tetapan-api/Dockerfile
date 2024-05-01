@@ -11,6 +11,10 @@ COPY .env.* .
 # Install any dependencies your application might need
 RUN go get -d -v ./...
 RUN go install -v ./...
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+
+#Generate api doc
+RUN swag init
 
 # Build the Go application
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o tetapan-api
@@ -31,6 +35,7 @@ WORKDIR /app
 COPY --from=builder /app/tetapan-api .
 COPY --from=builder /app/.env.* .
 COPY --from=builder /app/wait-for-it.sh . 
+COPY --from=builder /app/docs ./docs
 
 # Expose the port that your application will run on
 EXPOSE 8080

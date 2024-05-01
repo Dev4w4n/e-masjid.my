@@ -33,6 +33,12 @@ export const getPaidMemberCountCurrentYear = async () => {
 }
 
 export const saveMemberCsv = async (csvFile) => {
-  const response = await axios.post(`${apiServer}/members/saveCsv`, csvFile)
+  let formData = new FormData();
+  formData.append("file", csvFile);
+  const response = await axios.post(`${apiServer}/members/saveCsv`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    }
+  })
   return response.data
 }
