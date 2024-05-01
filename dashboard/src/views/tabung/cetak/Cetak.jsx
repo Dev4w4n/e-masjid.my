@@ -15,20 +15,20 @@ import {
   CFormInput, CModalHeader, CModalTitle
 
 } from '@coreui/react'
-import { getKutipan } from 'src/service/tabung/KutipanApi'
-import { getTabung } from 'src/service/tabung/TabungApi'
+import { getKutipan } from '@/service/tabung/KutipanApi'
+import { getTabung } from '@/service/tabung/TabungApi'
 import DataTable from 'react-data-table-component'
 import { cilInfo, cilPrint, cilPencil, cilTrash } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import { useReactToPrint } from 'react-to-print'
-import DenominasiPrint from 'src/components/print/tabung/DenominasiPrint'
-import PenyataBulananSelector from 'src/components/tabung/PenyataBulananSelector'
+import DenominasiPrint from '@/components/print/tabung/DenominasiPrint'
+import PenyataBulananSelector from '@/components/tabung/PenyataBulananSelector'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+
+import { getKutipanByTabungBetweenCreateDate,  updateKutipan, deleteKutipan  } from '@/service/tabung/KutipanApi'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getKutipanByTabungBetweenCreateDate } from 'src/service/tabung/KutipanApi'
-import { updateKutipan, deleteKutipan } from 'src/service/tabung/KutipanApi'
 
 const toastConfig = {
   position: 'top-right',
@@ -195,7 +195,7 @@ const Cetak = () => {
           ),
         }))
         setKutipanList(kutipanData)
-        
+
       } else {
         setKutipanList([]);
       }
@@ -271,7 +271,7 @@ const Cetak = () => {
       toast.error('Kutipan tabung gagal disimpan', toastConfig)
     } else {
       updateKutipanApi()
-      
+
     }
     toast.success('Kutipan tabung berjaya disimpan', {
       position: 'top-right',
@@ -327,7 +327,7 @@ const Cetak = () => {
     }
 
     try {
-      await updateKutipan(idNumber, updatedKutipanData);  
+      await updateKutipan(idNumber, updatedKutipanData);
     } catch (error) {
       console.error(error)
     }

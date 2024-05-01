@@ -1,7 +1,7 @@
 import React, { useState, useEffect, forwardRef } from 'react';
 import { CCol, CRow, CContainer, CTable } from '@coreui/react'
-import { getTetapanNamaMasjid } from 'src/service/tetapan/TetapanMasjidApi'
-import constants  from '../../../constants/print.json';
+import { getTetapanNamaMasjid } from '@/service/tetapan/TetapanMasjidApi'
+import { print as constants }  from '@/config';
 
 const columns = [
   {
@@ -23,7 +23,7 @@ const columns = [
 
 const DenominasiPrint = forwardRef((props, ref) => {
   const [namaMasjid, setNamaMasjid] = useState("")
- 
+
   const items = [
     {
       denominasi: 'RM 100',
@@ -89,7 +89,7 @@ const DenominasiPrint = forwardRef((props, ref) => {
     },
   ]
 
-  const itemsToDisplay = props.penyata.tabung.cents ? 
+  const itemsToDisplay = props.penyata.tabung.cents ?
   items: items.filter(item => !item.denominasi.endsWith('Sen'));
 
   useEffect(() => {

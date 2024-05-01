@@ -10,7 +10,7 @@ import {
   CButton,
   CButtonGroup,
 } from '@coreui/react'
-import { getCadanganById, updateCadangan } from 'src/service/cadangan/CadanganApi'
+import { getCadanganById, updateCadangan } from '@/service/cadangan/CadanganApi'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import BorangAduan from '../print/cadangan/BorangAduan'
@@ -22,7 +22,7 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
   const [visibleSM, setVisibleSM] = useState(false)
   const componentRef = useRef();
   const [visiblePrint, setVisiblePrint] = useState(false)
-  
+
 
   const [data, setData] = useState({})
   const inputTindakan = useRef()
@@ -88,7 +88,7 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
         cadanganNama: data.cadanganNama,
         createDate: data.createDate
       }
-  
+
       await updateCadangan(updateData, props.rowClickedInfo.id)
       setVisibleSM(false)
       resetModal()
@@ -108,7 +108,7 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
     var tindakanText = inputTindakan.current.value ? inputTindakan.current.value : null
     var updateData = data
     updateData.tindakanText = tindakanText
-    
+
     try {
       await updateCadangan(updateData, updateData.id)
       toast.success('Maklumat telah disimpan', {

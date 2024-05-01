@@ -20,14 +20,14 @@ import CIcon from '@coreui/icons-react';
 import { cilCloudDownload } from '@coreui/icons';
 import { HexColorPicker } from 'react-colorful';
 
-import { config } from 'src/Config.js';
+import { config } from '@/config';
 
-import PosterBg1 from 'src/assets/bgpattern/bg1.png';
-import PosterBg2 from 'src/assets/bgpattern/bg2.png';
-import PosterBg3 from 'src/assets/bgpattern/bg3.png';
-import PosterBg4 from 'src/assets/bgpattern/bg4.png';
-import PosterBg5 from 'src/assets/bgpattern/bg5.png';
-import PosterBg6 from 'src/assets/bgpattern/bg6.png';
+import PosterBg1 from '@/assets/bgpattern/bg1.png';
+import PosterBg2 from '@/assets/bgpattern/bg2.png';
+import PosterBg3 from '@/assets/bgpattern/bg3.png';
+import PosterBg4 from '@/assets/bgpattern/bg4.png';
+import PosterBg5 from '@/assets/bgpattern/bg5.png';
+import PosterBg6 from '@/assets/bgpattern/bg6.png';
 
 const urlPetiCadangan = config.url.PETI_CADANGAN_URL;
 
@@ -158,7 +158,7 @@ const Qr = () => {
     width: `${defaultViewPort}`,
     height: `calc(${defaultViewPort} * (${pageHeight}/${pageWidth}))`, /* page aspect ratio on 50% of the viewport width */
     maxWidth: `${pageWidth}mm`,
-    maxHeight: `${pageHeight}mm`,    
+    maxHeight: `${pageHeight}mm`,
     overflow: 'hidden',
   };
 
@@ -239,7 +239,7 @@ const Qr = () => {
     zIndex: '9999',
     height: 'auto',
   };
-  
+
   const toggleButton = {
     width: '100%',
     padding: '0.5vw',
@@ -252,7 +252,7 @@ const Qr = () => {
   const panelContent = {
     height: isPanelOpen ? '100%' : '0',
   };
-  
+
   const section = {
     marginInline: '0.5em',
     padding: '0.2em',
@@ -572,7 +572,7 @@ const Qr = () => {
                         </CButton>
                       ))}
                     </div>
-                    <p />                    
+                    <p />
                     <div style={textEditorPanel}>
                       <button onClick={togglePanel} style={toggleButton}>
                         {isPanelOpen ? 'Tutup Panel Edit' : 'Buka Panel Edit'}

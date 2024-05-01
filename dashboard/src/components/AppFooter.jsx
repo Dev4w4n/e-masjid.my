@@ -1,6 +1,6 @@
 import React from 'react'
 import { CFooter } from '@coreui/react'
-import { config } from '../Config'
+import { config } from '@/config'
 const BUILD = config.version.BUILD
 
 const AppFooter = () => {

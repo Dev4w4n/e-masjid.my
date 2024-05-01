@@ -20,9 +20,9 @@ import {
   CSpinner,
   CFormCheck,
 } from '@coreui/react'
-import { getTags } from 'src/service/khairat/TagsApi'
-import { getDependentsByMemberId, saveDependent, deleteDependent } from 'src/service/khairat/DependentApi'
-import { saveMember, loadMember } from 'src/service/khairat/MembersApi'
+import { getTags } from '@/service/khairat/TagsApi'
+import { getDependentsByMemberId, saveDependent, deleteDependent } from '@/service/khairat/DependentApi'
+import { saveMember, loadMember } from '@/service/khairat/MembersApi'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useNavigate } from 'react-router-dom'
@@ -462,7 +462,7 @@ const Daftar = () => {
     //   let resitno = null
     //   if (inputNoResit.current.value) {
 
-    //     
+    //
     //     resitno = inputNoResit.current.value
     //   }
     //   updatablePaymentHistories.push({

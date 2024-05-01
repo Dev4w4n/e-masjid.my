@@ -1,7 +1,7 @@
 import React, { useState, forwardRef, useEffect } from 'react'
 import { CCol, CRow, CContainer, CTable } from '@coreui/react'
-import constants  from '../../../constants/print.json';
-import { getTetapanNamaMasjid } from 'src/service/tetapan/TetapanMasjidApi'
+import { print as constants }  from '@/config';
+import { getTetapanNamaMasjid } from '@/service/tetapan/TetapanMasjidApi'
 
 const columns = [
   {
@@ -78,7 +78,7 @@ const SenaraiAhli = forwardRef((props, ref) => {
       <CRow>
         <CCol style={{ textAlign: 'center' }}>
           <h3>SENARAI AHLI KHAIRAT</h3>
-        </CCol> 
+        </CCol>
       </CRow>
       <CRow>
         <CCol style={{ textAlign: 'center' }} className='mb-3'>

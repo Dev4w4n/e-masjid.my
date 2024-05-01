@@ -17,7 +17,7 @@ import {
   CDropdownToggle,
   CDropdownHeader,
 } from '@coreui/react'
-import { getTetapanMasjid, saveTetapanMasjid } from 'src/service/tetapan/TetapanMasjidApi'
+import { getTetapanMasjid, saveTetapanMasjid } from '@/service/tetapan/TetapanMasjidApi'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { negeri, zones } from './senaraiZon'
@@ -50,7 +50,7 @@ const TetapanMasjid = () => {
               if (t.kunci === 'NAMA_MASJID') inputNamaMasjid.current.value = t.nilai
               if (t.kunci === 'ALAMAT_MASJID') inputAlamatMasjid.current.value = t.nilai
               if (t.kunci === 'NO_TEL_MASJID') inputNoTelefonMasjid.current.value = t.nilai
-			  if (t.kunci === 'ZON_MASJID') { 
+			  if (t.kunci === 'ZON_MASJID') {
 				zones.map((item) => {
 					if (item.jakimCode === t.nilai) {
 						setSelectedZone(item)
@@ -62,10 +62,10 @@ const TetapanMasjid = () => {
         }
       }
     }
-    
+
     loadTetapan()
   }, [])
-  
+
   async function saveTetapan() {
     if (!inputNamaMasjid.current.value ||
        !inputAlamatMasjid.current.value ||
@@ -197,7 +197,7 @@ const TetapanMasjid = () => {
                 className={`custom-action-button ${loading ? 'loading' : ''}`}>
                 {loading ? (
                   <>
-                    <CSpinner size="sm" color="primary" /> 
+                    <CSpinner size="sm" color="primary" />
                     <span>Sila tunggu</span>
                   </>
                 ) : (
