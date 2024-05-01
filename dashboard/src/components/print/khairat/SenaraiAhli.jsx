@@ -1,6 +1,6 @@
 import React, { useState, forwardRef, useEffect } from 'react'
 import { CCol, CRow, CContainer, CTable } from '@coreui/react'
-import constants  from '../../../constants/print.json';
+import { print as constants }  from '@/config';
 import { getTetapanNamaMasjid } from '@/service/tetapan/TetapanMasjidApi'
 
 const columns = [

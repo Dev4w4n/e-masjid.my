@@ -1,7 +1,7 @@
 import React, { useState, useEffect, forwardRef } from 'react'
 import { CCol, CRow, CContainer } from '@coreui/react'
 import { getTetapanNamaMasjid } from '@/service/tetapan/TetapanMasjidApi'
-import constants from '../../../constants/print.json';
+import { print as constants } from '@/config';
 
 const BorangAduan = forwardRef((props, ref) => {
   const [namaMasjid, setNamaMasjid] = useState()

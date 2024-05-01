@@ -2,7 +2,7 @@ import React, { useState, forwardRef, useEffect } from 'react'
 import { CCol, CRow, CContainer, CTable } from '@coreui/react'
 import { getKutipanByTabungBetweenCreateDate } from '@/service/tabung/KutipanApi'
 import { getTetapanNamaMasjid } from '@/service/tetapan/TetapanMasjidApi'
-import constants from '../../../constants/print.json';
+import { print as constants } from '@/config';
 
 const columns = [
   {
