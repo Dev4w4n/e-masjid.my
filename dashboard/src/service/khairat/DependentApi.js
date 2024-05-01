@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { config } from '../../Config'
+import { config } from '@/config'
 const apiServer = config.url.KHAIRAT_API_BASE_URL
 
 export const getDependentsByMemberId = async (memberId) => {

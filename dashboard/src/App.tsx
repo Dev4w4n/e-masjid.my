@@ -18,10 +18,7 @@ class App extends Component {
       <Router>
         <Suspense fallback={loading}>
           <Routes>
-            <Route
-              path="*"
-              element={<DefaultLayout />}
-            />
+            <Route path="*" element={<DefaultLayout />} />
           </Routes>
         </Suspense>
       </Router>

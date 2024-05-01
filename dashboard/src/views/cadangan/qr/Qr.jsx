@@ -20,7 +20,7 @@ import CIcon from '@coreui/icons-react';
 import { cilCloudDownload } from '@coreui/icons';
 import { HexColorPicker } from 'react-colorful';
 
-import { config } from '@/Config';
+import { config } from '@/config';
 
 import PosterBg1 from '@/assets/bgpattern/bg1.png';
 import PosterBg2 from '@/assets/bgpattern/bg2.png';

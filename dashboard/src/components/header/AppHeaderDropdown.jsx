@@ -12,7 +12,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { useNavigate } from 'react-router-dom'
 import avatar8 from './../../assets/images/avatars/logo.png'
-import { config } from '../../Config'
+import { config } from '@/config'
 const logoutUrl = config.url.LOGOUT_URL
 
 const AppHeaderDropdown = () => {
@@ -20,7 +20,7 @@ const AppHeaderDropdown = () => {
   const logout = () => {
     window.location.href = logoutUrl;
   }
-  
+
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
