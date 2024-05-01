@@ -1,7 +1,6 @@
 import SwaggerUI from 'swagger-ui'
 import { SwaggerUIBundle, SwaggerUIStandalonePreset } from "swagger-ui-dist"
 import 'swagger-ui/dist/swagger-ui.css';
-import 'swagger-ui-themes/themes/3.x/theme-muted.css'
 
 
 const ui = SwaggerUI({
@@ -15,7 +14,7 @@ const ui = SwaggerUI({
   ],
   dom_id: '#swagger',
   deepLinking: true,
-  "urls.primaryName": "Example Service",
+  "urls.primaryName": "E-Masjid Service",
   presets: [
     SwaggerUIBundle.presets.apis,
     SwaggerUIStandalonePreset

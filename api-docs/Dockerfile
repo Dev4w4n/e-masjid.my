@@ -2,7 +2,7 @@ FROM node:20.12-alpine3.19 AS builder
 WORKDIR /app
 COPY . .
 RUN npm install  webpack-cli -g
-RUN npm install
+RUN npm install  --no-audit
 RUN npm run build
 RUN npm prune --omit=dev
 RUN ls -lah

@@ -22,10 +22,9 @@
     "css-loader": "^7.1.1",
     "file-loader": "^6.2.0",
     "json-loader": "^0.5.7",
-    "mini-css-extract-plugin": "^2.8.1",
+    "mini-css-extract-plugin": "^2.9.0",
     "style-loader": "^4.0.0",
-    "swagger-ui": "^5.15.2",
-    "swagger-ui-dist": "^5.15.2",
-    "swagger-ui-themes": "^3.0.1"
+    "swagger-ui": "^5.17.3",
+    "swagger-ui-dist": "^5.17.2"
   }
 }
