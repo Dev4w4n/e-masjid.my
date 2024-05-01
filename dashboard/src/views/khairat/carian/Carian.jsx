@@ -222,7 +222,7 @@ const Carian = () => {
   },[tagIds])
 
   const handleRowClick = (row) => {
-    window.location.href = '#/khairat/daftar/' + row.id
+    navigate('/khairat/daftar/' + row.id)
   }
 
   const search = () => {
