@@ -16,5 +16,5 @@ type MemberTag struct {
 }
 
 func (MemberTag) TableName() string {
-	return "members_tags"
+	return "khairat_members_tags"
 }

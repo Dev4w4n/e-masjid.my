@@ -1,4 +1,9 @@
--- >>>>> START KHAIRIAT
+-- >>>>> START KHAIRAT
+ALTER TABLE IF EXISTS members RENAME TO khairat_members;
+ALTER TABLE IF EXISTS members_tags RENAME TO khairat_members_tags;
+ALTER TABLE IF EXISTS tags RENAME TO khairat_tags;
+ALTER TABLE IF EXISTS dependents RENAME TO khairat_dependents;
+
 INSERT INTO person ("name",ic_number,address,phone) VALUES
 	 ('Abu Bakar','111111111111','Permatang Ara','0123456789'),
 	 ('Isteri 1','222222222222','Permatang Ara','0123456789'),
@@ -9,20 +14,20 @@ INSERT INTO person ("name",ic_number,address,phone) VALUES
 	 ('Salman','777777777777','Permatang Ara','0123456789'),
 	 ('Osman','888888888888','Permatang Ara','0123456789');
 
-INSERT INTO members (person_id) VALUES
+INSERT INTO khairat_members (person_id) VALUES
 	 (1),
 	 (5),
 	 (6),
 	 (7),
 	 (8);
 
-INSERT INTO members_tags (member_id,tags_id) VALUES
+INSERT INTO khairat_members_tags (member_id,tags_id) VALUES
 	 (1,1),
 	 (2,1),
 	 (3,1),
 	 (4,2);
 
-INSERT INTO dependents (member_id,person_id,hubungan_id) VALUES
+INSERT INTO khairat_dependents (member_id,person_id,hubungan_id) VALUES
 	 (1,2,6), -- isteri 1
 	 (1,3,1), -- anak 1
 	 (1,4,1); -- anak 2
@@ -30,7 +35,7 @@ INSERT INTO dependents (member_id,person_id,hubungan_id) VALUES
 INSERT INTO khairat_payment_history (member_id,amount,payment_date,no_resit) VALUES
 	 (1,90,1711527052000,'X90'),
 	 (2,50,1711527052000,'X50');
--- <<<<< END KHAIRIAT
+-- <<<<< END KHAIRAT
 
 -- >>>>> START TABUNG KUTIPAN
 INSERT INTO kutipan (tabung_id,total1c,total5c,total10c,total20c,total50c,total1d,total5d,total10d,total20d,total50d,total100d,create_date) VALUES

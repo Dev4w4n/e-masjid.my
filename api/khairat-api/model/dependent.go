@@ -17,5 +17,5 @@ type Dependent struct {
 }
 
 func (Dependent) TableName() string {
-	return "dependents"
+	return "khairat_dependents"
 }

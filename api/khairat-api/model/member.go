@@ -17,5 +17,5 @@ type Member struct {
 }
 
 func (Member) TableName() string {
-	return "members"
+	return "khairat_members"
 }
