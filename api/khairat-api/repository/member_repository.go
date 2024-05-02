@@ -137,9 +137,9 @@ func (repo *MemberRepositoryImpl) FindByTagOrderByMemberNameAsc(idStr string) ([
 
 	result := repo.db.
 		Joins("JOIN khairat_members_tags ON khairat_members.id = khairat_members_tags.member_id").
-		Joins("JOIN tags ON khairat_members_tags.tags_id = tags.id").
+		Joins("JOIN khairat_tags ON khairat_members_tags.tags_id = khairat_tags.id").
 		Joins("JOIN person ON khairat_members.person_id = person.id").
-		Where("tags.id IN (?)", idInt64Slice).
+		Where("khairat_tags.id IN (?)", idInt64Slice).
 		Preload("Person").
 		Preload("MemberTags.Tag").
 		Preload("PaymentHistory").
