@@ -55,6 +55,8 @@
     "styled-components": "^5.3.11"
   },
   "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
+    "@nabla/vite-plugin-eslint": "^2.0.4",
     "@types/node": "^20.11.30",
     "@types/react": "^18.2.70",
     "@types/react-dom": "^18.2.22",
@@ -64,6 +66,7 @@
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
