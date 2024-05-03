@@ -31,7 +31,6 @@ const loading = (
 )
 
 // Containers
-// @ts-expect-error ???
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 
 class App extends Component {
@@ -50,7 +49,6 @@ class App extends Component {
                 <Route
                   path="*"
                   element={
-                    // @ts-expect-error the only working way to do it
                     <PrivateRoute>
                       <DefaultLayout />
                     </PrivateRoute>
