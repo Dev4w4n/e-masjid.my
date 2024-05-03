@@ -1,4 +1,4 @@
-import React, { useState , useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   CSpinner,
   CButton,
@@ -12,9 +12,7 @@ import {
 import { CChartLine } from '@coreui/react-chartjs'
 import { getStyle, hexToRgba } from '@coreui/utils'
 import CIcon from '@coreui/icons-react'
-import {
-  cilCloudDownload,
-} from '@coreui/icons'
+import { cilCloudDownload } from '@coreui/icons'
 
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
 import { getMemberCount } from '@/service/khairat/MembersApi'
