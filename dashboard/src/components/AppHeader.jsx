@@ -1,20 +1,21 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+
+import { cilBook, cilMenu } from '@coreui/icons'
+import CIcon from '@coreui/icons-react'
 import {
   CContainer,
   CHeader,
   CHeaderDivider,
   CHeaderNav,
   CHeaderToggler,
-  CNavLink,
   CNavItem,
+  CNavLink,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilMenu, cilBook } from '@coreui/icons'
+import { useDispatch, useSelector } from 'react-redux'
+import { NavLink } from 'react-router-dom'
 
-import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from './header/index'
+import { AppBreadcrumb } from './index'
 
 const AppHeader = () => {
   const dispatch = useDispatch()
@@ -38,8 +39,12 @@ const AppHeader = () => {
         </CHeaderNav>
         <CHeaderNav className="ms-auto">
           <CNavItem>
-            <CNavLink href="https://docs-e-masjid-my.pages.dev/" target="_blank" rel="noopener noreferrer">
-              <CIcon icon={cilBook} size="lg" /> Bahan Rujukan 
+            <CNavLink
+              href="https://docs-e-masjid-my.pages.dev/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <CIcon icon={cilBook} size="lg" /> Bahan Rujukan
             </CNavLink>
           </CNavItem>
         </CHeaderNav>

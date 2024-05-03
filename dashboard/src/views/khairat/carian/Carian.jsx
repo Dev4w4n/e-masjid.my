@@ -1,33 +1,38 @@
-import { React, useState, useRef, useEffect } from 'react'
+import { React, useEffect, useRef, useState } from 'react'
+
 import {
-  CInputGroup,
-  CFormInput,
   CButton,
   CCard,
   CCardBody,
   CCardHeader,
   CCol,
-  CRow,
-  CSpinner,
-  CNav,
-  CNavItem,
-  CNavLink,
-  CTabContent,
-  CTabPane,
+  CFormInput,
+  CInputGroup,
   CModal,
   CModalBody,
   CModalFooter,
+  CNav,
+  CNavItem,
+  CNavLink,
+  CRow,
+  CSpinner,
+  CTabContent,
+  CTabPane,
 } from '@coreui/react'
 import DataTable from 'react-data-table-component'
+import { toast, ToastContainer } from 'react-toastify'
+
 import { searchMember, searchMemberByTagId } from '@/service/khairat/MembersApi'
 import { getTags } from '@/service/khairat/TagsApi'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
-import { cilMagnifyingGlass, cilInfo, cilPrint } from '@coreui/icons'
+
+import { cilInfo, cilMagnifyingGlass, cilPrint } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import { useNavigate } from 'react-router-dom'
-import SenaraiAhli from '@/components/print/khairat/SenaraiAhli'
 import { useReactToPrint } from 'react-to-print'
+
+import SenaraiAhli from '@/components/print/khairat/SenaraiAhli'
 
 const columns = [
   {
@@ -64,28 +69,30 @@ const columns = [
 ]
 
 const conditionalRowStyles = [
-	{
-		when: row => row.paymentHistory.some(item => {
-      const paymentDateYear = new Date(item.paymentDate).getFullYear()
-      const currentYear = new Date().getFullYear()
-      return paymentDateYear === currentYear;
-    }),
-		style: {
-			backgroundColor: 'rgba(213, 245, 227, 0.9)',
-			color: 'black',
-		},
-	},
-	{
-		when: row => row.paymentHistory.every(item => {
-      const paymentDateYear = new Date(item.paymentDate).getFullYear();
-      const currentYear = new Date().getFullYear();
-      return paymentDateYear !== currentYear;
-    }),
-		style: {
-			backgroundColor: 'rgba(252, 243, 207, 0.9)',
-			color: 'black',
-		},
-	},
+  {
+    when: (row) =>
+      row.paymentHistory.some((item) => {
+        const paymentDateYear = new Date(item.paymentDate).getFullYear()
+        const currentYear = new Date().getFullYear()
+        return paymentDateYear === currentYear
+      }),
+    style: {
+      backgroundColor: 'rgba(213, 245, 227, 0.9)',
+      color: 'black',
+    },
+  },
+  {
+    when: (row) =>
+      row.paymentHistory.every((item) => {
+        const paymentDateYear = new Date(item.paymentDate).getFullYear()
+        const currentYear = new Date().getFullYear()
+        return paymentDateYear !== currentYear
+      }),
+    style: {
+      backgroundColor: 'rgba(252, 243, 207, 0.9)',
+      color: 'black',
+    },
+  },
 ]
 
 const Carian = () => {
@@ -98,12 +105,12 @@ const Carian = () => {
   const [tagsButtons, setTagsButtons] = useState([])
   const [tagIds, setTagIds] = useState([])
   const [visibleXL, setVisibleXL] = useState(false)
-  const componentRef = useRef();
+  const componentRef = useRef()
 
   useEffect(() => {
     setTimeout(() => {
-      searchInput.current.focus();
-    }, 10);
+      searchInput.current.focus()
+    }, 10)
   })
 
   useEffect(() => {
@@ -118,7 +125,7 @@ const Carian = () => {
         }))
         setTagItems(tagItems)
       } catch (error) {
-        console.error('Error fetching tags:', error);
+        console.error('Error fetching tags:', error)
       }
     }
     fetchTags()
@@ -161,8 +168,8 @@ const Carian = () => {
     })
 
     const tagIds = newTagItems
-    .map((tag) => (tag.mode ? tag.id : undefined))
-    .filter((id) => id !== undefined);
+      .map((tag) => (tag.mode ? tag.id : undefined))
+      .filter((id) => id !== undefined)
 
     setTagIds(tagIds)
     setTagItems(newTagItems)
@@ -170,56 +177,68 @@ const Carian = () => {
 
   useEffect(() => {
     const searchTags = () => {
-      if(tagIds.length > 0) {
+      if (tagIds.length > 0) {
         searchMemberByTagId(tagIds)
-        .then((response) => {
-          setItems(
-            response.map((item) => {
-              const paymentHistory = item.paymentHistories
-              const currentYear = new Date().getFullYear();
-              const paymentStatus = paymentHistory.some(item => {
-                const paymentDateYear = new Date(item.paymentDate).getFullYear();
-                return paymentDateYear === currentYear;
-              }) ? `Sudah${paymentHistory.find(item => new Date(item.paymentDate).getFullYear() === currentYear)?.noResit ? ` (#${paymentHistory.find(item => new Date(item.paymentDate).getFullYear() === currentYear).noResit})` : ''}` : 'Belum';
+          .then((response) => {
+            setItems(
+              response.map((item) => {
+                const paymentHistory = item.paymentHistories
+                const currentYear = new Date().getFullYear()
+                const paymentStatus = paymentHistory.some((item) => {
+                  const paymentDateYear = new Date(item.paymentDate).getFullYear()
+                  return paymentDateYear === currentYear
+                })
+                  ? `Sudah${
+                      paymentHistory.find(
+                        (item) => new Date(item.paymentDate).getFullYear() === currentYear,
+                      )?.noResit
+                        ? ` (#${
+                            paymentHistory.find(
+                              (item) => new Date(item.paymentDate).getFullYear() === currentYear,
+                            ).noResit
+                          })`
+                        : ''
+                    }`
+                  : 'Belum'
 
-              const person = item.person
-              const tags = item.memberTags.map(tag => tag.tag.name);
-              const commaSeparatedTags = tags.join(', ');
-              return {
-                id: item.id,
-                nama: person.name,
-                icno: person.icNumber,
-                hp: person.phone,
-                alamat: person.address,
-                tagging: commaSeparatedTags,
-                paymentHistory,
-                paymentStatus,
-              }
-            }),
-          )
-          if (response.length === 0) {
-            toast.info('Hasil carian tiada.', {
-              position: 'top-center',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: 'light',
-            })
-          }
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-        .finally(() => {
-          setLoading(false)
-        })
+                const person = item.person
+                const tags = item.memberTags.map((tag) => tag.tag.name)
+                const commaSeparatedTags = tags.join(', ')
+                return {
+                  id: item.id,
+                  nama: person.name,
+                  icno: person.icNumber,
+                  hp: person.phone,
+                  alamat: person.address,
+                  tagging: commaSeparatedTags,
+                  paymentHistory,
+                  paymentStatus,
+                }
+              }),
+            )
+            if (response.length === 0) {
+              toast.info('Hasil carian tiada.', {
+                position: 'top-center',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: 'light',
+              })
+            }
+          })
+          .catch((error) => {
+            console.error(error)
+          })
+          .finally(() => {
+            setLoading(false)
+          })
       }
     }
     searchTags()
-  },[tagIds])
+  }, [tagIds])
 
   const handleRowClick = (row) => {
     navigate('/khairat/daftar/' + row.id)
@@ -233,11 +252,23 @@ const Carian = () => {
         setItems(
           response.map((item) => {
             const paymentHistory = item.paymentHistories
-            const currentYear = new Date().getFullYear();
-            const paymentStatus = paymentHistory.some(item => {
-              const paymentDateYear = new Date(item.paymentDate).getFullYear();
-              return paymentDateYear === currentYear;
-            }) ? `Sudah${paymentHistory.find(item => new Date(item.paymentDate).getFullYear() === currentYear)?.noResit ? ` (#${paymentHistory.find(item => new Date(item.paymentDate).getFullYear() === currentYear).noResit})` : ''}` : 'Belum';
+            const currentYear = new Date().getFullYear()
+            const paymentStatus = paymentHistory.some((item) => {
+              const paymentDateYear = new Date(item.paymentDate).getFullYear()
+              return paymentDateYear === currentYear
+            })
+              ? `Sudah${
+                  paymentHistory.find(
+                    (item) => new Date(item.paymentDate).getFullYear() === currentYear,
+                  )?.noResit
+                    ? ` (#${
+                        paymentHistory.find(
+                          (item) => new Date(item.paymentDate).getFullYear() === currentYear,
+                        ).noResit
+                      })`
+                    : ''
+                }`
+              : 'Belum'
 
             const person = item.person
             const tagging = item.memberTags[0]?.tag.name || ''
@@ -283,17 +314,19 @@ const Carian = () => {
   }
 
   const renderHelp = () => {
-    if(items.length !== 0) {
+    if (items.length !== 0) {
       return (
         <div className="mb-3">
           <CRow>
-            <CCol align="right" className="mt-2 hover-effect d-none d-lg-block"
-              onClick={() => setVisibleXL(true)}>
+            <CCol
+              align="right"
+              className="mt-2 hover-effect d-none d-lg-block"
+              onClick={() => setVisibleXL(true)}
+            >
               <CIcon icon={cilPrint} className="me-2" />
               Cetak senarai ini
             </CCol>
           </CRow>
-
         </div>
       )
     }
@@ -304,20 +337,20 @@ const Carian = () => {
       if (event.keyCode === 113) {
         navigate('/khairat/daftar')
       }
-    };
+    }
 
     // Add the event listener when the component mounts
-    document.addEventListener('keydown', handleKeyPress);
+    document.addEventListener('keydown', handleKeyPress)
 
     // Remove the event listener when the component unmounts
     return () => {
-      document.removeEventListener('keydown', handleKeyPress);
-    };
-  });
+      document.removeEventListener('keydown', handleKeyPress)
+    }
+  })
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
-  });
+  })
 
   return (
     <CRow>
@@ -328,64 +361,66 @@ const Carian = () => {
             <strong>Carian</strong>
           </CCardHeader>
           <CCardBody>
-          <CNav variant="tabs">
-            <CNavItem className='hover-effect'>
-              <CNavLink onClick={() => setActiveKey(1)} active={activeKey === 1}>
-                Carian teks
-              </CNavLink>
-            </CNavItem>
-            <CNavItem className='hover-effect'>
-              <CNavLink onClick={() => setActiveKey(2)} active={activeKey === 2}>
-                Carian tag
-              </CNavLink>
-            </CNavItem>
-          </CNav>
+            <CNav variant="tabs">
+              <CNavItem className="hover-effect">
+                <CNavLink onClick={() => setActiveKey(1)} active={activeKey === 1}>
+                  Carian teks
+                </CNavLink>
+              </CNavItem>
+              <CNavItem className="hover-effect">
+                <CNavLink onClick={() => setActiveKey(2)} active={activeKey === 2}>
+                  Carian tag
+                </CNavLink>
+              </CNavItem>
+            </CNav>
             <CTabContent>
-              <CTabPane role="tabpanel"
+              <CTabPane
+                role="tabpanel"
                 aria-labelledby="textsearch-tab-pane"
-                visible={activeKey === 1}>
-                  <p className="text-medium-emphasis mt-3">
-                    Carian ahli khairat dengan menggunakan nama, no ic, no hp atau alamat.
-                  </p>
-                  <CInputGroup className="mb-3">
-                    <CFormInput
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault()
-                          search()
-                        }
-                      }}
-                      ref={searchInput}
-                      id="txtSearch"
-                      placeholder="Isikan maklumat carian anda di sini"
-                      aria-label="Isikan maklumat carian anda di sini"
-                      aria-describedby="button-addon2"
-                    />
-                    <CButton
-                      onClick={search}
-                      type="button"
-                      color="info"
-                      variant="outline"
-                      id="button-addon2"
-                    >
-                      {loading ? (
-                        <>
-                          <CSpinner size="sm" color="primary" />
-                          <span> Sila tunggu</span>
-                        </>
-                      ) : (
-                        "Cari"
-                      )}
-                    </CButton>
-                  </CInputGroup>
+                visible={activeKey === 1}
+              >
+                <p className="text-medium-emphasis mt-3">
+                  Carian ahli khairat dengan menggunakan nama, no ic, no hp atau alamat.
+                </p>
+                <CInputGroup className="mb-3">
+                  <CFormInput
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault()
+                        search()
+                      }
+                    }}
+                    ref={searchInput}
+                    id="txtSearch"
+                    placeholder="Isikan maklumat carian anda di sini"
+                    aria-label="Isikan maklumat carian anda di sini"
+                    aria-describedby="button-addon2"
+                  />
+                  <CButton
+                    onClick={search}
+                    type="button"
+                    color="info"
+                    variant="outline"
+                    id="button-addon2"
+                  >
+                    {loading ? (
+                      <>
+                        <CSpinner size="sm" color="primary" />
+                        <span> Sila tunggu</span>
+                      </>
+                    ) : (
+                      'Cari'
+                    )}
+                  </CButton>
+                </CInputGroup>
               </CTabPane>
-              <CTabPane role="tabpanel"
+              <CTabPane
+                role="tabpanel"
                 aria-labelledby="tagsearch-tab-pane"
-                visible={activeKey === 2}>
-                  <p className="text-medium-emphasis mt-3">
-                    Pilih jenis penanda untuk dipaparkan.
-                  </p>
-                  {tagsButtons}
+                visible={activeKey === 2}
+              >
+                <p className="text-medium-emphasis mt-3">Pilih jenis penanda untuk dipaparkan.</p>
+                {tagsButtons}
               </CTabPane>
             </CTabContent>
 
@@ -396,7 +431,7 @@ const Carian = () => {
               data={items}
               pagination
               paginationPerPage={25}
-              paginationRowsPerPageOptions={[25 , 50 , 100, 200]}
+              paginationRowsPerPageOptions={[25, 50, 100, 200]}
               pointerOnHover
               highlightOnHover
               conditionalRowStyles={conditionalRowStyles}
@@ -417,7 +452,9 @@ const Carian = () => {
                 <CButton color="secondary" onClick={() => setVisibleXL(false)}>
                   Tutup
                 </CButton>
-                <CButton onClick={handlePrint} color="primary">Cetak</CButton>
+                <CButton onClick={handlePrint} color="primary">
+                  Cetak
+                </CButton>
               </CModalFooter>
             </CModal>
           </CCardBody>

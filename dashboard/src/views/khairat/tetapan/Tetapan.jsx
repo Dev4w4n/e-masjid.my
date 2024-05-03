@@ -1,25 +1,29 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+
 import {
+  CAccordion,
+  CAccordionBody,
+  CAccordionHeader,
+  CAccordionItem,
+  CButton,
   CCard,
   CCardBody,
   CCardHeader,
   CCol,
-  CRow,
-  CTable,
-  CButton,
-  CAccordion,
-  CAccordionItem,
-  CAccordionHeader,
-  CAccordionBody,
-  CFormLabel,
   CFormInput,
-  CSpinner,
+  CFormLabel,
   CInputGroup,
+  CRow,
+  CSpinner,
+  CTable,
 } from '@coreui/react'
-import { getTags, saveTag, deleteTag } from '@/service/khairat/TagsApi'
+import { toast, ToastContainer } from 'react-toastify'
+
 import { saveMemberCsv } from '@/service/khairat/MembersApi'
-import { ToastContainer, toast } from 'react-toastify'
+import { deleteTag, getTags, saveTag } from '@/service/khairat/TagsApi'
+
 import 'react-toastify/dist/ReactToastify.css'
+
 import { isValidKhairatCSV } from '@/utils/Helpers'
 
 const columns = [
@@ -139,22 +143,21 @@ const Tetapan = () => {
         })
       }
     }
-  },[csvFile])
+  }, [csvFile])
 
   const handleChooseFile = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
+    const file = event.target.files[0]
+    const reader = new FileReader()
 
     reader.onload = (e) => {
-      const contents = e.target.result;
+      const contents = e.target.result
       setCsvFile(contents)
     }
 
     reader.readAsText(file)
-  };
+  }
 
   const handleUploadCsv = async () => {
-
     try {
       setLoadingFile(true)
       await saveMemberCsv(csvFile)
@@ -187,11 +190,14 @@ const Tetapan = () => {
         theme: 'light',
       })
     }
-
   }
 
   if (loading) {
-    return <div><CSpinner color="primary" /></div>
+    return (
+      <div>
+        <CSpinner color="primary" />
+      </div>
+    )
   }
   if (error) {
     return <div>Tiada akses. Sila login kembali</div>
@@ -241,34 +247,34 @@ const Tetapan = () => {
                       Contoh fail: <a href="/downloads/import.csv">import.csv</a>
                     </CFormLabel>
                     <CInputGroup className="mb-3">
-                    <CFormInput
-                      ref={fileInput}
-                      id="txtFileUpload"
-                      placeholder="Nama fail..."
-                      aria-label="Nama fail..."
-                      aria-describedby="button-addon2"
-                      type="file"
-                      accept='text/csv'
-                      onChange={handleChooseFile}
-                    />
-                    <CButton
-                      disabled={csvUploadButtonStyle.disabled}
-                      onClick={handleUploadCsv}
-                      type="button"
-                      color={csvUploadButtonStyle.color}
-                      variant={csvUploadButtonStyle.variant}
-                      id="button-addon2"
-                    >
-                      {loadingFile ? (
-                        <>
-                          <CSpinner size="sm" color="primary" />
-                          <span> Sila tunggu</span>
-                        </>
-                      ) : (
-                        "Muat naik"
-                      )}
-                    </CButton>
-                  </CInputGroup>
+                      <CFormInput
+                        ref={fileInput}
+                        id="txtFileUpload"
+                        placeholder="Nama fail..."
+                        aria-label="Nama fail..."
+                        aria-describedby="button-addon2"
+                        type="file"
+                        accept="text/csv"
+                        onChange={handleChooseFile}
+                      />
+                      <CButton
+                        disabled={csvUploadButtonStyle.disabled}
+                        onClick={handleUploadCsv}
+                        type="button"
+                        color={csvUploadButtonStyle.color}
+                        variant={csvUploadButtonStyle.variant}
+                        id="button-addon2"
+                      >
+                        {loadingFile ? (
+                          <>
+                            <CSpinner size="sm" color="primary" />
+                            <span> Sila tunggu</span>
+                          </>
+                        ) : (
+                          'Muat naik'
+                        )}
+                      </CButton>
+                    </CInputGroup>
                   </div>
                 </CAccordionBody>
               </CAccordionItem>

@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from 'react'
+
 import {
-  CRow,
+  cilArrowBottom,
+  cilArrowTop,
+  cilBadge,
+  cilCommentBubble,
+  cilOptions,
+  cilUser,
+} from '@coreui/icons'
+import CIcon from '@coreui/icons-react'
+import {
   CCol,
   CDropdown,
-  CDropdownMenu,
   CDropdownItem,
+  CDropdownMenu,
   CDropdownToggle,
+  CRow,
   CWidgetStatsA,
   CWidgetStatsC,
 } from '@coreui/react'
-import { getStyle } from '@coreui/utils'
 import { CChartLine } from '@coreui/react-chartjs'
-import CIcon from '@coreui/icons-react'
-import { cilArrowBottom, cilArrowTop, cilOptions, cilUser, cilBadge, cilCommentBubble } from '@coreui/icons'
+import { getStyle } from '@coreui/utils'
 import { useNavigate } from 'react-router-dom'
 
 const WidgetsDropdown = (props) => {
@@ -24,13 +32,13 @@ const WidgetsDropdown = (props) => {
 
   useEffect(() => {
     setKutipanList(props.kutipanList)
-  },[])
+  }, [])
 
   useEffect(() => {
     const calculatePercentageChange = (oldValue, newValue) => {
       return ((newValue - oldValue) / oldValue) * 100
     }
-  
+
     const calculateForKutipanWidget = () => {
       const hasMultipleQuotes = kutipanList.length > 1
       const hasSingleQuote = kutipanList.length === 1
@@ -38,34 +46,39 @@ const WidgetsDropdown = (props) => {
       if (hasMultipleQuotes) {
         const percentageChange = calculatePercentageChange(
           kutipanList[1].total,
-          kutipanList[0].total
+          kutipanList[0].total,
         )
-        const arrowIcon = percentageChange > 0 ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />;
+        const arrowIcon =
+          percentageChange > 0 ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />
         setKutipanPercentage(
           <span>
             {percentageChange.toFixed(2)}% {arrowIcon}
-          </span>
+          </span>,
         )
         setKutipanLatestValue(
-          kutipanList[0].total.toLocaleString('ms-MY', { style: 'currency', currency: 'MYR', minimumFractionDigits: 0 })
+          kutipanList[0].total.toLocaleString('ms-MY', {
+            style: 'currency',
+            currency: 'MYR',
+            minimumFractionDigits: 0,
+          }),
         )
-        setKutipanWidgetDate(kutipanList[0].createDate);
+        setKutipanWidgetDate(kutipanList[0].createDate)
       } else if (hasSingleQuote) {
-        const arrowIcon = <CIcon icon={cilArrowTop} />;
-        setKutipanPercentage(
-          <span>
-            100% {arrowIcon}
-          </span>
-        );
-        setKutipanLatestValue(kutipanList[0].total.toLocaleString('ms-MY', { style: 'currency', currency: 'MYR', minimumFractionDigits: 0 }))
-        setKutipanWidgetDate(kutipanList[0].createDate);
+        const arrowIcon = <CIcon icon={cilArrowTop} />
+        setKutipanPercentage(<span>100% {arrowIcon}</span>)
+        setKutipanLatestValue(
+          kutipanList[0].total.toLocaleString('ms-MY', {
+            style: 'currency',
+            currency: 'MYR',
+            minimumFractionDigits: 0,
+          }),
+        )
+        setKutipanWidgetDate(kutipanList[0].createDate)
       } else {
         setKutipanLatestDate('???')
         setKutipanPercentage('???')
         setKutipanLatestValue('???')
       }
-
-
     }
 
     const setKutipanWidgetDate = (createDate) => {
@@ -77,9 +90,9 @@ const WidgetsDropdown = (props) => {
       day = day < 10 ? '0' + day : day
       month = month < 10 ? '0' + month : month
 
-      setKutipanLatestDate("Tabung Jumaat " + day + '/' + month + '/' + year)
+      setKutipanLatestDate('Tabung Jumaat ' + day + '/' + month + '/' + year)
     }
-  
+
     calculateForKutipanWidget()
   }, [kutipanList])
 
@@ -107,13 +120,13 @@ const WidgetsDropdown = (props) => {
           // progress={{ value: 100 }}
           text="Ahli khairat"
           title="Ahli Khairat Berbayar"
-          value={`${(props.paidMemberCount / props.memberCount * 100).toFixed(2)} %`}
+          value={`${((props.paidMemberCount / props.memberCount) * 100).toFixed(2)} %`}
         />
       </CCol>
-      
+
       <CCol sm={6} lg={3}>
-      <CWidgetStatsC
-          className="mb-5 hover-effect" 
+        <CWidgetStatsC
+          className="mb-5 hover-effect"
           icon={<CIcon icon={cilCommentBubble} height={36} />}
           color="danger"
           inverse
@@ -124,20 +137,17 @@ const WidgetsDropdown = (props) => {
           onClick={() => navigate('/cadangan/senarai')}
         />
       </CCol>
-      
+
       <CCol sm={6} lg={3}>
         <CWidgetStatsA
           className="mb-4"
           color="success"
           value={
             <>
-              {kutipanLatestValue}{' '}
-              <span className="fs-6 fw-normal">
-                ( {kutipanPercentage} )
-              </span>
+              {kutipanLatestValue} <span className="fs-6 fw-normal">( {kutipanPercentage} )</span>
             </>
           }
-          title={kutipanLatestDate} 
+          title={kutipanLatestDate}
           action={
             <CDropdown alignment="end">
               <CDropdownToggle color="transparent" caret={false} className="p-0">

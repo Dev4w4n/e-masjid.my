@@ -1,34 +1,31 @@
-import React, { useState, useEffect } from 'react'
-import {
-  CSpinner,
-  CCard,
-  CCardBody,
-  CCol,
-  CRow,
-} from '@coreui/react'
+import React, { useEffect, useState } from 'react'
+
+import { CCard, CCardBody, CCol, CRow, CSpinner } from '@coreui/react'
 import DataTable from 'react-data-table-component'
+
 import 'react-toastify/dist/ReactToastify.css'
-import {getCadanganByType, getCadanganByOpen} from '@/service/cadangan/CadanganApi'
+
 import { cilMagnifyingGlass } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-import CadanganEditor from './CadanganEditor'
 
+import { getCadanganByOpen, getCadanganByType } from '@/service/cadangan/CadanganApi'
+import CadanganEditor from './CadanganEditor'
 
 const columns = [
   {
     name: 'Tarikh',
     selector: (row) => {
-      let date = new Date(row.createDate);
-      let day = date.getDate();
-      let month = date.getMonth() + 1;
-      let year = date.getFullYear();
+      let date = new Date(row.createDate)
+      let day = date.getDate()
+      let month = date.getMonth() + 1
+      let year = date.getFullYear()
 
-      let time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+      let time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
 
-      day = day < 10 ? '0' + day : day;
-      month = month < 10 ? '0' + month : month;
+      day = day < 10 ? '0' + day : day
+      month = month < 10 ? '0' + month : month
 
-      return day + '/' + month + '/' + year + ' ' + time;
+      return day + '/' + month + '/' + year + ' ' + time
     },
   },
   {
@@ -58,11 +55,13 @@ const CadanganList = ({ onEditorUpdated, ...props }) => {
   const fetchData = async (page, size) => {
     setLoading(true)
     try {
-      if(props.activeKey === props.cadanganType) {
-        const response = (props.activeKey === 5 && props.cadanganType === 5) ?
-        await getCadanganByOpen(page, size, props.isOpen) : await getCadanganByType(page, size, props.cadanganType, props.isOpen)
-        setData(response.content);
-        setTotalRows(response.total);
+      if (props.activeKey === props.cadanganType) {
+        const response =
+          props.activeKey === 5 && props.cadanganType === 5
+            ? await getCadanganByOpen(page, size, props.isOpen)
+            : await getCadanganByType(page, size, props.cadanganType, props.isOpen)
+        setData(response.content)
+        setTotalRows(response.total)
       }
     } catch (error) {
       console.error('Error fetching getCadanganByOpen:', error)
@@ -90,14 +89,14 @@ const CadanganList = ({ onEditorUpdated, ...props }) => {
     row.visibleXL = true
     setRowClickedInfo(row)
   }
-  const handlePageChange = page => {
-    fetchData(page, size);
-    setPage(page);
-  };
+  const handlePageChange = (page) => {
+    fetchData(page, size)
+    setPage(page)
+  }
   const handlePerRowsChange = async (newSize, page) => {
     setSize(newSize)
     fetchData(page, newSize)
-  };
+  }
 
   if (loading) {
     return (
@@ -126,7 +125,7 @@ const CadanganList = ({ onEditorUpdated, ...props }) => {
           paginationTotalRows={totalRows}
           paginationPerPage={size}
           paginationDefaultPage={page}
-          paginationRowsPerPageOptions={[25 , 50 , 100, 200]}
+          paginationRowsPerPageOptions={[25, 50, 100, 200]}
           onChangeRowsPerPage={handlePerRowsChange}
           onChangePage={handlePageChange}
           // conditionalRowStyles={conditionalRowStyles}
@@ -135,8 +134,11 @@ const CadanganList = ({ onEditorUpdated, ...props }) => {
           }}
         />
       </CCol>
-      <CadanganEditor onHandleRefreshData={handleRefreshData}
-      onEditorUpdated={onEditorUpdated} rowClickedInfo={rowClickedInfo} />
+      <CadanganEditor
+        onHandleRefreshData={handleRefreshData}
+        onEditorUpdated={onEditorUpdated}
+        rowClickedInfo={rowClickedInfo}
+      />
     </CRow>
   )
 }

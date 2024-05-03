@@ -1,14 +1,16 @@
-import React from 'react'
-import { Component, Suspense } from 'react'
-import { BrowserRouter as Router, Route, Routes, HashRouter } from 'react-router-dom'
-import { config } from '@/config'
+import React, { Component, Suspense } from 'react'
+
 import { ReactKeycloakProvider } from '@react-keycloak/web'
+import { HashRouter, Route, BrowserRouter as Router, Routes } from 'react-router-dom'
+
+import { config } from '@/config'
 import { keycloak } from '@/utils/Keycloak'
 
 import './scss/style.scss'
 
+import { type AuthClientError } from '@react-keycloak/core'
+
 import PrivateRoute from '@/components/auth/PrivateRoute'
-import { AuthClientError } from '@react-keycloak/core'
 
 const initOptions = { pkceMethod: 'S256' }
 
@@ -29,7 +31,6 @@ const loading = (
 )
 
 // Containers
-// @ts-expect-error ???
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 
 class App extends Component {
@@ -48,7 +49,6 @@ class App extends Component {
                 <Route
                   path="*"
                   element={
-                    // @ts-expect-error the only working way to do it
                     <PrivateRoute>
                       <DefaultLayout />
                     </PrivateRoute>

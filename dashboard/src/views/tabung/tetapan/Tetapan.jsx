@@ -1,24 +1,27 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+
 import {
+  CAccordion,
+  CAccordionBody,
+  CAccordionHeader,
+  CAccordionItem,
+  CButton,
   CCard,
   CCardBody,
   CCardHeader,
   CCol,
-  CRow,
+  CFormCheck,
   CFormInput,
   CFormSelect,
-  CButton,
-  CAccordion,
-  CAccordionItem,
-  CAccordionHeader,
-  CAccordionBody,
-  CTable,
+  CRow,
   CSpinner,
-  CFormCheck,
+  CTable,
 } from '@coreui/react'
-import { ToastContainer, toast } from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
-import { getTabung, saveTabung, deleteTabung } from '@/service/tabung/TabungApi'
+
+import { deleteTabung, getTabung, saveTabung } from '@/service/tabung/TabungApi'
 
 const columns = [
   {
@@ -44,18 +47,18 @@ const tabungList = [
   { label: 'Harian', value: '1' },
   { label: 'Mingguan', value: '2' },
   { label: 'Biasa', value: '3' },
-];
+]
 
 const Tetapan = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [inputValue, setInputValue] = useState('');
-  const [selectedOption, setSelectedOption] = useState('');
-  const [enableCentsChecked, setEnableCentsChecked] = useState(false);
+  const [inputValue, setInputValue] = useState('')
+  const [selectedOption, setSelectedOption] = useState('')
+  const [enableCentsChecked, setEnableCentsChecked] = useState(false)
   const [tabung, setTabung] = useState([])
   const [data, setData] = useState([])
   const [editID, setEditID] = useState(null)
-  const formContainerRef = useRef(null);
+  const formContainerRef = useRef(null)
 
   useEffect(() => {
     async function fetchTabung() {
@@ -90,10 +93,10 @@ const Tetapan = () => {
   }, [data])
 
   const resetForm = () => {
-    setInputValue('');
-    setSelectedOption('');
-    setEnableCentsChecked(false);
-  };
+    setInputValue('')
+    setSelectedOption('')
+    setEnableCentsChecked(false)
+  }
 
   const addTabung = async () => {
     try {
@@ -101,9 +104,9 @@ const Tetapan = () => {
         cents: enableCentsChecked,
         name: inputValue,
         tabungType: {
-          id: parseInt(selectedOption)
+          id: parseInt(selectedOption),
         },
-      };
+      }
       if (editID !== null) {
         tabung.id = editID
         setEditID(null)
@@ -144,20 +147,24 @@ const Tetapan = () => {
   }
 
   const editTabung = async (row) => {
-    setEditID(row.id);
-    setInputValue(row.name);
-    setEnableCentsChecked(row.cents);
-    setSelectedOption(row.tabungType.id.toString());
-    formContainerRef.current.scrollIntoView({ behavior: 'smooth' });
-  };
+    setEditID(row.id)
+    setInputValue(row.name)
+    setEnableCentsChecked(row.cents)
+    setSelectedOption(row.tabungType.id.toString())
+    formContainerRef.current.scrollIntoView({ behavior: 'smooth' })
+  }
 
   const cancelEdit = () => {
-    setEditID(null);
-    resetForm();
+    setEditID(null)
+    resetForm()
   }
 
   if (loading) {
-    return <div><CSpinner color="primary" /></div>
+    return (
+      <div>
+        <CSpinner color="primary" />
+      </div>
+    )
   }
   if (error) {
     return <div>Error: {error.message}</div>
@@ -178,7 +185,12 @@ const Tetapan = () => {
               <CAccordionItem>
                 <CAccordionHeader>Tabung</CAccordionHeader>
                 <CAccordionBody>
-                  <div style={{ backgroundColor: editID !== null ? 'beige' : 'transparent', padding: '0.3em' }}>
+                  <div
+                    style={{
+                      backgroundColor: editID !== null ? 'beige' : 'transparent',
+                      padding: '0.3em',
+                    }}
+                  >
                     {editID !== null ? <h6>Mod Ubah</h6> : <></>}
                     <div className="mb-3">
                       <CRow>
@@ -211,12 +223,21 @@ const Tetapan = () => {
                       </CRow>
                     </div>
                     <div className="button-action-container">
-                      <CButton color="primary" size="sm" onClick={addTabung}
-                        className="custom-action-button">
+                      <CButton
+                        color="primary"
+                        size="sm"
+                        onClick={addTabung}
+                        className="custom-action-button"
+                      >
                         {editID !== null ? 'Simpan Perubahan' : 'Tambah tabung'}
                       </CButton>
-                      <CButton color='secondary' size="sm" hidden={editID === null} onClick={() => cancelEdit()}
-                        className="custom-action-button">
+                      <CButton
+                        color="secondary"
+                        size="sm"
+                        hidden={editID === null}
+                        onClick={() => cancelEdit()}
+                        className="custom-action-button"
+                      >
                         Batal
                       </CButton>
                     </div>

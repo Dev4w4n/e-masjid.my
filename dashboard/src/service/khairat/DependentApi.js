@@ -1,5 +1,6 @@
-import { axiosInstance } from '@/utils/ApiHelper'
 import { config } from '@/config'
+import { axiosInstance } from '@/utils/ApiHelper'
+
 const apiServer = config.url.KHAIRAT_API_BASE_URL
 
 export const getDependentsByMemberId = async (memberId) => {

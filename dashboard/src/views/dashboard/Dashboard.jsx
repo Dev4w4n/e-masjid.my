@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+
+import { cilCloudDownload } from '@coreui/icons'
+import CIcon from '@coreui/icons-react'
 import {
-  CSpinner,
   CButton,
   CCard,
   CCardBody,
@@ -8,17 +10,15 @@ import {
   CCol,
   CProgress,
   CRow,
+  CSpinner,
 } from '@coreui/react'
 import { CChartLine } from '@coreui/react-chartjs'
 import { getStyle, hexToRgba } from '@coreui/utils'
-import CIcon from '@coreui/icons-react'
-import { cilCloudDownload } from '@coreui/icons'
 
-import WidgetsDropdown from '../widgets/WidgetsDropdown'
-import { getMemberCount } from '@/service/khairat/MembersApi'
-import { getPaidMemberCountCurrentYear } from '@/service/khairat/MembersApi'
-import { getKutipanByTabung } from '@/service/tabung/KutipanApi';
 import { getCadanganCount } from '@/service/cadangan/CadanganApi'
+import { getMemberCount, getPaidMemberCountCurrentYear } from '@/service/khairat/MembersApi'
+import { getKutipanByTabung } from '@/service/tabung/KutipanApi'
+import WidgetsDropdown from '../widgets/WidgetsDropdown'
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(false)
@@ -50,15 +50,14 @@ const Dashboard = () => {
         const data = kutipanList.map((kutipan) => ({
           total: kutipan.total,
           date: setKutipanWidgetDate(kutipan.createDate),
-        }));
-        setKutipanChartValue(data.slice().reverse());
-        setKutipanChartValueTop5(data.slice(0, 4).reverse());
+        }))
+        setKutipanChartValue(data.slice().reverse())
+        setKutipanChartValueTop5(data.slice(0, 4).reverse())
       }
     }
 
     calculateForKutipanWidget()
   }, [kutipanList])
-
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -79,11 +78,10 @@ const Dashboard = () => {
 
         const response = await getCadanganCount()
         setCadanganCount(response[0])
-        const count = await getPaidMemberCountCurrentYear();
+        const count = await getPaidMemberCountCurrentYear()
         setPaidMemberCount(count)
-        const countMember = await getMemberCount();
+        const countMember = await getMemberCount()
         setMemberCount(countMember)
-
       } catch (error) {
         console.error('Error fetching dashboard data:', error)
       } finally {
@@ -91,11 +89,15 @@ const Dashboard = () => {
       }
     }
 
-    fetchDashboardData();
-  }, []);
+    fetchDashboardData()
+  }, [])
 
   if (loading) {
-    return <div><CSpinner color="primary" /></div>
+    return (
+      <div>
+        <CSpinner color="primary" />
+      </div>
+    )
   }
 
   // const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
@@ -108,7 +110,6 @@ const Dashboard = () => {
     // { title: 'Bounce Rate', value: 'Average Rate', percent: 40.15, color: 'primary' },
   ]
 
-
   return (
     <>
       <WidgetsDropdown
@@ -116,7 +117,8 @@ const Dashboard = () => {
         paidMemberCount={paidMemberCount}
         kutipanList={kutipanList}
         kutipanChartValueTop5={kutipanChartValueTop5}
-        cadanganCount={cadanganCount} />
+        cadanganCount={cadanganCount}
+      />
       <CCard className="mb-4">
         <CCardBody>
           <CRow>

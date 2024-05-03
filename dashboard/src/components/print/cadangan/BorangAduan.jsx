@@ -1,7 +1,9 @@
-import React, { useState, useEffect, forwardRef } from 'react'
-import { CCol, CRow, CContainer } from '@coreui/react'
+import React, { forwardRef, useEffect, useState } from 'react'
+
+import { CCol, CContainer, CRow } from '@coreui/react'
+
+import { print as constants } from '@/config'
 import { getTetapanNamaMasjid } from '@/service/tetapan/TetapanMasjidApi'
-import { print as constants } from '@/config';
 
 const BorangAduan = forwardRef((props, ref) => {
   const [namaMasjid, setNamaMasjid] = useState()
@@ -12,7 +14,7 @@ const BorangAduan = forwardRef((props, ref) => {
         const response = await getTetapanNamaMasjid()
         setNamaMasjid(response.nilai)
       } catch (error) {
-        console.error("Error fetching nama masjid:", error)
+        console.error('Error fetching nama masjid:', error)
       }
     }
     loadNamaMasjid()
@@ -26,7 +28,9 @@ const BorangAduan = forwardRef((props, ref) => {
     >
       <CRow>
         <CCol style={{ textAlign: 'center' }}>
-          <h2><u>BORANG ADUAN DAN CADANGAN</u></h2>
+          <h2>
+            <u>BORANG ADUAN DAN CADANGAN</u>
+          </h2>
         </CCol>
       </CRow>
 
@@ -37,7 +41,8 @@ const BorangAduan = forwardRef((props, ref) => {
       </CRow>
 
       <CRow>
-        <br /><br />
+        <br />
+        <br />
       </CRow>
 
       <CRow>
@@ -96,12 +101,14 @@ const BorangAduan = forwardRef((props, ref) => {
 
       <CRow>
         <CCol style={{ textAlign: 'center', marginTop: '20px' }}>
-          <small>{`${constants.domain} ©${constants.copyrightYear} - ${constants.printFrom} `}
-            <a href={constants.url} target="_blank" rel="noopener noreferrer">{constants.url}</a>
+          <small>
+            {`${constants.domain} ©${constants.copyrightYear} - ${constants.printFrom} `}
+            <a href={constants.url} target="_blank" rel="noopener noreferrer">
+              {constants.url}
+            </a>
           </small>
         </CCol>
       </CRow>
-
     </CContainer>
   )
 })

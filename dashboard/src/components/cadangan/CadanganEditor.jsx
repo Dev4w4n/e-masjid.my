@@ -1,40 +1,44 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+
 import {
-  CModal,
-  CModalBody,
-  CModalHeader,
-  CModalFooter,
+  CButton,
+  CButtonGroup,
   CForm,
   CFormLabel,
   CFormTextarea,
-  CButton,
-  CButtonGroup,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
 } from '@coreui/react'
+import { toast, ToastContainer } from 'react-toastify'
+
 import { getCadanganById, updateCadangan } from '@/service/cadangan/CadanganApi'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
-import BorangAduan from '../print/cadangan/BorangAduan'
+
 import { useReactToPrint } from 'react-to-print'
+
+import BorangAduan from '../print/cadangan/BorangAduan'
 
 const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
   const [confirmText, setConfirmText] = useState('')
   const [visibleXL, setVisibleXL] = useState(false)
   const [visibleSM, setVisibleSM] = useState(false)
-  const componentRef = useRef();
+  const componentRef = useRef()
   const [visiblePrint, setVisiblePrint] = useState(false)
-
 
   const [data, setData] = useState({})
   const inputTindakan = useRef()
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
-  });
+  })
 
   useEffect(() => {
     async function loadData() {
-      if(props.rowClickedInfo) {
-        if(props.rowClickedInfo.visibleXL) {
+      if (props.rowClickedInfo) {
+        if (props.rowClickedInfo.visibleXL) {
           setVisibleXL(true)
           const cadanganData = await getCadanganById(props.rowClickedInfo.id)
           setData(cadanganData)
@@ -74,7 +78,7 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
       default:
     }
     try {
-      const updateTindakanText = inputTindakan.current ? inputTindakan.current.value : '';
+      const updateTindakanText = inputTindakan.current ? inputTindakan.current.value : ''
 
       const updateData = {
         id: props.rowClickedInfo.id,
@@ -86,7 +90,7 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
         cadanganPhone: data.cadanganPhone,
         cadanganEmail: data.cadanganEmail,
         cadanganNama: data.cadanganNama,
-        createDate: data.createDate
+        createDate: data.createDate,
       }
 
       await updateCadangan(updateData, props.rowClickedInfo.id)
@@ -147,15 +151,27 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
         <CModalBody>
           <CForm id="cadanganEditorForm">
             <div className="mb-3">
-              <CFormLabel htmlFor="txtNoHp">Tarikh: {new Date(data.createDate).toLocaleString('ms-MY')}</CFormLabel><br />
-              <CFormLabel htmlFor="txtNama">Nama: {data.cadanganNama}</CFormLabel><br />
-              <CFormLabel htmlFor="txtEmail">Email: {data.cadanganEmail}</CFormLabel><br />
-              <CFormLabel htmlFor="txtNoHp">No telefon: {data.cadanganPhone}</CFormLabel><br />
-              <CFormLabel htmlFor="txtNoHp">Penilaian: {data.score}</CFormLabel><br />
+              <CFormLabel htmlFor="txtNoHp">
+                Tarikh: {new Date(data.createDate).toLocaleString('ms-MY')}
+              </CFormLabel>
+              <br />
+              <CFormLabel htmlFor="txtNama">Nama: {data.cadanganNama}</CFormLabel>
+              <br />
+              <CFormLabel htmlFor="txtEmail">Email: {data.cadanganEmail}</CFormLabel>
+              <br />
+              <CFormLabel htmlFor="txtNoHp">No telefon: {data.cadanganPhone}</CFormLabel>
+              <br />
+              <CFormLabel htmlFor="txtNoHp">Penilaian: {data.score}</CFormLabel>
+              <br />
             </div>
             <div className="mb-3">
               <CFormLabel htmlFor="txtKomen">Komen</CFormLabel>
-              <CFormTextarea id="txtKomen" disabled rows={3} value={data.cadanganText}></CFormTextarea>
+              <CFormTextarea
+                id="txtKomen"
+                disabled
+                rows={3}
+                value={data.cadanganText}
+              ></CFormTextarea>
             </div>
             <div className="mb-3">
               <CFormLabel htmlFor="txtTindakanMasjid">Tindakan Masjid</CFormLabel>
@@ -164,19 +180,30 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
             <div className="mb-3">
               <CFormLabel htmlFor="txtNoHp">Pindah ke&nbsp;&nbsp;&nbsp;</CFormLabel>
               <CButtonGroup role="group" aria-label="Move Button Group">
-                <CButton color="primary" variant="outline" onClick={() => confirmMove('Cadangan')}>Cadangan</CButton>
-                <CButton color="primary" variant="outline" onClick={() => confirmMove('Aduan')}>Aduan</CButton>
-                <CButton color="primary" variant="outline" onClick={() => confirmMove('Lain-lain')}>Lain-lain</CButton>
-                <CButton color="primary" variant="outline" onClick={() => confirmMove('Selesai')}>Selesai</CButton>
+                <CButton color="primary" variant="outline" onClick={() => confirmMove('Cadangan')}>
+                  Cadangan
+                </CButton>
+                <CButton color="primary" variant="outline" onClick={() => confirmMove('Aduan')}>
+                  Aduan
+                </CButton>
+                <CButton color="primary" variant="outline" onClick={() => confirmMove('Lain-lain')}>
+                  Lain-lain
+                </CButton>
+                <CButton color="primary" variant="outline" onClick={() => confirmMove('Selesai')}>
+                  Selesai
+                </CButton>
               </CButtonGroup>
             </div>
           </CForm>
         </CModalBody>
         <CModalFooter>
-          <CButton color="secondary" onClick={() => {
+          <CButton
+            color="secondary"
+            onClick={() => {
               setVisibleXL(false)
               setVisiblePrint(true)
-            }}>
+            }}
+          >
             Cetak
           </CButton>
           <CButton color="secondary" onClick={() => resetModal()}>
@@ -199,7 +226,9 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
           <h3>Pindah kes</h3>
         </CModalHeader>
         <CModalBody>
-          <p>Adakah anda pasti untuk pindahkan kes ini ke bahagian <b>{confirmText}</b>?</p>
+          <p>
+            Adakah anda pasti untuk pindahkan kes ini ke bahagian <b>{confirmText}</b>?
+          </p>
         </CModalBody>
         <CModalFooter>
           <CButton
@@ -211,10 +240,7 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
           >
             Kembali
           </CButton>
-          <CButton
-            color="danger"
-            onClick={() => moveTo()}
-          >
+          <CButton color="danger" onClick={() => moveTo()}>
             Ya
           </CButton>
         </CModalFooter>
@@ -232,7 +258,9 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
           <CButton color="secondary" onClick={() => setVisiblePrint(false)}>
             Tutup
           </CButton>
-          <CButton onClick={handlePrint} color="primary">Cetak</CButton>
+          <CButton onClick={handlePrint} color="primary">
+            Cetak
+          </CButton>
         </CModalFooter>
       </CModal>
     </>

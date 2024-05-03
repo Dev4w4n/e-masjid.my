@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types'
 import { useKeycloak } from '@react-keycloak/web'
+import PropTypes from 'prop-types'
 
 function PrivateRoute({ children }) {
   const { keycloak } = useKeycloak()
