@@ -21,12 +21,12 @@ const config = {
   rules: {
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
   },
-  // overrides: [
-  //   {
-  //     files: ['*.js', '*.jsx'],
-  //     extends: ['plugin:@typescript-eslint/disable-type-checked'],
-  //   },
-  // ],
+  overrides: [
+    {
+      files: ['*.js', '*.jsx'],
+      extends: ['plugin:@typescript-eslint/disable-type-checked'],
+    },
+  ],
   settings: {
     react: {
       version: 'detect',
