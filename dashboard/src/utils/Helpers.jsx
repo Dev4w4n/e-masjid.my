@@ -5,7 +5,6 @@ const MAX_COLUMNS = 10 // Maximum allowed columns
 const MAX_COLUMN_NAME_LENGTH = 128
 const MAX_COLUMN_NUMBER_LENGTH = 12
 
-
 export const handleLogError = (error) => {
   if (error.response) {
     console.log(error.response.data)
@@ -20,7 +19,7 @@ export const isValidKhairatCSV = (csvContent) => {
   // Check if CSV content is empty or too large
   if (!csvContent || csvContent.length > MAX_CSV_SIZE) {
     console.error('CSV content is empty or too large')
-    return false;
+    return false
   }
 
   // Split CSV content into lines

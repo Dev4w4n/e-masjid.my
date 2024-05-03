@@ -1,6 +1,8 @@
-import React, { useState, forwardRef, useEffect } from 'react'
-import { CCol, CRow, CContainer, CTable } from '@coreui/react'
-import { print as constants }  from '@/config';
+import React, { forwardRef, useEffect, useState } from 'react'
+
+import { CCol, CContainer, CRow, CTable } from '@coreui/react'
+
+import { print as constants } from '@/config'
 import { getTetapanNamaMasjid } from '@/service/tetapan/TetapanMasjidApi'
 
 const columns = [
@@ -30,7 +32,7 @@ const SenaraiAhli = forwardRef((props, ref) => {
   const [items, setItems] = useState([])
   const [total, setTotal] = useState(0)
   const [tagType, setTagType] = useState('')
-  const [namaMasjid, setNamaMasjid] = useState("")
+  const [namaMasjid, setNamaMasjid] = useState('')
 
   useEffect(() => {
     async function loadSenarai() {
@@ -46,8 +48,8 @@ const SenaraiAhli = forwardRef((props, ref) => {
         })
         jumlahAhli += 1
       }
-      const uniqueTags = [...new Set(props.items.map(item => item.tagging))];
-      const tagsString = uniqueTags.join(',');
+      const uniqueTags = [...new Set(props.items.map((item) => item.tagging))]
+      const tagsString = uniqueTags.join(',')
 
       setTagType(tagsString)
       setTotal(jumlahAhli)
@@ -59,15 +61,14 @@ const SenaraiAhli = forwardRef((props, ref) => {
   useEffect(() => {
     async function loadNamaMasjid() {
       try {
-        const response = await getTetapanNamaMasjid();
-        setNamaMasjid(response.nilai);
+        const response = await getTetapanNamaMasjid()
+        setNamaMasjid(response.nilai)
       } catch (error) {
-        console.error("Error fetching nama masjid:", error);
+        console.error('Error fetching nama masjid:', error)
       }
     }
-    loadNamaMasjid();
-  }, []);
-
+    loadNamaMasjid()
+  }, [])
 
   return (
     <CContainer
@@ -81,27 +82,27 @@ const SenaraiAhli = forwardRef((props, ref) => {
         </CCol>
       </CRow>
       <CRow>
-        <CCol style={{ textAlign: 'center' }} className='mb-3'>
+        <CCol style={{ textAlign: 'center' }} className="mb-3">
           <h3>{namaMasjid}</h3>
         </CCol>
       </CRow>
       <CRow>
         <CCol style={{ textAlign: 'left' }}>Jenis Penanda: {tagType}</CCol>
         <CCol></CCol>
-        <CCol style={{ textAlign: 'right' }}>
-          Jumlah ahli:{' '}
-          {total}
-        </CCol>
+        <CCol style={{ textAlign: 'right' }}>Jumlah ahli: {total}</CCol>
       </CRow>
       <CRow>
-        <CCol className='mt-3'>
-          <CTable className='table table-striped' columns={columns} items={items} />
+        <CCol className="mt-3">
+          <CTable className="table table-striped" columns={columns} items={items} />
         </CCol>
       </CRow>
       <CRow>
         <CCol style={{ textAlign: 'center', marginTop: '20px' }}>
-          <small>{`${constants.domain} ©${constants.copyrightYear} - ${constants.printFrom} `}
-            <a href={constants.url} target="_blank" rel="noopener noreferrer">{constants.url}</a>
+          <small>
+            {`${constants.domain} ©${constants.copyrightYear} - ${constants.printFrom} `}
+            <a href={constants.url} target="_blank" rel="noopener noreferrer">
+              {constants.url}
+            </a>
           </small>
         </CCol>
       </CRow>

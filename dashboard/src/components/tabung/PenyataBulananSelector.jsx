@@ -1,19 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react'
-import {
-  CModal,
-  CModalBody,
-  CModalHeader,
-  CModalFooter,
-  CButton,
-} from '@coreui/react'
+import React, { useEffect, useRef, useState } from 'react'
+
+import { CButton, CModal, CModalBody, CModalFooter, CModalHeader } from '@coreui/react'
 import DatePicker from 'react-datepicker'
+
 import 'react-datepicker/dist/react-datepicker.css'
+
 import { useReactToPrint } from 'react-to-print'
+
 import PenyataBulananPrint from '@/components/print/tabung/PenyataBulananPrint'
 import { getTabungById } from '@/service/tabung/TabungApi'
 
 const PenyataBulananSelector = ({ onModalClose, ...props }) => {
-  const componentRef = useRef();
+  const componentRef = useRef()
   const [calendarVisible, setCalendarVisible] = useState(false)
   const [selectedMonth, setSelectedMonth] = useState(new Date())
   const [visibleSM, setVisibleSM] = useState(false)
@@ -22,7 +20,7 @@ const PenyataBulananSelector = ({ onModalClose, ...props }) => {
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
-  });
+  })
 
   useEffect(() => {
     function showModal() {
@@ -46,7 +44,7 @@ const PenyataBulananSelector = ({ onModalClose, ...props }) => {
     const dataToPrint = {
       tabung: {
         id: tabung.id,
-        name: tabung.name
+        name: tabung.name,
       },
       createDate: new Date().getTime(),
       selectedMonth: selectedMonth,
@@ -98,16 +96,19 @@ const PenyataBulananSelector = ({ onModalClose, ...props }) => {
           >
             Batal
           </CButton>
-          <CButton color="primary" onClick={(e) => {
-            e.stopPropagation();
-            printPreview();
-          }}>
+          <CButton
+            color="primary"
+            onClick={(e) => {
+              e.stopPropagation()
+              printPreview()
+            }}
+          >
             Teruskan
           </CButton>
         </CModalFooter>
       </CModal>
       <CModal
-        size='xl'
+        size="xl"
         visible={visibleXL}
         onClick={() => {
           resetModal()

@@ -1,9 +1,9 @@
 import React from 'react'
+
+import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
 import { Link, useLocation } from 'react-router-dom'
 
 import routes from '../routes'
-
-import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
 
 const AppBreadcrumb = () => {
   const currentLocation = useLocation().pathname
@@ -42,9 +42,7 @@ const AppBreadcrumb = () => {
             {breadcrumb.active ? (
               breadcrumb.name
             ) : (
-              <Link to={breadcrumb.pathname}>
-                {breadcrumb.name}
-              </Link>
+              <Link to={breadcrumb.pathname}>{breadcrumb.name}</Link>
             )}
           </CBreadcrumbItem>
         )

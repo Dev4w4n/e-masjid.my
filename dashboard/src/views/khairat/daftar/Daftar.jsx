@@ -1,30 +1,38 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useEffect, useRef, useState } from 'react'
+
 import {
+  CAccordion,
+  CAccordionBody,
+  CAccordionHeader,
+  CAccordionItem,
+  CButton,
   CCard,
   CCardBody,
   CCardHeader,
   CCol,
-  CRow,
   CForm,
-  CFormLabel,
-  CFormInput,
-  CFormTextarea,
-  CFormSelect,
-  CButton,
-  CAccordion,
-  CAccordionItem,
-  CAccordionHeader,
-  CAccordionBody,
-  CTable,
-  CSpinner,
   CFormCheck,
+  CFormInput,
+  CFormLabel,
+  CFormSelect,
+  CFormTextarea,
+  CRow,
+  CSpinner,
+  CTable,
 } from '@coreui/react'
+import { useParams } from 'react-router-dom'
+import { toast, ToastContainer } from 'react-toastify'
+
+import {
+  deleteDependent,
+  getDependentsByMemberId,
+  saveDependent,
+} from '@/service/khairat/DependentApi'
+import { loadMember, saveMember } from '@/service/khairat/MembersApi'
 import { getTags } from '@/service/khairat/TagsApi'
-import { getDependentsByMemberId, saveDependent, deleteDependent } from '@/service/khairat/DependentApi'
-import { saveMember, loadMember } from '@/service/khairat/MembersApi'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
+
 import { useNavigate } from 'react-router-dom'
 
 const columns = [
@@ -102,8 +110,8 @@ const Daftar = () => {
     }
     fetchTags()
     setTimeout(() => {
-      inputNamaAhli.current.focus();
-    }, 10);
+      inputNamaAhli.current.focus()
+    }, 10)
   }, [])
   // to generate tag buttons
   useEffect(() => {
@@ -322,20 +330,18 @@ const Daftar = () => {
   }
   const saveAhli = async () => {
     if (
-      (inputNamaAhli.current.value === '' ||
-        inputNamaAhli.current.value === null ||
-        inputNamaAhli.current.value === 'undefined')
-      ||
-      (inputNoIcAhli.current.value === '' ||
-        inputNoIcAhli.current.value === null ||
-        inputNoIcAhli.current.value === 'undefined' ||
-        inputNoIcAhli.current.value === 'false') ||
-      isNaN(inputNoIcAhli.current.value)
-      ||
-      (inputNoHpAhli.current.value === '' ||
-        inputNoHpAhli.current.value === null ||
-        inputNoHpAhli.current.value === 'undefined' ||
-        inputNoHpAhli.current.value === 'false') ||
+      inputNamaAhli.current.value === '' ||
+      inputNamaAhli.current.value === null ||
+      inputNamaAhli.current.value === 'undefined' ||
+      inputNoIcAhli.current.value === '' ||
+      inputNoIcAhli.current.value === null ||
+      inputNoIcAhli.current.value === 'undefined' ||
+      inputNoIcAhli.current.value === 'false' ||
+      isNaN(inputNoIcAhli.current.value) ||
+      inputNoHpAhli.current.value === '' ||
+      inputNoHpAhli.current.value === null ||
+      inputNoHpAhli.current.value === 'undefined' ||
+      inputNoHpAhli.current.value === 'false' ||
       isNaN(inputNoHpAhli.current.value)
     ) {
       if (isNaN(inputNoIcAhli.current.value)) {
@@ -366,8 +372,6 @@ const Daftar = () => {
       saveNotification()
       setValidated(false)
     }
-
-
   }
   const saveNotification = () => {
     toast.success('Maklumat telah disimpan', {
@@ -390,11 +394,11 @@ const Daftar = () => {
   const memberHasPaid = () => {
     let hasPaid = false
     const currentYear = new Date().getFullYear()
-    hasPaid = tarikhBayaran.some(item => {
+    hasPaid = tarikhBayaran.some((item) => {
       const paymentDateYear = new Date(item.paymentDate).getFullYear()
-      return paymentDateYear === currentYear;
+      return paymentDateYear === currentYear
     })
-    return hasPaid;
+    return hasPaid
   }
   const addNewMember = async () => {
     const updatablePaymentHistories = []
@@ -551,8 +555,8 @@ const Daftar = () => {
       const newTagItems = prevTagItems.map((tag) => ({
         ...tag,
         mode: false,
-      }));
-      return newTagItems;
+      }))
+      return newTagItems
     })
     setMemberTags([])
     setTagItems((prevTagItems) => {
@@ -560,9 +564,9 @@ const Daftar = () => {
       const newTagItems = prevTagItems.map((tag) => ({
         ...tag,
         mode: false, // Set mode to 'info'
-      }));
-      return newTagItems;
-    });
+      }))
+      return newTagItems
+    })
     setTanggunanItems([])
     setTarikhBayaran([])
     setPaymentChk(false)
@@ -572,9 +576,9 @@ const Daftar = () => {
       top: 0,
       behavior: 'smooth',
     })
-    const form = document.getElementById('daftarForm');
+    const form = document.getElementById('daftarForm')
     if (form) {
-      form.reset();
+      form.reset()
       navigate('/khairat/daftar')
     }
   }
@@ -587,39 +591,64 @@ const Daftar = () => {
       } else if (event.keyCode === 115) {
         navigate('/khairat/carian')
       }
-    };
+    }
 
     // Add the event listener when the component mounts
-    document.addEventListener('keydown', handleKeyPress);
+    document.addEventListener('keydown', handleKeyPress)
 
     // Remove the event listener when the component unmounts
     return () => {
-      document.removeEventListener('keydown', handleKeyPress);
-    };
-  });
+      document.removeEventListener('keydown', handleKeyPress)
+    }
+  })
 
   function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
   const renderBayaran = () => {
     return (
       <>
-        <CFormLabel htmlFor="txtTarikhBayaran" style={{ whiteSpace: 'pre' }}>Status bayaran tahun ini:{'\t'}</CFormLabel>
-        <CFormCheck inline type="radio" id="bayaranChkBox1" onChange={() => setPaymentChk(true)} checked={paymentChk} value={paymentChk} label="Sudah" />
-        <CFormCheck inline type="radio" id="bayaranChkBox2" onChange={() => setPaymentChk(false)} checked={!paymentChk} value={!paymentChk} label="Belum" />
-        {
-          paymentChk && (
-            <>
-              <br />
-              <CFormInput ref={inputNoResit} type="text" id="txtNoResit" placeholder="Masukkan no resit (Jika ada)" />
-            </>
-          )
-        }
+        <CFormLabel htmlFor="txtTarikhBayaran" style={{ whiteSpace: 'pre' }}>
+          Status bayaran tahun ini:{'\t'}
+        </CFormLabel>
+        <CFormCheck
+          inline
+          type="radio"
+          id="bayaranChkBox1"
+          onChange={() => setPaymentChk(true)}
+          checked={paymentChk}
+          value={paymentChk}
+          label="Sudah"
+        />
+        <CFormCheck
+          inline
+          type="radio"
+          id="bayaranChkBox2"
+          onChange={() => setPaymentChk(false)}
+          checked={!paymentChk}
+          value={!paymentChk}
+          label="Belum"
+        />
+        {paymentChk && (
+          <>
+            <br />
+            <CFormInput
+              ref={inputNoResit}
+              type="text"
+              id="txtNoResit"
+              placeholder="Masukkan no resit (Jika ada)"
+            />
+          </>
+        )}
       </>
     )
   }
   if (initLoading) {
-    return <div><CSpinner color="primary" /></div>
+    return (
+      <div>
+        <CSpinner color="primary" />
+      </div>
+    )
   }
   if (error) {
     return <div>Tiada akses. Sila login kembali</div>
@@ -678,7 +707,9 @@ const Daftar = () => {
                 />
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="txtKawasan" tabIndex={4}>Penandaan</CFormLabel>
+                <CFormLabel htmlFor="txtKawasan" tabIndex={4}>
+                  Penandaan
+                </CFormLabel>
                 <br />
                 <div className="button-penandaan">
                   <>{tagButtons}</>
@@ -690,7 +721,12 @@ const Daftar = () => {
                   <CAccordionBody>
                     <div className="mb-3">
                       <CFormLabel htmlFor="txtAlamat">Alamat</CFormLabel>
-                      <CFormTextarea ref={inputAlamatAhli} id="txtAlamat" rows={3} maxLength={256}></CFormTextarea>
+                      <CFormTextarea
+                        ref={inputAlamatAhli}
+                        id="txtAlamat"
+                        rows={3}
+                        maxLength={256}
+                      ></CFormTextarea>
                     </div>
                   </CAccordionBody>
                 </CAccordionItem>
@@ -736,27 +772,34 @@ const Daftar = () => {
                 <CAccordionItem itemKey={3}>
                   <CAccordionHeader>Maklumat bayaran</CAccordionHeader>
                   <CAccordionBody>
-                    <div className="mb-3">
-                      {renderBayaran()}
-                    </div>
+                    <div className="mb-3">{renderBayaran()}</div>
                   </CAccordionBody>
                 </CAccordionItem>
               </CAccordion>
               <br />
               <div className="button-action-container">
-                <CButton onClick={saveAhli} color="primary" size="sm" tabIndex={5}
-                  className={`custom-action-button ${loading ? 'loading' : ''}`}>
+                <CButton
+                  onClick={saveAhli}
+                  color="primary"
+                  size="sm"
+                  tabIndex={5}
+                  className={`custom-action-button ${loading ? 'loading' : ''}`}
+                >
                   {loading ? (
                     <>
                       <CSpinner size="sm" color="primary" />
                       <span> Sila tunggu</span>
                     </>
                   ) : (
-                    "Simpan (F8)"
+                    'Simpan (F8)'
                   )}
                 </CButton>
-                <CButton onClick={clearForm} color="secondary" size="sm"
-                  className="custom-action-button">
+                <CButton
+                  onClick={clearForm}
+                  color="secondary"
+                  size="sm"
+                  className="custom-action-button"
+                >
                   Kosongkan semua
                 </CButton>
               </div>

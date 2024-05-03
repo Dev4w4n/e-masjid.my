@@ -33,7 +33,7 @@ const routes = [
   { path: '/cadangan', name: 'Cadangan', element: SenaraiCadangan, exact: true },
   { path: '/cadangan/senarai', name: 'Senarai', element: SenaraiCadangan },
   { path: '/cadangan/qr', name: 'Qr', element: Qr },
-  
+
   { path: '/tetapan', name: 'Tetapan Masjid', element: TetapanMasjid },
 ]
 

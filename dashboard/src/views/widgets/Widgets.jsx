@@ -1,4 +1,20 @@
 import React from 'react'
+
+import {
+  cilArrowRight,
+  cilBasket,
+  cilBell,
+  cilChartPie,
+  cilLaptop,
+  cilMoon,
+  cilPeople,
+  cilSettings,
+  cilSpeech,
+  cilSpeedometer,
+  cilUser,
+  cilUserFollow,
+} from '@coreui/icons'
+import CIcon from '@coreui/icons-react'
 import {
   CCard,
   CCardBody,
@@ -12,25 +28,10 @@ import {
   CWidgetStatsE,
   CWidgetStatsF,
 } from '@coreui/react'
-import { getStyle } from '@coreui/utils'
-import CIcon from '@coreui/icons-react'
-import {
-  cilArrowRight,
-  cilBasket,
-  cilBell,
-  cilChartPie,
-  cilMoon,
-  cilLaptop,
-  cilPeople,
-  cilSettings,
-  cilSpeech,
-  cilSpeedometer,
-  cilUser,
-  cilUserFollow,
-} from '@coreui/icons'
 import { CChartBar, CChartLine } from '@coreui/react-chartjs'
-import { DocsExample } from '@/components'
+import { getStyle } from '@coreui/utils'
 
+import { DocsExample } from '@/components'
 import WidgetsBrand from './WidgetsBrand'
 import WidgetsDropdown from './WidgetsDropdown'
 

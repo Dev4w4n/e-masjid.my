@@ -1,4 +1,7 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react'
+
+import { cilCloudDownload } from '@coreui/icons'
+import CIcon from '@coreui/icons-react'
 import {
   CButton,
   CCard,
@@ -6,135 +9,133 @@ import {
   CCardHeader,
   CCol,
   CContainer,
-  CRow,
   CImage,
   CNav,
   CNavItem,
   CNavLink,
+  CRow,
   CTabContent,
   CTabPane,
-} from '@coreui/react';
-import QRCode from 'react-qr-code';
-import html2canvas from 'html2canvas';
-import CIcon from '@coreui/icons-react';
-import { cilCloudDownload } from '@coreui/icons';
-import { HexColorPicker } from 'react-colorful';
+} from '@coreui/react'
+import html2canvas from 'html2canvas'
+import { HexColorPicker } from 'react-colorful'
+import QRCode from 'react-qr-code'
 
-import { config } from '@/config';
+import PosterBg1 from '@/assets/bgpattern/bg1.png'
+import PosterBg2 from '@/assets/bgpattern/bg2.png'
+import PosterBg3 from '@/assets/bgpattern/bg3.png'
+import PosterBg4 from '@/assets/bgpattern/bg4.png'
+import PosterBg5 from '@/assets/bgpattern/bg5.png'
+import PosterBg6 from '@/assets/bgpattern/bg6.png'
+import { config } from '@/config'
 
-import PosterBg1 from '@/assets/bgpattern/bg1.png';
-import PosterBg2 from '@/assets/bgpattern/bg2.png';
-import PosterBg3 from '@/assets/bgpattern/bg3.png';
-import PosterBg4 from '@/assets/bgpattern/bg4.png';
-import PosterBg5 from '@/assets/bgpattern/bg5.png';
-import PosterBg6 from '@/assets/bgpattern/bg6.png';
-
-const urlPetiCadangan = config.url.PETI_CADANGAN_URL;
+const urlPetiCadangan = config.url.PETI_CADANGAN_URL
 
 const Qr = () => {
-  const componentRef = useRef();
-  const googleApiWithKey = "https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyCMKzf91TWwDhsLFHIPgT47Oy-I3jNrEEo";
-  const defaultTitleSize = 8;
-  const defaultDescriptionSize = 4;
-  const defaultFooterSize = 1.2;
-  const defaultFontColor = '#000000';
-  const defaultFont = 'system-ui';
-  const defaultInstructionCircleColor = 'black';
-  const defaultInstructionNumberColor = 'white';
-  const defaultPageWidth = 210;
-  const defaultPageHeight = 297;
-  const defaultViewPort = '50vw';
+  const componentRef = useRef()
+  const googleApiWithKey =
+    'https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyCMKzf91TWwDhsLFHIPgT47Oy-I3jNrEEo'
+  const defaultTitleSize = 8
+  const defaultDescriptionSize = 4
+  const defaultFooterSize = 1.2
+  const defaultFontColor = '#000000'
+  const defaultFont = 'system-ui'
+  const defaultInstructionCircleColor = 'black'
+  const defaultInstructionNumberColor = 'white'
+  const defaultPageWidth = 210
+  const defaultPageHeight = 297
+  const defaultViewPort = '50vw'
   //const [googleFontList, setGoogleFontList] = useState([]);
 
   //default templates
-  const [fontColor, setFontColor] = useState(defaultFontColor);
-  const [background, setBackground] = useState(PosterBg1);
-  const [templateTitle, setTemplateTitle] = useState('');
-  const [selectedOption, setSelectedOption] = useState(1);
-  const [instructCircleColor, setInstructCircleColor] = useState(defaultInstructionCircleColor);
-  const [instructNumberColor, setInstructNumberColor] = useState(defaultInstructionNumberColor);
+  const [fontColor, setFontColor] = useState(defaultFontColor)
+  const [background, setBackground] = useState(PosterBg1)
+  const [templateTitle, setTemplateTitle] = useState('')
+  const [selectedOption, setSelectedOption] = useState(1)
+  const [instructCircleColor, setInstructCircleColor] = useState(defaultInstructionCircleColor)
+  const [instructNumberColor, setInstructNumberColor] = useState(defaultInstructionNumberColor)
 
   //text edit panel
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [isPanelOpen, setIsPanelOpen] = useState(false)
   const [activeKey, setActiveKey] = useState(1)
 
   //changable text
-  const [titleValue, setTitleValue] = useState('SCAN DI SINI');
-  const [descriptionValue, setDescriptionValue] = useState('PETI CADANGAN ONLINE');
-  const [footerValue, setFooterValue] = useState('AHLI JAWATANKUASA MASJID DEMO');
+  const [titleValue, setTitleValue] = useState('SCAN DI SINI')
+  const [descriptionValue, setDescriptionValue] = useState('PETI CADANGAN ONLINE')
+  const [footerValue, setFooterValue] = useState('AHLI JAWATANKUASA MASJID DEMO')
 
   //title
-  const [titleFont, setTitleFont] = useState('');
-  const [titleColor, setTitleColor] = useState(fontColor);
-  const [titleSize, setTitleSize] = useState(defaultTitleSize);
-  const [titleColorChanging, setTitleColorChanging] = useState(titleColor);
+  const [titleFont, setTitleFont] = useState('')
+  const [titleColor, setTitleColor] = useState(fontColor)
+  const [titleSize, setTitleSize] = useState(defaultTitleSize)
+  const [titleColorChanging, setTitleColorChanging] = useState(titleColor)
 
   //description
-  const [descriptionFont, setDescriptionFont] = useState('');
-  const [descriptionColor, setDescriptionColor] = useState(fontColor);
-  const [descriptionSize, setDescriptionSize] = useState(defaultDescriptionSize);
-  const [descriptionColorChanging, setDescriptionColorChanging] = useState(titleColor);
+  const [descriptionFont, setDescriptionFont] = useState('')
+  const [descriptionColor, setDescriptionColor] = useState(fontColor)
+  const [descriptionSize, setDescriptionSize] = useState(defaultDescriptionSize)
+  const [descriptionColorChanging, setDescriptionColorChanging] = useState(titleColor)
 
   //footer
-  const [footerFont, setFooterFont] = useState('');
-  const [footerColor, setFooterColor] = useState(fontColor);
-  const [footerSize, setFooterSize] = useState(defaultFooterSize);
-  const [footerColorChanging, setFooterColorChanging] = useState(titleColor);
+  const [footerFont, setFooterFont] = useState('')
+  const [footerColor, setFooterColor] = useState(fontColor)
+  const [footerSize, setFooterSize] = useState(defaultFooterSize)
+  const [footerColorChanging, setFooterColorChanging] = useState(titleColor)
 
   //dimension
-  const [pageWidth, setPageWidth] = useState(defaultPageWidth);
-  const [pageHeight, setPageHeight] = useState(defaultPageHeight);
+  const [pageWidth, setPageWidth] = useState(defaultPageWidth)
+  const [pageHeight, setPageHeight] = useState(defaultPageHeight)
 
   const templates = [
     {
-      "id": 1,
-      "name": "Latar Belakang 1",
-      "fontColor": "#000000",
-      "instructCircleColor": "black",
-      "instructNumberColor": "white",
-      "relativePath": PosterBg1
+      id: 1,
+      name: 'Latar Belakang 1',
+      fontColor: '#000000',
+      instructCircleColor: 'black',
+      instructNumberColor: 'white',
+      relativePath: PosterBg1,
     },
     {
-      "id": 2,
-      "name": "Latar Belakang 2",
-      "fontColor": "#ffffff",
-      "instructCircleColor": "black",
-      "instructNumberColor": "white",
-      "relativePath": PosterBg2
+      id: 2,
+      name: 'Latar Belakang 2',
+      fontColor: '#ffffff',
+      instructCircleColor: 'black',
+      instructNumberColor: 'white',
+      relativePath: PosterBg2,
     },
     {
-      "id": 3,
-      "name": "Latar Belakang 3",
-      "fontColor": "#FF6347",
-      "instructCircleColor": "black",
-      "instructNumberColor": "white",
-      "relativePath": PosterBg3
+      id: 3,
+      name: 'Latar Belakang 3',
+      fontColor: '#FF6347',
+      instructCircleColor: 'black',
+      instructNumberColor: 'white',
+      relativePath: PosterBg3,
     },
     {
-      "id": 4,
-      "name": "Latar Belakang 4",
-      "fontColor": "#6A5ACD",
-      "instructCircleColor": "black",
-      "instructNumberColor": "white",
-      "relativePath": PosterBg4
+      id: 4,
+      name: 'Latar Belakang 4',
+      fontColor: '#6A5ACD',
+      instructCircleColor: 'black',
+      instructNumberColor: 'white',
+      relativePath: PosterBg4,
     },
     {
-      "id": 5,
-      "name": "Latar Belakang 5",
-      "fontColor": "#FFFACD",
-      "instructCircleColor": "black",
-      "instructNumberColor": "white",
-      "relativePath": PosterBg5
+      id: 5,
+      name: 'Latar Belakang 5',
+      fontColor: '#FFFACD',
+      instructCircleColor: 'black',
+      instructNumberColor: 'white',
+      relativePath: PosterBg5,
     },
     {
-      "id": 6,
-      "name": "Latar Belakang 6",
-      "fontColor": "#F5F5F5",
-      "instructCircleColor": "black",
-      "instructNumberColor": "white",
-      "relativePath": PosterBg6
-    }
-  ];
+      id: 6,
+      name: 'Latar Belakang 6',
+      fontColor: '#F5F5F5',
+      instructCircleColor: 'black',
+      instructNumberColor: 'white',
+      relativePath: PosterBg6,
+    },
+  ]
 
   const fixedFonts = [
     'system-ui',
@@ -151,34 +152,34 @@ const Qr = () => {
     'Lucida Handwriting',
     'Copperplate',
     'Papyrus',
-  ];
+  ]
 
   const printableStyles = {
     position: 'relative',
     width: `${defaultViewPort}`,
-    height: `calc(${defaultViewPort} * (${pageHeight}/${pageWidth}))`, /* page aspect ratio on 50% of the viewport width */
+    height: `calc(${defaultViewPort} * (${pageHeight}/${pageWidth}))` /* page aspect ratio on 50% of the viewport width */,
     maxWidth: `${pageWidth}mm`,
     maxHeight: `${pageHeight}mm`,
     overflow: 'hidden',
-  };
+  }
 
   const backgroundStyles = {
     width: '100%',
     height: '100%',
     border: '1px solid #ccc',
-  };
+  }
 
   const overlay = {
     position: 'absolute',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     zIndex: '1',
-  };
+  }
 
   const overlayContainer = {
     ...overlay,
     top: '48%',
-  };
+  }
 
   const qr = {
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
@@ -187,7 +188,7 @@ const Qr = () => {
     border: '0.05em solid',
     borderColor: `${fontColor}`,
     width: '100%',
-  };
+  }
 
   const title = {
     ...overlay,
@@ -198,7 +199,7 @@ const Qr = () => {
     width: '95%',
     textAlign: 'center',
     fontFamily: `${titleFont}`,
-  };
+  }
 
   const description = {
     ...overlay,
@@ -209,7 +210,7 @@ const Qr = () => {
     width: '95%',
     textAlign: 'center',
     fontFamily: `${descriptionFont}`,
-  };
+  }
 
   const footer = {
     ...overlay,
@@ -223,7 +224,7 @@ const Qr = () => {
     padding: '0.3em',
     borderRadius: '0.5em',
     fontFamily: `${footerFont}`,
-  };
+  }
 
   const textEditorPanel = {
     position: 'fixed',
@@ -238,7 +239,7 @@ const Qr = () => {
     transition: 'all 0.5s ease',
     zIndex: '9999',
     height: 'auto',
-  };
+  }
 
   const toggleButton = {
     width: '100%',
@@ -247,18 +248,18 @@ const Qr = () => {
     border: 'none',
     cursor: 'pointer',
     color: 'azure',
-  };
+  }
 
   const panelContent = {
     height: isPanelOpen ? '100%' : '0',
-  };
+  }
 
   const section = {
     marginInline: '0.5em',
     padding: '0.2em',
     height: '100%',
     overflow: 'auto',
-  };
+  }
 
   const sectionTitle = {
     fontColor: 'Gainsboro',
@@ -268,34 +269,34 @@ const Qr = () => {
   const handleExportAsPNG = () => {
     if (componentRef.current) {
       html2canvas(componentRef.current).then((canvas) => {
-        const url = canvas.toDataURL();
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'qr_kod.png';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      });
+        const url = canvas.toDataURL()
+        const link = document.createElement('a')
+        link.href = url
+        link.download = 'qr_kod.png'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+      })
     }
-  };
+  }
 
   const handleTemplateOptionClick = (option) => {
-    setSelectedOption(option);
-    setBackground(templates[option - 1].relativePath);
-    setFontColor(templates[option - 1].fontColor);
-    setTemplateTitle(templates[option - 1].name);
-    setInstructCircleColor(templates[option - 1].instructCircleColor);
-    setInstructNumberColor(templates[option - 1].instructNumberColor);
-    setTitleColor(templates[option - 1].fontColor);
-    setTitleSize(defaultTitleSize);
-    setTitleFont(defaultFont);
-    setDescriptionColor(templates[option - 1].fontColor);
-    setDescriptionSize(defaultDescriptionSize);
-    setDescriptionFont(defaultFont);
-    setFooterColor(templates[option - 1].fontColor);
-    setFooterSize(defaultFooterSize);
-    setFooterFont(defaultFont);
-  };
+    setSelectedOption(option)
+    setBackground(templates[option - 1].relativePath)
+    setFontColor(templates[option - 1].fontColor)
+    setTemplateTitle(templates[option - 1].name)
+    setInstructCircleColor(templates[option - 1].instructCircleColor)
+    setInstructNumberColor(templates[option - 1].instructNumberColor)
+    setTitleColor(templates[option - 1].fontColor)
+    setTitleSize(defaultTitleSize)
+    setTitleFont(defaultFont)
+    setDescriptionColor(templates[option - 1].fontColor)
+    setDescriptionSize(defaultDescriptionSize)
+    setDescriptionFont(defaultFont)
+    setFooterColor(templates[option - 1].fontColor)
+    setFooterSize(defaultFooterSize)
+    setFooterFont(defaultFont)
+  }
 
   //DESCRIPTION----------------------------------
   const drawCircle = (number, text, leftPosition) => {
@@ -312,7 +313,7 @@ const Qr = () => {
       flexWrap: 'wrap',
       fontWeight: 'bold',
       fontSize: `calc(0.015 * (${defaultViewPort} * (${pageHeight}/${pageWidth}))`,
-    };
+    }
 
     const circle = {
       display: 'flex',
@@ -327,21 +328,35 @@ const Qr = () => {
       color: `${instructNumberColor}`,
       border: '0.5vw solid',
       borderColor: `${fontColor}`,
-    };
+    }
 
     return (
       <div style={instruction}>
         <CContainer>
           <CRow>
             <CCol>
-              <div style={{ position: 'absolute', transform: 'translate(-50%, -50%)', left: '50%', top: '20%' }}>
+              <div
+                style={{
+                  position: 'absolute',
+                  transform: 'translate(-50%, -50%)',
+                  left: '50%',
+                  top: '20%',
+                }}
+              >
                 <div style={circle}>{number}</div>
               </div>
             </CCol>
           </CRow>
-          <CRow >
+          <CRow>
             <CCol>
-              <div style={{ position: 'absolute', transform: 'translate(-50%, -50%)', left: '50%', top: '75%' }}>
+              <div
+                style={{
+                  position: 'absolute',
+                  transform: 'translate(-50%, -50%)',
+                  left: '50%',
+                  top: '75%',
+                }}
+              >
                 <br />
                 <div style={{ textAlign: 'center' }}>{text}</div>
               </div>
@@ -349,8 +364,8 @@ const Qr = () => {
           </CRow>
         </CContainer>
       </div>
-    );
-  };
+    )
+  }
 
   const lineConnectingCircles = () => {
     const lineStyle = {
@@ -361,87 +376,87 @@ const Qr = () => {
       top: '76%',
       left: '15%',
       zIndex: '1',
-    };
+    }
 
-    return <div style={lineStyle}></div>;
-  };
+    return <div style={lineStyle}></div>
+  }
 
   //POSTER TEXT EDIT PANEL----------------------------------
   const togglePanel = () => {
-    setIsPanelOpen(!isPanelOpen);
-  };
+    setIsPanelOpen(!isPanelOpen)
+  }
 
   const handleTitleValueChange = (event) => {
-    setTitleValue(event.target.value);
-  };
+    setTitleValue(event.target.value)
+  }
 
-  const handleTitleFontChange = event => {
-    setTitleFont(event.target.value);
-  };
+  const handleTitleFontChange = (event) => {
+    setTitleFont(event.target.value)
+  }
 
-  const handleTitleSizeChange = event => {
-    setTitleSize(event.target.value);
-  };
+  const handleTitleSizeChange = (event) => {
+    setTitleSize(event.target.value)
+  }
 
   const handleTitleColorChange = (newColor) => {
-    setTitleColor(newColor);
-    setTitleColorChanging(newColor);
-  };
+    setTitleColor(newColor)
+    setTitleColorChanging(newColor)
+  }
   const handleTitleColorChanging = (newColor) => {
-    setTitleColorChanging(newColor.target.value);
+    setTitleColorChanging(newColor.target.value)
 
     if (titleColorChanging.length === 7) {
-      setTitleColor(titleColorChanging);
+      setTitleColor(titleColorChanging)
     }
-  };
+  }
 
   const handleDescriptionValueChange = (event) => {
-    setDescriptionValue(event.target.value);
-  };
+    setDescriptionValue(event.target.value)
+  }
 
-  const handleDescriptionFontChange = event => {
-    setDescriptionFont(event.target.value);
-  };
+  const handleDescriptionFontChange = (event) => {
+    setDescriptionFont(event.target.value)
+  }
 
-  const handleDescriptionSizeChange = event => {
-    setDescriptionSize(event.target.value);
-  };
+  const handleDescriptionSizeChange = (event) => {
+    setDescriptionSize(event.target.value)
+  }
 
   const handleDescriptionColorChange = (newColor) => {
-    setDescriptionColor(newColor);
-    setDescriptionColorChanging(newColor);
-  };
+    setDescriptionColor(newColor)
+    setDescriptionColorChanging(newColor)
+  }
   const handleDescriptionColorChanging = (newColor) => {
-    setDescriptionColorChanging(newColor.target.value);
+    setDescriptionColorChanging(newColor.target.value)
 
     if (descriptionColorChanging.length === 7) {
-      setDescriptionColor(descriptionColorChanging);
+      setDescriptionColor(descriptionColorChanging)
     }
-  };
+  }
 
   const handleFooterValueChange = (event) => {
-    setFooterValue(event.target.value);
-  };
+    setFooterValue(event.target.value)
+  }
 
-  const handleFooterFontChange = event => {
-    setFooterFont(event.target.value);
-  };
+  const handleFooterFontChange = (event) => {
+    setFooterFont(event.target.value)
+  }
 
-  const handleFooterSizeChange = event => {
-    setFooterSize(event.target.value);
-  };
+  const handleFooterSizeChange = (event) => {
+    setFooterSize(event.target.value)
+  }
 
   const handleFooterColorChange = (newColor) => {
-    setFooterColor(newColor);
-    setFooterColorChanging(newColor);
-  };
+    setFooterColor(newColor)
+    setFooterColorChanging(newColor)
+  }
   const handleFooterColorChanging = (newColor) => {
-    setFooterColorChanging(newColor.target.value);
+    setFooterColorChanging(newColor.target.value)
 
     if (footerColorChanging.length === 7) {
-      setFooterColor(footerColorChanging);
+      setFooterColor(footerColorChanging)
     }
-  };
+  }
 
   //TODO
   // useEffect(() => {
@@ -461,52 +476,87 @@ const Qr = () => {
   // }, []);
 
   const textEditorSection = (
-    value, handleValueChange,
-    font, handleFontChange,
-    size, handleSizeChange,
-    color, handleColorChange,
-    colorChanging, handleColorChanging) => {
+    value,
+    handleValueChange,
+    font,
+    handleFontChange,
+    size,
+    handleSizeChange,
+    color,
+    handleColorChange,
+    colorChanging,
+    handleColorChanging,
+  ) => {
     return (
       <div style={section}>
         <CContainer>
           <CRow>
             <CCol>
-              <label style={sectionTitle}>Ayat</label><br />
-              <input type="text" value={value} onChange={handleValueChange} style={{ width: '100%', height: '1.7em' }} />
+              <label style={sectionTitle}>Ayat</label>
+              <br />
+              <input
+                type="text"
+                value={value}
+                onChange={handleValueChange}
+                style={{ width: '100%', height: '1.7em' }}
+              />
             </CCol>
           </CRow>
           <CRow>
-            <CCol style={{ flex: '7'}}>
-              <label style={sectionTitle}>Font</label><br />
-              <select value={font} onChange={handleFontChange} style={{ width: '100%', height: '1.7em' }}>
+            <CCol style={{ flex: '7' }}>
+              <label style={sectionTitle}>Font</label>
+              <br />
+              <select
+                value={font}
+                onChange={handleFontChange}
+                style={{ width: '100%', height: '1.7em' }}
+              >
                 <option value="">Select a font...</option>
-                {fixedFonts.map(font => (
-                  <option key={font} value={font}>{font}</option>
+                {fixedFonts.map((font) => (
+                  <option key={font} value={font}>
+                    {font}
+                  </option>
                 ))}
               </select>
             </CCol>
             <CCol style={{ flex: '3' }}>
-              <label style={sectionTitle}>Saiz %</label><br />
-              <input type="text" value={size} onChange={handleSizeChange} style={{ width: '100%', height: '1.7em' }} />
+              <label style={sectionTitle}>Saiz %</label>
+              <br />
+              <input
+                type="text"
+                value={size}
+                onChange={handleSizeChange}
+                style={{ width: '100%', height: '1.7em' }}
+              />
             </CCol>
           </CRow>
           <CRow>
             <CCol>
-              <label style={sectionTitle}>Warna</label><br />
+              <label style={sectionTitle}>Warna</label>
+              <br />
               <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-                <HexColorPicker color={color} onChange={handleColorChange} style={{ marginRight: '0.2em' }} />
-                <input type="text" value={colorChanging} onChange={handleColorChanging} style={{ padding: '5px', width: '100px', height: '1.7em' }} />
+                <HexColorPicker
+                  color={color}
+                  onChange={handleColorChange}
+                  style={{ marginRight: '0.2em' }}
+                />
+                <input
+                  type="text"
+                  value={colorChanging}
+                  onChange={handleColorChanging}
+                  style={{ padding: '5px', width: '100px', height: '1.7em' }}
+                />
               </div>
             </CCol>
           </CRow>
         </CContainer>
       </div>
-    );
-  };
+    )
+  }
 
   useEffect(() => {
-    handleTemplateOptionClick(1);
-  }, []);
+    handleTemplateOptionClick(1)
+  }, [])
 
   return (
     <CRow>
@@ -520,7 +570,12 @@ const Qr = () => {
               <CRow>
                 <CCol>
                   <div ref={componentRef} style={printableStyles}>
-                    <img style={backgroundStyles} src={background} alt="Background Image" draggable="false" />
+                    <img
+                      style={backgroundStyles}
+                      src={background}
+                      alt="Background Image"
+                      draggable="false"
+                    />
                     <CContainer>
                       <CRow>
                         <CCol>
@@ -562,13 +617,20 @@ const Qr = () => {
                   <div>
                     <h5>{templateTitle}</h5> <p />
                     <div style={{ gap: '5px', flexWrap: 'wrap', display: 'flex' }}>
-                      {templates.map(button => (
+                      {templates.map((button) => (
                         <CButton
                           color="light"
                           onClick={() => handleTemplateOptionClick(button.id)}
                           active={selectedOption === button.id}
-                          key={button.id}>
-                          <CImage src={button.relativePath} className="rounded-circle" alt={button.name} width="30" height="30" />
+                          key={button.id}
+                        >
+                          <CImage
+                            src={button.relativePath}
+                            className="rounded-circle"
+                            alt={button.name}
+                            width="30"
+                            height="30"
+                          />
                         </CButton>
                       ))}
                     </div>
@@ -618,29 +680,59 @@ const Qr = () => {
                             </CNavItem>
                           </CNav>
                           <CTabContent>
-                            <CTabPane role="tabpanel" aria-labelledby="title-tab-pane" visible={activeKey === 1}>
+                            <CTabPane
+                              role="tabpanel"
+                              aria-labelledby="title-tab-pane"
+                              visible={activeKey === 1}
+                            >
                               {textEditorSection(
-                                titleValue, handleTitleValueChange,
-                                titleFont, handleTitleFontChange,
-                                titleSize, handleTitleSizeChange,
-                                titleColor, handleTitleColorChange,
-                                titleColorChanging, handleTitleColorChanging)}
+                                titleValue,
+                                handleTitleValueChange,
+                                titleFont,
+                                handleTitleFontChange,
+                                titleSize,
+                                handleTitleSizeChange,
+                                titleColor,
+                                handleTitleColorChange,
+                                titleColorChanging,
+                                handleTitleColorChanging,
+                              )}
                             </CTabPane>
-                            <CTabPane role="tabpanel" aria-labelledby="description-tab-pane" visible={activeKey === 2}>
+                            <CTabPane
+                              role="tabpanel"
+                              aria-labelledby="description-tab-pane"
+                              visible={activeKey === 2}
+                            >
                               {textEditorSection(
-                                descriptionValue, handleDescriptionValueChange,
-                                descriptionFont, handleDescriptionFontChange,
-                                descriptionSize, handleDescriptionSizeChange,
-                                descriptionColor, handleDescriptionColorChange,
-                                descriptionColorChanging, handleDescriptionColorChanging)}
+                                descriptionValue,
+                                handleDescriptionValueChange,
+                                descriptionFont,
+                                handleDescriptionFontChange,
+                                descriptionSize,
+                                handleDescriptionSizeChange,
+                                descriptionColor,
+                                handleDescriptionColorChange,
+                                descriptionColorChanging,
+                                handleDescriptionColorChanging,
+                              )}
                             </CTabPane>
-                            <CTabPane role="tabpanel" aria-labelledby="footer-tab-pane" visible={activeKey === 3}>
+                            <CTabPane
+                              role="tabpanel"
+                              aria-labelledby="footer-tab-pane"
+                              visible={activeKey === 3}
+                            >
                               {textEditorSection(
-                                footerValue, handleFooterValueChange,
-                                footerFont, handleFooterFontChange,
-                                footerSize, handleFooterSizeChange,
-                                footerColor, handleFooterColorChange,
-                                footerColorChanging, handleFooterColorChanging)}
+                                footerValue,
+                                handleFooterValueChange,
+                                footerFont,
+                                handleFooterFontChange,
+                                footerSize,
+                                handleFooterSizeChange,
+                                footerColor,
+                                handleFooterColorChange,
+                                footerColorChanging,
+                                handleFooterColorChanging,
+                              )}
                             </CTabPane>
                           </CTabContent>
                         </div>
@@ -658,7 +750,7 @@ const Qr = () => {
         </CCard>
       </CCol>
     </CRow>
-  );
-};
+  )
+}
 
-export default Qr;
+export default Qr
