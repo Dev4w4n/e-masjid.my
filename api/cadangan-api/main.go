@@ -39,6 +39,9 @@ func main() {
 
 	// CORS configuration
 	config := cors.DefaultConfig()
+	config.AllowHeaders = []string{"*"}
+	config.AllowCredentials = true
+	config.MaxAge = 3600
 	config.AllowOrigins = []string{env.AllowOrigins}
 	config.AllowMethods = []string{"PUT", "GET", "DELETE"}
 

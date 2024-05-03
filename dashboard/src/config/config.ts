@@ -1,27 +1,46 @@
+const getSubdomain = () => {
+  const parts = window.location.hostname.split('.')
+  if (parts.length >= 3) {
+    return parts[0]
+  }
+  return null
+}
+
+const subdomain = getSubdomain()
+const dynamicSubdomain = subdomain === 'localhost' ? 'demo' : subdomain
+
 const prod = {
   version: {
-    BUILD: 'v1.3-beta.1',
+    BUILD: '1.13.1',
   },
   url: {
-    KHAIRAT_API_BASE_URL: 'https://www.e-masjid.my/api',
-    TABUNG_API_BASE_URL: 'https://www.e-masjid.my/api',
-    CADANGAN_API_BASE_URL: 'https://www.e-masjid.my/api',
-    TETAPAN_API_BASE_URL: 'https://www.e-masjid.my/api',
-    LOGOUT_URL: 'https://www.e-masjid.my/web',
-    PETI_CADANGAN_URL: 'https://www.e-masjid.my/web#/cadangan',
+    USE_KEYCLOAK: true,
+    KEYCLOAK_BASE_URL: `https://login.e-masjid.my`,
+    KEYCLOAK_REALM: dynamicSubdomain,
+    KEYCLOAK_CLIENT_ID: `${dynamicSubdomain}-auth`,
+    LOGOUT_URL: `https://${dynamicSubdomain}.e-masjid.my/web`,
+    KHAIRAT_API_BASE_URL: `https://${dynamicSubdomain}.e-masjid.my/api`,
+    TABUNG_API_BASE_URL: `https://${dynamicSubdomain}.e-masjid.my/api`,
+    CADANGAN_API_BASE_URL: `https://${dynamicSubdomain}.e-masjid.my/api`,
+    TETAPAN_API_BASE_URL: `https://${dynamicSubdomain}.e-masjid.my/api`,
+    PETI_CADANGAN_URL: `https://${dynamicSubdomain}.e-masjid.my/web#/cadangan`,
   },
 }
 
 const dev = {
   version: {
-    BUILD: 'v1.3-beta.1',
+    BUILD: '1.13.1',
   },
   url: {
+    USE_KEYCLOAK: false,
+    KEYCLOAK_BASE_URL: 'http://localhost:8080',
+    KEYCLOAK_REALM: 'dev',
+    KEYCLOAK_CLIENT_ID: 'dev-auth',
+    LOGOUT_URL: 'http://localhost:3001',
     KHAIRAT_API_BASE_URL: 'http://localhost:8081',
     TABUNG_API_BASE_URL: 'http://localhost:8082',
     CADANGAN_API_BASE_URL: 'http://localhost:8083',
     TETAPAN_API_BASE_URL: 'http://localhost:8085',
-    LOGOUT_URL: 'http://localhost:3001',
     PETI_CADANGAN_URL: 'https://localhost:3001/web#/cadangan',
   },
 }

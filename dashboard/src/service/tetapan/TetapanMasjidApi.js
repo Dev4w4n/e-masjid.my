@@ -1,10 +1,10 @@
-import axios from 'axios'
+import { axiosInstance } from '@/utils/ApiHelper'
 import { config } from '@/config'
 const apiServer = config.url.TETAPAN_API_BASE_URL
 
 export const getTetapanMasjid = async () => {
   try {
-    const response = await axios.get(`${apiServer}/tetapan`)
+    const response = await axiosInstance.get(`${apiServer}/tetapan`)
     return response.data
   } catch (error) {
     console.error(error)
@@ -13,7 +13,7 @@ export const getTetapanMasjid = async () => {
 
 export const saveTetapanMasjid = async (data) => {
   try {
-    const response = await axios.post(`${apiServer}/tetapan/senarai`, data)
+    const response = await axiosInstance.post(`${apiServer}/tetapan/senarai`, data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -22,7 +22,7 @@ export const saveTetapanMasjid = async (data) => {
 
 export const getTetapanNamaMasjid = async () => {
   try {
-    const response = await axios.get(`${apiServer}/tetapan/NAMA_MASJID`)
+    const response = await axiosInstance.get(`${apiServer}/tetapan/NAMA_MASJID`)
     return response.data
   } catch (error) {
     console.error(error)
