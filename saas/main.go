@@ -58,9 +58,14 @@ func main() {
 
 	r.POST("/tenant", func(c *gin.Context) {
 		type CreateTenant struct {
-			Name       string `form:"name" json:"name" binding:"required"`
-			Namespace  string `form:"namespace" json:"namespace" binding:"required"`
-			SeparateDb bool   `form:"separateDb" json:"separateDb"`
+			Name             string `form:"name" json:"name" binding:"required"`
+			Namespace        string `form:"namespace" json:"namespace" binding:"required"`
+			ManagerRole      string `form:"manager_role" json:"manager_role" binding:"required"`
+			UserRole         string `form:"user_role" json:"user_role" binding:"required"`
+			KeycloakClientId string `form:"keycloak_client_id" json:"keycloak_client_id" binding:"required"`
+			KeycloakServer   string `form:"keycloak_server" json:"keycloak_server" binding:"required"`
+			KeycloakJwksUrl  string `form:"keycloak_jwks_url" json:"keycloak_jwks_url" binding:"required"`
+			SeparateDb       bool   `form:"separateDb" json:"separateDb" binding:"required"`
 		}
 		var json CreateTenant
 		if err := c.ShouldBindJSON(&json); err != nil {
