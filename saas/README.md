@@ -18,3 +18,4 @@ add called with manager-role: mjsr_manager
 add called with user-role: mjsr_user
 ```
 
+add -1 matmm-auth -2 http://matmm.login.com -3 http://keycloak.com -4 matmm_manager -5 matmm -6 MATMM -7 matmm_user

@@ -10,14 +10,14 @@ import (
 )
 
 type Request struct {
-	KeycloakClientId string `json:"keycloakClientId"`
-	KeycloakServer   string `json:"keycloakServer"`
-	KeycloakJwksUrl  string `json:"keycloakJwksUrl"`
-	ManagerRole      string `json:"managerRole"`
-	UserRole         string `json:"userRole"`
+	KeycloakClientId string `json:"keycloak_client_id"`
+	KeycloakServer   string `json:"keycloak_server"`
+	KeycloakJwksUrl  string `json:"keycloak_jwks_url"`
+	ManagerRole      string `json:"manager_role"`
+	UserRole         string `json:"user_role"`
 	Name             string `json:"name"`
 	Namespace        string `json:"namespace"`
-	SeparateDb       bool   `json:"separateDb"`
+	SeparateDb       bool   `json:"separate_db"`
 }
 
 // addCmd represents the add command

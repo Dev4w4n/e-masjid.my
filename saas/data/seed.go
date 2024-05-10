@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-saas/saas"
 
-	"github.com/go-saas/saas/data"
 	"github.com/go-saas/saas/gorm"
 	"github.com/go-saas/saas/seed"
 	gorm2 "gorm.io/gorm"
@@ -28,17 +27,9 @@ func (s *Seed) Seed(ctx context.Context, sCtx *seed.Context) error {
 	db := s.dbProvider.Get(ctx, "")
 
 	if sCtx.TenantId == "" {
-		//seed host
-		t3 := model.Tenant{ID: "3", Name: "Test3"}
-		t3Conn, _ := s.connStrGen.Gen(ctx, saas.NewBasicTenantInfo(t3.ID, t3.Name))
-
-		t3.Conn = []model.TenantConn{
-			{Key: data.Default, Value: t3Conn}, // use tenant3.db
-		}
+		//init host
 		err := db.Model(&model.Tenant{}).Session(&gorm2.Session{FullSaveAssociations: true}).Clauses(clause.OnConflict{UpdateAll: true}).CreateInBatches([]model.Tenant{
-			{ID: "1", Name: "Test1"}, // use default shared.db
-			{ID: "2", Name: "Test2"},
-			t3}, 10).Error
+			{ID: "1", Name: "Host"}}, 10).Error
 		if err != nil {
 			return err
 		}
@@ -46,7 +37,7 @@ func (s *Seed) Seed(ctx context.Context, sCtx *seed.Context) error {
 			{
 				Model:       gorm2.Model{ID: 1},
 				Title:       fmt.Sprintf("Host Side"),
-				Description: fmt.Sprintf("Hello Host"),
+				Description: fmt.Sprintf("Init Host"),
 			},
 		}
 		if err := createPosts(db, entities); err != nil {
@@ -67,46 +58,46 @@ func (s *Seed) Seed(ctx context.Context, sCtx *seed.Context) error {
 		}
 	}
 
-	if sCtx.TenantId == "2" {
-		entities := []model.Post{
-			{
-				Model:       gorm2.Model{ID: 3},
-				Title:       fmt.Sprintf("Tenant %s Post 1", sCtx.TenantId),
-				Description: fmt.Sprintf("Hello from tenant %s. There are two posts in this tenant. This is post 1", sCtx.TenantId),
-			},
-			{
-				Model:       gorm2.Model{ID: 4},
-				Title:       fmt.Sprintf("Tenant %s Post 2", sCtx.TenantId),
-				Description: fmt.Sprintf("Hello from tenant %s. There are two posts in this tenant. This is post 2", sCtx.TenantId),
-			},
-		}
-		if err := createPosts(db, entities); err != nil {
-			return err
-		}
-	}
+	// if sCtx.TenantId == "2" {
+	// 	entities := []model.Post{
+	// 		{
+	// 			Model:       gorm2.Model{ID: 3},
+	// 			Title:       fmt.Sprintf("Tenant %s Post 1", sCtx.TenantId),
+	// 			Description: fmt.Sprintf("Hello from tenant %s. There are two posts in this tenant. This is post 1", sCtx.TenantId),
+	// 		},
+	// 		{
+	// 			Model:       gorm2.Model{ID: 4},
+	// 			Title:       fmt.Sprintf("Tenant %s Post 2", sCtx.TenantId),
+	// 			Description: fmt.Sprintf("Hello from tenant %s. There are two posts in this tenant. This is post 2", sCtx.TenantId),
+	// 		},
+	// 	}
+	// 	if err := createPosts(db, entities); err != nil {
+	// 		return err
+	// 	}
+	// }
 
-	if sCtx.TenantId == "3" {
-		entities := []model.Post{
-			{
-				Model:       gorm2.Model{ID: 5},
-				Title:       fmt.Sprintf("Tenant %s Post 1", sCtx.TenantId),
-				Description: fmt.Sprintf("Hello from tenant %s. There are there posts in this tenant. This is post 1", sCtx.TenantId),
-			},
-			{
-				Model:       gorm2.Model{ID: 6},
-				Title:       fmt.Sprintf("Tenant %s Post 2", sCtx.TenantId),
-				Description: fmt.Sprintf("Hello from tenant %s. There are there posts in this tenant. This is post 2", sCtx.TenantId),
-			},
-			{
-				Model:       gorm2.Model{ID: 7},
-				Title:       fmt.Sprintf("Tenant %s Post 2", sCtx.TenantId),
-				Description: fmt.Sprintf("Hello from tenant %s. There are there posts in this tenant. This is post 3", sCtx.TenantId),
-			},
-		}
-		if err := createPosts(db, entities); err != nil {
-			return err
-		}
-	}
+	// if sCtx.TenantId == "3" {
+	// 	entities := []model.Post{
+	// 		{
+	// 			Model:       gorm2.Model{ID: 5},
+	// 			Title:       fmt.Sprintf("Tenant %s Post 1", sCtx.TenantId),
+	// 			Description: fmt.Sprintf("Hello from tenant %s. There are there posts in this tenant. This is post 1", sCtx.TenantId),
+	// 		},
+	// 		{
+	// 			Model:       gorm2.Model{ID: 6},
+	// 			Title:       fmt.Sprintf("Tenant %s Post 2", sCtx.TenantId),
+	// 			Description: fmt.Sprintf("Hello from tenant %s. There are there posts in this tenant. This is post 2", sCtx.TenantId),
+	// 		},
+	// 		{
+	// 			Model:       gorm2.Model{ID: 7},
+	// 			Title:       fmt.Sprintf("Tenant %s Post 2", sCtx.TenantId),
+	// 			Description: fmt.Sprintf("Hello from tenant %s. There are there posts in this tenant. This is post 3", sCtx.TenantId),
+	// 		},
+	// 	}
+	// 	if err := createPosts(db, entities); err != nil {
+	// 		return err
+	// 	}
+	// }
 	return nil
 }
 

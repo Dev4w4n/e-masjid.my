@@ -7,7 +7,6 @@ import (
 type Tenant struct {
 	ID               string       `gorm:"type:varchar(36)" json:"id"`
 	Name             string       `gorm:"column:name;index;size:255;"`
-	Namespace        string       `gorm:"column:name;index;size:32;"`
 	ManagerRole      string       `gorm:"column:manager_role"`
 	UserRole         string       `gorm:"column:user_role"`
 	KeycloakClientId string       `gorm:"column:keycloak_client_id"`
