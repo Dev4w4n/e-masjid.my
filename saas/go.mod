@@ -3,7 +3,6 @@ module github.com/Dev4w4n/e-masjid.my/saas
 go 1.22.1
 
 require (
-	github.com/Dev4w4n/e-masjid.my/api/cadangan-api v0.0.0-20240501162458-924b38dc488c
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-saas/saas v0.6.3
 	github.com/google/uuid v1.3.1
@@ -12,9 +11,10 @@ require (
 )
 
 require (
-	github.com/Dev4w4n/e-masjid.my/api/khairat-api v0.0.0-20240501162458-924b38dc488c
-	github.com/Dev4w4n/e-masjid.my/api/tabung-api v0.0.0-20240501162458-924b38dc488c
-	github.com/Dev4w4n/e-masjid.my/api/tetapan-api v0.0.0-20240501162458-924b38dc488c
+	github.com/Dev4w4n/e-masjid.my/api/cadangan-api v0.0.0-20240503140028-8e7555973baa
+	github.com/Dev4w4n/e-masjid.my/api/khairat-api v0.0.0-20240503140028-8e7555973baa
+	github.com/Dev4w4n/e-masjid.my/api/tabung-api v0.0.0-20240503140028-8e7555973baa
+	github.com/Dev4w4n/e-masjid.my/api/tetapan-api v0.0.0-20240503140028-8e7555973baa
 	github.com/bytedance/sonic v1.10.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.1 // indirect

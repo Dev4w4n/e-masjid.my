@@ -28,6 +28,13 @@ func main() {
 	emasjidsaas.InitSaas(sharedDsn)
 	r.Use(sgin.MultiTenancy(emasjidsaas.TenantStorage))
 
+	//seed data into db
+	seeder := seed.NewDefaultSeeder(dbData.NewMigrationSeeder(emasjidsaas.DbProvider), dbData.NewSeed(emasjidsaas.DbProvider, emasjidsaas.ConnStrGen))
+	err := seeder.Seed(context.Background(), seed.AddHost(), seed.AddTenant("1"))
+	if err != nil {
+		panic(err)
+	}
+
 	//return current tenant
 	r.GET("/tenant/current", func(c *gin.Context) {
 		rCtx := c.Request.Context()
@@ -49,18 +56,38 @@ func main() {
 		}
 	})
 
-	//seed data into db
-	seeder := seed.NewDefaultSeeder(dbData.NewMigrationSeeder(emasjidsaas.DbProvider), dbData.NewSeed(emasjidsaas.DbProvider, emasjidsaas.ConnStrGen))
-	err := seeder.Seed(context.Background(), seed.AddHost(), seed.AddTenant("1", "2", "3"))
-	if err != nil {
-		panic(err)
-	}
+	// get all tenants
+	r.GET("/tenants", func(c *gin.Context) {
+		db := emasjidsaas.DbProvider.Get(c.Request.Context(), "")
+		var entities []model.Tenant
+		if err := db.Model(&model.Tenant{}).Find(&entities).Error; err != nil {
+			c.AbortWithError(500, err)
+		} else {
+			c.JSON(200, entities)
+		}
+	})
+
+	// search tenant by id
+	r.GET("/tenant/:name", func(c *gin.Context) {
+		db := emasjidsaas.DbProvider.Get(c.Request.Context(), "")
+		var entity model.Tenant
+		if err := db.Model(&model.Tenant{}).Where("name = ?", c.Param("name")).First(&entity).Error; err != nil {
+			c.AbortWithError(500, err)
+		} else {
+			c.JSON(200, entity)
+		}
+	})
 
 	r.POST("/tenant", func(c *gin.Context) {
 		type CreateTenant struct {
-			Name       string `form:"name" json:"name" binding:"required"`
-			Namespace  string `form:"namespace" json:"namespace" binding:"required"`
-			SeparateDb bool   `form:"separateDb" json:"separateDb"`
+			Name             string `form:"name" json:"name" binding:"required"`
+			Namespace        string `form:"namespace" json:"namespace" binding:"required"`
+			ManagerRole      string `form:"manager_role" json:"manager_role" binding:"required"`
+			UserRole         string `form:"user_role" json:"user_role" binding:"required"`
+			KeycloakClientId string `form:"keycloak_client_id" json:"keycloak_client_id" binding:"required"`
+			KeycloakServer   string `form:"keycloak_server" json:"keycloak_server" binding:"required"`
+			KeycloakJwksUrl  string `form:"keycloak_jwks_url" json:"keycloak_jwks_url" binding:"required"`
+			SeparateDb       bool   `form:"separate_db" json:"separate_db" binding:"required"`
 		}
 		var json CreateTenant
 		if err := c.ShouldBindJSON(&json); err != nil {
@@ -72,9 +99,14 @@ func main() {
 		ctx = saas.NewCurrentTenant(ctx, "", "")
 		db := emasjidsaas.DbProvider.Get(ctx, "")
 		t := &model.Tenant{
-			ID:        uuid.New().String(),
-			Name:      json.Name,
-			Namespace: json.Namespace,
+			ID:               uuid.New().String(),
+			Name:             json.Name,
+			Namespace:        json.Namespace,
+			ManagerRole:      json.ManagerRole,
+			UserRole:         json.UserRole,
+			KeycloakClientId: json.KeycloakClientId,
+			KeycloakServer:   json.KeycloakServer,
+			KeycloakJwksUrl:  json.KeycloakJwksUrl,
 		}
 		if json.SeparateDb {
 			t3Conn, _ := emasjidsaas.ConnStrGen.Gen(ctx, saas.NewBasicTenantInfo(t.ID, t.Name))
