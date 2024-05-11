@@ -67,6 +67,17 @@ func main() {
 		}
 	})
 
+	// search tenant by id
+	r.GET("/tenant/:name", func(c *gin.Context) {
+		db := emasjidsaas.DbProvider.Get(c.Request.Context(), "")
+		var entity model.Tenant
+		if err := db.Model(&model.Tenant{}).Where("name = ?", c.Param("name")).First(&entity).Error; err != nil {
+			c.AbortWithError(500, err)
+		} else {
+			c.JSON(200, entity)
+		}
+	})
+
 	r.POST("/tenant", func(c *gin.Context) {
 		type CreateTenant struct {
 			Name             string `form:"name" json:"name" binding:"required"`
@@ -90,6 +101,7 @@ func main() {
 		t := &model.Tenant{
 			ID:               uuid.New().String(),
 			Name:             json.Name,
+			Namespace:        json.Namespace,
 			ManagerRole:      json.ManagerRole,
 			UserRole:         json.UserRole,
 			KeycloakClientId: json.KeycloakClientId,

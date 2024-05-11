@@ -6,19 +6,9 @@ import (
 	"fmt"
 	"net/http"
 
+	model "github.com/Dev4w4n/e-masjid.my/saas/cli/model"
 	"github.com/spf13/cobra"
 )
-
-type Request struct {
-	KeycloakClientId string `json:"keycloak_client_id"`
-	KeycloakServer   string `json:"keycloak_server"`
-	KeycloakJwksUrl  string `json:"keycloak_jwks_url"`
-	ManagerRole      string `json:"manager_role"`
-	UserRole         string `json:"user_role"`
-	Name             string `json:"name"`
-	Namespace        string `json:"namespace"`
-	SeparateDb       bool   `json:"separate_db"`
-}
 
 // addCmd represents the add command
 var addCmd = &cobra.Command{
@@ -33,7 +23,7 @@ var addCmd = &cobra.Command{
 		managerRole, _ := cmd.Flags().GetString("manager-role")
 		userRole, _ := cmd.Flags().GetString("user-role")
 
-		request := Request{
+		request := model.Tenant{
 			KeycloakClientId: keycloakClientId,
 			KeycloakServer:   keycloakServer,
 			KeycloakJwksUrl:  keycloakJwksUrl,
@@ -48,7 +38,7 @@ var addCmd = &cobra.Command{
 	},
 }
 
-func createNewTenant(request Request) {
+func createNewTenant(request model.Tenant) {
 	url := "http://localhost:8090/tenant"
 
 	jsonData, err := json.Marshal(request)
@@ -81,7 +71,7 @@ func init() {
 	addCmd.MarkFlagRequired("manager-role")
 	addCmd.Flags().StringP("name", "5", "", "Define the new tenant name (must be unique)")
 	addCmd.MarkFlagRequired("name")
-	addCmd.Flags().StringP("namespace", "6", "", "Define the new tenant namespace (must be unique)")
+	addCmd.Flags().StringP("namespace", "6", "", "Define the new tenant namespace")
 	addCmd.MarkFlagRequired("namespace")
 	addCmd.Flags().StringP("user-role", "7", "", "Define the new tenant user role")
 	addCmd.MarkFlagRequired("user-role")

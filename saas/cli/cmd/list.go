@@ -11,19 +11,9 @@ import (
 	"text/tabwriter"
 	"time"
 
+	model "github.com/Dev4w4n/e-masjid.my/saas/cli/model"
 	"github.com/spf13/cobra"
 )
-
-type Tenant struct {
-	ID               string `gorm:"type:varchar(36)" json:"id"`
-	Name             string `gorm:"column:name;index;size:255;"`
-	ManagerRole      string `gorm:"column:manager_role"`
-	UserRole         string `gorm:"column:user_role"`
-	KeycloakClientId string `gorm:"column:keycloak_client_id"`
-	KeycloakServer   string `gorm:"column:keycloak_server"`
-	KeycloakJwksUrl  string `gorm:"column:keycloak_jwks_url"`
-	CreatedAt        int64  `gorm:"column:created_at"`
-}
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
@@ -41,9 +31,6 @@ func init() {
 
 // get list of tenants from http://localhost:8090/tenant
 func listTenants() {
-	w := tabwriter.NewWriter(os.Stdout, 10, 16, 2, ' ', tabwriter.TabIndent)
-
-	fmt.Fprintln(w, "TENANT ID\t NAME\t KEYCLOAK CLIENT ID\t CREATED DATE")
 	// Get data using json
 	url := "http://localhost:8090/tenants"
 
@@ -55,18 +42,18 @@ func listTenants() {
 
 	if resp.StatusCode != 200 {
 		fmt.Println("Error listing tenants")
+	} else {
+		w := tabwriter.NewWriter(os.Stdout, 10, 16, 2, ' ', tabwriter.TabIndent)
+
+		fmt.Fprintln(w, "TENANT ID\t NAME\t KEYCLOAK CLIENT ID\t CREATED DATE")
+		var tenants []model.Tenant
+
+		json.NewDecoder(resp.Body).Decode(&tenants)
+
+		for _, tenant := range tenants {
+			fmt.Fprintln(w, tenant.ID, "\t", tenant.Name, "\t", tenant.KeycloakClientId, "\t", time.Unix(tenant.CreatedAt, 0))
+		}
+
+		w.Flush()
 	}
-
-	var tenants []Tenant
-
-	json.NewDecoder(resp.Body).Decode(&tenants)
-
-	for _, tenant := range tenants {
-		fmt.Fprintln(w, tenant.ID, "\t", tenant.Name, "\t", tenant.KeycloakClientId, "\t", time.Unix(tenant.CreatedAt, 0))
-		// DISPLAY tenants[0].CreatedAt EPOCH TIME AS DATE AND TIME
-
-		// fmt.Println()
-	}
-
-	w.Flush()
 }

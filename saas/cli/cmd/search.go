@@ -4,69 +4,80 @@ Copyright © 2024 Rohaizan Roosley rohaizanr@gmail.com
 package cmd
 
 import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"os"
+	"text/tabwriter"
+
+	model "github.com/Dev4w4n/e-masjid.my/saas/cli/model"
 	"github.com/spf13/cobra"
 )
 
 // searchCmd represents the search command
 var searchCmd = &cobra.Command{
 	Use:   "search",
-	Short: "Search for tenant by namespace",
+	Short: "Search for tenant by name",
 	Run: func(cmd *cobra.Command, args []string) {
-		// namespace, _ := cmd.Flags().GetString("namespace")
+		name, _ := cmd.Flags().GetString("name")
+
+		if err := searchTenant(name); err != nil {
+			fmt.Println(err)
+		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(searchCmd)
 
-	searchCmd.Flags().StringP("namespace", "n", "", "Define the new tenant namespace")
-	searchCmd.MarkFlagRequired("namespace")
+	searchCmd.Flags().StringP("name", "n", "", "Define the new tenant name")
+	searchCmd.MarkFlagRequired("name")
 }
 
-// func searchTenant(namespace string) (*pb.Tenant, error) {
-// 	// Get gRPC connection
-// 	conn, err := grpcutils.NewGrpcConnection()
-// 	if err != nil {
-// 		log.Fatalf("Error dialing: %v", err)
-// 		return nil, err
-// 	}
-// 	defer grpcutils.CloseGrpcConnection(conn)
+func searchTenant(name string) error {
+	// Get data using json
+	url := "http://localhost:8090/tenant/" + name
 
-// 	client := pb.NewTenantsClient(conn)
+	resp, err := http.Get(url)
 
-// 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-// 	defer cancel()
+	if err != nil {
+		panic(err)
+	}
 
-// 	request := &pb.TenantNamespaceRequest{NameSpace: namespace}
+	if resp.StatusCode != 200 {
+		fmt.Println("Tenant not found")
+	} else {
+		var tenant model.Tenant
 
-// 	tenant, err := client.FindByNamespace(ctx, request)
+		fmt.Println(resp.Body)
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+		err := json.NewDecoder(resp.Body).Decode(&tenant)
 
-// 	conn.Close()
+		if err != nil {
+			panic(err)
+		}
 
-// 	return tenant, nil
-// }
+		fmt.Printf("%+v\n", tenant)
+		displaySingleTenant(tenant)
+	}
 
-// func displaySingleTenant(tenant *pb.Tenant) {
-// 	// Displays the single tenant in details
-// 	w := tabwriter.NewWriter(os.Stdout, 20, 10, 2, ' ', tabwriter.TabIndent)
+	return nil
+}
 
-// 	fmt.Println("")
-// 	fmt.Println("Tenant Detailed Informations")
-// 	fmt.Println("----------------------------")
-// 	fmt.Fprintln(w, "TENANT ID:", "\t", tenant.Id)
-// 	fmt.Fprintln(w, "NAMESPACE:", "\t", tenant.NameSpace)
-// 	fmt.Fprintln(w, "DB NAME:", "\t", tenant.DbName)
-// 	fmt.Fprintln(w, "DB USER:", "\t", tenant.DbUser)
-// 	fmt.Fprintln(w, "DB PASSWORD:", "\t", tenant.DbUser)
-// 	fmt.Fprintln(w, "ALLOWED ORIGIN:", "\t", tenant.AllowedOrigin)
-// 	fmt.Fprintln(w, "MANAGER ROLE:", "\t", tenant.ManagerRole)
-// 	fmt.Fprintln(w, "USER ROLE:", "\t", tenant.UserRole)
-// 	fmt.Fprintln(w, "KEYCLOAK CLIENT ID:", "\t", tenant.KeycloakClientId)
-// 	fmt.Fprintln(w, "KEYCLOAK SERVER:", "\t", tenant.KeycloakServer)
-// 	fmt.Fprintln(w, "KEYCLOAK JWKS URL:", "\t", tenant.KeycloakJwksUrl)
-// 	w.Flush()
-// }
+func displaySingleTenant(tenant model.Tenant) {
+	// Displays the single tenant in details
+	w := tabwriter.NewWriter(os.Stdout, 20, 10, 2, ' ', tabwriter.TabIndent)
+
+	fmt.Println("")
+	fmt.Println("Tenant Detailed Informations")
+	fmt.Println("----------------------------")
+	fmt.Fprintln(w, "TENANT ID:", "\t", tenant.ID)
+	fmt.Fprintln(w, "NAME:", "\t", tenant.Name)
+	fmt.Fprintln(w, "NAMESPACE:", "\t", tenant.Namespace)
+	fmt.Fprintln(w, "MANAGER ROLE:", "\t", tenant.ManagerRole)
+	fmt.Fprintln(w, "USER ROLE:", "\t", tenant.UserRole)
+	fmt.Fprintln(w, "KEYCLOAK CLIENT ID:", "\t", tenant.KeycloakClientId)
+	fmt.Fprintln(w, "KEYCLOAK SERVER:", "\t", tenant.KeycloakServer)
+	fmt.Fprintln(w, "KEYCLOAK JWKS URL:", "\t", tenant.KeycloakJwksUrl)
+	w.Flush()
+}

@@ -6,13 +6,14 @@ import (
 
 type Tenant struct {
 	ID               string       `gorm:"type:varchar(36)" json:"id"`
-	Name             string       `gorm:"column:name;index;size:255;"`
-	ManagerRole      string       `gorm:"column:manager_role"`
-	UserRole         string       `gorm:"column:user_role"`
-	KeycloakClientId string       `gorm:"column:keycloak_client_id"`
-	KeycloakServer   string       `gorm:"column:keycloak_server"`
-	KeycloakJwksUrl  string       `gorm:"column:keycloak_jwks_url"`
-	CreatedAt        int64        `gorm:"column:created_at"`
+	Name             string       `gorm:"column:name;index;size:255;" json:"name"`
+	Namespace        string       `gorm:"column:namespace;index;size:255;" json:"namespace"`
+	ManagerRole      string       `gorm:"column:manager_role" json:"manager_role"`
+	UserRole         string       `gorm:"column:user_role" json:"user_role"`
+	KeycloakClientId string       `gorm:"column:keycloak_client_id" json:"keycloak_client_id"`
+	KeycloakServer   string       `gorm:"column:keycloak_server" json:"keycloak_server"`
+	KeycloakJwksUrl  string       `gorm:"column:keycloak_jwks_url" json:"keycloak_jwks_url"`
+	CreatedAt        int64        `gorm:"column:created_at" json:"created_at"`
 	Conn             []TenantConn `gorm:"foreignKey:TenantId"`
 }
 
