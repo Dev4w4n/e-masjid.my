@@ -1,11 +1,3 @@
-github.com/Dev4w4n/e-masjid.my/api/cadangan-api v0.0.0-20240503140028-8e7555973baa h1:gxbyPYUCtXt/gaKnQeG1qdBm0/6pkZOXB1VfDpiKFV4=
-github.com/Dev4w4n/e-masjid.my/api/cadangan-api v0.0.0-20240503140028-8e7555973baa/go.mod h1:eJSB5BFOs8NmRUvXs9sSriDzSJYrocdZ9zxMIJR8pBo=
-github.com/Dev4w4n/e-masjid.my/api/khairat-api v0.0.0-20240503140028-8e7555973baa h1:socK7czUyYkq6g/3Cw/utdPhJk0eBJZpp+8kjQVzRos=
-github.com/Dev4w4n/e-masjid.my/api/khairat-api v0.0.0-20240503140028-8e7555973baa/go.mod h1:/Ky+fMC40QLi5cFjRgJQUQCA9d2fZvQPNWGZOoMqpls=
-github.com/Dev4w4n/e-masjid.my/api/tabung-api v0.0.0-20240503140028-8e7555973baa h1:ZZjuXoK0nPltPTSzA0MSWjJhrHlQwrJHH6Gq0x/6Xy8=
-github.com/Dev4w4n/e-masjid.my/api/tabung-api v0.0.0-20240503140028-8e7555973baa/go.mod h1:LZrD3qgmFy2vXjQunEhD9uga9nB603+aznNWo8YP60k=
-github.com/Dev4w4n/e-masjid.my/api/tetapan-api v0.0.0-20240503140028-8e7555973baa h1:rRhBuM6DmTj1urpvDoSMz68UH8R3nSkSNEtKn47Q9jo=
-github.com/Dev4w4n/e-masjid.my/api/tetapan-api v0.0.0-20240503140028-8e7555973baa/go.mod h1:yBnLB5o8Y+8GyBlfjlR+1M2CjcxjNoBLmQ+bmaq1elw=
 github.com/bytedance/sonic v1.5.0/go.mod h1:ED5hyg4y6t3/9Ku1R6dU/4KyJ48DZ4jPhfY1O2AihPM=
 github.com/bytedance/sonic v1.10.0-rc/go.mod h1:ElCzW+ufi8qKqNW0FY314xriJhyJhuoJ3gFZdAHF7NM=
 github.com/bytedance/sonic v1.10.2 h1:GQebETVBxYB7JGWJtLBi07OVzWwt+8dWA00gEVW2ZFE=
@@ -17,6 +9,7 @@ github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d/go.mod h1:8EPpV
 github.com/chenzhuoyu/iasm v0.9.0/go.mod h1:Xjy2NpN3h7aUqeqM+woSuuvxmIe6+DDsiNLIrkAmYog=
 github.com/chenzhuoyu/iasm v0.9.1 h1:tUHQJXo3NhBqw6s33wkGn9SP3bvrWLdlVIJ3hQBL7P0=
 github.com/chenzhuoyu/iasm v0.9.1/go.mod h1:Xjy2NpN3h7aUqeqM+woSuuvxmIe6+DDsiNLIrkAmYog=
+github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

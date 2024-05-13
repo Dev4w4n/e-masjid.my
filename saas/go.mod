@@ -11,10 +11,11 @@ require (
 )
 
 require (
-	github.com/Dev4w4n/e-masjid.my/api/cadangan-api v0.0.0-20240503140028-8e7555973baa
-	github.com/Dev4w4n/e-masjid.my/api/khairat-api v0.0.0-20240503140028-8e7555973baa
-	github.com/Dev4w4n/e-masjid.my/api/tabung-api v0.0.0-20240503140028-8e7555973baa
-	github.com/Dev4w4n/e-masjid.my/api/tetapan-api v0.0.0-20240503140028-8e7555973baa
+	github.com/kr/text v0.2.0 // indirect
+	github.com/rogpeppe/go-internal v1.12.0 // indirect
+)
+
+require (
 	github.com/bytedance/sonic v1.10.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.1 // indirect
