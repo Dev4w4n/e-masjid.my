@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	sharedDsn = "host=localhost user=pgsql-saas password=pgsql-saas dbname=pgsql-saas port=5435 sslmode=disable TimeZone=UTC"
+	sharedDsn = "host=postgres user=pgsql-saas password=pgsql-saas dbname=pgsql-saas port=5432 sslmode=disable TimeZone=UTC"
 )
 
 func main() {
@@ -30,10 +30,16 @@ func main() {
 
 	//seed data into db
 	seeder := seed.NewDefaultSeeder(dbData.NewMigrationSeeder(emasjidsaas.DbProvider), dbData.NewSeed(emasjidsaas.DbProvider, emasjidsaas.ConnStrGen))
-	err := seeder.Seed(context.Background(), seed.AddHost(), seed.AddTenant("1"))
-	if err != nil {
-		panic(err)
-	}
+	
+	r.POST("/seed", func(c *gin.Context) {
+		err := seeder.Seed(context.Background(), seed.AddHost(), seed.AddTenant("1"))
+		if err != nil {
+			panic(err)
+		}
+		c.JSON(200, gin.H{
+			"message":  "ok",
+		})
+	})	
 
 	//return current tenant
 	r.GET("/tenant/current", func(c *gin.Context) {

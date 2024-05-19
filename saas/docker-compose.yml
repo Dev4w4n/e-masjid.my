@@ -1,16 +1,30 @@
-version: '3.7'
+version: "3.7"
 services:
   postgres:
-    image: postgres:alpine3.19
+    build:
+      context: .
+      dockerfile: Dockerfile.pgsql
     restart: always
     environment:
-      - POSTGRES_DB=pgsql-saas
-      - POSTGRES_USER=pgsql-saas
-      - POSTGRES_PASSWORD=pgsql-saas
+      POSTGRES_DB: pgsql-saas
+      POSTGRES_USER: pgsql-saas
+      POSTGRES_PASSWORD: pgsql-saas
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5435:5432"
+
+  saas-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.saas
+    ports:
+      - "8090:8090"
+    environment:
+      GO_ENV: dev
+    depends_on:
+      - postgres
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "./start-and-seed.sh"]
 
 volumes:
   postgres_data:

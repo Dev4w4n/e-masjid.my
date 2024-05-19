@@ -86,19 +86,22 @@ func createPosts(db *gorm2.DB, entities []model.Post) error {
 }
 
 func executeSqlFiles(db *gorm2.DB) error {
-
+	fmt.Println("Executinr Sql Files.")
 	// List .sql files in a directory
 	// Update the pattern to match your file naming convention
-	sqlFiles, err := filepath.Glob("/Users/rohaizan/Codes/e-masjid/saas/*.sql")
+	sqlFiles, err := filepath.Glob("/app/*.sql")
 	if err != nil {
 		panic(fmt.Sprintf("failed to list SQL files: %s", err))
 	}
 
+	fmt.Println("Sorting files.")
 	// Sort files by name
 	sort.Strings(sqlFiles)
 
+	fmt.Println("Files count: ", sqlFiles)
 	// Loop through each .sql file
 	for _, sqlFile := range sqlFiles {
+		fmt.Println("Processing file: ", sqlFile)
 		// Read SQL file
 		sqlBytes, err := os.ReadFile(sqlFile)
 		if err != nil {
