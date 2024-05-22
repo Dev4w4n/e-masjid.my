@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/saas"
@@ -13,33 +15,40 @@ import (
 	"github.com/go-saas/saas/data"
 	"github.com/go-saas/saas/seed"
 
+	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	dbData "github.com/Dev4w4n/e-masjid.my/saas/data"
 	"github.com/Dev4w4n/e-masjid.my/saas/model"
 	emasjidsaas "github.com/Dev4w4n/e-masjid.my/saas/saas"
 )
 
-const (
-	sharedDsn = "host=postgres user=pgsql-saas password=pgsql-saas dbname=pgsql-saas port=5432 sslmode=disable TimeZone=UTC"
-)
-
 func main() {
 	r := gin.Default()
+
+	env, err := env.GetEnvironment()
+	if err != nil {
+		log.Fatalf("Error getting environment: %v", err)
+	}
+
+	sharedDsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=UTC",
+		env.DbHost, env.DbUser, env.DbPassword, env.DbName, env.DbPort)
+
+	log.Println(sharedDsn)
 
 	emasjidsaas.InitSaas(sharedDsn)
 	r.Use(sgin.MultiTenancy(emasjidsaas.TenantStorage))
 
 	//seed data into db
 	seeder := seed.NewDefaultSeeder(dbData.NewMigrationSeeder(emasjidsaas.DbProvider), dbData.NewSeed(emasjidsaas.DbProvider, emasjidsaas.ConnStrGen))
-	
+
 	r.POST("/seed", func(c *gin.Context) {
 		err := seeder.Seed(context.Background(), seed.AddHost(), seed.AddTenant("1"))
 		if err != nil {
 			panic(err)
 		}
 		c.JSON(200, gin.H{
-			"message":  "ok",
+			"message": "ok",
 		})
-	})	
+	})
 
 	//return current tenant
 	r.GET("/tenant/current", func(c *gin.Context) {

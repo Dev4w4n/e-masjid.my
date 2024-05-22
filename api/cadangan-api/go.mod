@@ -29,6 +29,7 @@ require (
 	github.com/Dev4w4n/e-masjid.my/api/core/config v0.0.0-20240415135138-686a16ca6bce
 	github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20240411121454-731297b5f8fe
 	github.com/Dev4w4n/e-masjid.my/api/core/error v0.0.0-20240415135138-686a16ca6bce
+	github.com/Dev4w4n/e-masjid.my/saas v0.0.0-20240512145810-aea9c8249880
 	github.com/bytedance/sonic v1.10.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.1 // indirect

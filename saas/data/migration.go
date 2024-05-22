@@ -30,23 +30,5 @@ func (m *MigrationSeeder) Seed(ctx context.Context, sCtx *seed.Context) error {
 		return err
 	}
 
-	// add e-masjid.my tables
-	// err = db.AutoMigrate(
-	// 	&emasjidModel.Cadangan{},
-	// 	&emasjidModel.CadanganType{},
-	// 	&emasjidModel.Dependent{},
-	// 	&emasjidModel.Member{},
-	// 	&emasjidModel.MemberTag{},
-	// 	&emasjidModel.Tag{},
-	// 	&emasjidModel.Person{},
-	// 	&emasjidModel.PaymentHistory{},
-	// 	&emasjidModel.Tetapan{},
-	// 	&emasjidModel.TetapanType{},
-	// 	&emasjidModel.Tabung{},
-	// 	&emasjidModel.TabungType{},
-	// 	&emasjidModel.Kutipan{},
-	// 	&emasjidModel.UploadedFilesCdn{},
-	// )
-
 	return nil
 }

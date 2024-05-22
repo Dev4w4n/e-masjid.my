@@ -8,6 +8,8 @@ github.com/Dev4w4n/e-masjid.my/api/core/error v0.0.0-20240411110941-78a36843ae30
 github.com/Dev4w4n/e-masjid.my/api/core/error v0.0.0-20240411110941-78a36843ae30/go.mod h1:haLv7XI/msqqlgWqUYAVuCrQVfvnLfEQa+d5ZJsx3q8=
 github.com/Dev4w4n/e-masjid.my/api/core/error v0.0.0-20240415135138-686a16ca6bce h1:OY9CxmJJUd+snKLu812rFErD87nik69F50nwNS3hncY=
 github.com/Dev4w4n/e-masjid.my/api/core/error v0.0.0-20240415135138-686a16ca6bce/go.mod h1:haLv7XI/msqqlgWqUYAVuCrQVfvnLfEQa+d5ZJsx3q8=
+github.com/Dev4w4n/e-masjid.my/saas v0.0.0-20240512145810-aea9c8249880 h1:+I0WP9pBHpTprhvUbk0cnbcRCLslnYCDgL+cZsR9NF0=
+github.com/Dev4w4n/e-masjid.my/saas v0.0.0-20240512145810-aea9c8249880/go.mod h1:7Uua3yebK17ZTOgAjPQst+owaOu06EHXgQAQRfAfLOE=
 github.com/KyleBanks/depth v1.2.1 h1:5h8fQADFrWtarTdtDudMmGsC7GPbOAu6RVB3ffsVFHc=
 github.com/KyleBanks/depth v1.2.1/go.mod h1:jzSb9d0L43HxTQfT+oSA1EEp2q+ne2uh6XgeJcm8brE=
 github.com/PuerkitoBio/purell v1.1.1 h1:WEQqlqaGbrPkxLJWfBwQmfEAE1Z7ONdDLqrN38tNFfI=
