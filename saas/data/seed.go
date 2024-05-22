@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"sort"
@@ -32,6 +33,7 @@ func (s *Seed) Seed(ctx context.Context, sCtx *seed.Context) error {
 
 	if sCtx.TenantId == "" {
 		//init host
+		log.Println("Initializing host.")
 		err := db.Model(&model.Tenant{}).Session(&gorm2.Session{FullSaveAssociations: true}).Clauses(clause.OnConflict{UpdateAll: true}).CreateInBatches([]model.Tenant{
 			{ID: "1", Name: "Host"}}, 10).Error
 		if err != nil {
@@ -64,6 +66,7 @@ func (s *Seed) Seed(ctx context.Context, sCtx *seed.Context) error {
 
 	// if its a tenant then init the database
 	if sCtx.TenantId != "" {
+		log.Println("Executing Sql Files.")
 		err := executeSqlFiles(db)
 		if err != nil {
 			return err
@@ -86,26 +89,25 @@ func createPosts(db *gorm2.DB, entities []model.Post) error {
 }
 
 func executeSqlFiles(db *gorm2.DB) error {
-	fmt.Println("Executinr Sql Files.")
 	// List .sql files in a directory
 	// Update the pattern to match your file naming convention
 	sqlFiles, err := filepath.Glob("/app/*.sql")
 	if err != nil {
-		panic(fmt.Sprintf("failed to list SQL files: %s", err))
+		panic(err)
 	}
 
-	fmt.Println("Sorting files.")
+	log.Println("Sorting files.")
 	// Sort files by name
 	sort.Strings(sqlFiles)
 
-	fmt.Println("Files count: ", sqlFiles)
+	log.Println("Files count: ", sqlFiles)
 	// Loop through each .sql file
 	for _, sqlFile := range sqlFiles {
-		fmt.Println("Processing file: ", sqlFile)
+		log.Println("Processing file: ", sqlFile)
 		// Read SQL file
 		sqlBytes, err := os.ReadFile(sqlFile)
 		if err != nil {
-			panic(fmt.Sprintf("failed to read SQL file '%s': %s", sqlFile, err))
+			panic(err)
 		}
 
 		// Split SQL statements
@@ -119,12 +121,12 @@ func executeSqlFiles(db *gorm2.DB) error {
 			}
 			err := db.Exec(sqlStatement).Error
 			if err != nil {
-				panic(fmt.Sprintf("failed to execute SQL statement '%s' from file '%s': %s", sqlStatement, sqlFile, err))
+				panic(err)
 			}
 		}
 	}
 
-	fmt.Println("Initialization complete.")
+	log.Println("Initialization complete.")
 
 	return nil
 }

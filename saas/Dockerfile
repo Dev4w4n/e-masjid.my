@@ -55,7 +55,7 @@ COPY --from=builder-saas-api /app/*.sql .
 COPY --from=builder-masjid-cli /app/masjid /usr/bin/masjid
 
 # Expose the port that your application will run on
-EXPOSE 8090
+EXPOSE 8080
 
 # Command to run your application
 CMD ["./saas-api", "-env", "$GO_ENV"]

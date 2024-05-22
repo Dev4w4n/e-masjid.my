@@ -23,7 +23,7 @@ func init() {
 
 func seedTenants() {
 	// Get data using json
-	url := "http://localhost:8090/seed"
+	url := "http://localhost:8080/seed"
 
 	resp, err := http.Post(url, "application/json", nil)
 
@@ -33,7 +33,7 @@ func seedTenants() {
 
 	if resp.StatusCode != 200 {
 		fmt.Println("Error seeding tenants")
+	} else {
+		fmt.Println("Seeded tenants successfully")
 	}
-
-	fmt.Println("Seeded tenants successfully")
 }

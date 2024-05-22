@@ -32,15 +32,13 @@ func main() {
 	sharedDsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=UTC",
 		env.DbHost, env.DbUser, env.DbPassword, env.DbName, env.DbPort)
 
-	log.Println(sharedDsn)
-
 	emasjidsaas.InitSaas(sharedDsn)
 	r.Use(sgin.MultiTenancy(emasjidsaas.TenantStorage))
-
-	//seed data into db
+	
 	seeder := seed.NewDefaultSeeder(dbData.NewMigrationSeeder(emasjidsaas.DbProvider), dbData.NewSeed(emasjidsaas.DbProvider, emasjidsaas.ConnStrGen))
-
+	
 	r.POST("/seed", func(c *gin.Context) {
+		//seed data into db
 		err := seeder.Seed(context.Background(), seed.AddHost(), seed.AddTenant("1"))
 		if err != nil {
 			panic(err)
@@ -141,5 +139,5 @@ func main() {
 
 	})
 
-	r.Run(":8090") // listen and serve on 0.0.0.0:8090 (for windows "localhost:8090")
+	r.Run(":8080") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
