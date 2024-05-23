@@ -11,7 +11,6 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-
 type TabungTypeController struct {
 	tabungTypeService service.TabungTypeService
 }
@@ -21,9 +20,9 @@ func NewTabungTypeController(service service.TabungTypeService) *TabungTypeContr
 		tabungTypeService: service,
 	}
 }
- 
 
 // FindAll		godoc
+//
 //	@Summary		Get All tabung type.
 //	@Description	Return the all Tabung type.
 //	@Produce		application/json
@@ -33,7 +32,7 @@ func NewTabungTypeController(service service.TabungTypeService) *TabungTypeContr
 func (controller *TabungTypeController) FindAll(ctx *gin.Context) {
 	log.Info().Msg("get tabung types")
 
-	result, err := controller.tabungTypeService.FindAll()
+	result, err := controller.tabungTypeService.FindAll(ctx)
 	errors.InternalServerError(ctx, err, "failed to retrieve tabung types")
 
 	ctx.Header("Content-Type", "application/json")
@@ -41,6 +40,7 @@ func (controller *TabungTypeController) FindAll(ctx *gin.Context) {
 }
 
 // CreateTabung		godoc
+//
 //	@Summary		Create tabung type
 //	@Description	Save tabung type data in Db.
 //	@Param			tabung	body	model.TabungType	true	"Create Tabung type"
@@ -55,7 +55,7 @@ func (controller *TabungTypeController) Save(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&tabungType)
 	errors.InternalServerError(ctx, err, "failed to bind JSON")
 
-	err = controller.tabungTypeService.Save(tabungType)
+	err = controller.tabungTypeService.Save(ctx, tabungType)
 	errors.InternalServerError(ctx, err, "failed to save tabung type")
 
 	ctx.Header("Content-Type", "application/json")
@@ -63,6 +63,7 @@ func (controller *TabungTypeController) Save(ctx *gin.Context) {
 }
 
 // DeleteTabung		godoc
+//
 //	@Summary		Delete tabung type
 //	@Description	Remove tabung type data by id.
 //	@Param			id	path	string	true	"delete tabung type by id"
@@ -76,7 +77,7 @@ func (controller *TabungTypeController) Delete(ctx *gin.Context) {
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	errors.BadRequestError(ctx, err, "invalid id format")
 
-	err = controller.tabungTypeService.Delete(id)
+	err = controller.tabungTypeService.Delete(ctx, id)
 	errors.InternalServerError(ctx, err, "failed to delete tabung type")
 
 	ctx.Header("Content-Type", "application/json")

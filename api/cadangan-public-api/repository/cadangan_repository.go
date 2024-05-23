@@ -2,25 +2,24 @@ package repository
 
 import (
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/model"
-	"gorm.io/gorm"
+	emasjidsaas "github.com/Dev4w4n/e-masjid.my/saas/saas"
+	"github.com/gin-gonic/gin"
 )
 
 type CadanganRepository interface {
-	Save(cadangan model.Cadangan) error
+	Save(ctx *gin.Context, cadangan model.Cadangan) error
 }
 
 type CadanganRepositoryImpl struct {
-	Db *gorm.DB
 }
 
-func NewCadanganRepository(db *gorm.DB) CadanganRepository {
-	db.AutoMigrate(&model.Cadangan{})
-
-	return &CadanganRepositoryImpl{Db: db}
+func NewCadanganRepository() CadanganRepository {
+	return &CadanganRepositoryImpl{}
 }
 
-func (repo *CadanganRepositoryImpl) Save(cadangan model.Cadangan) error {
-	result := repo.Db.Save(&cadangan)
+func (repo *CadanganRepositoryImpl) Save(ctx *gin.Context, cadangan model.Cadangan) error {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
+	result := db.Save(&cadangan)
 
 	if result.Error != nil {
 		return result.Error

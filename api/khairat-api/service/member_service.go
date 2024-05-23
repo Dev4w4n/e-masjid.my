@@ -3,17 +3,18 @@ package service
 import (
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/repository"
+	"github.com/gin-gonic/gin"
 )
 
 type MemberService interface {
-	Save(member model.Member) (model.Member, error)
-	SaveBulk(members []model.Member) (bool, error)
-	FindOne(id int) (model.Member, error)
-	FindAll() (model.Response, error)
-	FindByQuery(query string) ([]model.Member, error)
-	FindAllOrderbyPersonName() ([]model.Member, error)
-	CountAll() (int64, error)
-	FindAllByTagIdOrderByMemberName(tagIdStr string) ([]model.Member, error)
+	Save(ctx *gin.Context, member model.Member) (model.Member, error)
+	SaveBulk(ctx *gin.Context, members []model.Member) (bool, error)
+	FindOne(ctx *gin.Context, id int) (model.Member, error)
+	FindAll(ctx *gin.Context) (model.Response, error)
+	FindByQuery(ctx *gin.Context, query string) ([]model.Member, error)
+	FindAllOrderbyPersonName(ctx *gin.Context) ([]model.Member, error)
+	CountAll(ctx *gin.Context) (int64, error)
+	FindAllByTagIdOrderByMemberName(ctx *gin.Context, tagIdStr string) ([]model.Member, error)
 }
 
 type MemberServiceImpl struct {
@@ -39,8 +40,8 @@ func NewMemberService(memberRepository repository.MemberRepository,
 }
 
 // CountAll implements MemberService.
-func (repo *MemberServiceImpl) CountAll() (int64, error) {
-	result, err := repo.memberRepository.CountAll()
+func (repo *MemberServiceImpl) CountAll(ctx *gin.Context) (int64, error) {
+	result, err := repo.memberRepository.CountAll(ctx)
 
 	if err != nil {
 		return 0, err
@@ -50,10 +51,10 @@ func (repo *MemberServiceImpl) CountAll() (int64, error) {
 }
 
 // FindAll implements MemberService.
-func (repo *MemberServiceImpl) FindAll() (model.Response, error) {
+func (repo *MemberServiceImpl) FindAll(ctx *gin.Context) (model.Response, error) {
 	var response model.Response
 
-	result, err := repo.memberRepository.FindAll()
+	result, err := repo.memberRepository.FindAll(ctx)
 
 	if err != nil {
 		return response, err
@@ -65,10 +66,10 @@ func (repo *MemberServiceImpl) FindAll() (model.Response, error) {
 }
 
 // FindAllByTagIdOrderByMemberName implements MemberService.
-func (repo *MemberServiceImpl) FindAllByTagIdOrderByMemberName(tagIdStr string) ([]model.Member, error) {
+func (repo *MemberServiceImpl) FindAllByTagIdOrderByMemberName(ctx *gin.Context, tagIdStr string) ([]model.Member, error) {
 	var result []model.Member
 
-	result, err := repo.memberRepository.FindByTagOrderByMemberNameAsc(tagIdStr)
+	result, err := repo.memberRepository.FindByTagOrderByMemberNameAsc(ctx, tagIdStr)
 
 	if err != nil {
 		return nil, err
@@ -78,10 +79,10 @@ func (repo *MemberServiceImpl) FindAllByTagIdOrderByMemberName(tagIdStr string) 
 }
 
 // FindAllOrderbyPersonName implements MemberService.
-func (repo *MemberServiceImpl) FindAllOrderbyPersonName() ([]model.Member, error) {
+func (repo *MemberServiceImpl) FindAllOrderbyPersonName(ctx *gin.Context) ([]model.Member, error) {
 	var result []model.Member
 
-	result, err := repo.memberRepository.FindAllOrderByPersonName()
+	result, err := repo.memberRepository.FindAllOrderByPersonName(ctx)
 
 	if err != nil {
 		return nil, err
@@ -91,10 +92,10 @@ func (repo *MemberServiceImpl) FindAllOrderbyPersonName() ([]model.Member, error
 }
 
 // FindBy implements MemberService.
-func (repo *MemberServiceImpl) FindByQuery(query string) ([]model.Member, error) {
+func (repo *MemberServiceImpl) FindByQuery(ctx *gin.Context, query string) ([]model.Member, error) {
 	var result []model.Member
 
-	result, err := repo.memberRepository.FindByQuery(query)
+	result, err := repo.memberRepository.FindByQuery(ctx, query)
 
 	if err != nil {
 		return nil, err
@@ -104,10 +105,10 @@ func (repo *MemberServiceImpl) FindByQuery(query string) ([]model.Member, error)
 }
 
 // FindOne implements MemberService.
-func (repo *MemberServiceImpl) FindOne(id int) (model.Member, error) {
+func (repo *MemberServiceImpl) FindOne(ctx *gin.Context, id int) (model.Member, error) {
 	var result model.Member
 
-	result, err := repo.memberRepository.FindById(id)
+	result, err := repo.memberRepository.FindById(ctx, id)
 
 	if err != nil {
 		return result, err
@@ -117,13 +118,13 @@ func (repo *MemberServiceImpl) FindOne(id int) (model.Member, error) {
 }
 
 // Save implements MemberService.
-func (repo *MemberServiceImpl) Save(member model.Member) (model.Member, error) {
+func (repo *MemberServiceImpl) Save(ctx *gin.Context, member model.Member) (model.Member, error) {
 
 	if member.Id == 0 {
 		payments := member.PaymentHistory
 		dependents := member.Dependents
 		tags := member.MemberTags
-		newPerson, err := repo.personRepository.Save(member.Person)
+		newPerson, err := repo.personRepository.Save(ctx, member.Person)
 
 		if err != nil {
 			return model.Member{}, err
@@ -134,7 +135,7 @@ func (repo *MemberServiceImpl) Save(member model.Member) (model.Member, error) {
 		member.MemberTags = nil
 		member.PaymentHistory = nil
 
-		member, err := repo.memberRepository.Save(member)
+		member, err := repo.memberRepository.Save(ctx, member)
 
 		if err != nil {
 			return model.Member{}, err
@@ -142,7 +143,7 @@ func (repo *MemberServiceImpl) Save(member model.Member) (model.Member, error) {
 
 		for _, dependent := range dependents {
 			person := dependent.Person
-			newPerson, err := repo.personRepository.Save(person)
+			newPerson, err := repo.personRepository.Save(ctx, person)
 
 			if err != nil {
 				return model.Member{}, err
@@ -151,7 +152,7 @@ func (repo *MemberServiceImpl) Save(member model.Member) (model.Member, error) {
 			dependent.MemberId = member.Id
 			dependent.PersonId = newPerson.Id
 
-			err = repo.dependentRepository.Save(dependent, member.Id)
+			err = repo.dependentRepository.Save(ctx, dependent, member.Id)
 
 			if err != nil {
 				return model.Member{}, err
@@ -161,7 +162,7 @@ func (repo *MemberServiceImpl) Save(member model.Member) (model.Member, error) {
 		for _, tag := range tags {
 			tag.MemberId = member.Id
 
-			_, err = repo.memberTagRepository.Save(tag)
+			_, err = repo.memberTagRepository.Save(ctx, tag)
 
 			if err != nil {
 				return model.Member{}, err
@@ -171,7 +172,7 @@ func (repo *MemberServiceImpl) Save(member model.Member) (model.Member, error) {
 		for _, payment := range payments {
 			payment.MemberId = member.Id
 
-			err = repo.paymentHistoryRepository.Save(payment)
+			err = repo.paymentHistoryRepository.Save(ctx, payment)
 
 			if err != nil {
 				return model.Member{}, err
@@ -182,13 +183,13 @@ func (repo *MemberServiceImpl) Save(member model.Member) (model.Member, error) {
 		person := member.Person
 		memberTags := member.MemberTags
 
-		_, err := repo.personRepository.Save(person)
+		_, err := repo.personRepository.Save(ctx, person)
 
 		if err != nil {
 			return model.Member{}, err
 		}
 
-		err = repo.memberTagRepository.DeleteByMemberId(member.Id)
+		err = repo.memberTagRepository.DeleteByMemberId(ctx, member.Id)
 
 		if err != nil {
 			return model.Member{}, err
@@ -197,14 +198,14 @@ func (repo *MemberServiceImpl) Save(member model.Member) (model.Member, error) {
 		for _, tag := range memberTags {
 			tag.MemberId = member.Id
 
-			_, err = repo.memberTagRepository.Save(tag)
+			_, err = repo.memberTagRepository.Save(ctx, tag)
 
 			if err != nil {
 				return model.Member{}, err
 			}
 		}
 
-		err = repo.paymentHistoryRepository.UpdatePaymentHistory(member.PaymentHistory,
+		err = repo.paymentHistoryRepository.UpdatePaymentHistory(ctx, member.PaymentHistory,
 			member.Id)
 
 		if err != nil {
@@ -215,9 +216,9 @@ func (repo *MemberServiceImpl) Save(member model.Member) (model.Member, error) {
 	return member, nil
 }
 
-func (repo *MemberServiceImpl) SaveBulk(members []model.Member) (bool, error) {
+func (repo *MemberServiceImpl) SaveBulk(ctx *gin.Context, members []model.Member) (bool, error) {
 	for _, member := range members {
-		_, err := repo.Save(member)
+		_, err := repo.Save(ctx, member)
 		if err != nil {
 			return false, err
 		}

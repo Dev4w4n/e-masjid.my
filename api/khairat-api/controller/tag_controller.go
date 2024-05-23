@@ -15,13 +15,14 @@ type TagController struct {
 	tagRepository repository.TagRepository
 }
 
-func NewTagController( repo repository.TagRepository) *TagController {
+func NewTagController(repo repository.TagRepository) *TagController {
 	return &TagController{
 		tagRepository: repo,
 	}
 }
 
 // FindAll		godoc
+//
 //	@Summary		find all tag
 //	@Description	Return the all tag.
 //	@Produce		application/json
@@ -31,7 +32,7 @@ func NewTagController( repo repository.TagRepository) *TagController {
 func (controller *TagController) FindAll(ctx *gin.Context) {
 	log.Info().Msg("find all tag")
 
-	result, err := controller.tagRepository.FindAll()
+	result, err := controller.tagRepository.FindAll(ctx)
 	errors.InternalServerError(ctx, err, "failed to retrieve tag list")
 
 	ctx.Header("Content-Type", "application/json")
@@ -39,6 +40,7 @@ func (controller *TagController) FindAll(ctx *gin.Context) {
 }
 
 // Save	godoc
+//
 //	@Summary		save tag
 //	@Description	save tag data in Db.
 //	@Param			tags	body	model.Tag	true	"save tag"
@@ -52,7 +54,7 @@ func (controller *TagController) Save(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&saveTag)
 	errors.BadRequestError(ctx, err, "failed to bind JSON")
 
-	err = controller.tagRepository.Save(saveTag)
+	err = controller.tagRepository.Save(ctx, saveTag)
 	errors.InternalServerError(ctx, err, "failed to save tag")
 
 	ctx.Header("Content-Type", "application/json")
@@ -60,6 +62,7 @@ func (controller *TagController) Save(ctx *gin.Context) {
 }
 
 // Delete		godoc
+//
 //	@Summary		Delete tag
 //	@Description	Remove tag data by id.
 //	@Param			id	path	string	true	"delete tag by id"
@@ -77,7 +80,7 @@ func (controller *TagController) Delete(ctx *gin.Context) {
 		return
 	}
 
-	err2 := controller.tagRepository.Delete(id)
+	err2 := controller.tagRepository.Delete(ctx, id)
 	errors.InternalServerError(ctx, err2, "failed to delete tag")
 
 	ctx.Header("Content-Type", "application/json")

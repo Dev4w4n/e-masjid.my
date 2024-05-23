@@ -3,12 +3,13 @@ package service
 import (
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/repository"
+	"github.com/gin-gonic/gin"
 )
 
 type PaymentHistoryService interface {
-	Save(paymentHistory model.PaymentHistory) error
-	FindTotalMembersPaidForCurrentYear() (int64, error)
-	IsCurrentYearPaymentExist(memberId int64) (bool, error)
+	Save(ctx *gin.Context, paymentHistory model.PaymentHistory) error
+	FindTotalMembersPaidForCurrentYear(ctx *gin.Context) (int64, error)
+	IsCurrentYearPaymentExist(ctx *gin.Context, memberId int64) (bool, error)
 }
 
 type PaymentHistoryServiceImpl struct {
@@ -22,8 +23,8 @@ func NewPaymentHistoryService(paymentHistoryRepository repository.PaymentHistory
 }
 
 // FindTotalMembersPaidForCurrentYear implements PaymentHistoryService.
-func (repo *PaymentHistoryServiceImpl) FindTotalMembersPaidForCurrentYear() (int64, error) {
-	result, err := repo.paymentHistoryRepository.GetTotalMembersPaidForCurrentYear()
+func (repo *PaymentHistoryServiceImpl) FindTotalMembersPaidForCurrentYear(ctx *gin.Context) (int64, error) {
+	result, err := repo.paymentHistoryRepository.GetTotalMembersPaidForCurrentYear(ctx)
 
 	if err != nil {
 		return 0, err
@@ -33,8 +34,8 @@ func (repo *PaymentHistoryServiceImpl) FindTotalMembersPaidForCurrentYear() (int
 }
 
 // IsCurrentYearPaymentExist implements PaymentHistoryService.
-func (repo *PaymentHistoryServiceImpl) IsCurrentYearPaymentExist(memberId int64) (bool, error) {
-	result, err := repo.paymentHistoryRepository.FindPaymentHistoryByMemberIdAndCurrentYear(memberId)
+func (repo *PaymentHistoryServiceImpl) IsCurrentYearPaymentExist(ctx *gin.Context, memberId int64) (bool, error) {
+	result, err := repo.paymentHistoryRepository.FindPaymentHistoryByMemberIdAndCurrentYear(ctx, memberId)
 
 	if err != nil {
 		return false, err
@@ -44,18 +45,18 @@ func (repo *PaymentHistoryServiceImpl) IsCurrentYearPaymentExist(memberId int64)
 }
 
 // Save implements PaymentHistoryService.
-func (repo *PaymentHistoryServiceImpl) Save(paymentHistory model.PaymentHistory) error {
-	paymentHistory, err := repo.paymentHistoryRepository.FindPaymentHistoryByMemberIdAndCurrentYear(paymentHistory.MemberId)
+func (repo *PaymentHistoryServiceImpl) Save(ctx *gin.Context, paymentHistory model.PaymentHistory) error {
+	paymentHistory, err := repo.paymentHistoryRepository.FindPaymentHistoryByMemberIdAndCurrentYear(ctx, paymentHistory.MemberId)
 
 	if err != nil {
 		return err
 	}
 
-	err = repo.paymentHistoryRepository.Delete(paymentHistory)
+	err = repo.paymentHistoryRepository.Delete(ctx, paymentHistory)
 
 	if err != nil {
 		return err
 	}
 
-	return repo.paymentHistoryRepository.Save(paymentHistory)
+	return repo.paymentHistoryRepository.Save(ctx, paymentHistory)
 }

@@ -3,13 +3,14 @@ package service
 import (
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/model"
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/repository"
+	"github.com/gin-gonic/gin"
 )
 
 type TabungService interface {
-	FindAll() ([]model.Tabung, error)
-	FindById(id int64) (model.Tabung, error)
-	Save(tabung model.Tabung) (model.Tabung, error)
-	Delete(id int64) error
+	FindAll(ctx *gin.Context) ([]model.Tabung, error)
+	FindById(ctx *gin.Context, id int64) (model.Tabung, error)
+	Save(ctx *gin.Context, tabung model.Tabung) (model.Tabung, error)
+	Delete(ctx *gin.Context, id int64) error
 }
 
 type TabungServiceImpl struct {
@@ -23,21 +24,21 @@ func NewTabungService(tabungRepository repository.TabungRepository) TabungServic
 }
 
 // FindAll implements TabungService.
-func (service *TabungServiceImpl) FindAll() ([]model.Tabung, error) {
-	return service.tabungRepository.FindAll()
+func (service *TabungServiceImpl) FindAll(ctx *gin.Context) ([]model.Tabung, error) {
+	return service.tabungRepository.FindAll(ctx)
 }
 
 // FindById implements TabungService.
-func (service *TabungServiceImpl) FindById(id int64) (model.Tabung, error) {
-	return service.tabungRepository.FindById(id)
+func (service *TabungServiceImpl) FindById(ctx *gin.Context, id int64) (model.Tabung, error) {
+	return service.tabungRepository.FindById(ctx, id)
 }
 
 // Save implements TabungService.
-func (service *TabungServiceImpl) Save(tabung model.Tabung) (model.Tabung, error) {
-	return service.tabungRepository.Save(tabung)
+func (service *TabungServiceImpl) Save(ctx *gin.Context, tabung model.Tabung) (model.Tabung, error) {
+	return service.tabungRepository.Save(ctx, tabung)
 }
 
 // Delete implements TabungService.
-func (service *TabungServiceImpl) Delete(id int64) error {
-	return service.tabungRepository.Delete(id)
+func (service *TabungServiceImpl) Delete(ctx *gin.Context, id int64) error {
+	return service.tabungRepository.Delete(ctx, id)
 }

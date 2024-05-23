@@ -21,6 +21,7 @@ func NewTetapanController(repo repository.TetapanRepository) *TetapanController 
 }
 
 // FindAll		godoc
+//
 //	@Summary		find all tetapan
 //	@Description	Return  all tetapan
 //	@Produce		application/json
@@ -30,7 +31,7 @@ func NewTetapanController(repo repository.TetapanRepository) *TetapanController 
 func (controller *TetapanController) FindAll(ctx *gin.Context) {
 	log.Info().Msg("find all tetapan")
 
-	result, err := controller.tetapanRepository.FindAll()
+	result, err := controller.tetapanRepository.FindAll(ctx)
 	errors.InternalServerError(ctx, err, "failed to retrieve tetapan list")
 
 	ctx.Header("Content-Type", "application/json")
@@ -38,6 +39,7 @@ func (controller *TetapanController) FindAll(ctx *gin.Context) {
 }
 
 // FindByKunci		godoc
+//
 //	@Summary		find tetapan by kunci
 //	@Description	Return  all tetapan by kunci
 //	@Produce		application/json
@@ -49,7 +51,7 @@ func (controller *TetapanController) FindByKunci(ctx *gin.Context) {
 	log.Info().Msg("findbykunci tetapan")
 
 	kunci := ctx.Param("kunci")
-	result, err := controller.tetapanRepository.FindByKunci(kunci)
+	result, err := controller.tetapanRepository.FindByKunci(ctx, kunci)
 	errors.InternalServerError(ctx, err, "failed to retrieve tetapan")
 
 	ctx.Header("Content-Type", "application/json")
@@ -57,6 +59,7 @@ func (controller *TetapanController) FindByKunci(ctx *gin.Context) {
 }
 
 // Save	godoc
+//
 //	@Summary		Save tetapan
 //	@Description	Save tetapan data in Db.
 //	@Param			tetapan	body	model.Tetapan	true	"Save Tetapan"
@@ -70,7 +73,7 @@ func (controller *TetapanController) Save(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&saveTetapan)
 	errors.BadRequestError(ctx, err, "failed to bind JSON")
 
-	err = controller.tetapanRepository.Save(saveTetapan)
+	err = controller.tetapanRepository.Save(ctx, saveTetapan)
 	errors.InternalServerError(ctx, err, "failed to save tetapan")
 
 	ctx.Header("Content-Type", "application/json")
@@ -78,6 +81,7 @@ func (controller *TetapanController) Save(ctx *gin.Context) {
 }
 
 // SaveAll	godoc
+//
 //	@Summary		BulkSave tetapan
 //	@Description	BulkSave tetapan data in Db.
 //	@Param			tetapan	body	[]model.Tetapan	true	"BulkSave Tetapan"
@@ -91,7 +95,7 @@ func (controller *TetapanController) SaveAll(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&saveTetapanList)
 	errors.BadRequestError(ctx, err, "failed to bind JSON")
 
-	err = controller.tetapanRepository.SaveAll(saveTetapanList)
+	err = controller.tetapanRepository.SaveAll(ctx, saveTetapanList)
 	errors.InternalServerError(ctx, err, "failed to save tetapan")
 
 	ctx.Header("Content-Type", "application/json")
@@ -99,6 +103,7 @@ func (controller *TetapanController) SaveAll(ctx *gin.Context) {
 }
 
 // Delete		godoc
+//
 //	@Summary		Delete tetapan
 //	@Description	Remove tetapan data by kunci.
 //	@Param			kunci	path	string	true	"delete tetapan by kunci"
@@ -109,7 +114,7 @@ func (controller *TetapanController) Delete(ctx *gin.Context) {
 	log.Info().Msg("delete tetapan")
 
 	kunci := ctx.Param("kunci")
-	err := controller.tetapanRepository.Delete(kunci)
+	err := controller.tetapanRepository.Delete(ctx, kunci)
 	errors.InternalServerError(ctx, err, "failed to delete tetapan")
 
 	ctx.Header("Content-Type", "application/json")

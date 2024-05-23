@@ -21,9 +21,9 @@ func NewKutipanController(service service.KutipanService) *KutipanController {
 		kutipanService: service,
 	}
 }
- 
 
 // FindAll		godoc
+//
 //	@Summary		Get All Kutipan by tabungId.
 //	@Description	Return the all  Kutipan by tabungId.
 //	@Produce		application/json
@@ -38,7 +38,7 @@ func (controller *KutipanController) FindAllByTabungId(ctx *gin.Context) {
 	tabungId, err := strconv.ParseInt(tabungIdStr, 10, 64)
 	errors.BadRequestError(ctx, err, "invalid id format")
 
-	result, err := controller.kutipanService.FindAllByTabungId(tabungId)
+	result, err := controller.kutipanService.FindAllByTabungId(ctx, tabungId)
 	errors.InternalServerError(ctx, err, "failed to retrieve kutipan list by tabung id")
 
 	ctx.Header("Content-Type", "application/json")
@@ -46,6 +46,7 @@ func (controller *KutipanController) FindAllByTabungId(ctx *gin.Context) {
 }
 
 // FindAll		godoc
+//
 //	@Summary		Get All Kutipan by tabungId.
 //	@Description	Return the all  Kutipan by tabungId.
 //	@Produce		application/json
@@ -89,7 +90,7 @@ func (controller *KutipanController) FindAllByTabungIdBetweenCreateDate(ctx *gin
 		ToDate:   toDate,
 	}
 
-	result, err := controller.kutipanService.FindAllByTabungIdBetweenCreateDate(params, paginate)
+	result, err := controller.kutipanService.FindAllByTabungIdBetweenCreateDate(ctx, params, paginate)
 	errors.InternalServerError(ctx, err, "failed to retrieve kutipan list by tabung id between create date")
 
 	ctx.Header("Content-Type", "application/json")
@@ -97,6 +98,7 @@ func (controller *KutipanController) FindAllByTabungIdBetweenCreateDate(ctx *gin
 }
 
 // FindById		godoc
+//
 //	@Summary		Get All Kutipan by id.
 //	@Description	Return the all  Kutipan by id.
 //	@Produce		application/json
@@ -111,7 +113,7 @@ func (controller *KutipanController) FindById(ctx *gin.Context) {
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	errors.BadRequestError(ctx, err, "invalid id format")
 
-	result, err := controller.kutipanService.FindById(id)
+	result, err := controller.kutipanService.FindById(ctx, id)
 	errors.InternalServerError(ctx, err, "failed to retrieve kutipan by id")
 
 	ctx.Header("Content-Type", "application/json")
@@ -119,6 +121,7 @@ func (controller *KutipanController) FindById(ctx *gin.Context) {
 }
 
 // CreateKutipan	godoc
+//
 //	@Summary		Create kutipan
 //	@Description	Save kutipan data in Db.
 //	@Param			tags	body	model.Kutipan	true	"Create kutipan"
@@ -133,7 +136,7 @@ func (controller *KutipanController) Create(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&kutipan)
 	errors.InternalServerError(ctx, err, "failed to bind JSON")
 
-	kutipan, err = controller.kutipanService.Upsert(kutipan)
+	kutipan, err = controller.kutipanService.Upsert(ctx, kutipan)
 	errors.InternalServerError(ctx, err, "failed to save kutipan")
 
 	ctx.Header("Content-Type", "application/json")
@@ -141,6 +144,7 @@ func (controller *KutipanController) Create(ctx *gin.Context) {
 }
 
 // Update Kutipan		godoc
+//
 //	@Summary		Update kutipan
 //	@Description	Save kutipan data in Db.
 //	@Param			id		path	string			true	"update by id"
@@ -167,7 +171,7 @@ func (controller *KutipanController) Update(ctx *gin.Context) {
 		kutipan.Id = int64(id)
 	}
 
-	kutipan, err = controller.kutipanService.Upsert(kutipan)
+	kutipan, err = controller.kutipanService.Upsert(ctx, kutipan)
 	errors.InternalServerError(ctx, err, "failed to save kutipan")
 
 	ctx.Header("Content-Type", "application/json")
@@ -175,6 +179,7 @@ func (controller *KutipanController) Update(ctx *gin.Context) {
 }
 
 // DeleteKutipan		godoc
+//
 //	@Summary		Delete kutipan
 //	@Description	Remove kutipan data by id.
 //	@Param			id	path	string	true	"delete kutipan by id"
@@ -184,13 +189,13 @@ func (controller *KutipanController) Update(ctx *gin.Context) {
 func (controller *KutipanController) Delete(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 
-	log.Info().Msg(fmt.Sprintf("delete kutipan by id : %s",idStr))
-	
+	log.Info().Msg(fmt.Sprintf("delete kutipan by id : %s", idStr))
+
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	errors.BadRequestError(ctx, err, "invalid id format")
 
-	result,errResp := controller.kutipanService.Delete(id)
-	errors.InternalServerError(ctx, errResp, fmt.Sprintf("failed to Delete kutipan by id: %s",idStr))
+	result, errResp := controller.kutipanService.Delete(ctx, id)
+	errors.InternalServerError(ctx, errResp, fmt.Sprintf("failed to Delete kutipan by id: %s", idStr))
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, result)

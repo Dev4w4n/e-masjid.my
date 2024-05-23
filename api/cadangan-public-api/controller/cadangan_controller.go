@@ -10,18 +10,19 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type CadanganController struct { 
+type CadanganController struct {
 	cadanganRepository repository.CadanganRepository
 }
 
 func NewCadanganController(repo repository.CadanganRepository) *CadanganController {
-	return &CadanganController{ 
+	return &CadanganController{
 		cadanganRepository: repo,
 	}
- 
+
 }
 
 // Save	godoc
+//
 //	@Summary		Save cadangan
 //	@Description	Save cadangan data in Db.
 //	@Param			cadangan	body	model.Cadangan	true	"Save cadangan"
@@ -35,7 +36,7 @@ func (controller *CadanganController) Save(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&saveCadangan)
 	errors.BadRequestError(ctx, err, "failed to bind JSON")
 
-	err = controller.cadanganRepository.Save(saveCadangan)
+	err = controller.cadanganRepository.Save(ctx, saveCadangan)
 	errors.InternalServerError(ctx, err, "failed to save cadangan")
 
 	ctx.Header("Content-Type", "application/json")

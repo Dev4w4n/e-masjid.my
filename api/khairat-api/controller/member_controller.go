@@ -17,13 +17,14 @@ type MemberController struct {
 	memberService service.MemberService
 }
 
-func NewMemberController( memberService service.MemberService) *MemberController {
+func NewMemberController(memberService service.MemberService) *MemberController {
 	return &MemberController{
 		memberService: memberService,
 	}
 }
 
 // FindAll		godoc
+//
 //	@Summary		find all member
 //	@Description	Return the all member.
 //	@Produce		application/json
@@ -33,7 +34,7 @@ func NewMemberController( memberService service.MemberService) *MemberController
 func (controller *MemberController) FindAll(ctx *gin.Context) {
 	log.Info().Msg("find all member")
 
-	result, err := controller.memberService.FindAll()
+	result, err := controller.memberService.FindAll(ctx)
 
 	errors.InternalServerError(ctx, err, "failed to retrieve member list")
 
@@ -42,6 +43,7 @@ func (controller *MemberController) FindAll(ctx *gin.Context) {
 }
 
 // FindById		godoc
+//
 //	@Summary		Get member by id.
 //	@Description	Return the member by id.
 //	@Produce		application/json
@@ -60,7 +62,7 @@ func (controller *MemberController) FindById(ctx *gin.Context) {
 		return
 	}
 
-	result, err := controller.memberService.FindOne(id)
+	result, err := controller.memberService.FindOne(ctx, id)
 
 	errors.InternalServerError(ctx, err, "failed to retrieve member")
 
@@ -69,6 +71,7 @@ func (controller *MemberController) FindById(ctx *gin.Context) {
 }
 
 // FindBy		godoc
+//
 //	@Summary		Get member by id.
 //	@Description	Return the member by id.
 //	@Produce		application/json
@@ -81,7 +84,7 @@ func (controller *MemberController) FindBy(ctx *gin.Context) {
 
 	query := ctx.Query("query")
 
-	result, err := controller.memberService.FindByQuery(query)
+	result, err := controller.memberService.FindByQuery(ctx, query)
 
 	errors.InternalServerError(ctx, err, "failed to retrieve member")
 
@@ -90,6 +93,7 @@ func (controller *MemberController) FindBy(ctx *gin.Context) {
 }
 
 // FindByTagId		godoc
+//
 //	@Summary		Get member by tag-id.
 //	@Description	Return the member by tag-id.
 //	@Produce		application/json
@@ -102,7 +106,7 @@ func (controller *MemberController) FindByTagId(ctx *gin.Context) {
 
 	tagIdStr := ctx.Query("tagId")
 
-	result, err := controller.memberService.FindAllByTagIdOrderByMemberName(tagIdStr)
+	result, err := controller.memberService.FindAllByTagIdOrderByMemberName(ctx, tagIdStr)
 
 	errors.InternalServerError(ctx, err, "failed to retrieve member")
 
@@ -111,6 +115,7 @@ func (controller *MemberController) FindByTagId(ctx *gin.Context) {
 }
 
 // CountAll		godoc
+//
 //	@Summary		total count of member.
 //	@Description	Return member count.
 //	@Produce		application/json
@@ -119,7 +124,7 @@ func (controller *MemberController) FindByTagId(ctx *gin.Context) {
 func (controller *MemberController) CountAll(ctx *gin.Context) {
 	log.Info().Msg("count all member")
 
-	result, err := controller.memberService.CountAll()
+	result, err := controller.memberService.CountAll(ctx)
 
 	errors.InternalServerError(ctx, err, "failed to count member")
 
@@ -128,6 +133,7 @@ func (controller *MemberController) CountAll(ctx *gin.Context) {
 }
 
 // Save	godoc
+//
 //	@Summary		Create Member
 //	@Description	Save Member data in Db.
 //	@Param			tags	body	model.Member	true	"Create Member"
@@ -143,7 +149,7 @@ func (controller *MemberController) Save(ctx *gin.Context) {
 
 	errors.BadRequestError(ctx, err, "failed to bind JSON")
 
-	member, err = controller.memberService.Save(member)
+	member, err = controller.memberService.Save(ctx, member)
 
 	errors.InternalServerError(ctx, err, "failed to save member")
 
@@ -152,6 +158,7 @@ func (controller *MemberController) Save(ctx *gin.Context) {
 }
 
 // SaveCsv	godoc
+//
 //	@Summary		SaveCsv
 //	@Description	Save Member data in Db.
 //	@ID				file.upload
@@ -178,7 +185,7 @@ func (controller *MemberController) SaveCsv(ctx *gin.Context) {
 		return
 	}
 
-	result, err := controller.memberService.SaveBulk(members)
+	result, err := controller.memberService.SaveBulk(ctx, members)
 	if err != nil || !result {
 		ctx.JSON(500, gin.H{"error": "Failed to save members"})
 		return

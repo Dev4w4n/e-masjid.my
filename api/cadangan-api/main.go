@@ -51,8 +51,8 @@ func main() {
 	emasjidsaas.InitSaas(sharedDsn)
 
 	_router := gin.Default()
-	_router.Use(sgin.MultiTenancy(emasjidsaas.TenantStorage))
 	_router.Use(cors.New(config))
+	_router.Use(sgin.MultiTenancy(emasjidsaas.TenantStorage))
 
 	// enable swagger for dev env
 	isLocalEnv := os.Getenv("GO_ENV")

@@ -2,28 +2,27 @@ package repository
 
 import (
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/model"
-	"gorm.io/gorm"
+	emasjidsaas "github.com/Dev4w4n/e-masjid.my/saas/saas"
+	"github.com/gin-gonic/gin"
 )
 
 type PersonRepository interface {
-	FindById(id int64) (model.Person, error)
-	Save(person model.Person) (model.Person, error)
-	Delete(id int64) error
+	FindById(ctx *gin.Context, id int64) (model.Person, error)
+	Save(ctx *gin.Context, person model.Person) (model.Person, error)
+	Delete(ctx *gin.Context, id int64) error
 }
 
 type PersonRepositoryImpl struct {
-	Db *gorm.DB
 }
 
-func NewPersonRepository(db *gorm.DB) PersonRepository {
-	db.AutoMigrate(&model.Person{})
-
-	return &PersonRepositoryImpl{Db: db}
+func NewPersonRepository() PersonRepository {
+	return &PersonRepositoryImpl{}
 }
 
 // Delete implements PersonRepository.
-func (repo *PersonRepositoryImpl) Delete(id int64) error {
-	result := repo.Db.Where("id = ?", id).Delete(&model.Person{})
+func (repo *PersonRepositoryImpl) Delete(ctx *gin.Context, id int64) error {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
+	result := db.Where("id = ?", id).Delete(&model.Person{})
 
 	if result.Error != nil {
 		return result.Error
@@ -33,10 +32,11 @@ func (repo *PersonRepositoryImpl) Delete(id int64) error {
 }
 
 // FindById implements PersonRepository.
-func (repo *PersonRepositoryImpl) FindById(id int64) (model.Person, error) {
+func (repo *PersonRepositoryImpl) FindById(ctx *gin.Context, id int64) (model.Person, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var person model.Person
 
-	result := repo.Db.Where("id = ?", id).Find(&person)
+	result := db.Where("id = ?", id).Find(&person)
 
 	if result.Error != nil {
 		return model.Person{}, result.Error
@@ -46,8 +46,9 @@ func (repo *PersonRepositoryImpl) FindById(id int64) (model.Person, error) {
 }
 
 // Save implements PersonRepository.
-func (repo *PersonRepositoryImpl) Save(person model.Person) (model.Person, error) {
-	result := repo.Db.Save(&person)
+func (repo *PersonRepositoryImpl) Save(ctx *gin.Context, person model.Person) (model.Person, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
+	result := db.Save(&person)
 
 	if result.Error != nil {
 		return model.Person{}, result.Error

@@ -2,30 +2,29 @@ package repository
 
 import (
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/model"
-	"gorm.io/gorm"
+	emasjidsaas "github.com/Dev4w4n/e-masjid.my/saas/saas"
+	"github.com/gin-gonic/gin"
 )
 
 type DependentRepository interface {
-	Save(dependent model.Dependent, memberId int64) error
-	Delete(dependent model.Dependent) error
-	DeleteById(id int) error
-	FindById(id int) (model.Dependent, error)
-	FindAllByMemberId(memberId int) ([]model.Dependent, error)
+	Save(ctx *gin.Context, dependent model.Dependent, memberId int64) error
+	Delete(ctx *gin.Context, dependent model.Dependent) error
+	DeleteById(ctx *gin.Context, id int) error
+	FindById(ctx *gin.Context, id int) (model.Dependent, error)
+	FindAllByMemberId(ctx *gin.Context, memberId int) ([]model.Dependent, error)
 }
 
 type DependentRepositoryImpl struct {
-	Db *gorm.DB
 }
 
-func NewDependentRepository(db *gorm.DB) DependentRepository {
-	db.AutoMigrate(&model.Dependent{})
-
-	return &DependentRepositoryImpl{Db: db}
+func NewDependentRepository() DependentRepository {
+	return &DependentRepositoryImpl{}
 }
 
 // DeleteByMemberId implements DependentRepository.
-func (repo *DependentRepositoryImpl) Delete(dependent model.Dependent) error {
-	result := repo.Db.Delete(&dependent)
+func (repo *DependentRepositoryImpl) Delete(ctx *gin.Context, dependent model.Dependent) error {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
+	result := db.Delete(&dependent)
 
 	if result.Error != nil {
 		return result.Error
@@ -35,8 +34,9 @@ func (repo *DependentRepositoryImpl) Delete(dependent model.Dependent) error {
 }
 
 // DeleteById implements DependentRepository.
-func (repo *DependentRepositoryImpl) DeleteById(id int) error {
-	result := repo.Db.Delete(&model.Dependent{}, id)
+func (repo *DependentRepositoryImpl) DeleteById(ctx *gin.Context, id int) error {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
+	result := db.Delete(&model.Dependent{}, id)
 
 	if result.Error != nil {
 		return result.Error
@@ -46,10 +46,11 @@ func (repo *DependentRepositoryImpl) DeleteById(id int) error {
 }
 
 // FindAllByMemberId implements DependentRepository.
-func (repo *DependentRepositoryImpl) FindById(id int) (model.Dependent, error) {
+func (repo *DependentRepositoryImpl) FindById(ctx *gin.Context, id int) (model.Dependent, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var dependent model.Dependent
 
-	result := repo.Db.Where("id = ?", id).Find(&dependent)
+	result := db.Where("id = ?", id).Find(&dependent)
 
 	if result.Error != nil {
 		return dependent, result.Error
@@ -59,9 +60,10 @@ func (repo *DependentRepositoryImpl) FindById(id int) (model.Dependent, error) {
 }
 
 // Save implements DependentRepository.
-func (repo *DependentRepositoryImpl) Save(dependent model.Dependent, memberId int64) error {
+func (repo *DependentRepositoryImpl) Save(ctx *gin.Context, dependent model.Dependent, memberId int64) error {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	dependent.MemberId = memberId
-	result := repo.Db.Save(&dependent)
+	result := db.Save(&dependent)
 
 	if result.Error != nil {
 		return result.Error
@@ -71,10 +73,11 @@ func (repo *DependentRepositoryImpl) Save(dependent model.Dependent, memberId in
 }
 
 // FindAllByMemberId implements DependentRepository.
-func (repo *DependentRepositoryImpl) FindAllByMemberId(memberId int) ([]model.Dependent, error) {
+func (repo *DependentRepositoryImpl) FindAllByMemberId(ctx *gin.Context, memberId int) ([]model.Dependent, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var dependents []model.Dependent
 
-	result := repo.Db.
+	result := db.
 		Where("member_id = ?", memberId).
 		Preload("Person").
 		Find(&dependents)

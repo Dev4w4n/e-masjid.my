@@ -2,29 +2,28 @@ package repository
 
 import (
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/model"
-	"gorm.io/gorm"
+	emasjidsaas "github.com/Dev4w4n/e-masjid.my/saas/saas"
+	"github.com/gin-gonic/gin"
 )
 
 type TabungTypeRepository interface {
-	FindAll() ([]model.TabungType, error)
-	Save(tabungType model.TabungType) error
-	Delete(id int64) error
+	FindAll(ctx *gin.Context) ([]model.TabungType, error)
+	Save(ctx *gin.Context, tabungType model.TabungType) error
+	Delete(ctx *gin.Context, id int64) error
 }
 
 type TabungTypeRepositoryImpl struct {
-	Db *gorm.DB
 }
 
-func NewTabungTypeRepository(db *gorm.DB) TabungTypeRepository {
-	db.AutoMigrate(&model.TabungType{})
-
-	return &TabungTypeRepositoryImpl{Db: db}
+func NewTabungTypeRepository() TabungTypeRepository {
+	return &TabungTypeRepositoryImpl{}
 }
 
 // FindAll implements TabungTypeRepository.
-func (repo *TabungTypeRepositoryImpl) FindAll() ([]model.TabungType, error) {
+func (repo *TabungTypeRepositoryImpl) FindAll(ctx *gin.Context) ([]model.TabungType, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var tabungTypeList []model.TabungType
-	result := repo.Db.Find(&tabungTypeList)
+	result := db.Find(&tabungTypeList)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -34,8 +33,9 @@ func (repo *TabungTypeRepositoryImpl) FindAll() ([]model.TabungType, error) {
 }
 
 // Save implements TabungTypeRepository.
-func (repo *TabungTypeRepositoryImpl) Save(tabungType model.TabungType) error {
-	result := repo.Db.Save(&tabungType)
+func (repo *TabungTypeRepositoryImpl) Save(ctx *gin.Context, tabungType model.TabungType) error {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
+	result := db.Save(&tabungType)
 
 	if result.Error != nil {
 		return result.Error
@@ -45,9 +45,10 @@ func (repo *TabungTypeRepositoryImpl) Save(tabungType model.TabungType) error {
 }
 
 // Delete implements TabungTypeRepository.
-func (repo *TabungTypeRepositoryImpl) Delete(id int64) error {
+func (repo *TabungTypeRepositoryImpl) Delete(ctx *gin.Context, id int64) error {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var tabungType model.TabungType
-	result := repo.Db.Where("id = ?", id).Delete(&tabungType)
+	result := db.Where("id = ?", id).Delete(&tabungType)
 
 	if result.Error != nil {
 		return result.Error

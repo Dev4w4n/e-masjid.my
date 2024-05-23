@@ -15,13 +15,14 @@ type DependentController struct {
 	dependentRepository repository.DependentRepository
 }
 
-func NewDependentController( repo repository.DependentRepository) *DependentController {
+func NewDependentController(repo repository.DependentRepository) *DependentController {
 	return &DependentController{
 		dependentRepository: repo,
 	}
 }
 
 // Update dependents		godoc
+//
 //	@Summary		Update dependents
 //	@Description	Save dependents data in Db.
 //	@Param			memberId		path	string			true	"memberId"
@@ -45,7 +46,7 @@ func (controller *DependentController) Save(ctx *gin.Context) {
 		return
 	}
 
-	err = controller.dependentRepository.Save(saveDependent, int64(memberId))
+	err = controller.dependentRepository.Save(ctx, saveDependent, int64(memberId))
 
 	errors.InternalServerError(ctx, err, "failed to save dependent")
 
@@ -54,6 +55,7 @@ func (controller *DependentController) Save(ctx *gin.Context) {
 }
 
 // Delete		godoc
+//
 //	@Summary		Delete dependents
 //	@Description	Remove dependents data by memberId.
 //	@Param			memberId	path	string	true	"delete dependents by memberId"
@@ -72,7 +74,7 @@ func (controller *DependentController) Delete(ctx *gin.Context) {
 		return
 	}
 
-	err = controller.dependentRepository.DeleteById(id)
+	err = controller.dependentRepository.DeleteById(ctx, id)
 
 	errors.InternalServerError(ctx, err, "failed to delete dependent")
 
@@ -81,6 +83,7 @@ func (controller *DependentController) Delete(ctx *gin.Context) {
 }
 
 // FindAllByMemberId		godoc
+//
 //	@Summary		Get All Kutipan by id.
 //	@Description	Return the all dependent by memberid.
 //	@Produce		application/json
@@ -100,7 +103,7 @@ func (controller *DependentController) FindAllByMemberId(ctx *gin.Context) {
 		return
 	}
 
-	result, err := controller.dependentRepository.FindAllByMemberId(memberId)
+	result, err := controller.dependentRepository.FindAllByMemberId(ctx, memberId)
 
 	errors.InternalServerError(ctx, err, "failed to find all dependent")
 
