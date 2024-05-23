@@ -2,30 +2,29 @@ package repository
 
 import (
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/model"
-	"gorm.io/gorm"
+	emasjidsaas "github.com/Dev4w4n/e-masjid.my/saas/saas"
+	"github.com/gin-gonic/gin"
 )
 
 type TabungRepository interface {
-	FindAll() ([]model.Tabung, error)
-	FindById(id int64) (model.Tabung, error)
-	Save(tabung model.Tabung) (model.Tabung, error)
-	Delete(id int64) error
+	FindAll(ctx *gin.Context) ([]model.Tabung, error)
+	FindById(ctx *gin.Context, id int64) (model.Tabung, error)
+	Save(ctx *gin.Context, tabung model.Tabung) (model.Tabung, error)
+	Delete(ctx *gin.Context, id int64) error
 }
 
 type TabungRepositoryImpl struct {
-	Db *gorm.DB
 }
 
-func NewTabungRepository(db *gorm.DB) TabungRepository {
-	db.AutoMigrate(&model.Tabung{})
-
-	return &TabungRepositoryImpl{Db: db}
+func NewTabungRepository() TabungRepository {
+	return &TabungRepositoryImpl{}
 }
 
 // FindAll implements TabungRepository.
-func (repo *TabungRepositoryImpl) FindAll() ([]model.Tabung, error) {
+func (repo *TabungRepositoryImpl) FindAll(ctx *gin.Context) ([]model.Tabung, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var tabungList []model.Tabung
-	result := repo.Db.
+	result := db.
 		Preload("TabungType").
 		Find(&tabungList)
 
@@ -37,9 +36,10 @@ func (repo *TabungRepositoryImpl) FindAll() ([]model.Tabung, error) {
 }
 
 // FindById implements TabungRepository.
-func (repo *TabungRepositoryImpl) FindById(id int64) (model.Tabung, error) {
+func (repo *TabungRepositoryImpl) FindById(ctx *gin.Context, id int64) (model.Tabung, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var tabung model.Tabung
-	result := repo.Db.
+	result := db.
 		Preload("TabungType").
 		First(&tabung, "id = ?", id)
 
@@ -51,14 +51,15 @@ func (repo *TabungRepositoryImpl) FindById(id int64) (model.Tabung, error) {
 }
 
 // Save implements TabungRepository.
-func (repo *TabungRepositoryImpl) Save(tabung model.Tabung) (model.Tabung, error) {
-	result := repo.Db.Save(&tabung)
+func (repo *TabungRepositoryImpl) Save(ctx *gin.Context, tabung model.Tabung) (model.Tabung, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
+	result := db.Save(&tabung)
 
 	if result.Error != nil {
 		return model.Tabung{}, result.Error
 	}
 
-	tabung, err := repo.FindById(tabung.Id)
+	tabung, err := repo.FindById(ctx, tabung.Id)
 
 	if err != nil {
 		return model.Tabung{}, err
@@ -68,9 +69,10 @@ func (repo *TabungRepositoryImpl) Save(tabung model.Tabung) (model.Tabung, error
 }
 
 // Delete implements TabungRepository.
-func (repo *TabungRepositoryImpl) Delete(id int64) error {
+func (repo *TabungRepositoryImpl) Delete(ctx *gin.Context, id int64) error {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var tabung model.Tabung
-	result := repo.Db.Where("id = ?", id).Delete(&tabung)
+	result := db.Where("id = ?", id).Delete(&tabung)
 
 	if result.Error != nil {
 		return result.Error

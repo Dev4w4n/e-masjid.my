@@ -4,31 +4,31 @@ import (
 	"fmt"
 
 	"github.com/Dev4w4n/e-masjid.my/api/tabung-api/model"
+	emasjidsaas "github.com/Dev4w4n/e-masjid.my/saas/saas"
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 type KutipanRepository interface {
-	FindAllByTabungId(tabungId int64) ([]model.Kutipan, error)
-	FindAllByTabungIdBetweenCreateDate(params model.QueryParams, paginate model.Paginate) (model.Response, error)
-	FindById(id int64) (model.Kutipan, error)
-	Upsert(kutipan model.Kutipan) (model.Kutipan, error)
-	Delete(id int64) (string,error)
+	FindAllByTabungId(ctx *gin.Context, tabungId int64) ([]model.Kutipan, error)
+	FindAllByTabungIdBetweenCreateDate(ctx *gin.Context, params model.QueryParams, paginate model.Paginate) (model.Response, error)
+	FindById(ctx *gin.Context, id int64) (model.Kutipan, error)
+	Upsert(ctx *gin.Context, kutipan model.Kutipan) (model.Kutipan, error)
+	Delete(ctx *gin.Context, id int64) (string, error)
 }
 
 type KutipanRepositoryImpl struct {
-	Db *gorm.DB
 }
 
-func NewKutipanRepository(db *gorm.DB) KutipanRepository {
-	db.AutoMigrate(&model.Kutipan{})
-
-	return &KutipanRepositoryImpl{Db: db}
+func NewKutipanRepository() KutipanRepository {
+	return &KutipanRepositoryImpl{}
 }
 
 // FindAllByTabungId implements KutipanRepository.
-func (repo *KutipanRepositoryImpl) FindAllByTabungId(tabungId int64) ([]model.Kutipan, error) {
+func (repo *KutipanRepositoryImpl) FindAllByTabungId(ctx *gin.Context, tabungId int64) ([]model.Kutipan, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var kutipanList []model.Kutipan
-	result := repo.Db.
+	result := db.
 		Order("id desc").
 		Where("tabung_id = ?", tabungId).
 		Preload("Tabung.TabungType").
@@ -47,7 +47,8 @@ func (repo *KutipanRepositoryImpl) FindAllByTabungId(tabungId int64) ([]model.Ku
 }
 
 // FindAllByTabungIdBetweenCreateDate implements KutipanRepository.
-func (repo *KutipanRepositoryImpl) FindAllByTabungIdBetweenCreateDate(params model.QueryParams, paginate model.Paginate) (model.Response, error) {
+func (repo *KutipanRepositoryImpl) FindAllByTabungIdBetweenCreateDate(ctx *gin.Context, params model.QueryParams, paginate model.Paginate) (model.Response, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var response model.Response
 	var kutipanList []model.Kutipan
 	var total int64
@@ -55,14 +56,14 @@ func (repo *KutipanRepositoryImpl) FindAllByTabungIdBetweenCreateDate(params mod
 	offset := (paginate.Page - 1) * paginate.Size
 
 	if paginate.Page == 0 && paginate.Size == 0 {
-		result = repo.Db.
+		result = db.
 			Order("id").
 			Where("tabung_id = ? AND create_date BETWEEN ? AND ?", params.TabungId, params.FromDate, params.ToDate).
 			Preload("Tabung.TabungType").
 			Find(&kutipanList)
 
 	} else {
-		result = repo.Db.
+		result = db.
 			Offset(offset).
 			Limit(paginate.Size).
 			Order("id").
@@ -76,7 +77,7 @@ func (repo *KutipanRepositoryImpl) FindAllByTabungIdBetweenCreateDate(params mod
 		return response, result.Error
 	}
 
-	repo.Db.Model(&model.Kutipan{}).
+	db.Model(&model.Kutipan{}).
 		Where("tabung_id = ? AND create_date BETWEEN ? AND ?", params.TabungId, params.FromDate, params.ToDate).
 		Count(&total)
 
@@ -92,9 +93,10 @@ func (repo *KutipanRepositoryImpl) FindAllByTabungIdBetweenCreateDate(params mod
 }
 
 // FindById implements KutipanRepository.
-func (repo *KutipanRepositoryImpl) FindById(id int64) (model.Kutipan, error) {
+func (repo *KutipanRepositoryImpl) FindById(ctx *gin.Context, id int64) (model.Kutipan, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var kutipan model.Kutipan
-	result := repo.Db.
+	result := db.
 		Preload("Tabung.TabungType").
 		First(&kutipan, "id = ?", id)
 
@@ -108,14 +110,15 @@ func (repo *KutipanRepositoryImpl) FindById(id int64) (model.Kutipan, error) {
 }
 
 // Save implements KutipanRepository.
-func (repo *KutipanRepositoryImpl) Save(kutipan model.Kutipan) (model.Kutipan, error) {
-	result := repo.Db.Save(&kutipan)
+func (repo *KutipanRepositoryImpl) Save(ctx *gin.Context, kutipan model.Kutipan) (model.Kutipan, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
+	result := db.Save(&kutipan)
 
 	if result.Error != nil {
 		return model.Kutipan{}, result.Error
 	}
 
-	kutipan, err := repo.FindById(kutipan.Id)
+	kutipan, err := repo.FindById(ctx, kutipan.Id)
 
 	if err != nil {
 		return model.Kutipan{}, err
@@ -125,20 +128,21 @@ func (repo *KutipanRepositoryImpl) Save(kutipan model.Kutipan) (model.Kutipan, e
 }
 
 // Save and Update implements KutipanRepository.
-func (repo *KutipanRepositoryImpl) Upsert(kutipan model.Kutipan) (model.Kutipan, error) {
+func (repo *KutipanRepositoryImpl) Upsert(ctx *gin.Context, kutipan model.Kutipan) (model.Kutipan, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var result *gorm.DB
 
 	if kutipan.Id > 0 {
-		result = repo.Db.Omit("tabung_id").Updates(&kutipan)
+		result = db.Omit("tabung_id").Updates(&kutipan)
 	} else {
-		result = repo.Db.Save(&kutipan)
+		result = db.Save(&kutipan)
 	}
 
 	if result.Error != nil {
 		return model.Kutipan{}, result.Error
 	}
 
-	_kutipan, err := repo.FindById(kutipan.Id)
+	_kutipan, err := repo.FindById(ctx, kutipan.Id)
 	if err != nil {
 		return model.Kutipan{}, err
 	}
@@ -160,14 +164,14 @@ func sumTotal(kutipan *model.Kutipan) {
 		float64(kutipan.Total100d)*100
 }
 
-
 // Remove Kutipan
-func (repo *KutipanRepositoryImpl) Delete(id int64) (string,error) {
-	result := repo.Db.Where("id = ?", id).Delete(&model.Kutipan{})
+func (repo *KutipanRepositoryImpl) Delete(ctx *gin.Context, id int64) (string, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
+	result := db.Where("id = ?", id).Delete(&model.Kutipan{})
 
 	if result.Error != nil {
-		return "",result.Error
+		return "", result.Error
 	}
 
-	return  fmt.Sprintf("Kutipan id: %d is removed", id),nil
+	return fmt.Sprintf("Kutipan id: %d is removed", id), nil
 }

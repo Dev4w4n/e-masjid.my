@@ -4,28 +4,27 @@ import (
 	"strings"
 
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/model"
-	"gorm.io/gorm"
+	emasjidsaas "github.com/Dev4w4n/e-masjid.my/saas/saas"
+	"github.com/gin-gonic/gin"
 )
 
 type TetapanTypeRepository interface {
-	FindAllGroupNames() (model.TetapanTypeGroupNames, error)
-	FindByGroupName(kunci string) ([]model.TetapanType, error)
+	FindAllGroupNames(ctx *gin.Context) (model.TetapanTypeGroupNames, error)
+	FindByGroupName(ctx *gin.Context, kunci string) ([]model.TetapanType, error)
 }
 
 type TetapanTypeRepositoryImpl struct {
-	Db *gorm.DB
 }
 
-func NewTetapanTypeRepository(db *gorm.DB) TetapanTypeRepository {
-	db.AutoMigrate(&model.TetapanType{})
-
-	return &TetapanTypeRepositoryImpl{Db: db}
+func NewTetapanTypeRepository() TetapanTypeRepository {
+	return &TetapanTypeRepositoryImpl{}
 }
 
-func (repo *TetapanTypeRepositoryImpl) FindAllGroupNames() (model.TetapanTypeGroupNames, error) {
+func (repo *TetapanTypeRepositoryImpl) FindAllGroupNames(ctx *gin.Context) (model.TetapanTypeGroupNames, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var distinctValues []string
 
-	result := repo.Db.Model(&model.TetapanType{}).Distinct("group_name").Pluck("group_name", &distinctValues)
+	result := db.Model(&model.TetapanType{}).Distinct("group_name").Pluck("group_name", &distinctValues)
 
 	if result.Error != nil {
 		return model.TetapanTypeGroupNames{}, result.Error
@@ -36,10 +35,11 @@ func (repo *TetapanTypeRepositoryImpl) FindAllGroupNames() (model.TetapanTypeGro
 	return groupNames, nil
 }
 
-func (repo *TetapanTypeRepositoryImpl) FindByGroupName(groupName string) ([]model.TetapanType, error) {
+func (repo *TetapanTypeRepositoryImpl) FindByGroupName(ctx *gin.Context, groupName string) ([]model.TetapanType, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var tetapanTypes []model.TetapanType
 
-	result := repo.Db.Where("UPPER(group_name) = ?", strings.ToUpper(groupName)).Find(&tetapanTypes)
+	result := db.Where("UPPER(group_name) = ?", strings.ToUpper(groupName)).Find(&tetapanTypes)
 
 	if result.Error != nil {
 		return []model.TetapanType{}, result.Error

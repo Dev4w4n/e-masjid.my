@@ -20,6 +20,7 @@ func NewPaymentHistoryController(svc service.PaymentHistoryService) *PaymentHist
 }
 
 // GetTotalMembersPaidForCurrentYear		godoc
+//
 //	@Summary		get total members paid for current year
 //	@Description	get total members paid for current year
 //	@Produce		application/json
@@ -28,7 +29,7 @@ func NewPaymentHistoryController(svc service.PaymentHistoryService) *PaymentHist
 func (controller *PaymentHistoryController) GetTotalMembersPaidForCurrentYear(ctx *gin.Context) {
 	log.Info().Msg("get total members paid for current year")
 
-	result, err := controller.paymentHistoryService.FindTotalMembersPaidForCurrentYear()
+	result, err := controller.paymentHistoryService.FindTotalMembersPaidForCurrentYear(ctx)
 	errors.InternalServerError(ctx, err, "failed to retrieve total members paid for current year")
 
 	ctx.Header("Content-Type", "application/json")

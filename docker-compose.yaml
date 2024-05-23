@@ -1,18 +1,26 @@
-version: "3"
-
 services:
   postgres:
-    build:
-      context: ./postgres
+    image: postgres:16-alpine3.19
+    restart: always
+    environment:
+      - POSTGRES_DB=pgsql-saas
+      - POSTGRES_USER=pgsql-saas
+      - POSTGRES_PASSWORD=pgsql-saas
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+
+  saas-api:
+    build:
+      context: ./saas
+    ports:
+      - "8080:8080"
     environment:
-      POSTGRES_DB: mydatabase
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
-    volumes:
-      - ./postgres/901_zz_tetapan_types.sql:/docker-entrypoint-initdb.d/901_zz_tetapan_types.sql:ro
-      - ./postgres/902_zz_dummy.sql:/docker-entrypoint-initdb.d/902_zz_dummy.sql:ro
+      GO_ENV: dev
+    depends_on:
+      - postgres
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "./start-and-seed.sh"]
 
   khairat-api:
     build:
@@ -23,7 +31,7 @@ services:
       - GO_ENV=dev
     depends_on:
       - postgres
-    command: ["./wait-for-it.sh", "postgres:5432", "--", "./khairat-api"]
+    command: ["./wait-for-it.sh", "saas-api:8080", "--", "./khairat-api"]
 
   tabung-api:
     build:
@@ -34,7 +42,7 @@ services:
       - GO_ENV=dev
     depends_on:
       - postgres
-    command: ["./wait-for-it.sh", "postgres:5432", "--", "./tabung-api"]
+    command: ["./wait-for-it.sh", "saas-api:8080", "--", "./tabung-api"]
 
   cadangan-api:
     build:
@@ -45,7 +53,7 @@ services:
       - GO_ENV=dev
     depends_on:
       - postgres
-    command: ["./wait-for-it.sh", "postgres:5432", "--", "./cadangan-api"]
+    command: ["./wait-for-it.sh", "saas-api:8080", "--", "./cadangan-api"]
 
   cadangan-public-api:
     build:
@@ -57,7 +65,7 @@ services:
     depends_on:
       - postgres
     command:
-      ["./wait-for-it.sh", "postgres:5432", "--", "./cadangan-public-api"]
+      ["./wait-for-it.sh", "saas-api:8080", "--", "./cadangan-public-api"]
 
   tetapan-api:
     build:
@@ -68,7 +76,7 @@ services:
       - postgres
     environment:
       - GO_ENV=dev
-    command: ["./wait-for-it.sh", "postgres:5432", "--", "./tetapan-api"]
+    command: ["./wait-for-it.sh", "saas-api:8080", "--", "./tetapan-api"]
 
   tetapan-public-api:
     build:
@@ -79,7 +87,7 @@ services:
       - postgres
     environment:
       - GO_ENV=dev
-    command: ["./wait-for-it.sh", "postgres:5432", "--", "./tetapan-public-api"]
+    command: ["./wait-for-it.sh", "saas-api:8080", "--", "./tetapan-public-api"]
 
   dashboard:
     build:
@@ -116,3 +124,6 @@ services:
       - khairat-api
       - tetapan-api
       - tetapan-public-api
+
+volumes:
+  postgres_data:

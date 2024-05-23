@@ -32,7 +32,7 @@ func init() {
 // get list of tenants from http://localhost:8090/tenant
 func listTenants() {
 	// Get data using json
-	url := "http://localhost:8090/tenants"
+	url := "http://localhost:8080/tenants"
 
 	resp, err := http.Get(url)
 	if err != nil {

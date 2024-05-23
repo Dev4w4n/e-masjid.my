@@ -5,33 +5,32 @@ import (
 	"strings"
 
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/model"
-	"gorm.io/gorm"
+	emasjidsaas "github.com/Dev4w4n/e-masjid.my/saas/saas"
+	"github.com/gin-gonic/gin"
 )
 
 type MemberRepository interface {
-	Save(member model.Member) (model.Member, error)
-	CountAll() (int64, error)
-	FindAll() ([]model.Member, error)
-	FindAllOrderByPersonName() ([]model.Member, error)
-	FindByTagOrderByMemberNameAsc(idStr string) ([]model.Member, error)
-	FindByQuery(query string) ([]model.Member, error)
-	FindById(id int) (model.Member, error)
+	Save(ctx *gin.Context, member model.Member) (model.Member, error)
+	CountAll(ctx *gin.Context) (int64, error)
+	FindAll(ctx *gin.Context) ([]model.Member, error)
+	FindAllOrderByPersonName(ctx *gin.Context) ([]model.Member, error)
+	FindByTagOrderByMemberNameAsc(ctx *gin.Context, idStr string) ([]model.Member, error)
+	FindByQuery(ctx *gin.Context, query string) ([]model.Member, error)
+	FindById(ctx *gin.Context, id int) (model.Member, error)
 }
 
 type MemberRepositoryImpl struct {
-	db *gorm.DB
 }
 
-func NewMemberRepository(db *gorm.DB) MemberRepository {
-	db.AutoMigrate(&model.Member{})
-
-	return &MemberRepositoryImpl{db: db}
+func NewMemberRepository() MemberRepository {
+	return &MemberRepositoryImpl{}
 }
 
 // CountAll implements MemberRepository.
-func (repo *MemberRepositoryImpl) CountAll() (int64, error) {
+func (repo *MemberRepositoryImpl) CountAll(ctx *gin.Context) (int64, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var count int64
-	result := repo.db.Model(&model.Member{}).Count(&count)
+	result := db.Model(&model.Member{}).Count(&count)
 
 	if result.Error != nil {
 		return 0, result.Error
@@ -41,9 +40,10 @@ func (repo *MemberRepositoryImpl) CountAll() (int64, error) {
 }
 
 // FindAll implements MemberRepository.
-func (repo *MemberRepositoryImpl) FindAll() ([]model.Member, error) {
+func (repo *MemberRepositoryImpl) FindAll(ctx *gin.Context) ([]model.Member, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var members []model.Member
-	result := repo.db.Find(&members)
+	result := db.Find(&members)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -53,9 +53,10 @@ func (repo *MemberRepositoryImpl) FindAll() ([]model.Member, error) {
 }
 
 // FindAllOrderByPersonName implements MemberRepository.
-func (repo *MemberRepositoryImpl) FindAllOrderByPersonName() ([]model.Member, error) {
+func (repo *MemberRepositoryImpl) FindAllOrderByPersonName(ctx *gin.Context) ([]model.Member, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var members []model.Member
-	result := repo.db.
+	result := db.
 		Joins("JOIN person ON khairat_members.person_id = person.id").
 		Preload("Person").
 		Preload("MemberTags.Tag").
@@ -71,14 +72,15 @@ func (repo *MemberRepositoryImpl) FindAllOrderByPersonName() ([]model.Member, er
 }
 
 // FindBy implements MemberRepository.
-func (repo *MemberRepositoryImpl) FindByQuery(query string) ([]model.Member, error) {
+func (repo *MemberRepositoryImpl) FindByQuery(ctx *gin.Context, query string) ([]model.Member, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var members []model.Member
 
 	if query == "*" || query == "" {
-		return repo.FindAllOrderByPersonName()
+		return repo.FindAllOrderByPersonName(ctx)
 	}
 
-	result := repo.db.
+	result := db.
 		Joins("JOIN person ON khairat_members.person_id = person.id").
 		Where("person.name LIKE ?", "%"+query+"%").
 		Or("person.ic_number LIKE ?", "%"+query+"%").
@@ -97,10 +99,11 @@ func (repo *MemberRepositoryImpl) FindByQuery(query string) ([]model.Member, err
 }
 
 // FindById implements MemberRepository.
-func (repo *MemberRepositoryImpl) FindById(id int) (model.Member, error) {
+func (repo *MemberRepositoryImpl) FindById(ctx *gin.Context, id int) (model.Member, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var member model.Member
 
-	result := repo.db.
+	result := db.
 		// Joins("JOIN person ON members.person_id = person.id").
 		Where("id=?", id).
 		Preload("Person").
@@ -119,7 +122,8 @@ func (repo *MemberRepositoryImpl) FindById(id int) (model.Member, error) {
 }
 
 // FindByTag implements MemberRepository.
-func (repo *MemberRepositoryImpl) FindByTagOrderByMemberNameAsc(idStr string) ([]model.Member, error) {
+func (repo *MemberRepositoryImpl) FindByTagOrderByMemberNameAsc(ctx *gin.Context, idStr string) ([]model.Member, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var members []model.Member
 
 	// Split the comma-separated string into a slice of strings
@@ -135,7 +139,7 @@ func (repo *MemberRepositoryImpl) FindByTagOrderByMemberNameAsc(idStr string) ([
 		idInt64Slice = append(idInt64Slice, id)
 	}
 
-	result := repo.db.
+	result := db.
 		Joins("JOIN khairat_members_tags ON khairat_members.id = khairat_members_tags.member_id").
 		Joins("JOIN khairat_tags ON khairat_members_tags.tags_id = khairat_tags.id").
 		Joins("JOIN person ON khairat_members.person_id = person.id").
@@ -154,8 +158,9 @@ func (repo *MemberRepositoryImpl) FindByTagOrderByMemberNameAsc(idStr string) ([
 }
 
 // Save implements MemberRepository.
-func (repo *MemberRepositoryImpl) Save(member model.Member) (model.Member, error) {
-	result := repo.db.Save(&member)
+func (repo *MemberRepositoryImpl) Save(ctx *gin.Context, member model.Member) (model.Member, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
+	result := db.Save(&member)
 
 	if result.Error != nil {
 		return model.Member{}, result.Error

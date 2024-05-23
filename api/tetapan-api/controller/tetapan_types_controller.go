@@ -20,6 +20,7 @@ func NewTetapanTypeController(repo repository.TetapanTypeRepository) *TetapanTyp
 }
 
 // FindAllGroupNames		godoc
+//
 //	@Summary		find all tetapan type group names
 //	@Description	Return  all tetapan type group names
 //	@Produce		application/json
@@ -29,7 +30,7 @@ func NewTetapanTypeController(repo repository.TetapanTypeRepository) *TetapanTyp
 func (controller *TetapanTypeController) FindAllGroupNames(ctx *gin.Context) {
 	log.Info().Msg("find all tetapan type group names")
 
-	result, err := controller.tetapanTypeRepository.FindAllGroupNames()
+	result, err := controller.tetapanTypeRepository.FindAllGroupNames(ctx)
 	errors.InternalServerError(ctx, err, "failed to retrieve tetapan type group names")
 
 	ctx.Header("Content-Type", "application/json")
@@ -37,6 +38,7 @@ func (controller *TetapanTypeController) FindAllGroupNames(ctx *gin.Context) {
 }
 
 // FindByGroupName		godoc
+//
 //	@Summary		find groupname by tetapan type
 //	@Description	Return groupname by tetapan type.
 //	@Produce		application/json
@@ -48,7 +50,7 @@ func (controller *TetapanTypeController) FindByGroupName(ctx *gin.Context) {
 	log.Info().Msg("findbygroupname tetapan type")
 
 	groupName := ctx.Param("group_name")
-	result, err := controller.tetapanTypeRepository.FindByGroupName(groupName)
+	result, err := controller.tetapanTypeRepository.FindByGroupName(ctx, groupName)
 	errors.InternalServerError(ctx, err, "failed to retrieve tetapan type by group name")
 
 	ctx.Header("Content-Type", "application/json")

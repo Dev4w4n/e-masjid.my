@@ -36,7 +36,7 @@ func init() {
 
 func searchTenant(name string) error {
 	// Get data using json
-	url := "http://localhost:8090/tenant/" + name
+	url := "http://localhost:8080/tenant/" + name
 
 	resp, err := http.Get(url)
 

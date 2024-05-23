@@ -20,6 +20,7 @@ func NewTetapanController(repo repository.TetapanRepository) *TetapanController 
 }
 
 // FindAll		godoc
+//
 //	@Summary		find all tetapan
 //	@Description	Return the all tetapan.
 //	@Produce		application/json
@@ -29,7 +30,7 @@ func NewTetapanController(repo repository.TetapanRepository) *TetapanController 
 func (controller *TetapanController) FindAll(ctx *gin.Context) {
 	log.Info().Msg("find all tetapan")
 
-	result, err := controller.tetapanRepository.FindAll()
+	result, err := controller.tetapanRepository.FindAll(ctx)
 	errors.InternalServerError(ctx, err, "failed to retrieve tetapan list")
 
 	ctx.Header("Content-Type", "application/json")
@@ -37,6 +38,7 @@ func (controller *TetapanController) FindAll(ctx *gin.Context) {
 }
 
 // FindByKunci		godoc
+//
 //	@Summary		find tetapan by kunci
 //	@Description	Return the  tetapan by kunci
 //	@Produce		application/json
@@ -48,7 +50,7 @@ func (controller *TetapanController) FindByKunci(ctx *gin.Context) {
 	log.Info().Msg("findbykunci tetapan")
 
 	kunci := ctx.Param("kunci")
-	result, err := controller.tetapanRepository.FindByKunci(kunci)
+	result, err := controller.tetapanRepository.FindByKunci(ctx, kunci)
 	errors.InternalServerError(ctx, err, "failed to retrieve tetapan")
 
 	ctx.Header("Content-Type", "application/json")

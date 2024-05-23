@@ -1,11 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 
-	"github.com/Dev4w4n/e-masjid.my/api/core/config"
 	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/controller"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/repository"
@@ -14,8 +14,11 @@ import (
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/utils"
 
 	_ "github.com/Dev4w4n/e-masjid.my/api/khairat-api/docs"
+
+	emasjidsaas "github.com/Dev4w4n/e-masjid.my/saas/saas"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	sgin "github.com/go-saas/saas/gin"
 
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -32,18 +35,13 @@ func main() {
 		log.Fatalf("Error getting environment: %v", err)
 	}
 
-	db, err := config.DatabaseConnection(env)
-	if err != nil {
-		log.Fatalf("Error getting database connection: %v", err)
-	}
-
 	// Repository
-	tagRepository := repository.NewTagRepository(db)
-	memberRepository := repository.NewMemberRepository(db)
-	dependentRepository := repository.NewDependentRepository(db)
-	memberTagRepository := repository.NewMemberTagRepository(db)
-	paymentHistoryRepository := repository.NewPaymentHistoryRepository(db)
-	personRepository := repository.NewPersonRepository(db)
+	tagRepository := repository.NewTagRepository()
+	memberRepository := repository.NewMemberRepository()
+	dependentRepository := repository.NewDependentRepository()
+	memberTagRepository := repository.NewMemberTagRepository()
+	paymentHistoryRepository := repository.NewPaymentHistoryRepository()
+	personRepository := repository.NewPersonRepository()
 
 	memberService := service.NewMemberService(memberRepository,
 		personRepository, dependentRepository,
@@ -67,8 +65,15 @@ func main() {
 
 	// Router
 	gin.SetMode(gin.ReleaseMode)
+
+	sharedDsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=UTC",
+		env.DbHost, env.DbUser, env.DbPassword, env.DbName, env.DbPort)
+
+	emasjidsaas.InitSaas(sharedDsn)
+
 	_router := gin.Default()
 	_router.Use(cors.New(config))
+	_router.Use(sgin.MultiTenancy(emasjidsaas.TenantStorage))
 
 	// enable swagger for dev env
 	isLocalEnv := os.Getenv("GO_ENV")

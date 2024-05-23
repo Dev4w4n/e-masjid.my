@@ -39,7 +39,7 @@ var addCmd = &cobra.Command{
 }
 
 func createNewTenant(request model.Tenant) {
-	url := "http://localhost:8090/tenant"
+	url := "http://localhost:8080/tenant"
 
 	jsonData, err := json.Marshal(request)
 	if err != nil {

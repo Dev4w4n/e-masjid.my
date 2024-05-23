@@ -1,8 +1,8 @@
 -- >>>>> START KHAIRAT
-ALTER TABLE IF EXISTS members RENAME TO khairat_members;
-ALTER TABLE IF EXISTS members_tags RENAME TO khairat_members_tags;
-ALTER TABLE IF EXISTS tags RENAME TO khairat_tags;
-ALTER TABLE IF EXISTS dependents RENAME TO khairat_dependents;
+-- ALTER TABLE IF EXISTS members RENAME TO khairat_members;
+-- ALTER TABLE IF EXISTS members_tags RENAME TO khairat_members_tags;
+-- ALTER TABLE IF EXISTS tags RENAME TO khairat_tags;
+-- ALTER TABLE IF EXISTS dependents RENAME TO khairat_dependents;
 
 INSERT INTO person ("name",ic_number,address,phone) VALUES
 	 ('Abu Bakar','111111111111','Permatang Ara','0123456789'),

@@ -1,19 +1,21 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 
-	"github.com/Dev4w4n/e-masjid.my/api/core/config"
 	"github.com/Dev4w4n/e-masjid.my/api/core/env"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/controller"
 	_ "github.com/Dev4w4n/e-masjid.my/api/tetapan-api/docs"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/helper"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/repository"
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-api/router"
+	emasjidsaas "github.com/Dev4w4n/e-masjid.my/saas/saas"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	sgin "github.com/go-saas/saas/gin"
 
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -30,14 +32,9 @@ func main() {
 		log.Fatalf("Error getting environment: %v", err)
 	}
 
-	db, err := config.DatabaseConnection(env)
-	if err != nil {
-		log.Fatalf("Error getting database connection: %v", err)
-	}
-
 	//repository
-	tetapanRepository := repository.NewTetapanRepository(db)
-	tetapanTypeRepository := repository.NewTetapanTypeRepository(db)
+	tetapanRepository := repository.NewTetapanRepository()
+	tetapanTypeRepository := repository.NewTetapanTypeRepository()
 
 	//controller
 	tetapanController := controller.NewTetapanController(tetapanRepository)
@@ -53,8 +50,15 @@ func main() {
 
 	// Router
 	gin.SetMode(gin.ReleaseMode)
+
+	sharedDsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=UTC",
+		env.DbHost, env.DbUser, env.DbPassword, env.DbName, env.DbPort)
+
+	emasjidsaas.InitSaas(sharedDsn)
+
 	_router := gin.Default()
 	_router.Use(cors.New(config))
+	_router.Use(sgin.MultiTenancy(emasjidsaas.TenantStorage))
 
 	// enable swagger for dev env
 	isLocalEnv := os.Getenv("GO_ENV")

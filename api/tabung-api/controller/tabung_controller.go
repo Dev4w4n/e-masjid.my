@@ -22,6 +22,7 @@ func NewTabungController(service service.TabungService) *TabungController {
 }
 
 // FindAll		godoc
+//
 //	@Summary		Get All tabung.
 //	@Description	Return the all Tabung.
 //	@Produce		application/json
@@ -31,7 +32,7 @@ func NewTabungController(service service.TabungService) *TabungController {
 func (controller *TabungController) FindAll(ctx *gin.Context) {
 	log.Info().Msg("get tabung list")
 
-	result, err := controller.tabungService.FindAll()
+	result, err := controller.tabungService.FindAll(ctx)
 	errors.InternalServerError(ctx, err, "failed to retrieve tabung list")
 
 	ctx.Header("Content-Type", "application/json")
@@ -39,6 +40,7 @@ func (controller *TabungController) FindAll(ctx *gin.Context) {
 }
 
 // FindById 			godoc
+//
 //	@Summary		Get  tabung by ID.
 //	@Description	Return the Tabung.
 //	@Produce		application/json
@@ -53,7 +55,7 @@ func (controller *TabungController) FindById(ctx *gin.Context) {
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	errors.BadRequestError(ctx, err, "invalid id format")
 
-	result, err := controller.tabungService.FindById(id)
+	result, err := controller.tabungService.FindById(ctx, id)
 	errors.InternalServerError(ctx, err, "failed to retrieve tabung")
 
 	ctx.Header("Content-Type", "application/json")
@@ -61,6 +63,7 @@ func (controller *TabungController) FindById(ctx *gin.Context) {
 }
 
 // CreateTabung		godoc
+//
 //	@Summary		Create tabung
 //	@Description	Save tabung data in Db.
 //	@Param			tabung	body	model.Tabung	true	"Create Tabung"
@@ -75,7 +78,7 @@ func (controller *TabungController) Save(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&tabung)
 	errors.InternalServerError(ctx, err, "failed to bind JSON")
 
-	tabung, err = controller.tabungService.Save(tabung)
+	tabung, err = controller.tabungService.Save(ctx, tabung)
 	errors.InternalServerError(ctx, err, "failed to save tabung")
 
 	ctx.Header("Content-Type", "application/json")
@@ -83,6 +86,7 @@ func (controller *TabungController) Save(ctx *gin.Context) {
 }
 
 // DeleteTabung		godoc
+//
 //	@Summary		Delete tabung
 //	@Description	Remove tabung data by id.
 //	@Param			id	path	string	true	"delete tabung by id"
@@ -96,7 +100,7 @@ func (controller *TabungController) Delete(ctx *gin.Context) {
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	errors.BadRequestError(ctx, err, "invalid id format")
 
-	err = controller.tabungService.Delete(id)
+	err = controller.tabungService.Delete(ctx, id)
 	errors.InternalServerError(ctx, err, "failed to delete tabung")
 
 	ctx.Header("Content-Type", "application/json")

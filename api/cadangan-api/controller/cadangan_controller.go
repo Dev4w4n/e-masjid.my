@@ -15,13 +15,14 @@ type CadanganController struct {
 	cadanganRepository repository.CadanganRepository
 }
 
-func NewCadanganController( repo repository.CadanganRepository) *CadanganController {
+func NewCadanganController(repo repository.CadanganRepository) *CadanganController {
 	return &CadanganController{
 		cadanganRepository: repo,
 	}
 }
 
 // FindById		godoc
+//
 //	@Summary		Get All Cadangan by id.
 //	@Description	Return the all  Cadangan by id.
 //	@Produce		application/json
@@ -38,7 +39,7 @@ func (controller *CadanganController) GetOne(ctx *gin.Context) {
 		return
 	}
 
-	result, err := controller.cadanganRepository.GetOne(id)
+	result, err := controller.cadanganRepository.GetOne(ctx, id)
 	errors.InternalServerError(ctx, err, "failed to get all cadangan")
 
 	ctx.Header("Content-Type", "application/json")
@@ -46,6 +47,7 @@ func (controller *CadanganController) GetOne(ctx *gin.Context) {
 }
 
 // FindBycadanganTypeId		godoc
+//
 //	@Summary		Get All Cadangan by cadanganTypeId.
 //	@Description	Return the all  Cadangan by id.
 //	@Produce		application/json
@@ -82,7 +84,7 @@ func (controller *CadanganController) GetAllCadanganBy(ctx *gin.Context) {
 	}
 
 	if cadanganTypeID == "" {
-		response, err = controller.cadanganRepository.GetCadanganByIsOpen(open, paginate)
+		response, err = controller.cadanganRepository.GetCadanganByIsOpen(ctx, open, paginate)
 		errors.InternalServerError(ctx, err, "failed to get all cadangan by open")
 	} else {
 		id, err := strconv.Atoi(cadanganTypeID)
@@ -90,7 +92,7 @@ func (controller *CadanganController) GetAllCadanganBy(ctx *gin.Context) {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 			return
 		}
-		response, err = controller.cadanganRepository.GetCadanganById(id, open, paginate)
+		response, err = controller.cadanganRepository.GetCadanganById(ctx, id, open, paginate)
 		errors.InternalServerError(ctx, err, "failed to get all cadangan by id")
 	}
 
@@ -99,6 +101,7 @@ func (controller *CadanganController) GetAllCadanganBy(ctx *gin.Context) {
 }
 
 // GetCount		godoc
+//
 //	@Summary		total count of cadangan.
 //	@Description	Return Cadangan count.
 //	@Produce		application/json
@@ -107,7 +110,7 @@ func (controller *CadanganController) GetAllCadanganBy(ctx *gin.Context) {
 func (controller *CadanganController) GetCadanganCount(ctx *gin.Context) {
 	log.Info().Msg("get cadangan count")
 
-	result, err := controller.cadanganRepository.GetTotalCadanganByTypeCount()
+	result, err := controller.cadanganRepository.GetTotalCadanganByTypeCount(ctx)
 	errors.InternalServerError(ctx, err, "failed to get all cadangan")
 
 	ctx.Header("Content-Type", "application/json")
@@ -115,6 +118,7 @@ func (controller *CadanganController) GetCadanganCount(ctx *gin.Context) {
 }
 
 // CreateCadangan		godoc
+//
 //	@Summary		Create Cadangan
 //	@Description	Save Cadangan data in Db.
 //	@Param			Cadangan	body	model.Cadangan	true	"Create Cadangan"
@@ -128,7 +132,7 @@ func (controller *CadanganController) Save(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&saveCadangan)
 	errors.BadRequestError(ctx, err, "failed to bind JSON")
 
-	err = controller.cadanganRepository.Save(saveCadangan)
+	err = controller.cadanganRepository.Save(ctx, saveCadangan)
 	errors.InternalServerError(ctx, err, "failed to save cadangan")
 
 	ctx.Header("Content-Type", "application/json")
@@ -136,6 +140,7 @@ func (controller *CadanganController) Save(ctx *gin.Context) {
 }
 
 // DeleteCadangan		godoc
+//
 //	@Summary		Delete Cadangan
 //	@Description	Remove Cadangandata by id.
 //	@Param			id	path	string	true	"delete Cadangan by id"
@@ -153,7 +158,7 @@ func (controller *CadanganController) Delete(ctx *gin.Context) {
 		return
 	}
 
-	err2 := controller.cadanganRepository.Delete(id)
+	err2 := controller.cadanganRepository.Delete(ctx, id)
 	errors.InternalServerError(ctx, err2, "failed to delete cadangan")
 
 	ctx.Header("Content-Type", "application/json")

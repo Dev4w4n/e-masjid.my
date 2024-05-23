@@ -2,27 +2,26 @@ package repository
 
 import (
 	"github.com/Dev4w4n/e-masjid.my/api/tetapan-public-api/model"
-	"gorm.io/gorm"
+	emasjidsaas "github.com/Dev4w4n/e-masjid.my/saas/saas"
+	"github.com/gin-gonic/gin"
 )
 
 type TetapanRepository interface {
-	FindAll() ([]model.Tetapan, error)
-	FindByKunci(kunci string) (model.Tetapan, error)
+	FindAll(ctx *gin.Context) ([]model.Tetapan, error)
+	FindByKunci(ctx *gin.Context, kunci string) (model.Tetapan, error)
 }
 
 type TetapanRepositoryImpl struct {
-	Db *gorm.DB
 }
 
-func NewTetapanRepository(db *gorm.DB) TetapanRepository {
-	db.AutoMigrate(&model.Tetapan{})
-
-	return &TetapanRepositoryImpl{Db: db}
+func NewTetapanRepository() TetapanRepository {
+	return &TetapanRepositoryImpl{}
 }
 
-func (repo *TetapanRepositoryImpl) FindAll() ([]model.Tetapan, error) {
+func (repo *TetapanRepositoryImpl) FindAll(ctx *gin.Context) ([]model.Tetapan, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var tetapanList []model.Tetapan
-	result := repo.Db.Find(&tetapanList)
+	result := db.Find(&tetapanList)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -31,9 +30,10 @@ func (repo *TetapanRepositoryImpl) FindAll() ([]model.Tetapan, error) {
 	return tetapanList, nil
 }
 
-func (repo *TetapanRepositoryImpl) FindByKunci(kunci string) (model.Tetapan, error) {
+func (repo *TetapanRepositoryImpl) FindByKunci(ctx *gin.Context, kunci string) (model.Tetapan, error) {
+	db := emasjidsaas.DbProvider.Get(ctx.Request.Context(), "")
 	var tetapan model.Tetapan
-	result := repo.Db.First(&tetapan, "kunci = ?", kunci)
+	result := db.First(&tetapan, "kunci = ?", kunci)
 
 	if result.Error != nil {
 		return model.Tetapan{}, result.Error
