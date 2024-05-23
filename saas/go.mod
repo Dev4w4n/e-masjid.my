@@ -17,7 +17,11 @@ require (
 )
 
 require (
+	github.com/Dev4w4n/e-masjid.my/api/cadangan-api v0.0.0-20240512145810-aea9c8249880
 	github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20240512145810-aea9c8249880
+	github.com/Dev4w4n/e-masjid.my/api/khairat-api v0.0.0-20240512145810-aea9c8249880
+	github.com/Dev4w4n/e-masjid.my/api/tabung-api v0.0.0-20240512145810-aea9c8249880
+	github.com/Dev4w4n/e-masjid.my/api/tetapan-api v0.0.0-20240512145810-aea9c8249880
 	github.com/bytedance/sonic v1.10.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.1 // indirect

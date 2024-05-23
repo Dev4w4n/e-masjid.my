@@ -22,27 +22,27 @@ services:
       - postgres
     command: ["./wait-for-it.sh", "postgres:5432", "--", "./start-and-seed.sh"]
 
-  # khairat-api:
-  #   build:
-  #     context: ./api/khairat-api
-  #   ports:
-  #     - "8081:8081"
-  #   environment:
-  #     - GO_ENV=dev
-  #   depends_on:
-  #     - postgres
-  #   command: ["./wait-for-it.sh", "saas-api:8090", "--", "./khairat-api"]
+  khairat-api:
+    build:
+      context: ./api/khairat-api
+    ports:
+      - "8081:8081"
+    environment:
+      - GO_ENV=dev
+    depends_on:
+      - postgres
+    command: ["./wait-for-it.sh", "saas-api:8080", "--", "./khairat-api"]
 
-  # tabung-api:
-  #   build:
-  #     context: ./api/tabung-api
-  #   ports:
-  #     - "8082:8082"
-  #   environment:
-  #     - GO_ENV=dev
-  #   depends_on:
-  #     - postgres
-  #   command: ["./wait-for-it.sh", "saas-api:8090", "--", "./tabung-api"]
+  tabung-api:
+    build:
+      context: ./api/tabung-api
+    ports:
+      - "8082:8082"
+    environment:
+      - GO_ENV=dev
+    depends_on:
+      - postgres
+    command: ["./wait-for-it.sh", "saas-api:8080", "--", "./tabung-api"]
 
   cadangan-api:
     build:
@@ -55,75 +55,75 @@ services:
       - postgres
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./cadangan-api"]
 
-  # cadangan-public-api:
-  #   build:
-  #     context: ./api/cadangan-public-api
-  #   ports:
-  #     - "8084:8084"
-  #   environment:
-  #     - GO_ENV=dev
-  #   depends_on:
-  #     - postgres
-  #   command:
-  #     ["./wait-for-it.sh", "saas-api:8090", "--", "./cadangan-public-api"]
+  cadangan-public-api:
+    build:
+      context: ./api/cadangan-public-api
+    ports:
+      - "8084:8084"
+    environment:
+      - GO_ENV=dev
+    depends_on:
+      - postgres
+    command:
+      ["./wait-for-it.sh", "saas-api:8080", "--", "./cadangan-public-api"]
 
-  # tetapan-api:
-  #   build:
-  #     context: ./api/tetapan-api
-  #   ports:
-  #     - "8085:8085"
-  #   depends_on:
-  #     - postgres
-  #   environment:
-  #     - GO_ENV=dev
-  #   command: ["./wait-for-it.sh", "saas-api:8090", "--", "./tetapan-api"]
+  tetapan-api:
+    build:
+      context: ./api/tetapan-api
+    ports:
+      - "8085:8085"
+    depends_on:
+      - postgres
+    environment:
+      - GO_ENV=dev
+    command: ["./wait-for-it.sh", "saas-api:8080", "--", "./tetapan-api"]
 
-  # tetapan-public-api:
-  #   build:
-  #     context: ./api/tetapan-public-api
-  #   ports:
-  #     - "8086:8086"
-  #   depends_on:
-  #     - postgres
-  #   environment:
-  #     - GO_ENV=dev
-  #   command: ["./wait-for-it.sh", "saas-api:8090", "--", "./tetapan-public-api"]
+  tetapan-public-api:
+    build:
+      context: ./api/tetapan-public-api
+    ports:
+      - "8086:8086"
+    depends_on:
+      - postgres
+    environment:
+      - GO_ENV=dev
+    command: ["./wait-for-it.sh", "saas-api:8080", "--", "./tetapan-public-api"]
 
-  # dashboard:
-  #   build:
-  #     context: ./dashboard
-  #     dockerfile: Dockerfile.dev
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - khairat-api
-  #     - tabung-api
-  #     - cadangan-api
-  #     - tetapan-api
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    depends_on:
+      - khairat-api
+      - tabung-api
+      - cadangan-api
+      - tetapan-api
 
-  # public-web:
-  #   build:
-  #     context: ./public-web
-  #     dockerfile: Dockerfile.dev
-  #   ports:
-  #     - "3001:3000"
-  #   depends_on:
-  #     - cadangan-public-api
+  public-web:
+    build:
+      context: ./public-web
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3001:3000"
+    depends_on:
+      - cadangan-public-api
 
-  # api-docs:
-  #   build:
-  #     context: ./api-docs
-  #   ports:
-  #     - "4000:4000"
-  #   environment:
-  #     - GO_ENV=dev
-  #   depends_on:
-  #     - tabung-api
-  #     - cadangan-api
-  #     - cadangan-public-api
-  #     - khairat-api
-  #     - tetapan-api
-  #     - tetapan-public-api
+  api-docs:
+    build:
+      context: ./api-docs
+    ports:
+      - "4000:4000"
+    environment:
+      - GO_ENV=dev
+    depends_on:
+      - tabung-api
+      - cadangan-api
+      - cadangan-public-api
+      - khairat-api
+      - tetapan-api
+      - tetapan-public-api
 
 volumes:
   postgres_data:

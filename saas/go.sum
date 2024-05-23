@@ -1,5 +1,13 @@
+github.com/Dev4w4n/e-masjid.my/api/cadangan-api v0.0.0-20240512145810-aea9c8249880 h1:ZGGQTtkaQagZ1mtOrbpCRUiWieLxq1QZ+iVCu5W78kM=
+github.com/Dev4w4n/e-masjid.my/api/cadangan-api v0.0.0-20240512145810-aea9c8249880/go.mod h1:eJSB5BFOs8NmRUvXs9sSriDzSJYrocdZ9zxMIJR8pBo=
 github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20240512145810-aea9c8249880 h1:pXBlMmBcHKPZeMUFm/fw2uDcNpEMIyYqQxVApRzaH9E=
 github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20240512145810-aea9c8249880/go.mod h1:iXY89EubpIeRpRIf1k3QQ4/8IaDUv3/wlxoG2wln+3I=
+github.com/Dev4w4n/e-masjid.my/api/khairat-api v0.0.0-20240512145810-aea9c8249880 h1:H2oMsFxkxH7+XXSmszrs4pUAoSi1hxj1SjDBEaIztDc=
+github.com/Dev4w4n/e-masjid.my/api/khairat-api v0.0.0-20240512145810-aea9c8249880/go.mod h1:/Ky+fMC40QLi5cFjRgJQUQCA9d2fZvQPNWGZOoMqpls=
+github.com/Dev4w4n/e-masjid.my/api/tabung-api v0.0.0-20240512145810-aea9c8249880 h1:ArcieJRZhcAqGSo4mv6Zf3rcjTNyVgMK49XbAC5BDwk=
+github.com/Dev4w4n/e-masjid.my/api/tabung-api v0.0.0-20240512145810-aea9c8249880/go.mod h1:LZrD3qgmFy2vXjQunEhD9uga9nB603+aznNWo8YP60k=
+github.com/Dev4w4n/e-masjid.my/api/tetapan-api v0.0.0-20240512145810-aea9c8249880 h1:I1osByP8hUszIcImwec8g99R41WUlgJS+2+c37jrifg=
+github.com/Dev4w4n/e-masjid.my/api/tetapan-api v0.0.0-20240512145810-aea9c8249880/go.mod h1:yBnLB5o8Y+8GyBlfjlR+1M2CjcxjNoBLmQ+bmaq1elw=
 github.com/bytedance/sonic v1.5.0/go.mod h1:ED5hyg4y6t3/9Ku1R6dU/4KyJ48DZ4jPhfY1O2AihPM=
 github.com/bytedance/sonic v1.10.0-rc/go.mod h1:ElCzW+ufi8qKqNW0FY314xriJhyJhuoJ3gFZdAHF7NM=
 github.com/bytedance/sonic v1.10.2 h1:GQebETVBxYB7JGWJtLBi07OVzWwt+8dWA00gEVW2ZFE=
