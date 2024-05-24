@@ -49,15 +49,12 @@ func searchTenant(name string) error {
 	} else {
 		var tenant model.Tenant
 
-		fmt.Println(resp.Body)
-
 		err := json.NewDecoder(resp.Body).Decode(&tenant)
 
 		if err != nil {
 			panic(err)
 		}
 
-		fmt.Printf("%+v\n", tenant)
 		displaySingleTenant(tenant)
 	}
 
