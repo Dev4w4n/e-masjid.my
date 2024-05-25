@@ -11,7 +11,7 @@ const dynamicSubdomain = subdomain === 'localhost' ? 'demo' : subdomain
 
 const prod = {
   version: {
-    BUILD: '1.13.1',
+    BUILD: '2.0.0',
   },
   url: {
     USE_KEYCLOAK: true,
@@ -29,7 +29,7 @@ const prod = {
 
 const dev = {
   version: {
-    BUILD: '1.13.1',
+    BUILD: '2.0.0',
   },
   url: {
     USE_KEYCLOAK: false,
