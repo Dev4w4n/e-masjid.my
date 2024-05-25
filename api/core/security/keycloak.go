@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -16,8 +17,8 @@ const (
 	managerRole      = "%s_MANAGER"
 	userRole         = "%s_USER"
 	keycloakClientId = "%s-auth"
-	keycloakServer   = "https://login.e-masjid.my/realms/%s/protocol/openid-connect/userinfo"
-	keycloakJWKSURL  = "https://login.e-masjid.my/realms/%s/protocol/openid-connect/certs"
+	keycloakServer   = "https://loginv2.e-masjid.my/realms/%s/protocol/openid-connect/userinfo"
+	keycloakJWKSURL  = "https://loginv2.e-masjid.my/realms/%s/protocol/openid-connect/certs"
 )
 
 type FormattedSettings struct {
@@ -53,6 +54,7 @@ func AuthMiddleware(c *gin.Context) {
 	}
 
 	// Check if the user has the required roles
+	log.Printf("\nCheck if the user has the required roles: %s & %s", formattedSettings.ManagerRole, formattedSettings.UserRole)
 	requiredRoles := []string{formattedSettings.ManagerRole, formattedSettings.UserRole}
 	if !hasAnyRole(roles, requiredRoles) {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
@@ -64,12 +66,17 @@ func AuthMiddleware(c *gin.Context) {
 }
 
 func formatConstants(c *gin.Context) {
-	c.Request.URL.Path = strings.TrimPrefix(c.Request.URL.Path, "/")
-	formattedSettings.ManagerRole = fmt.Sprintf(managerRole, c.Request.URL.Path)
-	formattedSettings.UserRole = fmt.Sprintf(managerRole, c.Request.URL.Path)
-	formattedSettings.KeycloakClientId = fmt.Sprintf(managerRole, c.Request.URL.Path)
-	formattedSettings.KeycloakServer = fmt.Sprintf(managerRole, c.Request.URL.Path)
-	formattedSettings.KeycloakJWKSURL = fmt.Sprintf(managerRole, c.Request.URL.Path)
+	log.Printf("\nFormatting: %s", c.Request.URL.Path)
+	name := strings.TrimPrefix(c.Request.URL.Path, "/")
+	log.Printf("\nResult: %s", name)
+	
+	formattedSettings.ManagerRole = fmt.Sprintf(managerRole, strings.ToUpper(name))
+	formattedSettings.UserRole = fmt.Sprintf(userRole, strings.ToUpper(name))
+	formattedSettings.KeycloakClientId = fmt.Sprintf(keycloakClientId, name)
+	formattedSettings.KeycloakServer = fmt.Sprintf(keycloakServer, name)
+	formattedSettings.KeycloakJWKSURL = fmt.Sprintf(keycloakJWKSURL, name)
+
+	log.Printf("\nFormatted settings: %s", formattedSettings)
 }
 
 func validateToken(token string) (bool, []string) {
@@ -79,7 +86,7 @@ func validateToken(token string) (bool, []string) {
 		Get(formattedSettings.KeycloakServer)
 
 	if err != nil {
-		fmt.Println("Error validating token:", err)
+		log.Printf("Error validating token: %s", err)
 		return false, nil
 	}
 
@@ -97,21 +104,21 @@ func extractRolesFromToken(jwtToken string) []string {
 	// Split the JWT into its three parts
 	parts := strings.Split(jwtToken, ".")
 	if len(parts) != 3 {
-		fmt.Println("Invalid JWT format")
+		log.Printf("Invalid JWT format")
 		return nil
 	}
 
 	// Decode the second part (payload) of the JWT
 	payload, err := base64.RawURLEncoding.DecodeString(parts[1])
 	if err != nil {
-		fmt.Println("Error decoding JWT payload:", err)
+		log.Printf("Error decoding JWT payload: %s", err)
 		return nil
 	}
 
 	// Parse the payload into CustomClaims struct
 	var customClaims CustomClaims
 	if err := json.Unmarshal(payload, &customClaims); err != nil {
-		fmt.Println("Error decoding custom claims:", err)
+		log.Printf("Error decoding custom claims: %s", err)
 		return nil
 	}
 
