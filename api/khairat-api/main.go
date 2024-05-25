@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/Dev4w4n/e-masjid.my/api/core/env"
+	"github.com/Dev4w4n/e-masjid.my/api/core/security"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/controller"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/repository"
 	"github.com/Dev4w4n/e-masjid.my/api/khairat-api/router"
@@ -79,6 +80,8 @@ func main() {
 	isLocalEnv := os.Getenv("GO_ENV")
 	if isLocalEnv == "local" || isLocalEnv == "dev" {
 		_router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	} else if isLocalEnv == "prod" {
+		_router.Use(security.AuthMiddleware)
 	}
 
 	var routes *gin.Engine = _router

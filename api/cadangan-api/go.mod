@@ -15,6 +15,8 @@ require (
 	github.com/go-openapi/jsonreference v0.21.0 // indirect
 	github.com/go-openapi/spec v0.21.0 // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect
+	github.com/go-resty/resty/v2 v2.12.0 // indirect
+	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
@@ -25,6 +27,7 @@ require (
 require (
 	github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20240411121454-731297b5f8fe
 	github.com/Dev4w4n/e-masjid.my/api/core/error v0.0.0-20240415135138-686a16ca6bce
+	github.com/Dev4w4n/e-masjid.my/api/core/security v0.0.0-20240524160232-604e9b47d76a
 	github.com/Dev4w4n/e-masjid.my/saas v0.0.0-20240512145810-aea9c8249880
 	github.com/bytedance/sonic v1.10.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect

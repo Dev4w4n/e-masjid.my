@@ -12,6 +12,7 @@ import (
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-api/repository"
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-api/router"
 	"github.com/Dev4w4n/e-masjid.my/api/core/env"
+	"github.com/Dev4w4n/e-masjid.my/api/core/security"
 	emasjidsaas "github.com/Dev4w4n/e-masjid.my/saas/saas"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -58,6 +59,8 @@ func main() {
 	isLocalEnv := os.Getenv("GO_ENV")
 	if isLocalEnv == "local" || isLocalEnv == "dev" {
 		_router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	} else if isLocalEnv == "prod" {
+		_router.Use(security.AuthMiddleware)
 	}
 
 	routes := router.NewCadanganRouter(cadanganController, _router, env)
