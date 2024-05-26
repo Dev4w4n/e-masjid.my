@@ -20,7 +20,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	sgin "github.com/go-saas/saas/gin"
-
+	shttp "github.com/go-saas/saas/http"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -74,14 +74,19 @@ func main() {
 
 	_router := gin.Default()
 	_router.Use(cors.New(config))
-	_router.Use(sgin.MultiTenancy(emasjidsaas.TenantStorage))
 
-	// enable swagger for dev env
 	isLocalEnv := os.Getenv("GO_ENV")
 	if isLocalEnv == "local" || isLocalEnv == "dev" {
+		// enable swagger for dev env
 		_router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		// enable multi tenancy for dev
+		_router.Use(sgin.MultiTenancy(emasjidsaas.TenantStorage))
 	} else if isLocalEnv == "prod" {
+		// enable keycloak for prod env
 		_router.Use(security.AuthMiddleware)
+		// enable multi tenancy for *.e-masjid.my
+		_router.Use(sgin.MultiTenancy(emasjidsaas.TenantStorage,
+			sgin.WithMultiTenancyOption(shttp.NewWebMultiTenancyOption("", "([-a-z0-9]+)\\.e-masjid\\.my"))))
 	}
 
 	var routes *gin.Engine = _router
