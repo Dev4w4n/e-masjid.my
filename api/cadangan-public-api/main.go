@@ -12,6 +12,7 @@ import (
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/repository"
 	"github.com/Dev4w4n/e-masjid.my/api/cadangan-public-api/router"
 	"github.com/Dev4w4n/e-masjid.my/api/core/env"
+	"github.com/Dev4w4n/e-masjid.my/api/core/security"
 	emasjidsaas "github.com/Dev4w4n/e-masjid.my/saas/saas"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -39,6 +40,9 @@ func main() {
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{env.AllowOrigins}
 	config.AllowMethods = []string{"POST"}
+	config.AllowOriginFunc = func(origin string) bool {
+		return security.IsAllowedOrigin(origin, env.AllowOrigins)
+	}
 
 	// Router
 	gin.SetMode(gin.ReleaseMode)

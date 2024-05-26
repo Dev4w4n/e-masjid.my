@@ -46,8 +46,10 @@ func main() {
 	config.AllowHeaders = []string{"*"}
 	config.AllowCredentials = true
 	config.MaxAge = 3600
-	config.AllowOrigins = []string{env.AllowOrigins}
 	config.AllowMethods = []string{"GET", "POST", "DELETE"}
+	config.AllowOriginFunc = func(origin string) bool {
+		return security.IsAllowedOrigin(origin, env.AllowOrigins)
+	}
 
 	// Router
 	gin.SetMode(gin.ReleaseMode)
