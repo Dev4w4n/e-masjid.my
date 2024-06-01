@@ -17,8 +17,8 @@ const prod = {
       KEYCLOAK_BASE_URL: 'https://loginv2.e-masjid.my',
       KEYCLOAK_REALM: dynamicSubdomain,
       KEYCLOAK_CLIENT_ID: `${dynamicSubdomain}-auth`,
-      CADANGAN_API_BASE_URL: 'https://apiv2.e-masjid.my/api-public',
-      TETAPAN_API_BASE_URL: 'https://apiv2.e-masjid.my/api-public',
+      CADANGAN_API_BASE_URL: 'https://demoapi.e-masjid.my/api-public',
+      TETAPAN_API_BASE_URL: 'https://demoapi.e-masjid.my/api-public',
     },
   }
   
