@@ -4,6 +4,8 @@ github.com/Dev4w4n/e-masjid.my/api/core/error v0.0.0-20240415135138-686a16ca6bce
 github.com/Dev4w4n/e-masjid.my/api/core/error v0.0.0-20240415135138-686a16ca6bce/go.mod h1:haLv7XI/msqqlgWqUYAVuCrQVfvnLfEQa+d5ZJsx3q8=
 github.com/Dev4w4n/e-masjid.my/api/core/security v0.0.0-20240526133533-4408d9acdae6 h1:qR8IXgxgHjl8dOocJZhsiNN196x62Pui7qiXRERgraw=
 github.com/Dev4w4n/e-masjid.my/api/core/security v0.0.0-20240526133533-4408d9acdae6/go.mod h1:+TA8ABlKACIWVszJw/Tw/X2jozYiS5/u9Aoi3MgeBRM=
+github.com/Dev4w4n/e-masjid.my/api/core/security v0.0.0-20240603091144-032171aba907 h1:XoIgDw8Nx8dOuTXCvpSQGbxKn3tRixghSNQaDNji5/Y=
+github.com/Dev4w4n/e-masjid.my/api/core/security v0.0.0-20240603091144-032171aba907/go.mod h1:SGttyFHAzcAMPqWoOpLfndJT6vcmTiuWTbpP2NL0C3M=
 github.com/Dev4w4n/e-masjid.my/saas v0.0.0-20240512145810-aea9c8249880 h1:+I0WP9pBHpTprhvUbk0cnbcRCLslnYCDgL+cZsR9NF0=
 github.com/Dev4w4n/e-masjid.my/saas v0.0.0-20240512145810-aea9c8249880/go.mod h1:7Uua3yebK17ZTOgAjPQst+owaOu06EHXgQAQRfAfLOE=
 github.com/KyleBanks/depth v1.2.1 h1:5h8fQADFrWtarTdtDudMmGsC7GPbOAu6RVB3ffsVFHc=
