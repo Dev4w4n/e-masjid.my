@@ -38,8 +38,8 @@ func main() {
 
 	// CORS configuration
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{env.AllowOrigins}
 	config.AllowMethods = []string{"GET", "POST", "DELETE"}
+	config.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
 	config.AllowOriginFunc = func(origin string) bool {
 		return security.IsAllowedOrigin(origin, env.AllowOrigins)
 	}

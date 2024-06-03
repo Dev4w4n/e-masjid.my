@@ -66,15 +66,19 @@ func AuthMiddleware(c *gin.Context) {
 }
 
 func formatConstants(c *gin.Context) {
-	log.Printf("\nFormatting: %s", c.Request.URL.Path)
-	name := strings.TrimPrefix(c.Request.URL.Path, "/")
-	log.Printf("\nResult: %s", name)
+	hostParts := strings.Split(c.Request.Host, ".")
+	if len(hostParts) < 1 {
+		log.Printf("Invalid host: %s", c.Request.Host)
+		return
+	}
+	subdomain := hostParts[0]
+	log.Printf("\nFormatting for subdomain: %s", subdomain)
 	
-	formattedSettings.ManagerRole = fmt.Sprintf(managerRole, strings.ToUpper(name))
-	formattedSettings.UserRole = fmt.Sprintf(userRole, strings.ToUpper(name))
-	formattedSettings.KeycloakClientId = fmt.Sprintf(keycloakClientId, name)
-	formattedSettings.KeycloakServer = fmt.Sprintf(keycloakServer, name)
-	formattedSettings.KeycloakJWKSURL = fmt.Sprintf(keycloakJWKSURL, name)
+	formattedSettings.ManagerRole = fmt.Sprintf(managerRole, strings.ToUpper(subdomain))
+	formattedSettings.UserRole = fmt.Sprintf(userRole, strings.ToUpper(subdomain))
+	formattedSettings.KeycloakClientId = fmt.Sprintf(keycloakClientId, subdomain)
+	formattedSettings.KeycloakServer = fmt.Sprintf(keycloakServer, subdomain)
+	formattedSettings.KeycloakJWKSURL = fmt.Sprintf(keycloakJWKSURL, subdomain)
 
 	log.Printf("\nFormatted settings: %s", formattedSettings)
 }
