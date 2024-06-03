@@ -43,8 +43,6 @@ func main() {
 
 	// CORS configuration
 	config := cors.DefaultConfig()
-	config.AllowHeaders = []string{"*"}
-	config.AllowCredentials = true
 	config.MaxAge = 3600
 	config.AllowMethods = []string{"GET", "POST", "DELETE"}
 	config.AllowOriginFunc = func(origin string) bool {
@@ -60,15 +58,18 @@ func main() {
 	emasjidsaas.InitSaas(sharedDsn)
 
 	_router := gin.Default()
-	_router.Use(cors.New(config))
+	
 
 	isLocalEnv := os.Getenv("GO_ENV")
 	if isLocalEnv == "local" || isLocalEnv == "dev" {
+		config.AllowHeaders = []string{"*"}
 		// enable swagger for dev env
 		_router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		// enable multi tenancy for dev
 		_router.Use(sgin.MultiTenancy(emasjidsaas.TenantStorage))
 	} else if isLocalEnv == "prod" {
+		config.AllowCredentials = true
+		config.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
 		// enable keycloak for prod env
 		_router.Use(security.AuthMiddleware)
 		// enable multi tenancy for *.e-masjid.my
@@ -76,6 +77,8 @@ func main() {
 			sgin.WithMultiTenancyOption(shttp.NewWebMultiTenancyOption("", "([-a-z0-9]+)\\.e-masjid\\.my"))))
 	}
 
+	_router.Use(cors.New(config))
+	
 	var routes *gin.Engine = _router
 	routes = router.NewTetapanRouter(tetapanController, routes, env)
 	routes = router.NewTetapanTypeRouter(tetapanTypeController, routes, env)
