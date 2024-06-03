@@ -39,6 +39,9 @@ func main() {
 	// CORS configuration
 	config := cors.DefaultConfig()
 	config.AllowMethods = []string{"GET", "POST", "DELETE"}
+	config.AllowOriginFunc = func(origin string) bool {
+		return security.IsAllowedOrigin(origin, env.AllowOrigins)
+	}
 
 	// Router
 	gin.SetMode(gin.ReleaseMode)
@@ -52,17 +55,12 @@ func main() {
 
 	isLocalEnv := os.Getenv("GO_ENV")
 	if isLocalEnv == "local" || isLocalEnv == "dev" {
-		// enable cors for *
-		config.AllowOrigins = []string{"*"}
+		config.AllowHeaders = []string{"*"}
 		// enable swagger for dev env
 		_router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		// enable multi tenancy for dev
 		_router.Use(sgin.MultiTenancy(emasjidsaas.TenantStorage))
 	} else if isLocalEnv == "prod" {
-		// enable cors for *.e-masjid.my
-		config.AllowOriginFunc = func(origin string) bool {
-			return security.IsAllowedOrigin(origin, env.AllowOrigins)
-		}
 		config.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
 		// enable multi tenancy for *.e-masjid.my
 		_router.Use(sgin.MultiTenancy(emasjidsaas.TenantStorage,

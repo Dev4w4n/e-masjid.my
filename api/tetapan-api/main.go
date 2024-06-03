@@ -45,6 +45,9 @@ func main() {
 	config := cors.DefaultConfig()
 	config.MaxAge = 3600
 	config.AllowMethods = []string{"GET", "POST", "DELETE"}
+	config.AllowOriginFunc = func(origin string) bool {
+		return security.IsAllowedOrigin(origin, env.AllowOrigins)
+	}
 
 	// Router
 	gin.SetMode(gin.ReleaseMode)
@@ -55,21 +58,17 @@ func main() {
 	emasjidsaas.InitSaas(sharedDsn)
 
 	_router := gin.Default()
+	
 
 	isLocalEnv := os.Getenv("GO_ENV")
 	if isLocalEnv == "local" || isLocalEnv == "dev" {
-		// enable cors for *
-		config.AllowOrigins = []string{"*"}
+		config.AllowHeaders = []string{"*"}
 		// enable swagger for dev env
 		_router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		// enable multi tenancy for dev
 		_router.Use(sgin.MultiTenancy(emasjidsaas.TenantStorage))
 	} else if isLocalEnv == "prod" {
 		config.AllowCredentials = true
-		// enable cors for *.e-masjid.my
-		config.AllowOriginFunc = func(origin string) bool {
-			return security.IsAllowedOrigin(origin, env.AllowOrigins)
-		}
 		config.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
 		// enable keycloak for prod env
 		_router.Use(security.AuthMiddleware)
