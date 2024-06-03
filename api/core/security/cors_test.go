@@ -16,6 +16,8 @@ func TestIsAllowedOrigin(t *testing.T) {
 		{"http://another.sub.e-masjid.my", "*.e-masjid.my", true},
 		{"http://allowed.com", "*", true},
 		{"http://sub.allowed.com", "*", true},
+		{"http://localhost:3000", "*", true},
+		{"http://localhost:8080", "*", true},
 		{"http://e-masjid.my", "e-masjid.my", false},
 		{"http://e-masjid.my", "*.e-masjid.my", false},
 		{"http://fb.facebook.com", "*.e-masjid.my", false},
