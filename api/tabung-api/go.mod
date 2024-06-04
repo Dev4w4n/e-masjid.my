@@ -36,7 +36,7 @@ require (
 require (
 	github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20240411121454-731297b5f8fe
 	github.com/Dev4w4n/e-masjid.my/api/core/error v0.0.0-20240411110941-78a36843ae30
-	github.com/Dev4w4n/e-masjid.my/api/core/security v0.0.0-20240526133533-4408d9acdae6
+	github.com/Dev4w4n/e-masjid.my/api/core/security v0.0.0-20240603091144-032171aba907
 	github.com/Dev4w4n/e-masjid.my/saas v0.0.0-20240512145810-aea9c8249880
 	github.com/bytedance/sonic v1.11.7 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.4 // indirect

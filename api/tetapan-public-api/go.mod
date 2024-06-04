@@ -5,7 +5,7 @@ go 1.22.1
 require gorm.io/driver/postgres v1.5.7 // indirect
 
 require (
-	github.com/Dev4w4n/e-masjid.my/api/core/security v0.0.0-20240526133533-4408d9acdae6
+	github.com/Dev4w4n/e-masjid.my/api/core/security v0.0.0-20240603091144-032171aba907
 	github.com/swaggo/swag v1.16.3
 )
 
