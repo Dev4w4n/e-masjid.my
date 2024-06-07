@@ -17,6 +17,11 @@ import (
 	"gorm.io/gorm/clause"
 
 	"github.com/Dev4w4n/e-masjid.my/saas/model"
+
+	cadanganmodel "github.com/Dev4w4n/e-masjid.my/api/cadangan-api/model"
+	khairatmodel "github.com/Dev4w4n/e-masjid.my/api/khairat-api/model"
+	tabungmodel "github.com/Dev4w4n/e-masjid.my/api/tabung-api/model"
+	tetapanmodel "github.com/Dev4w4n/e-masjid.my/api/tetapan-api/model"
 )
 
 type Seed struct {
@@ -67,7 +72,7 @@ func (s *Seed) Seed(ctx context.Context, sCtx *seed.Context) error {
 	// if its a tenant then init the database
 	if sCtx.TenantId != "" {
 		log.Println("Executing Sql Files.")
-		err := executeSqlFiles(db)
+		err := executeSqlFiles(db, sCtx.TenantId)
 		if err != nil {
 			return err
 		}
@@ -88,7 +93,7 @@ func createPosts(db *gorm2.DB, entities []model.Post) error {
 	return nil
 }
 
-func executeSqlFiles(db *gorm2.DB) error {
+func executeSqlFiles(db *gorm2.DB, tenantId string) error {
 	// List .sql files in a directory
 	// Update the pattern to match your file naming convention
 	sqlFiles, err := filepath.Glob("/app/*.sql")
@@ -126,7 +131,62 @@ func executeSqlFiles(db *gorm2.DB) error {
 		}
 	}
 
+	if (tenantId != "1") { // if not localhost
+		models := []interface{}{
+			&cadanganmodel.Cadangan{},
+			&cadanganmodel.CadanganType{},
+			&khairatmodel.Dependent{},
+			&khairatmodel.Member{},
+			&khairatmodel.MemberTag{},
+			&khairatmodel.PaymentHistory{},
+			&khairatmodel.Person{},
+			&khairatmodel.Tag{},
+			&tabungmodel.Tabung{},
+			&tabungmodel.Kutipan{},
+			&tabungmodel.TabungType{},
+			&tetapanmodel.Tetapan{},
+			&tetapanmodel.TetapanType{},
+		}
+		
+	
+		// Loop through each model
+	
+		log.Println("Updating tenant_id in tables.")
+		for _, model := range models {
+			tableName, err := getTableName(db, model)
+			log.Println("Table name: ", tableName)
+			if err != nil {
+				return fmt.Errorf("failed to get table name for model %T: %w", model, err)
+			}
+	
+			var count int64
+			// Manually construct the count query
+			countQuery := fmt.Sprintf("SELECT count(*) FROM %s WHERE tenant_id IS NULL", tableName)
+	
+			if err := db.Raw(countQuery).Scan(&count).Error; err != nil {
+				return fmt.Errorf("failed to count rows in table %s: %w", tableName, err)
+			}
+	
+			// If there are rows, update the tenant_id
+			log.Println("Table row count: ", count)
+			if count > 0 {
+				log.Println("Updating tenant_id in table ", tableName)
+				if err := db.Table(tableName).Where("tenant_id IS NULL").Update("tenant_id", tenantId).Error; err != nil {
+					return fmt.Errorf("failed to update tenant_id in table %s: %w", tableName, err)
+				}
+			}
+		}
+	}
+
 	log.Println("Initialization complete.")
 
 	return nil
+}
+
+func getTableName(db *gorm2.DB, model interface{}) (string, error) {
+	stmt := &gorm2.Statement{DB: db}
+	if err := stmt.Parse(model); err != nil {
+		return "", err
+	}
+	return stmt.Table, nil
 }
