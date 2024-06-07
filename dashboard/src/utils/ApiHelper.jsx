@@ -8,7 +8,7 @@ const axiosInstance = axios.create()
 // Add a request interceptor to append headers
 axiosInstance.interceptors.request.use(
   function (config) {
-    config.headers['Bearer'] = keycloak.token ? keycloak.token : 'no-token'
+    config.headers['Authorization'] = keycloak.token ? `Bearer ${keycloak.token}` : 'no-token'
     return config
   },
   function (error) {
