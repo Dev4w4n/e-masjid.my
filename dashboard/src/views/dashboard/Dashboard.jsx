@@ -30,9 +30,6 @@ const Dashboard = () => {
   const [cadanganCount, setCadanganCount] = useState(0)
 
   useEffect(() => {
-    const calculatePercentageChange = (oldValue, newValue) => {
-      return ((newValue - oldValue) / oldValue) * 100
-    }
     const setKutipanWidgetDate = (createDate) => {
       let date = new Date(createDate)
       let day = date.getDate()

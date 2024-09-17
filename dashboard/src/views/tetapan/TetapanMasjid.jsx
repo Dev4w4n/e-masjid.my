@@ -29,6 +29,10 @@ import { negeri, zones } from './senaraiZon'
 const TetapanMasjid = () => {
   const [loading, setLoading] = useState(true)
   const [validated, setValidated] = useState(false)
+  const [inputNamaMasjidId, setInputNamaMasjidId] = useState(0)
+  const [inputAlamatMasjidId, setInputAlamatMasjidId] = useState(0)
+  const [inputNoTelefonMasjidId, setInputNoTelefonMasjidId] = useState(0)
+  const [inputZonMasjidId, setInputZonMasjidId] = useState(0)
   const inputNamaMasjid = useRef('')
   const inputAlamatMasjid = useRef('')
   const inputNoTelefonMasjid = useRef('')
@@ -49,12 +53,23 @@ const TetapanMasjid = () => {
         setLoading(false)
         //delay value assignment due to error occurs when values being set while page rendering
         if (Array.isArray(data)) {
+          console.log(data)
           setTimeout(() => {
             for (let t of data) {
-              if (t.kunci === 'NAMA_MASJID') inputNamaMasjid.current.value = t.nilai
-              if (t.kunci === 'ALAMAT_MASJID') inputAlamatMasjid.current.value = t.nilai
-              if (t.kunci === 'NO_TEL_MASJID') inputNoTelefonMasjid.current.value = t.nilai
+              if (t.kunci === 'NAMA_MASJID') {
+                inputNamaMasjid.current.value = t.nilai
+                setInputNamaMasjidId(t.ID)
+              }
+              if (t.kunci === 'ALAMAT_MASJID') {
+                inputAlamatMasjid.current.value = t.nilai
+                setInputAlamatMasjidId(t.ID)
+              }
+              if (t.kunci === 'NO_TEL_MASJID') {
+                inputNoTelefonMasjid.current.value = t.nilai
+                setInputNoTelefonMasjidId(t.ID)
+              }
               if (t.kunci === 'ZON_MASJID') {
+                setInputZonMasjidId(t.ID)
                 zones.map((item) => {
                   if (item.jakimCode === t.nilai) {
                     setSelectedZone(item)
@@ -90,10 +105,26 @@ const TetapanMasjid = () => {
     } else {
       try {
         const tetapan = []
-        tetapan.push({ kunci: 'NAMA_MASJID', nilai: inputNamaMasjid.current.value })
-        tetapan.push({ kunci: 'ALAMAT_MASJID', nilai: inputAlamatMasjid.current.value })
-        tetapan.push({ kunci: 'NO_TEL_MASJID', nilai: inputNoTelefonMasjid.current.value })
-        tetapan.push({ kunci: 'ZON_MASJID', nilai: selectedZone.jakimCode })
+        tetapan.push({
+          kunci: 'NAMA_MASJID',
+          nilai: inputNamaMasjid.current.value,
+          ID: inputNamaMasjidId,
+        })
+        tetapan.push({
+          kunci: 'ALAMAT_MASJID',
+          nilai: inputAlamatMasjid.current.value,
+          ID: inputAlamatMasjidId,
+        })
+        tetapan.push({
+          kunci: 'NO_TEL_MASJID',
+          nilai: inputNoTelefonMasjid.current.value,
+          ID: inputNoTelefonMasjidId,
+        })
+        tetapan.push({
+          kunci: 'ZON_MASJID',
+          nilai: selectedZone.jakimCode,
+          ID: inputZonMasjidId,
+        })
 
         await saveTetapanMasjid(tetapan)
         saveNotification()
