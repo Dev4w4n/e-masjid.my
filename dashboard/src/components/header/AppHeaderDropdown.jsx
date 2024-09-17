@@ -4,15 +4,12 @@ import { cilLockLocked } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import { CAvatar, CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 
-// import { useNavigate } from 'react-router-dom'
-
 import { config } from '@/config'
 import avatar8 from './../../assets/images/avatars/logo.png'
 
 const logoutUrl = config.url.LOGOUT_URL
 
 const AppHeaderDropdown = () => {
-  // const navigate = useNavigate()
   const logout = () => {
     window.location.href = logoutUrl
   }
