@@ -1,4 +1,4 @@
-package models
+package model
 
 import (
 	gorm2 "github.com/go-saas/saas/gorm"
