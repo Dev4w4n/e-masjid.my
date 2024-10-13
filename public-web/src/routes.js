@@ -1,4 +1,5 @@
 import React from 'react'
+import Kariah from './Pages/Kariah'
 // const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 
 // // Khairat
@@ -13,6 +14,7 @@ import React from 'react'
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
+  { path: '/pendaftaran-anak-kariah', name: 'Pendaftaran Anak Kariah', element: Kariah, exact: true },
 //   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
 //   { path: '/khairat', name: 'Khairat', element: Carian, exact: true },
 //   { path: '/khairat/carian', name: 'Carian', element: Carian },
