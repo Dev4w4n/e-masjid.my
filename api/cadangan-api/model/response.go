@@ -3,6 +3,8 @@ package model
 type Response struct {
 	Content interface{} `json:"content"`
 	Total   int         `json:"total"`
+
+	// TODO: add more fields
 	// Empty            bool        `json:"empty"`
 	// First            bool        `json:"first"`
 	// Last             bool        `json:"last"`
