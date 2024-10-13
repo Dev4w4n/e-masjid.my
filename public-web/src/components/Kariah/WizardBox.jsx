@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
+import WizardNav from './WizardNav';
+import WizardForm from './WizardForm';
 
-export default function WizardBox({ children }) {
+export default function WizardBox() {
     return (
-        <div className="md:w-11/12 w-full md:px-0 px-3 mx-auto">{children}</div>
+        <div>
+            <WizardNav />
+            <WizardForm />
+        </div>
     );
 }
