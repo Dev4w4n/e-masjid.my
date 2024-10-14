@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 
 import {
   CTabPane,
-  CFormTextarea,
+  CFormInput,
+  CFormSelect,
 } from "@coreui/react";
 
 
@@ -14,17 +15,29 @@ export default function NoPengenalan({activeKey}) {
             </p>
             <div className="mb-6 pt-4">
                 <p className="text-md text-gray-700 leading-tight text-center mt-8 mb-1">
-                Pesanan anda
+                Jenis Pengenalan Diri
                 </p>
-                <CFormTextarea
-                // ref={inputCadangan}
-                maxLength="1024"
-                rows={4}
-                type="text"
-                placeholder="Masukkan pesanan anda di sini... (Jika ada)"
-                name="visitormessage"
+                <CFormSelect 
+                  aria-label="Default select example"
+                  options={[
+                    'No MyKAD / No Tentera',
+                    { label: 'MyKAD', value: '1' },
+                    { label: 'Tentera', value: '2' },
+                    // { label: 'Three', value: '3', disabled: true }
+                  ]}
+                />
+
+                <p className="text-md text-gray-700 leading-tight text-center mt-8 mb-1">
+                No. Pengenalan Diri
+                </p>
+                <CFormInput 
+                type="text" 
+                size="lg" 
+                placeholder="Masukkan no pengenanalan anda di sini..." 
                 className="w-full px-4 py-3 rounded-xl text-gray-700 font-medium border-solid border-2 border-gray-200"
-                ></CFormTextarea>
+                aria-label="lg input example"/>
+
+              
             </div>
         </CTabPane>
     );

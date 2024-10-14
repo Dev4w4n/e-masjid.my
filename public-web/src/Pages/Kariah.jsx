@@ -56,7 +56,7 @@ export default function Kariah() {
                     <span className="ml-2">Kembali</span>
                 </CButton>
                 )}
-                {activeKey < 5 && (
+                {activeKey !== 1 &&activeKey < 5 && (
                 <CButton onClick={() => handleNextClick()} className="flex items-center text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300">
                     <span className="mr-2">Teruskan</span>
                     <svg
@@ -73,16 +73,28 @@ export default function Kariah() {
                     </svg>
                 </CButton>
                 )}
-                {/* {activeKey === 2 && (
-                <CButton onClick={() => null} className="flex items-center text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300">
-                    <span className="mr-2">Hantar</span>
+                {activeKey === 1 && (
+                <CButton onClick={() => (window.location.href = "/web")} className="flex items-center text-sm font-medium text-white rounded-lg bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300">
+                    <span className="mr-2">BATAL</span>
                 </CButton>
-                )} */}
-                {/* {activeKey > 2 && (
-                <CButton onClick={() => (window.location.href = "/web")} className="flex items-center text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300">
-                    <span className="mr-2">Kembali ke Laman Utama</span>
+                )}
+                {activeKey === 1 && (
+                <CButton onClick={() => handleNextClick()} className="flex items-center text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300">
+                    <span className="mr-2">SETUJU & Teruskan</span>
+                    <svg
+                    className="w-5"
+                    fill="currentColor"
+                    viewBox="0 0 25 25"
+                    xmlns="http://www.w3.org/2000/svg"
+                    >
+                    <path
+                        fillRule="evenodd"
+                        d="m17.5 5.999-.707.707 5.293 5.293H1v1h21.086l-5.294 5.295.707.707L24 12.499l-6.5-6.5z"
+                        clipRule="evenodd"
+                    />
+                    </svg>
                 </CButton>
-                )} */}
+                )}
             </div>
             </CForm>
         </div>
