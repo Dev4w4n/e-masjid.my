@@ -1,31 +1,58 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
 import {
   CTabPane,
-  CFormTextarea,
+  CAccordion,
+  CAccordionItem,
+  CAccordionHeader,
+  CAccordionBody,
 } from "@coreui/react";
 
+import TopNav from './TopNav';
 
-export default function MaklumatDiri({activeKey}) {
-    return (
-        <CTabPane role="tabpanel" aria-labelledby="home-tab-pane" visible={activeKey}>
-            <p className="text-md text-gray-700 leading-tight text-center mt-8 mb-1">
-             Perakuan | No Pengenalan | <b>3. Maklumat Diri</b> | Pengesahan | Daftar Berjaya
-            </p>
-            <div className="mb-6 pt-4">
-                <p className="text-md text-gray-700 leading-tight text-center mt-8 mb-1">
-                Pesanan anda
-                </p>
-                <CFormTextarea
-                // ref={inputCadangan}
-                maxLength="1024"
-                rows={4}
-                type="text"
-                placeholder="Masukkan pesanan anda di sini... (Jika ada)"
-                name="visitormessage"
-                className="w-full px-4 py-3 rounded-xl text-gray-700 font-medium border-solid border-2 border-gray-200"
-                ></CFormTextarea>
-            </div>
-        </CTabPane>
-    );
+
+export default function MaklumatDiri({ activeKey }) {
+  // const [itemKey, setTabKey] = useState(1)
+
+  return (
+    <CTabPane role="tabpanel" aria-labelledby="home-tab-pane" visible={activeKey}>
+      <TopNav activeKey={activeKey} />
+
+      <CAccordion activeItemKey={1}>
+        <CAccordionItem itemKey={1}>
+          <CAccordionHeader>Peribadi</CAccordionHeader>
+          <CAccordionBody>
+            <strong>This is the first item's accordion body.</strong> It is hidden by default, until the
+            collapse plugin adds the appropriate classes that we use to style each element. These classes
+            control the overall appearance, as well as the showing and hiding via CSS transitions. You can
+            modify any of this with custom CSS or overriding our default variables. It's also worth noting
+            that just about any HTML can go within the <code>.accordion-body</code>, though the transition
+            does limit overflow.
+          </CAccordionBody>
+        </CAccordionItem>
+        <CAccordionItem itemKey={2}>
+          <CAccordionHeader>Kontak</CAccordionHeader>
+          <CAccordionBody>
+            <strong>This is the second item's accordion body.</strong> It is hidden by default, until the
+            collapse plugin adds the appropriate classes that we use to style each element. These classes
+            control the overall appearance, as well as the showing and hiding via CSS transitions. You can
+            modify any of this with custom CSS or overriding our default variables. It's also worth noting
+            that just about any HTML can go within the <code>.accordion-body</code>, though the transition
+            does limit overflow.
+          </CAccordionBody>
+        </CAccordionItem>
+        <CAccordionItem itemKey={3}>
+          <CAccordionHeader>Demografik</CAccordionHeader>
+          <CAccordionBody>
+            <strong>This is the second item's accordion body.</strong> It is hidden by default, until the
+            collapse plugin adds the appropriate classes that we use to style each element. These classes
+            control the overall appearance, as well as the showing and hiding via CSS transitions. You can
+            modify any of this with custom CSS or overriding our default variables. It's also worth noting
+            that just about any HTML can go within the <code>.accordion-body</code>, though the transition
+            does limit overflow.
+          </CAccordionBody>
+        </CAccordionItem>
+      </CAccordion>
+    </CTabPane>
+  );
 }
