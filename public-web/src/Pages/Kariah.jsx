@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { CTabContent, CButton, CForm } from "@coreui/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Perakuan from "../components/Kariah/Perakuan";
-import NoPengenalan from "../components/Kariah/NoPengenalan";
-import MaklumatDiri from "../components/Kariah/MaklumatDiri";
-import Pengesahan from "../components/Kariah/Pengesahan";
-import DaftarBerjaya from "../components/Kariah/DaftarBerjaya";
+import Perakuan from "../components/Kariah/NavItem/Perakuan/Perakuan";
+import NoPengenalan from "../components/Kariah/NavItem/NoPengenalan/NoPengenalan";
+import MaklumatDiri from "../components/Kariah/NavItem/MaklumatDiri/MaklumatDiri";
+import Pengesahan from "../components/Kariah/NavItem/Pengesahan/Pengesahan";
+import DaftarBerjaya from "../components/Kariah/NavItem/DaftarBerjaya/DaftarBerjaya";
+import TopNav from "../components/Kariah/TopNav";
 
 export default function Kariah() {
   const [activeKey, setActiveKey] = useState(1);
@@ -22,14 +23,14 @@ export default function Kariah() {
         <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900">
           Pendaftaran Anak Kariah
         </h2>
-
+        <TopNav step={activeKey} />
         <CForm className="space-y-8 flex flex-col">
           <CTabContent>
-            <Perakuan activeKey={activeKey === 1} />
-            <NoPengenalan activeKey={activeKey === 2} />
-            <MaklumatDiri activeKey={activeKey === 3} />
-            <Pengesahan activeKey={activeKey === 4} />
-            <DaftarBerjaya activeKey={activeKey === 5} />
+            <Perakuan activeKey={activeKey === 1} step={1} />
+            <NoPengenalan activeKey={activeKey === 2} step={2} />
+            <MaklumatDiri activeKey={activeKey === 3} step={3} />
+            <Pengesahan activeKey={activeKey === 4} step={4} />
+            <DaftarBerjaya activeKey={activeKey === 5} step={5} />
           </CTabContent>
 
           {/* <!-- Wizard buttons --> */}

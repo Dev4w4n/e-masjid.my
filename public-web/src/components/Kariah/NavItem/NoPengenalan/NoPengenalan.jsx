@@ -5,13 +5,10 @@ import {
   CFormInput,
   CFormSelect,
 } from "@coreui/react";
-import TopNav from './TopNav';
 
-export default function NoPengenalan({ activeKey }) {
+export default function NoPengenalan({ activeKey, step }) {
   return (
     <CTabPane role="tabpanel" aria-labelledby="home-tab-pane" visible={activeKey}>
-      <TopNav activeKey={activeKey} />
-
       <div className="mb-6 pt-4">
         <p className="text-md text-gray-700 leading-tight text-center mt-8 mb-1">
           Jenis Pengenalan Diri
