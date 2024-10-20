@@ -9,32 +9,34 @@ import {
 export default function NoPengenalan({ activeKey, step }) {
   return (
     <CTabPane role="tabpanel" aria-labelledby="home-tab-pane" visible={activeKey}>
-      <div className="mb-6 pt-4">
-        <p className="text-md text-gray-700 leading-tight text-center mt-8 mb-1">
-          Jenis Pengenalan Diri
-        </p>
-        <CFormSelect
-          aria-label="Default select example"
-          options={[
-            'No MyKAD / No Tentera',
-            { label: 'MyKAD', value: '1' },
-            { label: 'Tentera', value: '2' },
-            // { label: 'Three', value: '3', disabled: true }
-          ]}
-        />
+      <form>
+        <div className="space-y-12">
+          <div className="border-b border-gray-900/10 pb-12">
+            <div className="mb-6 pt-4">
+              <h2 className="text-base font-semibold leading-7 text-gray-900">No Pengenalan Diri</h2>
+            </div>
+            <p className="mt-1 text-sm leading-6 text-gray-600">Masukkan no pengenalan diri anda.</p>
 
-        <p className="text-md text-gray-700 leading-tight text-center mt-8 mb-1">
-          No. Pengenalan Diri
-        </p>
-        <CFormInput
-          type="text"
-          size="lg"
-          placeholder="Masukkan no pengenanalan anda di sini..."
-          className="w-full px-4 py-3 rounded-xl text-gray-700 font-medium border-solid border-2 border-gray-200"
-          aria-label="lg input example" />
-
-
-      </div>
+            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+              <div className="sm:col-span-4">
+                <label htmlFor="nama-penuh" className="block text-sm font-medium leading-6 text-gray-900">
+                  No Pengenalan
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="nama-penuh"
+                    name="nama-penuh"
+                    type="text"
+                    autoComplete="given-name"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </div>
+            </div>
+              <p id="helper-text-explanation" class="mt-2 text-sm text-gray-500 dark:text-gray-400">Baca <a href="#" class="font-medium text-blue-600 hover:underline dark:text-blue-500">Dasar Privasi</a> kami.</p>
+          </div>
+        </div>
+      </form>
     </CTabPane>
   );
 }
