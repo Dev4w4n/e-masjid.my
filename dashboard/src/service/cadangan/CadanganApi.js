@@ -36,3 +36,8 @@ export const updateCadangan = async (cadangan, id) => {
   const response = await axiosInstance.put(`${apiServer}/cadangan/${id}`, cadangan)
   return response.data
 }
+
+export const deleteCadangan = async (id) => {
+  const response = await axiosInstance.delete(`${apiServer}/cadangan/${id}`)
+  return response.data
+}

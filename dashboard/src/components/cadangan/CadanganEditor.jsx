@@ -13,7 +13,7 @@ import {
 } from '@coreui/react'
 import { toast, ToastContainer } from 'react-toastify'
 
-import { getCadanganById, updateCadangan } from '@/service/cadangan/CadanganApi'
+import { deleteCadangan, getCadanganById, updateCadangan } from '@/service/cadangan/CadanganApi'
 
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -27,6 +27,7 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
   const [visibleSM, setVisibleSM] = useState(false)
   const componentRef = useRef()
   const [visiblePrint, setVisiblePrint] = useState(false)
+  const [visibleDelete, setVisibleDelete] = useState(false)
 
   const [data, setData] = useState({})
   const inputTindakan = useRef()
@@ -53,6 +54,11 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
     setVisibleXL(false)
     setVisibleSM(true)
     setConfirmText(text)
+  }
+
+  const confirmDelete = () => {
+    setVisibleXL(false)
+    setVisibleDelete(true)
   }
 
   const moveTo = async () => {
@@ -139,6 +145,36 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
     }
   }
 
+  const buangCadangan = async () => {
+    try {
+      await deleteCadangan(data.id)
+      resetModal()
+      onEditorUpdated()
+      onHandleRefreshData()
+      toast.success('Cadangan telah dipadam', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      })
+    } catch (error) {
+      toast.error('Cadangan tidak wujud', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      })
+    }
+  }
+
   return (
     <>
       <ToastContainer />
@@ -196,22 +232,34 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
             </div>
           </CForm>
         </CModalBody>
-        <CModalFooter>
+        <CModalFooter style={{ display: 'flex', justifyContent: 'space-between' }}>
           <CButton
-            color="secondary"
+            color="danger"
+            type="button"
             onClick={() => {
-              setVisibleXL(false)
-              setVisiblePrint(true)
+              confirmDelete()
             }}
           >
-            Cetak
+            Buang
           </CButton>
-          <CButton color="secondary" onClick={() => resetModal()}>
-            Tutup
-          </CButton>
-          <CButton color="primary" onClick={() => saveCadangan()}>
-            Simpan
-          </CButton>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <CButton
+              type="button"
+              color="secondary"
+              onClick={() => {
+                setVisibleXL(false)
+                setVisiblePrint(true)
+              }}
+            >
+              Cetak
+            </CButton>
+            <CButton color="secondary" type="reset" onClick={() => resetModal()}>
+              Tutup
+            </CButton>
+            <CButton color="primary" type="submit" onClick={() => saveCadangan()}>
+              Simpan
+            </CButton>
+          </div>
         </CModalFooter>
       </CModal>
       <CModal
@@ -260,6 +308,24 @@ const CadanganEditor = ({ onEditorUpdated, onHandleRefreshData, ...props }) => {
           </CButton>
           <CButton onClick={handlePrint} color="primary">
             Cetak
+          </CButton>
+        </CModalFooter>
+      </CModal>
+      <CModal
+        size="xl"
+        visible={visibleDelete}
+        onClose={() => setVisibleDelete(false)}
+        aria-labelledby="modalConfirm"
+      >
+        <CModalBody>
+          <p>Adakah anda pasti untuk Buang Cadangan ini?</p>
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setVisibleDelete(false)}>
+            Tutup
+          </CButton>
+          <CButton onClick={buangCadangan} color="danger">
+            Buang
           </CButton>
         </CModalFooter>
       </CModal>
