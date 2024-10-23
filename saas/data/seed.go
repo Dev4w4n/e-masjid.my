@@ -19,6 +19,7 @@ import (
 	"github.com/Dev4w4n/e-masjid.my/saas/model"
 
 	cadanganmodel "github.com/Dev4w4n/e-masjid.my/api/cadangan-api/model"
+	coremodel "github.com/Dev4w4n/e-masjid.my/api/core/model"
 	khairatmodel "github.com/Dev4w4n/e-masjid.my/api/khairat-api/model"
 	tabungmodel "github.com/Dev4w4n/e-masjid.my/api/tabung-api/model"
 	tetapanmodel "github.com/Dev4w4n/e-masjid.my/api/tetapan-api/model"
@@ -131,7 +132,7 @@ func executeSqlFiles(db *gorm2.DB, tenantId string) error {
 		}
 	}
 
-	if (tenantId != "1") { // if not localhost
+	if tenantId != "1" { // if not localhost
 		models := []interface{}{
 			&cadanganmodel.Cadangan{},
 			&cadanganmodel.CadanganType{},
@@ -146,11 +147,13 @@ func executeSqlFiles(db *gorm2.DB, tenantId string) error {
 			&tabungmodel.TabungType{},
 			&tetapanmodel.Tetapan{},
 			&tetapanmodel.TetapanType{},
+			&coremodel.KariahMember{},
+			&coremodel.KariahDependent{},
+			&coremodel.KariahMemberAssignedType{},
 		}
-		
-	
+
 		// Loop through each model
-	
+
 		log.Println("Updating tenant_id in tables.")
 		for _, model := range models {
 			tableName, err := getTableName(db, model)
@@ -158,15 +161,15 @@ func executeSqlFiles(db *gorm2.DB, tenantId string) error {
 			if err != nil {
 				return fmt.Errorf("failed to get table name for model %T: %w", model, err)
 			}
-	
+
 			var count int64
 			// Manually construct the count query
 			countQuery := fmt.Sprintf("SELECT count(*) FROM %s WHERE tenant_id IS NULL", tableName)
-	
+
 			if err := db.Raw(countQuery).Scan(&count).Error; err != nil {
 				return fmt.Errorf("failed to count rows in table %s: %w", tableName, err)
 			}
-	
+
 			// If there are rows, update the tenant_id
 			log.Println("Table row count: ", count)
 			if count > 0 {
