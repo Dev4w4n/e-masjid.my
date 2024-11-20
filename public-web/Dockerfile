@@ -13,8 +13,8 @@ RUN echo "PORT=3000" > .env && \
     echo "CHOKIDAR_USEPOLLING=true" >> .env && \
     echo "REACT_APP_ENV=docker" >> .env && \
     echo "PUBLIC_URL=." >> .env && \
-    echo "BUILD_VERSION=${BUILD_VERSION}" >> .env && \
-    echo "DOMAIN=${DOMAIN}" >> .env
+    echo "REACT_APP_BUILD_VERSION=${BUILD_VERSION}" >> .env && \
+    echo "REACT_APP_DOMAIN=${DOMAIN}" >> .env
 
 # Copy application files
 COPY . .

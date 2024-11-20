@@ -14,7 +14,7 @@ export const dynamicSubdomain = getSubdomain();
 // Base configuration
 const baseConfig = {
   version: {
-    BUILD: process.env.BUILD_VERSION || "v2.0.0", // Default to v2.0.0 if not provided
+    BUILD: process.env.REACT_APP_BUILD_VERSION || "v2.0.0", // Default to v2.0.0 if not provided
   },
   url: {
     CADANGAN_API_BASE_URL: "",
@@ -26,8 +26,8 @@ const baseConfig = {
 const docker = {
   ...baseConfig,
   url: {
-    CADANGAN_API_BASE_URL: `https://${dynamicSubdomain}.${process.env.DOMAIN}/public`,
-    TETAPAN_API_BASE_URL: `https://${dynamicSubdomain}.${process.env.DOMAIN}/public`,
+    CADANGAN_API_BASE_URL: `https://${dynamicSubdomain}.${process.env.REACT_APP_DOMAIN}/public`,
+    TETAPAN_API_BASE_URL: `https://${dynamicSubdomain}.${process.env.REACT_APP_DOMAIN}/public`,
   },
 };
 
