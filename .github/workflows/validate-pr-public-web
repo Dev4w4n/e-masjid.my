@@ -22,7 +22,7 @@ jobs:
         working-directory: public-web
         run: |
           npm ci
-          nom run lint
+          npm run lint
           npm run build
 
       - name: Verify build output
