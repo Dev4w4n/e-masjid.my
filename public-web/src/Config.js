@@ -1,17 +1,15 @@
-// Helper function to extract the subdomain from the hostname
+// Helper function to extract the subdomain or return "development" for localhost
 export const getSubdomain = () => {
-  const parts = window.location.hostname.split(".");
-  if (parts.length >= 3) {
-    return parts[0];
-  }
-  return null;
+  const { hostname } = window.location;
+
+  if (hostname === "localhost") return "development";
+
+  const parts = hostname.split(".");
+  return parts.length >= 3 ? parts[0] : null;
 };
 
 // Export the dynamic subdomain
-export const dynamicSubdomain = (() => {
-  const subdomain = getSubdomain();
-  return subdomain === "localhost" ? "development" : subdomain;
-})();
+export const dynamicSubdomain = getSubdomain();
 
 // Base configuration
 const baseConfig = {

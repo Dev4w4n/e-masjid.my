@@ -12,6 +12,7 @@ ARG DOMAIN
 RUN echo "PORT=3000" > .env && \
     echo "CHOKIDAR_USEPOLLING=true" >> .env && \
     echo "REACT_APP_ENV=docker" >> .env && \
+    echo "PUBLIC_URL=." >> .env && \
     echo "BUILD_VERSION=${BUILD_VERSION}" >> .env && \
     echo "DOMAIN=${DOMAIN}" >> .env
 
@@ -29,13 +30,19 @@ WORKDIR /app
 
 # Copy the built application from the builder stage
 COPY --from=builder /app/build ./build
-COPY --from=builder /app/build/web ./build/web
+COPY --from=builder /app/build ./build/web
 
 # Install the serve package globally for running the app
 RUN npm install -g serve
 
 # Expose the application port
 EXPOSE 3000
+
+ARG BUILD_VERSION
+ARG DOMAIN
+
+ENV BUILD_VERSION=${BUILD_VERSION}
+ENV DOMAIN=${DOMAIN}
 
 # Command to start the application
 CMD ["serve", "-s", "build", "-l", "3000"]
