@@ -102,9 +102,10 @@ services:
       - tetapan-api
 
   public-web:
-    build:
-      context: ./public-web
-      dockerfile: Dockerfile.dev
+    image: dev4w4n/emasjid-public-web:v2.0.2
+    environment:
+      - BUILD_VERSION=v2.0.2
+      - DOMAIN=e-masjid.my
     ports:
       - "3001:3000"
     depends_on:
