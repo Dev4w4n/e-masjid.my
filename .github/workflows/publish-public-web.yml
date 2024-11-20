@@ -21,7 +21,7 @@ jobs:
 
       - name: Build and publish to Docker Hub
         run: |
-          VERSION=$(git rev-parse --short HEAD)  # Use short commit hash for versioning
+          VERSION=$(git rev-parse HEAD)  # Use short commit hash for versioning
           IMAGE_NAME=dev4w4n/emasjid-public-web:${VERSION}
           docker build -t emasjid-public-web --build-arg BUILD_VERSION=${VERSION} --build-arg DOMAIN=e-masjid.my ./public-web
           docker tag emasjid-public-web $IMAGE_NAME
