@@ -9,20 +9,20 @@
       const currentDomain = window.location.origin;
 
       // Dynamically set favicon
-      const favicon = document.createElement('link');
-      favicon.rel = 'icon';
+      const favicon = document.createElement("link");
+      favicon.rel = "icon";
       favicon.href = `${currentDomain}/favicon.ico`;
       document.head.appendChild(favicon);
 
       // Dynamically set Apple Touch Icon
-      const appleTouchIcon = document.createElement('link');
-      appleTouchIcon.rel = 'apple-touch-icon';
+      const appleTouchIcon = document.createElement("link");
+      appleTouchIcon.rel = "apple-touch-icon";
       appleTouchIcon.href = `${currentDomain}/logo192.png`;
       document.head.appendChild(appleTouchIcon);
 
       // Dynamically set manifest
-      const manifest = document.createElement('link');
-      manifest.rel = 'manifest';
+      const manifest = document.createElement("link");
+      manifest.rel = "manifest";
       manifest.href = `${currentDomain}/manifest.json`;
       document.head.appendChild(manifest);
     })();
