@@ -11,9 +11,9 @@ import {dynamicSubdomain} from "../Config";
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Set the environment-specific URL
   var loginUrl = "http://localhost:3000/dashboard";
-
-  if (process.env.NODE_ENV !== "development") {
+  if (dynamicSubdomain !== "development") {
     loginUrl = `https://${dynamicSubdomain}.${process.env.DOMAIN}/ui`;
   }
 

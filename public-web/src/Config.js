@@ -10,7 +10,7 @@ export const getSubdomain = () => {
 // Export the dynamic subdomain
 export const dynamicSubdomain = (() => {
   const subdomain = getSubdomain();
-  return subdomain === "localhost" ? "demo" : subdomain;
+  return subdomain === "localhost" ? "development" : subdomain;
 })();
 
 // Base configuration
@@ -24,8 +24,8 @@ const baseConfig = {
   },
 };
 
-// Production environment configuration
-const prod = {
+// Docker environment configuration
+const docker = {
   ...baseConfig,
   url: {
     CADANGAN_API_BASE_URL: `https://${dynamicSubdomain}.${process.env.DOMAIN}/public`,
@@ -34,7 +34,7 @@ const prod = {
 };
 
 // Development environment configuration
-const dev = {
+const development = {
   ...baseConfig,
   url: {
     CADANGAN_API_BASE_URL: "http://localhost:8084",
@@ -43,4 +43,5 @@ const dev = {
 };
 
 // Export the final configuration based on the environment
-export const config = process.env.REACT_APP_ENV === "development" ? dev : prod;
+// If subdomain is 'localhost', it will always return development
+export const config = dynamicSubdomain === "development" || process.env.REACT_APP_ENV === "development" ? development : docker;

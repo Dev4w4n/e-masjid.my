@@ -12,4 +12,4 @@
 # npm run build:dev
 # cd ..
 
-docker-compose -f docker-compose.yaml up --build -d
+docker compose -f docker-compose.yaml up --build -d
