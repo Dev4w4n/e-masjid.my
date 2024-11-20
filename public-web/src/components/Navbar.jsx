@@ -6,15 +6,22 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import constants from "../constants/error.json";
+import {dynamicSubdomain} from "../Config";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+
+  // Set the environment-specific URL
+  var loginUrl = "http://localhost:3000/dashboard";
+  if (dynamicSubdomain !== "development") {
+    loginUrl = `https://${dynamicSubdomain}.${process.env.DOMAIN}/ui`;
+  }
 
   const loginAjk = () => {
     axios
       .get("/dashboard")
       .then((response) => {
-        window.location.href = "http://localhost:3000";
+        window.location.href = loginUrl;
       })
       .catch((error) => {
         toast.error(constants.serviceDown, {
