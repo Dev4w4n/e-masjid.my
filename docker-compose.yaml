@@ -102,10 +102,10 @@ services:
       - tetapan-api
 
   public-web:
-    image: dev4w4n/emasjid-public-web:v2.0.2
+    image: dev4w4n/emasjid-public-web:b05c8ff34ca6f9dfbd8853308e7e5ee3598268ea
     environment:
-      - BUILD_VERSION=v2.0.2
-      - DOMAIN=e-masjid.my
+      - EMASJID_REACT_APP_BUILD_VERSION=b05c8ff34ca6f9dfbd8853308e7e5ee3598268ea
+      - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "3001:3000"
     depends_on:
