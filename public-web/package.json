@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "author": "Open Cloud Services (SA0604301-H)",
-  "proxy": "http://localhost:3000",
+  "proxy": "",
   "scripts": {
     "build": "cross-env REACT_APP_ENV=docker react-scripts build",
     "eject": "react-scripts eject",

@@ -1,7 +1,6 @@
 // Helper function to extract the subdomain or return "development" for localhost
 export const getSubdomain = () => {
   const { hostname } = window.location;
-
   if (hostname === "localhost") return "development";
 
   const parts = hostname.split(".");
@@ -39,6 +38,10 @@ const development = {
     TETAPAN_API_BASE_URL: "http://localhost:8086",
   },
 };
+
+if (!process.env.REACT_APP_BUILD_VERSION) {
+  console.warn("Warning: BUILD_VERSION is not defined. Using default value 'v2.0.0'.");
+}
 
 // Export the final configuration based on the environment
 // If subdomain is 'localhost', it will always return development
