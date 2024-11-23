@@ -15,19 +15,19 @@
     // Dynamically set favicon
     const favicon = document.createElement("link");
     favicon.rel = "icon";
-    favicon.href = `${currentDomain}/favicon.ico`;
+    favicon.href = `${currentDomain}/web/favicon.ico`;
     document.head.appendChild(favicon);
 
     // Dynamically set Apple Touch Icon
     const appleTouchIcon = document.createElement("link");
     appleTouchIcon.rel = "apple-touch-icon";
-    appleTouchIcon.href = `${currentDomain}/logo192.png`;
+    appleTouchIcon.href = `${currentDomain}/web/logo192.png`;
     document.head.appendChild(appleTouchIcon);
 
     // Dynamically set manifest
     const manifest = document.createElement("link");
     manifest.rel = "manifest";
-    manifest.href = `${currentDomain}/manifest.json`;
+    manifest.href = `${currentDomain}/web/manifest.json`;
     document.head.appendChild(manifest);
 
   </script>
@@ -41,7 +41,7 @@
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
-  <script src="/env-config.js"></script>
+  <script src="/web/env-config.js"></script>
 </body>
 
 </html>
