@@ -1,5 +1,5 @@
 import { config } from "../Config";
-const BUILD = config.version.BUILD;
+
 export default function Copyright() {
   return (
     <div className="text-center pt-3">
@@ -20,7 +20,7 @@ export default function Copyright() {
           <a href="https://e-masjid.my" target="_blank" rel="noreferrer">
             E-Masjid.my
           </a>{" "}
-          &copy; 2023-2024 ({BUILD})
+          &copy; 2023-2024 ({config.version.BUILD})
         </span>
       </div>
     </div>
