@@ -6,7 +6,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import constants from "../constants/error.json";
-import {dynamicSubdomain} from "../Config";
+import {dynamicSubdomain, DOMAIN} from "../Config";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,27 +14,28 @@ function Navbar() {
   // Set the environment-specific URL
   var loginUrl = "http://localhost:3000/dashboard";
   if (dynamicSubdomain !== "development") {
-    loginUrl = `https://${dynamicSubdomain}.${process.env.DOMAIN}/ui`;
+    loginUrl = `https://${dynamicSubdomain}.${DOMAIN}/ui`;
   }
 
-  const loginAjk = () => {
-    axios
-      .get("/dashboard")
-      .then((response) => {
-        window.location.href = loginUrl;
-      })
-      .catch((error) => {
-        toast.error(constants.serviceDown, {
-          position: "bottom-center",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+  const loginAjk = async () => {
+    if (dynamicSubdomain === "development") {
+      window.location.href = loginUrl;
+    }
+    try {
+      await axios.get("/dashboard");
+      window.location.href = loginUrl; // Redirect on success
+    } catch (error) {
+      toast.error(constants.serviceDown, {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
       });
+    }
   };
 
   return (
@@ -85,7 +86,7 @@ function Navbar() {
             </div>
           </div>
 
-          <Link className="ml-auto" onClick={() => loginAjk()}>
+          <Link className="ml-auto" onClick={loginAjk}>
             <div className="block hover:bg-button-primary px-3 md:px-4 py-1 rounded-xl">
               Log Masuk AJK
             </div>

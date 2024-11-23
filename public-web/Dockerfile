@@ -4,35 +4,30 @@ FROM node:20-alpine AS builder
 # Set the working directory
 WORKDIR /app
 
-# Set environment variables
-RUN echo "PORT=3000" > .env && \
-    echo "CHOKIDAR_USEPOLLING=true" >> .env && \
-    echo "REACT_APP_ENV=docker" >> .env && \
-    echo "PUBLIC_URL=." >> .env && \
-    echo "REACT_APP_BUILD_VERSION=EMASJID_REACT_APP_BUILD_VERSION" >> .env && \
-    echo "REACT_APP_DOMAIN=EMASJID_REACT_APP_DOMAIN" >> .env
-
-# Copy application files
+# Copy application files and install dependencies
 COPY . .
 
-# Install dependencies and build the production app
-# RUN npm install && npm run build
 RUN npm install && npm run build   
 
 # Stage 2: Runtime environment
 FROM nginx:1.21.6-alpine
 
-ARG BUILD_VERSION
-ARG DOMAIN
+ENV BUILD_VERSION="v2.0.0-docker"
+ENV DOMAIN="e-masjid.my"
 
-# Copy the built application from the builder stage
+# Copy the built application
 COPY --from=builder /app/build /usr/share/nginx/html
 COPY --from=builder /app/build /usr/share/nginx/html/web
 
-COPY /nginx-custom.conf /etc/nginx/conf.d/default.conf
+# Copy custom Nginx configuration
+COPY nginx-custom.conf /etc/nginx/conf.d/default.conf
 
-COPY env.sh /docker-entrypoint.d/env.sh
+# Script to dynamically generate env-config.js at runtime
+COPY generate-env-config.sh /docker-entrypoint.d/generate-env-config.sh
+RUN chmod +x /docker-entrypoint.d/generate-env-config.sh
 
+# Expose the application port
 EXPOSE 80
 
-RUN chmod +x /docker-entrypoint.d/env.sh $BUILD_VERSION $DOMAIN
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
