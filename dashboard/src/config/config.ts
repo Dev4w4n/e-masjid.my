@@ -60,6 +60,7 @@ const development = {
   },
 }
 
+// TODO: Debug mode as parameter
 if (!BUILD_VERSION) {
   console.warn('Warning: BUILD_VERSION is not defined. Using default value v2.0.0.')
 }
