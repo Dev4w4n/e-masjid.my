@@ -1,35 +1,50 @@
+// Helper function to extract the subdomain or return "development" for localhost
 const getSubdomain = () => {
-  const parts = window.location.hostname.split('.')
-  if (parts.length >= 3) {
-    return parts[0]
-  }
-  return null
+  const { hostname } = window.location
+  if (hostname === 'localhost') return 'development'
+
+  const parts = hostname.split('.')
+  return parts.length >= 3 ? parts[0] : null
 }
+const dynamicSubdomain = getSubdomain()
 
-const subdomain = getSubdomain()
-const dynamicSubdomain = subdomain === 'localhost' ? 'demo' : subdomain
+const isDevelopment = process.env.REACT_APP_ENV === 'development'
 
-const prod = {
+const getBuildVersion = () => {
+  if (isDevelopment) {
+    return process.env.REACT_APP_BUILD_VERSION
+  } else {
+    return window?._env_?.REACT_APP_BUILD_VERSION
+  }
+}
+const BUILD_VERSION = getBuildVersion()
+
+const DOMAIN = isDevelopment ? process.env.REACT_APP_DOMAIN : window?._env_?.REACT_APP_DOMAIN
+const KEYCLOAK_URL = isDevelopment
+  ? process.env.REACT_APP_KEYCLOAK_BASE_URL
+  : window?._env_?.REACT_APP_KEYCLOAK_BASE_URL
+
+const docker = {
   version: {
-    BUILD: 'v2.0.0',
+    BUILD: BUILD_VERSION || 'v2.0.0', // Default to v2.0.0 if not provided
   },
   url: {
     USE_KEYCLOAK: true,
-    KEYCLOAK_BASE_URL: `https://loginv2.e-masjid.my`,
+    KEYCLOAK_BASE_URL: `${KEYCLOAK_URL}`,
     KEYCLOAK_REALM: dynamicSubdomain,
     KEYCLOAK_CLIENT_ID: `${dynamicSubdomain}-auth`,
-    LOGOUT_URL: `https://${dynamicSubdomain}.e-masjid.my/web`,
-    KHAIRAT_API_BASE_URL: `https://${dynamicSubdomain}.e-masjid.my/secure`,
-    TABUNG_API_BASE_URL: `https://${dynamicSubdomain}.e-masjid.my/secure`,
-    CADANGAN_API_BASE_URL: `https://${dynamicSubdomain}.e-masjid.my/secure`,
-    TETAPAN_API_BASE_URL: `https://${dynamicSubdomain}.e-masjid.my/secure`,
-    PETI_CADANGAN_URL: `https://${dynamicSubdomain}.e-masjid.my/web#/cadangan`,
+    LOGOUT_URL: `https://${dynamicSubdomain}.${DOMAIN}/web`,
+    KHAIRAT_API_BASE_URL: `https://${dynamicSubdomain}.${DOMAIN}/secure`,
+    TABUNG_API_BASE_URL: `https://${dynamicSubdomain}.${DOMAIN}/secure`,
+    CADANGAN_API_BASE_URL: `https://${dynamicSubdomain}.${DOMAIN}/secure`,
+    TETAPAN_API_BASE_URL: `https://${dynamicSubdomain}.${DOMAIN}/secure`,
+    PETI_CADANGAN_URL: `https://${dynamicSubdomain}.${DOMAIN}/web#/cadangan`,
   },
 }
 
-const dev = {
+const development = {
   version: {
-    BUILD: 'v2.0.0',
+    BUILD: BUILD_VERSION || 'v2.0.0',
   },
   url: {
     USE_KEYCLOAK: false,
@@ -45,4 +60,27 @@ const dev = {
   },
 }
 
-export const config = process.env.REACT_APP_ENV === 'development' ? dev : prod
+if (!BUILD_VERSION) {
+  console.warn('Warning: BUILD_VERSION is not defined. Using default value v2.0.0.')
+}
+console.log('isDevelopment:', isDevelopment)
+console.log('BUILD_VERSION:', BUILD_VERSION)
+console.log('dynamicSubdomain:', dynamicSubdomain)
+console.log('DOMAIN:', DOMAIN)
+console.log('KEYCLOAK_URL:', KEYCLOAK_URL)
+console.log('process.env.REACT_APP_ENV:', process.env.REACT_APP_ENV)
+console.log('process.env.REACT_APP_DOMAIN:', process.env.REACT_APP_DOMAIN)
+console.log('process.env.REACT_APP_KEYCLOAK_BASE_URL:', process.env.REACT_APP_KEYCLOAK_BASE_URL)
+console.log('window?._env_?.REACT_APP_DOMAIN:', window?._env_?.REACT_APP_DOMAIN)
+console.log('window?._env_?.REACT_APP_BUILD_VERSION:', window?._env_?.REACT_APP_BUILD_VERSION)
+console.log(
+  'window?._env_?.REACT_APP_KEYCLOAK_BASE_URL:',
+  window?._env_?.REACT_APP_KEYCLOAK_BASE_URL,
+)
+
+// Export the final configuration based on the environment
+// If subdomain is 'localhost', it will always return development
+export const config =
+  dynamicSubdomain === 'development' || process.env.REACT_APP_ENV === 'development'
+    ? development
+    : docker
