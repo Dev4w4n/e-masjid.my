@@ -4,8 +4,6 @@ import { CFooter } from '@coreui/react'
 
 import { config } from '@/config'
 
-const BUILD = config.version.BUILD
-
 const AppFooter = () => {
   return (
     <CFooter>
@@ -15,7 +13,7 @@ const AppFooter = () => {
           <a href="https://e-masjid.my" target="_blank" rel="noreferrer">
             E-Masjid.my
           </a>{' '}
-          &copy; 2023-2024 ({BUILD})
+          &copy; 2023-2024 ({config.version.BUILD})
         </span>
       </div>
 

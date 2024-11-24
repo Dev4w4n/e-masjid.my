@@ -7,17 +7,13 @@
   "author": "Open Cloud Services (SA0604301-H)",
   "type": "module",
   "scripts": {
-    "dev": "npm run start",
-    "build": "echo \"Please use build:dev or build:prod \" && exit 1",
-    "build:dev": "cross-env-shell REACT_APP_ENV=development tsc && vite build",
-    "build:prod": "cross-env-shell REACT_APP_ENV=production tsc && vite build",
+    "build": "cross-env-shell REACT_APP_ENV=production tsc && vite build",
     "preview": "vite preview",
     "format": "prettier '**/*.{cjs,mjs,ts,tsx,md,json}' --ignore-path ./.gitignore --ignore-unknown --write",
     "format:check": "prettier '**/*.{cjs,mjs,ts,tsx,md,json}' --ignore-path ./.gitignore --ignore-unknown --check",
     "lint": "eslint . --ext js,jsx,ts,tsx --report-unused-disable-directives --max-warnings 0 --ignore-path ./.gitignore",
     "lint:fix": "npm run lint -- --fix",
     "start": "cross-env REACT_APP_ENV=development vite",
-    "start:prod": "cross-env REACT_APP_ENV=production vite",
     "test": "react-scripts test",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "test:debug": "react-scripts --inspect-brk test --runInBand"

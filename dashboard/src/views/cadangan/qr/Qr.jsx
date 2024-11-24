@@ -33,8 +33,6 @@ const urlPetiCadangan = config.url.PETI_CADANGAN_URL
 
 const Qr = () => {
   const componentRef = useRef()
-  const googleApiWithKey =
-    'https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyCMKzf91TWwDhsLFHIPgT47Oy-I3jNrEEo'
   const defaultTitleSize = 8
   const defaultDescriptionSize = 4
   const defaultFooterSize = 1.2
