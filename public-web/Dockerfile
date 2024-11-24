@@ -27,7 +27,7 @@ COPY generate-env-config.sh /docker-entrypoint.d/generate-env-config.sh
 RUN chmod +x /docker-entrypoint.d/generate-env-config.sh
 
 # Expose the application port
-EXPOSE 3000
+EXPOSE 80
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
