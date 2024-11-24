@@ -6,8 +6,23 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>E-Masjid 2.0</title>
-  <link rel="manifest" href="/manifest.json">
-  <link rel="shortcut icon" href="/favicon.ico">
+  <!-- Dynamically load assets based on current domain -->
+  <script>
+    const currentDomain = window.location.origin;
+
+    // Dynamically set favicon
+    const favicon = document.createElement("link");
+    favicon.rel = "icon";
+    favicon.href = `${currentDomain}/ui/favicon.ico`;
+    document.head.appendChild(favicon);
+
+    // Dynamically set manifest
+    const manifest = document.createElement("link");
+    manifest.rel = "manifest";
+    manifest.href = `${currentDomain}/ui/manifest.json`;
+    document.head.appendChild(manifest);
+
+  </script>
 </head>
 
 <body>
