@@ -8,6 +8,7 @@ window._env_ = {
 EOF
 
 cp /usr/share/nginx/html/env-config.js /usr/share/nginx/html/web
+cp /usr/share/nginx/html/env-config.js /usr/share/nginx/html/web/ui
 
 echo "env-config.js created with the following content:"
 cat /usr/share/nginx/html/env-config.js
