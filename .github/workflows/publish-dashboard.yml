@@ -1,7 +1,7 @@
 name: Publish dasboard to Docker Hub
 
 on:
-  push:
+  pull_request:
     branches:
       - main
     paths:
