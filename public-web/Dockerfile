@@ -1,12 +1,33 @@
 # Stage 1: Build environment
 FROM node:20-alpine AS builder
+
+# Set the working directory
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
+
+# Copy application files and install dependencies
+COPY . .
+
+RUN npm install && npm run build   
 
 # Stage 2: Runtime environment
-FROM node:20-alpine AS runner
-WORKDIR /app
-COPY --from=builder /app/node_modules ./node_modules
-COPY . .
-CMD ["npm", "start"]
+FROM nginx:1.21.6-alpine
+
+ENV BUILD_VERSION="v2.0.0-docker"
+ENV DOMAIN="e-masjid.my"
+
+# Copy the built application
+COPY --from=builder /app/build /usr/share/nginx/html
+COPY --from=builder /app/build /usr/share/nginx/html/web
+
+# Copy custom Nginx configuration
+COPY nginx-custom.conf /etc/nginx/conf.d/default.conf
+
+# Script to dynamically generate env-config.js at runtime
+COPY generate-env-config.sh /docker-entrypoint.d/generate-env-config.sh
+RUN chmod +x /docker-entrypoint.d/generate-env-config.sh
+
+# Expose the application port
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]

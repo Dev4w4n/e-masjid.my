@@ -1,4 +1,5 @@
 import { resolve } from 'path'
+
 import eslintPlugin from '@nabla/vite-plugin-eslint'
 import react from '@vitejs/plugin-react-swc'
 import { defineConfig, loadEnv } from 'vite'
@@ -7,7 +8,7 @@ import { defineConfig, loadEnv } from 'vite'
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
-    // base: '/ui/',
+    base: '/ui/',
     plugins: [react(), eslintPlugin()],
     resolve: {
       alias: {
