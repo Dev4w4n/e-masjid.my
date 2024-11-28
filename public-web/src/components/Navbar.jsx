@@ -57,13 +57,6 @@ function Navbar() {
                 >
                   Home
                 </Link>
-
-                <Link
-                  // to="/"
-                  className="hover:bg-button-primary hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  E-Khairat
-                </Link>
                 <Link
                   to="pendaftaran-anak-kariah"
                   className="hover:bg-button-primary hover:text-white px-3 py-2 rounded-md text-sm font-medium"
@@ -75,12 +68,6 @@ function Navbar() {
                   className="hover:bg-button-primary hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Peti Cadangan
-                </Link>
-                <Link
-                  // to="/"
-                  className="hover:bg-button-primary hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  Hubungi Kami
                 </Link>
               </div>
             </div>
@@ -116,19 +103,13 @@ function Navbar() {
                 Home
               </Link>
               <Link
-                to="/"
+                to="pendaftaran-anak-kariah"
                 className="hover:bg-primary-base hover:bg-button-primary hover:text-white block px-3 py-2 rounded-md text-base font-medium"
               >
-                E-Khairat
+                Pendaftaran Anak Kariah
               </Link>
               <Link
-                to="/"
-                className="hover:bg-primary-base hover:bg-button-primary hover:text-white block px-3 py-2 rounded-md text-base font-medium"
-              >
-                E-Korban
-              </Link>
-              <Link
-                to="/"
+                to="cadangan"
                 className="hover:bg-primary-base hover:bg-button-primary hover:text-white block px-3 py-2 rounded-md text-base font-medium"
               >
                 Peti Cadangan
