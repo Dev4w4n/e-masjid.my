@@ -65,10 +65,10 @@ function Navbar() {
                   E-Khairat
                 </Link>
                 <Link
-                  // to="/"
+                  to="pendaftaran-anak-kariah"
                   className="hover:bg-button-primary hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
-                  E-Korban
+                  Pendaftaran Anak Kariah
                 </Link>
                 <Link
                   to="cadangan"

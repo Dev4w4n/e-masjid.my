@@ -90,11 +90,12 @@ services:
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./tetapan-public-api"]
 
   dashboard:
-    build:
-      context: ./dashboard
-      dockerfile: Dockerfile.dev
+    image: dev4w4n/emasjid-dashboard:1aae728195fcfff92e42e2035113419813724f15
+    environment:
+      - EMASJID_REACT_APP_BUILD_VERSION=1aae728195fcfff92e42e2035113419813724f15
+      - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
-      - "3000:3000"
+      - "3000:80"
     depends_on:
       - khairat-api
       - tabung-api
