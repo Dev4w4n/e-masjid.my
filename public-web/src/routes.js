@@ -1,4 +1,4 @@
-import React from 'react'
+//import React from 'react'
 import Kariah from './Pages/Kariah'
 
 // const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
