@@ -1,8 +1,4 @@
-import React, { useState } from 'react';
-
-import {
-  CFormText,
-} from '@coreui/react';
+import React from 'react';
 
 export default function Peribadi({ activeKey }) {
   return (

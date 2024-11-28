@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
   CTabPane,
-  CFormTextarea,
 } from "@coreui/react";
 
 export default function DaftarBerjaya({ activeKey, step }) {
