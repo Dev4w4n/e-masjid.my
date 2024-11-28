@@ -17,7 +17,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      GO_ENV: dev
+      GO_ENV: docker
     depends_on:
       - postgres
     command: ["./wait-for-it.sh", "postgres:5432", "--", "./start-and-seed.sh"]
@@ -90,9 +90,9 @@ services:
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./tetapan-public-api"]
 
   dashboard:
-    image: dev4w4n/emasjid-dashboard:1aae728195fcfff92e42e2035113419813724f15
+    image: dev4w4n/emasjid-dashboard:v2.1.0
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=1aae728195fcfff92e42e2035113419813724f15
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.0
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "3000:80"
@@ -103,9 +103,9 @@ services:
       - tetapan-api
 
   public-web:
-    image: dev4w4n/emasjid-public-web:6e79bf4c7c6610773fcc1e8f4b523a2aad35efbb
+    image: dev4w4n/emasjid-public-web:v2.1.0
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=6e79bf4c7c6610773fcc1e8f4b523a2aad35efbb
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.0
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "3001:80"

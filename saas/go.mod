@@ -3,6 +3,7 @@ module github.com/Dev4w4n/e-masjid.my/saas
 go 1.23.2
 
 require (
+	github.com/Dev4w4n/e-masjid.my/api/core/model v0.0.0-20241128143939-5e1271215d58
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-saas/saas v0.6.3
 	github.com/google/uuid v1.6.0
@@ -56,3 +57,5 @@ require (
 	google.golang.org/protobuf v1.35.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+//replace github.com/Dev4w4n/e-masjid.my/api/core/env => ../api/core/env
