@@ -1,8 +1,4 @@
-import React, { useState } from 'react';
-
-import {
-  CFormText,
-} from '@coreui/react';
+import React from 'react';
 
 export default function Keluarga({ activeKey }) {
   return (
@@ -66,6 +62,8 @@ export default function Keluarga({ activeKey }) {
         </div>
 
       </div>
+
+      
 
     </form>
   );

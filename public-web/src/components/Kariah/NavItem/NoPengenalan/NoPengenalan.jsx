@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
   CTabPane,
-  CFormInput,
-  CFormSelect,
 } from "@coreui/react";
 
 export default function NoPengenalan({ activeKey, step }) {
@@ -33,6 +31,7 @@ export default function NoPengenalan({ activeKey, step }) {
                 </div>
               </div>
             </div>
+              { /* eslint-disable-next-line */ }
               <p id="helper-text-explanation" class="mt-2 text-sm text-gray-500 dark:text-gray-400">Baca <a href="#" class="font-medium text-blue-600 hover:underline dark:text-blue-500">Dasar Privasi</a> kami.</p>
           </div>
         </div>
