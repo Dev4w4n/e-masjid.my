@@ -1,7 +1,7 @@
 name: Publish to Docker Hub
 
 on:
-  pull_request:
+  push:
     branches:
       - main
     paths:
