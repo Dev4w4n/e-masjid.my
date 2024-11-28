@@ -103,9 +103,9 @@ services:
       - tetapan-api
 
   public-web:
-    image: dev4w4n/emasjid-public-web:57f2c70c83273ab4e84c12f170a3479ef3e28ad1
+    image: dev4w4n/emasjid-public-web:6e79bf4c7c6610773fcc1e8f4b523a2aad35efbb
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=57f2c70c83273ab4e84c12f170a3479ef3e28ad1
+      - EMASJID_REACT_APP_BUILD_VERSION=6e79bf4c7c6610773fcc1e8f4b523a2aad35efbb
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "3001:80"
