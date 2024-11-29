@@ -11,17 +11,6 @@ services:
     ports:
       - "5432:5432"
 
-  saas-api:
-    build:
-      context: ./saas
-    ports:
-      - "8080:8080"
-    environment:
-      GO_ENV: dev
-    depends_on:
-      - postgres
-    command: ["./wait-for-it.sh", "postgres:5432", "--", "./start-and-seed.sh"]
-
   khairat-api:
     build:
       context: ./api/khairat-api
@@ -90,9 +79,9 @@ services:
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./tetapan-public-api"]
 
   dashboard:
-    image: dev4w4n/emasjid-dashboard:1aae728195fcfff92e42e2035113419813724f15
+    image: dev4w4n/emasjid-dashboard:v2.1.0
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=1aae728195fcfff92e42e2035113419813724f15
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.0
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "3000:80"
@@ -103,29 +92,40 @@ services:
       - tetapan-api
 
   public-web:
-    image: dev4w4n/emasjid-public-web:6e79bf4c7c6610773fcc1e8f4b523a2aad35efbb
+    image: dev4w4n/emasjid-public-web:v2.1.0
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=6e79bf4c7c6610773fcc1e8f4b523a2aad35efbb
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.0
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "3001:80"
     depends_on:
       - cadangan-public-api
 
-  api-docs:
-    build:
-      context: ./api-docs
-    ports:
-      - "4000:4000"
-    environment:
-      - GO_ENV=dev
-    depends_on:
-      - tabung-api
-      - cadangan-api
-      - cadangan-public-api
-      - khairat-api
-      - tetapan-api
-      - tetapan-public-api
+  # api-docs:
+  #   build:
+  #     context: ./api-docs
+  #   ports:
+  #     - "4000:4000"
+  #   environment:
+  #     - GO_ENV=dev
+  #   depends_on:
+  #     - tabung-api
+  #     - cadangan-api
+  #     - cadangan-public-api
+  #     - khairat-api
+  #     - tetapan-api
+  #     - tetapan-public-api
+
+  # saas-api:
+  #   build:
+  #     context: ./saas
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     GO_ENV: docker
+  #   depends_on:
+  #     - postgres
+  #   command: ["./wait-for-it.sh", "postgres:5432", "--", "./start-and-seed.sh"]
 
 volumes:
   postgres_data:

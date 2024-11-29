@@ -11,10 +11,6 @@ require (
 )
 
 require (
-	github.com/Dev4w4n/e-masjid.my/api/cadangan-api v0.0.0-20240512145810-aea9c8249880 // indirect
-	github.com/Dev4w4n/e-masjid.my/api/khairat-api v0.0.0-20240512145810-aea9c8249880 // indirect
-	github.com/Dev4w4n/e-masjid.my/api/tabung-api v0.0.0-20240512145810-aea9c8249880 // indirect
-	github.com/Dev4w4n/e-masjid.my/api/tetapan-api v0.0.0-20240512145810-aea9c8249880 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/bytedance/sonic/loader v0.2.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
@@ -25,11 +21,10 @@ require (
 	github.com/go-openapi/swag v0.23.0 // indirect
 	github.com/go-resty/resty/v2 v2.15.3 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
-	github.com/google/uuid v1.3.1 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
-	github.com/knz/go-libedit v1.10.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
+	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	golang.org/x/tools v0.26.0 // indirect
 	gorm.io/driver/postgres v1.5.9 // indirect
 )

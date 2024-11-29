@@ -2,6 +2,8 @@ github.com/Dev4w4n/e-masjid.my/api/cadangan-api v0.0.0-20241021135725-264b485bfc
 github.com/Dev4w4n/e-masjid.my/api/cadangan-api v0.0.0-20241021135725-264b485bfc4d/go.mod h1:VMdNztaujqJO8J94Upyhkkv/NwqzqlqiqEkfsHQy1Wc=
 github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20241021135725-264b485bfc4d h1:bOmAyj1KdnwvRR/bQ6qo1+eJMRyp9a9BO0rQ5v8hJNU=
 github.com/Dev4w4n/e-masjid.my/api/core/env v0.0.0-20241021135725-264b485bfc4d/go.mod h1:i7ZjGDZv0nxRq22RImb7Z0uCIaDK+kYfJozolea6xuY=
+github.com/Dev4w4n/e-masjid.my/api/core/model v0.0.0-20241128143939-5e1271215d58 h1:/t21X+U09GtLiQTIZJcSVrKfaBkXOcurdaQQ8sTCTdg=
+github.com/Dev4w4n/e-masjid.my/api/core/model v0.0.0-20241128143939-5e1271215d58/go.mod h1:0S9ls+mwOCTTzj80mCuINhrKiAnt8NOqNNjDTRFaPWE=
 github.com/Dev4w4n/e-masjid.my/api/khairat-api v0.0.0-20241021135725-264b485bfc4d h1:JWy+HVNTABMeB5zipvfe8LDiDol92QeDRPJgW/nfuuU=
 github.com/Dev4w4n/e-masjid.my/api/khairat-api v0.0.0-20241021135725-264b485bfc4d/go.mod h1:sKKHcL3mTm8ZEBw/vB4v5WRjM1Nk0KPQvd5oR3OfS0c=
 github.com/Dev4w4n/e-masjid.my/api/tabung-api v0.0.0-20241021135725-264b485bfc4d h1:MMZpMQM8+LD3OlcsM0c9PhV0gJ3NN+Hz5axcf9FdDSk=
