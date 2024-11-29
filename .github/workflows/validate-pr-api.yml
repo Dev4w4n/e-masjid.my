@@ -1,0 +1,157 @@
+name: Validate API Pull Request
+
+on:
+  pull_request:
+    paths:
+      - "api/**"
+
+jobs:
+  validate-cadangan-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Use Golang
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.20
+
+      - name: Install dependencies and run build
+        working-directory: api/cadangan-api
+        run: |
+          go mod download
+          go build -o cadangan-api
+
+      - name: Verify build output
+        run: |
+          if [ ! -f "api/cadangan-api/cadangan-api" ]; then
+            echo "Build failed: 'cadangan-api' binary not found."
+            exit 1
+          fi
+
+  validate-cadangan-public-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Use Golang
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.20
+
+      - name: Install dependencies and run build
+        working-directory: api/cadangan-public-api
+        run: |
+          go mod download
+          go build -o cadangan-public-api
+
+      - name: Verify build output
+        run: |
+          if [ ! -f "api/cadangan-public-api/cadangan-public-api" ]; then
+            echo "Build failed: 'cadangan-public-api' binary not found."
+            exit 1
+          fi
+
+  validate-khairat-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Use Golang
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.20
+
+      - name: Install dependencies and run build
+        working-directory: api/khairat-api
+        run: |
+          go mod download
+          go build -o khairat-api
+
+      - name: Verify build output
+        run: |
+          if [ ! -f "api/khairat-api/khairat-api" ]; then
+            echo "Build failed: 'khairat-api' binary not found."
+            exit 1
+          fi
+
+  validate-tabung-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Use Golang
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.20
+
+      - name: Install dependencies and run build
+        working-directory: api/tabung-api
+        run: |
+          go mod download
+          go build -o tabung-api
+
+      - name: Verify build output
+        run: |
+          if [ ! -f "api/tabung-api/tabung-api" ]; then
+            echo "Build failed: 'tabung-api' binary not found."
+            exit 1
+          fi
+
+  validate-tetapan-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Use Golang
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.20
+
+      - name: Install dependencies and run build
+        working-directory: api/tetapan-api
+        run: |
+          go mod download
+          go build -o tetapan-api
+
+      - name: Verify build output
+        run: |
+          if [ ! -f "api/tetapan-api/tetapan-api" ]; then
+            echo "Build failed: 'tetapan-api' binary not found."
+            exit 1
+          fi
+
+  validate-tetapan-public-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Use Golang
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.20
+
+      - name: Install dependencies and run build
+        working-directory: api/tetapan-public-api
+        run: |
+          go mod download
+          go build -o tetapan-public-api
+
+      - name: Verify build output
+        run: |
+          if [ ! -f "api/tetapan-public-api/tetapan-public-api" ]; then
+            echo "Build failed: 'tetapan-public-api' binary not found."
+            exit 1
+          fi

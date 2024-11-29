@@ -1,0 +1,32 @@
+name: Validate Saas Pull Request
+
+on:
+  pull_request:
+    paths:
+      - "saas/**"
+
+jobs:
+  validate-saas:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Use Golang
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.20
+
+      - name: Install dependencies and run build
+        working-directory: saas
+        run: |
+          go mod download
+          go build -o saas
+
+      - name: Verify build output
+        run: |
+          if [ ! -f "saas/saas" ]; then
+            echo "Build failed: 'saas' binary not found."
+            exit 1
+          fi

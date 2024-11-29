@@ -1,14 +1,18 @@
-name: Publish Dashboard to Docker Hub
+name: Publish API to Docker Hub
 
 on:
   push:
     branches:
       - main
+
+    # Listen on all paths under the "api" directory except for api/core
     paths:
-      - "dashboard/**"
+      - "api/**"
+    paths-ignore:
+      - "api/core/**"
 
 jobs:
-  build-dashboard:
+  build-public-web:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,7 +33,7 @@ jobs:
       - name: Build and publish to Docker Hub
         run: |
           VERSION=$(git rev-parse HEAD)  # Use short commit hash for versioning
-          IMAGE_NAME=dev4w4n/emasjid-dashboard:${VERSION}
-          docker build -t emasjid-dashboard ./dashboard
-          docker tag emasjid-dashboard $IMAGE_NAME
+          IMAGE_NAME=dev4w4n/emasjid-public-web:${VERSION}
+          docker build -t emasjid-public-web ./public-web
+          docker tag emasjid-public-web $IMAGE_NAME
           docker push $IMAGE_NAME
