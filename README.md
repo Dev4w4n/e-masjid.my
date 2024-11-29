@@ -2,7 +2,7 @@
 ![Github forks](https://badgen.net/github/forks/Dev4w4n/e-masjid.my?icon=github&label=forks)
 ![Github issues](https://img.shields.io/github/issues/Dev4w4n/e-masjid.my)
 ![Github last-commit](https://img.shields.io/github/last-commit/Dev4w4n/e-masjid.my)
-![Public-Web build](https://github.com/Dev4w4n/e-masjid.my/actions/workflows/publish-public-web.yml/badge.svg)
+![Release build](https://github.com/Dev4w4n/e-masjid.my/actions/workflows/publish-on-tag.yml/badge.svg)
 
 
 <p align="center">
