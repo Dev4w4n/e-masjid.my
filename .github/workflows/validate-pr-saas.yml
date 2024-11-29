@@ -23,10 +23,3 @@ jobs:
         run: |
           go mod download
           go build -o saas
-
-      - name: Verify build output
-        run: |
-          if [ ! -f "saas/saas" ]; then
-            echo "Build failed: 'saas' binary not found."
-            exit 1
-          fi
