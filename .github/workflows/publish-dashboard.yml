@@ -1,4 +1,4 @@
-name: Publish Dasboard to Docker Hub
+name: Publish Dashboard to Docker Hub
 
 on:
   push:
