@@ -44,7 +44,6 @@ ENV DB_PORT="5432"
 ENV DB_USER="pgsql-saas"
 ENV DB_PASSWORD="pgsql-saas"
 ENV DB_NAME="pgsql-saas"
-ENV GO_ENV=$GO_ENV
 
 # Set the working directory inside the container
 WORKDIR /app

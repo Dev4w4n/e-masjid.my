@@ -23,22 +23,38 @@ RUN swag init
 FROM alpine:latest
 
 # Define build-time argument for GO_ENV
-ARG GO_ENV=local
-
-# Set Go environment variables
-ENV GO_ENV=$GO_ENV
+ENV GO_ENV="docker"
+ENV DB_HOST="postgres"
+ENV DB_PORT="5432"
+ENV DB_USER="pgsql-saas"
+ENV DB_PASSWORD="pgsql-saas"
+ENV DB_NAME="pgsql-saas"
+ENV ALLOWED_ORIGIN="*"
+ENV DEPLOY_URL="/"
+ENV SERVER_PORT="8081"
+ENV API_DOC_URL="http://localhost:4000"
 
 # Set the working directory inside the container
 WORKDIR /app
 
 # Copy only the built binary from the builder stage
 COPY --from=builder /app/khairat-api .
-COPY --from=builder /app/.env.* .
 COPY --from=builder /app/wait-for-it.sh . 
 COPY --from=builder /app/docs ./docs
 
 # Expose the port that your application will run on
 EXPOSE 8080
+
+# Script to dynamically generate .env.docker at runtime
+COPY generate-env.sh /docker-entrypoint.d/generate-env.sh
+RUN chmod +x /docker-entrypoint.d/generate-env.sh
+
+# Copy the custom entrypoint
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Set the custom entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
 
 # Command to run your application
 CMD ["./khairat-api", "-env", "$GO_ENV"]
