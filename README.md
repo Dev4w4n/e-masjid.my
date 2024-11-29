@@ -89,3 +89,5 @@ Kami mahu input anda! Kami ingin menjadikan penyumbangan kepada projek mudah dan
   
 Atau anda ingin berbual dengan kami, cari kami di [Discord](https://discord.gg/k2zGpWTDpe).
 
+
+[![Contributors](https://contrib.rocks/image?repo=Dev4w4n/e-masjid.my)](https://github.com/Dev4w4n/e-masjid.my/graphs/contributors)
