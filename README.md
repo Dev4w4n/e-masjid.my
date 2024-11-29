@@ -16,8 +16,8 @@
   <a href='https://demo.e-masjid.my'>Demo Langsung</a>
 </h2><br>
 
-Falsafah
-=====
+# Falsafah
+
 Matlamat-matlamat utama sistem ini ialah seperti berikut.
 
 **Mudah untuk digunakan**
@@ -36,8 +36,8 @@ Matlamat-matlamat utama sistem ini ialah seperti berikut.
 
 - Kita sepatutnya menyumbang kepada komuniti Muslim, terutamanya masjid dan bukan mengambil manfaat daripada mereka.
 
-
 ## Prasyarat
+
 1. GIT https://www.git-scm.com/downloads
 2. Docker Desktop https://docs.docker.com/get-docker/
 3. Node 20 https://nodejs.org/en/download
@@ -45,36 +45,40 @@ Matlamat-matlamat utama sistem ini ialah seperti berikut.
 5. VSCode https://code.visualstudio.com/download
 
 ## Keperluan Minimum Sistem untuk tujuan Pembangunan Sistem
+
 1. Pemproses: 1.6 GHz atau lebih pantas
 2. Memori: 8 GB RAM atau lebih tinggi
 
 ## Panduan permulaan pantas (Docker compose)
+
 ### Fork repo ini
-1. *Fork* repo ini ke akaun Github anda, contoh `https://github.com/<github-user>/e-masjid.my`, dengan menekan butang *Fork* di bahagian atas sebelah kanan laman web ini.
-2. Setelah selesai *Fork*, *klon* repo ini ke komputer anda.
+
+1. _Fork_ repo ini ke akaun Github anda, contoh `https://github.com/<github-user>/e-masjid.my`, dengan menekan butang _Fork_ di bahagian atas sebelah kanan laman web ini.
+2. Setelah selesai _Fork_, _klon_ repo ini ke komputer anda.
+
 ```
 git clone https://github.com/<github-user>/e-masjid.my.git
 ```
-3. Setelah selesai *klon*, navigasi ke *folder* e-masjid.my.
+
+3. Setelah selesai _klon_, navigasi ke _folder_ e-masjid.my.
+
 ```
 cd e-masjid.my
 ```
+
 4. Ikut arahan seterusnya seperti di bawah bergantung kepada sistem pengoperasian komputer anda.
-### Linux
+
 ```
-sh run-dev.sh
-```
-### Windows - Gunakan terminal Git Bash di VSCode
-```
-sh run-dev.sh
+docker compose up -d
 ```
 
-Skrip ini akan membina semua API secara automatik dan melaksanakan arahan docker-compose yang akan menghidupkan 6 *container* untuk persekitaran pembangunan.
+Skrip ini akan membina semua API secara automatik dan melaksanakan arahan docker-compose yang akan menghidupkan 6 _container_ untuk persekitaran pembangunan.
 
-Apabila kesemua *container* telah hidup, anda boleh menghentikan mana-mana *container* yang tidak diperlukan dalam tugasan anda.
+Apabila kesemua _container_ telah hidup, anda boleh menghentikan mana-mana _container_ yang tidak diperlukan dalam tugasan anda.
 
 ## Panduan untuk menyumbang
-*Fork* repo ini dan hantar *Pull Request* anda.
+
+_Fork_ repo ini dan hantar _Pull Request_ anda.
 
 Kami mahu input anda! Kami ingin menjadikan penyumbangan kepada projek mudah dan telus, sama ada dengan:
 
@@ -84,6 +88,5 @@ Kami mahu input anda! Kami ingin menjadikan penyumbangan kepada projek mudah dan
 - Menambah baik ciri
 - Dokumentasi
 - Ujian unit
-  
-Atau anda ingin berbual dengan kami, cari kami di [Discord](https://discord.gg/k2zGpWTDpe).
 
+Atau anda ingin berbual dengan kami, cari kami di [Discord](https://discord.gg/k2zGpWTDpe).
