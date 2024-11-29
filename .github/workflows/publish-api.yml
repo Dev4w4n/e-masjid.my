@@ -8,9 +8,7 @@ on:
     # Listen on all paths under the "api" directory except for api/core
     paths:
       - "api/**"
-    paths-ignore:
-      - "api/core/**"
-
+      
 jobs:
   build-public-web:
     runs-on: ubuntu-latest
