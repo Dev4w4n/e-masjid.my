@@ -42,7 +42,7 @@ COPY --from=builder /app/cadangan-public-api .
 COPY --from=builder /app/wait-for-it.sh . 
 
 # Expose the port that your application will run on
-EXPOSE 8080
+EXPOSE $SERVER_PORT
 
 # Script to dynamically generate .env.docker at runtime
 COPY generate-env.sh /docker-entrypoint.d/generate-env.sh

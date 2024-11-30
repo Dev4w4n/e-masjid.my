@@ -54,17 +54,18 @@ func main() {
 	_router := gin.Default()
 
 	isLocalEnv := os.Getenv("GO_ENV")
-	if isLocalEnv == "local" || isLocalEnv == "dev" {
+	isSaasDisabled := os.Getenv("DISABLE_SAAS")
+	if (isLocalEnv == "docker" && isSaasDisabled != "true") {
+		config.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
+		// enable multi tenancy for *.e-masjid.my
+		_router.Use(sgin.MultiTenancy(emasjidsaas.TenantStorage,
+			sgin.WithMultiTenancyOption(shttp.NewWebMultiTenancyOption("", "([-a-z0-9]+)\\.e-masjid\\.my"))))
+	} else {
 		config.AllowHeaders = []string{"*"}
 		// enable swagger for dev env
 		_router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		// enable multi tenancy for dev
 		_router.Use(sgin.MultiTenancy(emasjidsaas.TenantStorage))
-	} else if isLocalEnv == "prod" {
-		config.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
-		// enable multi tenancy for *.e-masjid.my
-		_router.Use(sgin.MultiTenancy(emasjidsaas.TenantStorage,
-			sgin.WithMultiTenancyOption(shttp.NewWebMultiTenancyOption("", "([-a-z0-9]+)\\.e-masjid\\.my"))))
 	}
 
 	_router.Use(cors.New(config))
