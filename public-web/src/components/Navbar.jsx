@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { logo } from "../assets/home";
+import {google_login} from "../assets/images";
 import Container from "./Container";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
@@ -74,9 +75,7 @@ function Navbar() {
           </div>
 
           <Link className="ml-auto" onClick={loginAjk}>
-            <div className="block hover:bg-button-primary px-3 md:px-4 py-1 rounded-xl">
-              Log Masuk AJK
-            </div>
+            <img src={google_login} className="h-[32px] w-[160px]" alt="Logo E-Masjid.My" />          
           </Link>
           <div className="-mr-2 flex md:hidden">
             <button
