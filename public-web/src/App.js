@@ -4,7 +4,6 @@ import './scss/style.scss'
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Copyright from './components/Copyright';
 
 const loading = (
   <div className="pt-3 text-center">
@@ -30,7 +29,6 @@ class App extends Component {
           </Routes>
 
           <Footer />
-          <Copyright />
           
         </Suspense>
       </HashRouter>
