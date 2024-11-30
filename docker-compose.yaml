@@ -12,76 +12,76 @@ services:
       - "5432:5432"
 
   khairat-api:
-    build:
-      context: ./api/khairat-api
+    image: dev4w4n/emasjid-khairat-api:v2.1.1
+    environment:
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.1
+      - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "8081:8081"
-    environment:
-      - GO_ENV=dev
     depends_on:
       - postgres
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./khairat-api"]
 
   tabung-api:
-    build:
-      context: ./api/tabung-api
+    image: dev4w4n/emasjid-tabung-api:v2.1.1
+    environment:
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.1
+      - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "8082:8082"
-    environment:
-      - GO_ENV=dev
     depends_on:
       - postgres
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./tabung-api"]
 
   cadangan-api:
-    build:
-      context: ./api/cadangan-api
+    image: dev4w4n/emasjid-cadangan-api:v2.1.1
+    environment:
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.1
+      - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "8083:8083"
-    environment:
-      - GO_ENV=dev
     depends_on:
       - postgres
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./cadangan-api"]
 
   cadangan-public-api:
-    build:
-      context: ./api/cadangan-public-api
+    image: dev4w4n/emasjid-cadangan-public-api:v2.1.1
+    environment:
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.1
+      - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "8084:8084"
-    environment:
-      - GO_ENV=dev
     depends_on:
       - postgres
     command:
       ["./wait-for-it.sh", "saas-api:8080", "--", "./cadangan-public-api"]
 
   tetapan-api:
-    build:
-      context: ./api/tetapan-api
+    image: dev4w4n/emasjid-tetapan-api:v2.1.1
+    environment:
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.1
+      - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "8085:8085"
     depends_on:
       - postgres
-    environment:
-      - GO_ENV=dev
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./tetapan-api"]
 
   tetapan-public-api:
-    build:
-      context: ./api/tetapan-public-api
+    image: dev4w4n/emasjid-tetapan-public-api:v2.1.1
+    environment:
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.1
+      - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "8086:8086"
     depends_on:
       - postgres
-    environment:
-      - GO_ENV=dev
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./tetapan-public-api"]
 
   dashboard:
-    image: dev4w4n/emasjid-dashboard:v2.1.0
+    image: dev4w4n/emasjid-dashboard:v2.1.1
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.0
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.1
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "3000:80"
@@ -92,14 +92,25 @@ services:
       - tetapan-api
 
   public-web:
-    image: dev4w4n/emasjid-public-web:v2.1.0
+    image: dev4w4n/emasjid-public-web:v2.1.1
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.0
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.1
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "3001:80"
     depends_on:
       - cadangan-public-api
+
+  saas-api:
+    image: dev4w4n/emasjid-saas:v2.1.1
+    environment:
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.1
+      - EMASJID_REACT_APP_DOMAIN=e-masjid.my
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "./start-and-seed.sh"]
 
   # api-docs:
   #   build:
@@ -115,17 +126,6 @@ services:
   #     - khairat-api
   #     - tetapan-api
   #     - tetapan-public-api
-
-  # saas-api:
-  #   build:
-  #     context: ./saas
-  #   ports:
-  #     - "8080:8080"
-  #   environment:
-  #     GO_ENV: docker
-  #   depends_on:
-  #     - postgres
-  #   command: ["./wait-for-it.sh", "postgres:5432", "--", "./start-and-seed.sh"]
 
 volumes:
   postgres_data:
