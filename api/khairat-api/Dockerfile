@@ -39,6 +39,7 @@ WORKDIR /app
 
 # Copy only the built binary from the builder stage
 COPY --from=builder /app/khairat-api .
+COPY --from=builder /app/.env.* .
 COPY --from=builder /app/wait-for-it.sh . 
 COPY --from=builder /app/docs ./docs
 

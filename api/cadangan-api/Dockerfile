@@ -41,6 +41,7 @@ WORKDIR /app
 COPY --from=builder /app/cadangan-api .
 COPY --from=builder /app/wait-for-it.sh . 
 COPY --from=builder /app/docs ./docs
+COPY --from=builder /app/.env.* .
 
 # Expose the port that your application will run on
 EXPOSE $SERVER_PORT

@@ -40,6 +40,7 @@ WORKDIR /app
 # Copy only the built binary from the builder stage
 COPY --from=builder /app/cadangan-public-api .
 COPY --from=builder /app/wait-for-it.sh . 
+COPY --from=builder /app/.env.* .
 
 # Expose the port that your application will run on
 EXPOSE $SERVER_PORT
