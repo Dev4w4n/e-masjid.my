@@ -12,10 +12,13 @@ services:
       - "5432:5432"
 
   khairat-api:
-    image: dev4w4n/emasjid-khairat-api:v2.1.1
+    image: dev4w4n/emasjid-khairat-api:v2.3.0
+    # build:
+    #   context: ./api/khairat-api
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.1
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.0
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
+      - GO_ENV=local
     ports:
       - "8081:8081"
     depends_on:
@@ -23,10 +26,13 @@ services:
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./khairat-api"]
 
   tabung-api:
-    image: dev4w4n/emasjid-tabung-api:v2.1.1
+    image: dev4w4n/emasjid-tabung-api:v2.3.0
+    # build:
+    #   context: ./api/tabung-api
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.1
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.0
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
+      - GO_ENV=local
     ports:
       - "8082:8082"
     depends_on:
@@ -34,10 +40,13 @@ services:
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./tabung-api"]
 
   cadangan-api:
-    image: dev4w4n/emasjid-cadangan-api:v2.1.1
+    image: dev4w4n/emasjid-cadangan-api:v2.3.0
+    # build:
+    #   context: ./api/cadangan-api
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.1
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.0
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
+      - GO_ENV=local
     ports:
       - "8083:8083"
     depends_on:
@@ -45,10 +54,13 @@ services:
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./cadangan-api"]
 
   cadangan-public-api:
-    image: dev4w4n/emasjid-cadangan-public-api:v2.1.1
+    image: dev4w4n/emasjid-cadangan-public-api:v2.3.0
+    # build:
+    #   context: ./api/cadangan-public-api
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.1
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.0
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
+      - GO_ENV=local
     ports:
       - "8084:8084"
     depends_on:
@@ -57,10 +69,13 @@ services:
       ["./wait-for-it.sh", "saas-api:8080", "--", "./cadangan-public-api"]
 
   tetapan-api:
-    image: dev4w4n/emasjid-tetapan-api:v2.1.1
+    image: dev4w4n/emasjid-tetapan-api:v2.3.0
+    # build:
+    #   context: ./api/tetapan-api
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.1
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.0
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
+      - GO_ENV=local
     ports:
       - "8085:8085"
     depends_on:
@@ -68,10 +83,13 @@ services:
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./tetapan-api"]
 
   tetapan-public-api:
-    image: dev4w4n/emasjid-tetapan-public-api:v2.1.1
+    image: dev4w4n/emasjid-tetapan-public-api:v2.3.0
+    # build:
+    #   context: ./api/tetapan-public-api
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.1
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.0
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
+      - GO_ENV=local
     ports:
       - "8086:8086"
     depends_on:
@@ -79,9 +97,9 @@ services:
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./tetapan-public-api"]
 
   dashboard:
-    image: dev4w4n/emasjid-dashboard:v2.1.1
+    image: dev4w4n/emasjid-dashboard:v2.3.0
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.1
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.0
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "3000:80"
@@ -92,9 +110,9 @@ services:
       - tetapan-api
 
   public-web:
-    image: dev4w4n/emasjid-public-web:v2.1.1
+    image: dev4w4n/emasjid-public-web:v2.3.0
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.1
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.0
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "3001:80"
@@ -102,9 +120,9 @@ services:
       - cadangan-public-api
 
   saas-api:
-    image: dev4w4n/emasjid-saas:v2.1.1
+    image: dev4w4n/emasjid-saas:v2.3.0
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.1.1
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.0
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "8080:8080"
@@ -118,7 +136,7 @@ services:
   #   ports:
   #     - "4000:4000"
   #   environment:
-  #     - GO_ENV=dev
+  #     - GO_ENV=local
   #   depends_on:
   #     - tabung-api
   #     - cadangan-api
