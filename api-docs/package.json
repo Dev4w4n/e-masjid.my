@@ -24,7 +24,7 @@
     "json-loader": "^0.5.7",
     "mini-css-extract-plugin": "^2.8.1",
     "style-loader": "^4.0.0",
-    "swagger-ui": "^5.15.2",
+    "swagger-ui": "^5.18.2",
     "swagger-ui-dist": "^5.15.2",
     "swagger-ui-themes": "^3.0.1"
   }
