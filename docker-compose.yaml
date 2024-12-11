@@ -12,11 +12,11 @@ services:
       - "5432:5432"
 
   khairat-api:
-    image: dev4w4n/emasjid-khairat-api:v2.3.0
+    image: dev4w4n/emasjid-khairat-api:v2.3.1
     # build:
     #   context: ./api/khairat-api
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.0
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.1
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
       - GO_ENV=local
     ports:
@@ -26,11 +26,11 @@ services:
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./khairat-api"]
 
   tabung-api:
-    image: dev4w4n/emasjid-tabung-api:v2.3.0
+    image: dev4w4n/emasjid-tabung-api:v2.3.1
     # build:
     #   context: ./api/tabung-api
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.0
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.1
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
       - GO_ENV=local
     ports:
@@ -40,11 +40,11 @@ services:
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./tabung-api"]
 
   cadangan-api:
-    image: dev4w4n/emasjid-cadangan-api:v2.3.0
+    image: dev4w4n/emasjid-cadangan-api:v2.3.1
     # build:
     #   context: ./api/cadangan-api
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.0
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.1
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
       - GO_ENV=local
     ports:
@@ -54,11 +54,11 @@ services:
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./cadangan-api"]
 
   cadangan-public-api:
-    image: dev4w4n/emasjid-cadangan-public-api:v2.3.0
+    image: dev4w4n/emasjid-cadangan-public-api:v2.3.1
     # build:
     #   context: ./api/cadangan-public-api
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.0
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.1
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
       - GO_ENV=local
     ports:
@@ -69,11 +69,11 @@ services:
       ["./wait-for-it.sh", "saas-api:8080", "--", "./cadangan-public-api"]
 
   tetapan-api:
-    image: dev4w4n/emasjid-tetapan-api:v2.3.0
+    image: dev4w4n/emasjid-tetapan-api:v2.3.1
     # build:
     #   context: ./api/tetapan-api
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.0
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.1
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
       - GO_ENV=local
     ports:
@@ -83,11 +83,11 @@ services:
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./tetapan-api"]
 
   tetapan-public-api:
-    image: dev4w4n/emasjid-tetapan-public-api:v2.3.0
+    image: dev4w4n/emasjid-tetapan-public-api:v2.3.1
     # build:
     #   context: ./api/tetapan-public-api
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.0
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.1
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
       - GO_ENV=local
     ports:
@@ -97,9 +97,9 @@ services:
     command: ["./wait-for-it.sh", "saas-api:8080", "--", "./tetapan-public-api"]
 
   dashboard:
-    image: dev4w4n/emasjid-dashboard:v2.3.0
+    image: dev4w4n/emasjid-dashboard:v2.3.1
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.0
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.1
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "3000:80"
@@ -110,9 +110,9 @@ services:
       - tetapan-api
 
   public-web:
-    image: dev4w4n/emasjid-public-web:v2.3.0
+    image: dev4w4n/emasjid-public-web:v2.3.1
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.0
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.1
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "3001:80"
@@ -120,9 +120,9 @@ services:
       - cadangan-public-api
 
   saas-api:
-    image: dev4w4n/emasjid-saas:v2.3.0
+    image: dev4w4n/emasjid-saas:v2.3.1
     environment:
-      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.0
+      - EMASJID_REACT_APP_BUILD_VERSION=v2.3.1
       - EMASJID_REACT_APP_DOMAIN=e-masjid.my
     ports:
       - "8080:8080"
