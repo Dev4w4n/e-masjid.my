@@ -6,7 +6,7 @@ definitions:
       id:
         type: integer
       tabung:
-        $ref: '#/definitions/model.Tabung'
+        $ref: "#/definitions/model.Tabung"
       total:
         type: number
       total1d:
@@ -47,7 +47,7 @@ definitions:
       name:
         type: string
       tabungType:
-        $ref: '#/definitions/model.TabungType'
+        $ref: "#/definitions/model.TabungType"
     type: object
   model.TabungType:
     properties:
@@ -66,233 +66,233 @@ paths:
     post:
       description: Save kutipan data in Db.
       parameters:
-      - description: Create kutipan
-        in: body
-        name: tags
-        required: true
-        schema:
-          $ref: '#/definitions/model.Kutipan'
+        - description: Create kutipan
+          in: body
+          name: tags
+          required: true
+          schema:
+            $ref: "#/definitions/model.Kutipan"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Kutipan'
+            $ref: "#/definitions/model.Kutipan"
       summary: Create kutipan
       tags:
-      - kutipan
+        - kutipan
   /kutipan/{id}:
     delete:
       description: Remove kutipan data by id.
       parameters:
-      - description: delete kutipan by id
-        in: path
-        name: id
-        required: true
-        type: string
+        - description: delete kutipan by id
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses: {}
       summary: Delete kutipan
       tags:
-      - kutipan
+        - kutipan
     get:
       description: Return the all  Kutipan by id.
       parameters:
-      - description: get kutipan by id
-        in: path
-        name: id
-        required: true
-        type: string
+        - description: get kutipan by id
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Kutipan'
+            $ref: "#/definitions/model.Kutipan"
       summary: Get All Kutipan by id.
       tags:
-      - kutipan
+        - kutipan
     put:
       description: Save kutipan data in Db.
       parameters:
-      - description: update by id
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: update kutipan
-        in: body
-        name: kutipan
-        required: true
-        schema:
-          $ref: '#/definitions/model.Kutipan'
+        - description: update by id
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: update kutipan
+          in: body
+          name: kutipan
+          required: true
+          schema:
+            $ref: "#/definitions/model.Kutipan"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Kutipan'
+            $ref: "#/definitions/model.Kutipan"
       summary: Create kutipan
       tags:
-      - kutipan
+        - kutipan
   /kutipan/tabung/{tabungId}:
     get:
       description: Return the all  Kutipan by tabungId.
       parameters:
-      - description: get kutipan by tabungId
-        in: path
-        name: tabungId
-        required: true
-        type: string
+        - description: get kutipan by tabungId
+          in: path
+          name: tabungId
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: '#/definitions/model.Kutipan'
+              $ref: "#/definitions/model.Kutipan"
             type: array
       summary: Get All Kutipan by tabungId.
       tags:
-      - kutipan
-  /kutipan/tabung/{tabungId}/betweenCreateDate:
+        - kutipan
+  /kutipan/tabung/{tabungId}/between:
     get:
       description: Return the all  Kutipan by tabungId.
       parameters:
-      - description: get kutipan by tabungId
-        in: path
-        name: tabungId
-        required: true
-        type: string
+        - description: get kutipan by tabungId
+          in: path
+          name: tabungId
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Response'
+            $ref: "#/definitions/model.Response"
       summary: Get All Kutipan by tabungId.
       tags:
-      - kutipan
+        - kutipan
   /tabung:
     get:
       description: Return the all Tabung.
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: '#/definitions/model.Tabung'
+              $ref: "#/definitions/model.Tabung"
             type: array
       summary: Get All tabung.
       tags:
-      - tabung
+        - tabung
     post:
       description: Save tabung data in Db.
       parameters:
-      - description: Create Tabung
-        in: body
-        name: tags
-        required: true
-        schema:
-          $ref: '#/definitions/model.Tabung'
+        - description: Create Tabung
+          in: body
+          name: tags
+          required: true
+          schema:
+            $ref: "#/definitions/model.Tabung"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Tabung'
+            $ref: "#/definitions/model.Tabung"
       summary: Create tabung
       tags:
-      - tabung
+        - tabung
   /tabung-types:
     get:
       description: Return the all Tabung type.
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: '#/definitions/model.TabungType'
+              $ref: "#/definitions/model.TabungType"
             type: array
       summary: Get All tabung type.
       tags:
-      - tabung type
+        - tabung type
     post:
       description: Save tabung type data in Db.
       parameters:
-      - description: Create Tabung type
-        in: body
-        name: tags
-        required: true
-        schema:
-          $ref: '#/definitions/model.TabungType'
+        - description: Create Tabung type
+          in: body
+          name: tags
+          required: true
+          schema:
+            $ref: "#/definitions/model.TabungType"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.TabungType'
+            $ref: "#/definitions/model.TabungType"
       summary: Create tabung type
       tags:
-      - tabung type
+        - tabung type
   /tabung-types/{id}:
     delete:
       description: Remove tabung type data by id.
       parameters:
-      - description: delete tabung type by id
-        in: path
-        name: id
-        required: true
-        type: string
+        - description: delete tabung type by id
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses: {}
       summary: Delete tabung type
       tags:
-      - tabung type
+        - tabung type
   /tabung/{id}:
     delete:
       description: Remove tabung data by id.
       parameters:
-      - description: delete tabung by id
-        in: path
-        name: id
-        required: true
-        type: string
+        - description: delete tabung by id
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses: {}
       summary: Delete tabung
       tags:
-      - tabung
+        - tabung
     get:
       description: Return the Tabung.
       parameters:
-      - description: get tabung by id
-        in: path
-        name: id
-        required: true
-        type: string
+        - description: get tabung by id
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Tabung'
+            $ref: "#/definitions/model.Tabung"
       summary: Get  tabung by ID.
       tags:
-      - tabung
+        - tabung
 swagger: "2.0"

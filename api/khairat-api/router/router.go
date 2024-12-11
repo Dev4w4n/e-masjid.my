@@ -33,7 +33,7 @@ func NewMemberRouter(controller *controller.MemberController, router *gin.Engine
 func NewPaymentHistoryRouter(controller *controller.PaymentHistoryController, router *gin.Engine, env *env.Environment) *gin.Engine {
 
 	controllerRouter := router.Group(env.DeployURL + "payment")
-	controllerRouter.GET("/totalMembersPaidForCurrentYear", controller.GetTotalMembersPaidForCurrentYear)
+	controllerRouter.GET("/report/total-members-paid-current-year", controller.GetTotalMembersPaidForCurrentYear)
 	return router
 }
 

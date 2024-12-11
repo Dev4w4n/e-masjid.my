@@ -10,7 +10,7 @@ export const getKutipanByTabung = async (id) => {
 
 export const getKutipanByTabungBetweenCreateDate = async (id, fromDate, toDate, page, size) => {
   const response = await axiosInstance.get(
-    `${apiServer}/kutipan/tabung/${id}/betweenCreateDate?fromDate=${fromDate}&toDate=${toDate}&page=${
+    `${apiServer}/kutipan/tabung/${id}/between?fromDate=${fromDate}&toDate=${toDate}&page=${
       page ?? 0
     }
       &size=${size ?? 0}`,

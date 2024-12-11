@@ -78,7 +78,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/kutipan/tabung/{tabungId}/betweenCreateDate": {
+        "/kutipan/tabung/{tabungId}/between": {
             "get": {
                 "description": "Return the all  Kutipan by tabungId.",
                 "produces": [

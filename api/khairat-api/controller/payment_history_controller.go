@@ -25,7 +25,7 @@ func NewPaymentHistoryController(svc service.PaymentHistoryService) *PaymentHist
 //	@Description	get total members paid for current year
 //	@Produce		application/json
 //	@Tags			payment
-//	@Router			/payment/totalMembersPaidForCurrentYear [get]
+//	@Router			/payment/report/total-members-paid-current-year [get]
 func (controller *PaymentHistoryController) GetTotalMembersPaidForCurrentYear(ctx *gin.Context) {
 	log.Info().Msg("get total members paid for current year")
 
