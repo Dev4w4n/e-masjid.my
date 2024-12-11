@@ -285,7 +285,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/payment/totalMembersPaidForCurrentYear": {
+        "/payment/report/total-members-paid-current-year": {
             "get": {
                 "description": "get total members paid for current year",
                 "produces": [

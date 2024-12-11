@@ -31,7 +31,7 @@ func NewKutipanRouter(controller *controller.KutipanController, router *gin.Engi
 
 	controllerRouter := router.Group(env.DeployURL + "kutipan")
 	controllerRouter.GET("/tabung/:tabungId", controller.FindAllByTabungId)
-	controllerRouter.GET("/tabung/:tabungId/betweenCreateDate", controller.FindAllByTabungIdBetweenCreateDate)
+	controllerRouter.GET("/tabung/:tabungId/between", controller.FindAllByTabungIdBetweenCreateDate)
 	controllerRouter.GET("/:id", controller.FindById)
 	controllerRouter.POST("", controller.Create)
 	controllerRouter.PUT("/:id", controller.Update)

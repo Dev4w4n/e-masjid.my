@@ -53,7 +53,7 @@ func (controller *KutipanController) FindAllByTabungId(ctx *gin.Context) {
 //	@Param			tabungId	path	string	true	"get kutipan by tabungId"
 //	@Tags			kutipan
 //	@Success		200	{object}	model.Response
-//	@Router			/kutipan/tabung/{tabungId}/betweenCreateDate [get]
+//	@Router			/kutipan/tabung/{tabungId}/between [get]
 func (controller *KutipanController) FindAllByTabungIdBetweenCreateDate(ctx *gin.Context) {
 	log.Info().Msg("get kutipan list by tabung id between create date")
 
