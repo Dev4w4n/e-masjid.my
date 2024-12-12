@@ -78,6 +78,8 @@ Skrip ini akan membina semua API secara automatik dan melaksanakan arahan docker
 
 Apabila kesemua _container_ telah hidup, anda boleh menghentikan mana-mana _container_ yang tidak diperlukan dalam tugasan anda.
 
+> :bulb: **Tip:** [Memahami struktur project E‐Masjid.My](https://github.com/Dev4w4n/e-masjid.my/wiki/Memahami-struktur-project-E%E2%80%90Masjid.My)
+
 ## Panduan untuk menyumbang
 
 _Fork_ repo ini dan hantar _Pull Request_ anda.
