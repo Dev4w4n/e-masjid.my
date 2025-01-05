@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tetapan-api
+  labels:
+    app: tetapan-api
+spec:
+  selector:
+    app: tetapan-api
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8085      # port exposed by the Service inside the Kubernetes cluster.
+      targetPort: 8085 # The container's port (containerPort) in the pod.
+      nodePort: 30085 # The host port that maps traffic to the Service, accessible outside the cluster.

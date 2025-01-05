@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cadangan-api
+  labels:
+    app: cadangan-api
+spec:
+  selector:
+    app: cadangan-api
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8083      # port exposed by the Service inside the Kubernetes cluster.
+      targetPort: 8083 # The container's port (containerPort) in the pod.
+      nodePort: 30083 # The host port that maps traffic to the Service, accessible outside the cluster.

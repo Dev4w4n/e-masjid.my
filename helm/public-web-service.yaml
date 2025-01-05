@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: public-web-service
+  labels:
+    app: public-web
+spec:
+  selector:
+    app: public-web
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 3001        # port exposed by the Service inside the Kubernetes cluster.
+      targetPort: 80  # The container's port (containerPort) in the pod.
+      nodePort: 30001 # The host port that maps traffic to the Service, accessible outside the cluster.
+    
