@@ -17,7 +17,7 @@ spec:
       containers:
         - name: tabung-api
           image: dev4w4n/emasjid-tabung-api:v2.3.1
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           resources:
             limits:
               memory: "256Mi"

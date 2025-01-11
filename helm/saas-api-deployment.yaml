@@ -17,7 +17,7 @@ spec:
       containers:
         - name: saas-api
           image: dev4w4n/emasjid-saas:v2.3.1
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           resources:
             limits:
               memory: "256Mi"
@@ -31,7 +31,7 @@ spec:
             - name: EMASJID_REACT_APP_DOMAIN
               value: "e-masjid.my"
             - name: GO_ENV
-              value: "local"
+              value: "docker"
             - name: DB_HOST
               value: "postgres"
             - name: DB_PORT

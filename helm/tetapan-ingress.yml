@@ -1,0 +1,64 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: internal-tetapan-secure-ingress
+  annotations: 
+    nginx.ingress.kubernetes.io/rewrite-target: /tetapan
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "tenant.e-masjid.my"
+    http:
+      paths:
+        - path: /secure/tetapan(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: tetapan-api
+              port:
+                number: 8085
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: internal-tetapan-types-secure-ingress
+  annotations: 
+    nginx.ingress.kubernetes.io/rewrite-target: /tetapan-types
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "tenant.e-masjid.my"
+    http:
+      paths:
+        - path: /secure/tetapan-types(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: tetapan-api
+              port:
+                number: 8085
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /tetapan/$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+  name: public-tetapan-ingress
+  namespace: default
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "tenant.e-masjid.my"  
+    http:
+      paths:
+      - path: /public/tetapan(/|$)(.*)  
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: tetapan-public-api
+            port:
+              number: 8086 

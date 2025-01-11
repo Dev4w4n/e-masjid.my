@@ -1,0 +1,63 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: internal-tabung-secure-ingress
+  annotations: 
+    nginx.ingress.kubernetes.io/rewrite-target: /tabung
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "tenant.e-masjid.my"
+    http:
+      paths:
+      - pathType: ImplementationSpecific
+        path: /secure/tabung(/|$)(.*)
+        backend:
+          service:
+            name: tabung-api
+            port:
+              number: 8082
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: internal-tabung-types-secure-ingress
+  annotations: 
+    nginx.ingress.kubernetes.io/rewrite-target: /tabung-types
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "tenant.e-masjid.my"
+    http:
+      paths:
+      - pathType: ImplementationSpecific
+        path: /secure/tabung-types(/|$)(.*)
+        backend:
+          service:
+            name: tabung-api
+            port:
+              number: 8082
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: internal-tabung-kutipan-secure-ingress
+  annotations: 
+    nginx.ingress.kubernetes.io/rewrite-target: /kutipan/$2
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "tenant.e-masjid.my"
+    http:
+      paths:
+      - pathType: ImplementationSpecific
+        path: /secure/kutipan(/|$)(.*)
+        backend:
+          service:
+            name: tabung-api
+            port:
+              number: 8082

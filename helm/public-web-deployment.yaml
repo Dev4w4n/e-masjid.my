@@ -17,7 +17,7 @@ spec:
       containers:
         - name: public-web
           image: dev4w4n/emasjid-public-web:v2.3.1
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           resources:
             limits:
               memory: "1Gi"

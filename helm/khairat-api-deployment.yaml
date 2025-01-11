@@ -17,7 +17,7 @@ spec:
       containers:
         - name: khairat-api
           image: dev4w4n/emasjid-khairat-api:v2.3.1
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           resources:
             limits:
               memory: "256Mi"
