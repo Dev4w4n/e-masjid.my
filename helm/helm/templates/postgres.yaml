@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  ports:
+  - port: 5432
+    targetPort: 5432
+  clusterIP: None # Makes the service headless
+  selector:
+    app: postgres # Matches the label in the StatefulSet
+     
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv 
+spec:
+  capacity:
+    storage: 100Mi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: postgres-storage
+  local:
+    path: /mnt/disks/minikube-data  # Path to your local storage directory
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: default/disk
+              operator: In
+              values:
+                - ssd  # Ensure the PV is tied to the correct node
+                
+---
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: postgres-storage
+  # namespace: default 
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-stateful
+  # namespace: default
+spec:
+  serviceName: "postgres"
+  replicas: 1 # by default is 1
+  selector:
+    matchLabels:
+      app: postgres # has to match .spec.template.metadata.labels
+  template:
+    metadata:
+      labels:
+        app: postgres # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: postgres
+        image: postgres:16-alpine3.19
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: POSTGRES_DB
+            value: pgsql-saas
+          - name: POSTGRES_USER
+            value: pgsql-saas
+          - name: POSTGRES_PASSWORD
+            value: pgsql-saas
+        ports:
+        - containerPort: 5432
+          name: postgres-data
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "postgres-storage"
+      resources:
+        requests:
+          storage: 100Mi

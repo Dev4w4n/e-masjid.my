@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cadangan-public-api
+  labels:
+    app: cadangan-public-api
+spec:
+  selector:
+    app: cadangan-public-api
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8084
+      targetPort: 8084
+      nodePort: 30084
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cadangan-public-api
+  labels:
+    app: cadangan-public-api
+spec:
+  selector:
+    matchLabels:
+      app: cadangan-public-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cadangan-public-api
+    spec:
+      containers:
+        - name: cadangan-public-api
+          image: dev4w4n/emasjid-cadangan-public-api:v2.3.1
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+            requests:
+              memory: "128Mi"
+              cpu: "125m" 
+          env:
+            - name: EMASJID_REACT_APP_BUILD_VERSION
+              value: "v2.3.1"
+            - name: EMASJID_REACT_APP_DOMAIN
+              value: "e-masjid.my"
+            - name: GO_ENV
+              value: "local"
+            - name: DB_HOST
+              value: "postgres"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USER
+              value: "pgsql-saas"
+            - name: DB_PASSWORD
+              value: "pgsql-saas"
+            - name: DB_NAME
+              value: "pgsql-saas"
+            - name: ALLOWED_ORIGIN
+              value: "*"
+            - name: DEPLOY_URL
+              value: "/"
+            - name: SERVER_PORT
+              value: "8084"
+            - name: API_DOC_URL
+              value: http://localhost:4000"
+          ports:
+            - containerPort: 8084
+          args: ["./wait-for-it.sh", "saas-api:8080", "--", "./cadangan-public-api"]

@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: public-web-service
+  labels:
+    app: public-web
+spec:
+  selector:
+    app: public-web
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 3001
+      targetPort: 80
+      nodePort: 30001 
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: public-web
+  labels:
+    app: public-web
+spec:
+  selector:
+    matchLabels:
+      app: public-web
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: public-web
+    spec:
+      containers:
+        - name: public-web
+          image: dev4w4n/emasjid-public-web:v2.3.1
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+            requests:
+              memory: "1Gi"
+              cpu: "500m"   
+          env:
+            - name: EMASJID_REACT_APP_BUILD_VERSION
+              value: "v2.3.1"
+            - name: EMASJID_REACT_APP_DOMAIN
+              value: "e-masjid.my"
+            - name: GO_ENV
+              value: "local"
+            - name: DB_HOST
+              value: "postgres"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USER
+              value: "pgsql-saas"
+            - name: DB_PASSWORD
+              value: "pgsql-saas"
+            - name: DB_NAME
+              value: "pgsql-saas"
+          ports:
+            - containerPort: 80
