@@ -1,7 +1,7 @@
 # Global values
 global:
   dbNode: minikube
-  dbnodeMountPath: /mnt/disks/postgres
+  dbNodeMountPath: /mnt/disks/postgres
   namespace: development # development, production
   tenant: tenant # tenant1, tenant2, tenant3
   imagePullPolicy: IfNotPresent

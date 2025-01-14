@@ -14,7 +14,7 @@ spec:
     - protocol: TCP
       port: {{ .Values.services.tetapanPublicApi.port }}
       targetPort: {{ .Values.services.tetapanPublicApi.port }}
-      nodePort: {{ .Values.services.tetapanPublicApi.port }}
+      nodePort: {{ .Values.services.tetapanPublicApi.NodePort }}
       
 ---
 
