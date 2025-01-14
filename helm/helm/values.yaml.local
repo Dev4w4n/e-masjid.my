@@ -1,0 +1,92 @@
+# Global values
+global:
+  dbNode: minikube
+  dbnodeMountPath: /mnt/disks/postgres
+  namespace: development # development, production
+  tenant: tenant # tenant1, tenant2, tenant3
+  imagePullPolicy: IfNotPresent
+  resources:
+    limits:
+      memory: "256Mi"
+      cpu: "250m"
+    requests:
+      memory: "128Mi"
+      cpu: "125m"
+  db:
+    host: postgres
+    port: "5432"
+    user: pgsql-saas
+    password: pgsql-saas
+    name: pgsql-saas
+  domain: e-masjid.my
+  buildVersion: v2.3.1
+  allowedOrigin: "*"
+  apiDocUrl: "http://localhost:4000"
+
+# Service specific values
+services:
+  dashboard:
+    port: 3000
+    nodePort: 30000
+    # targetPort: 80
+    # containerPort: 80
+    image: dev4w4n/emasjid-dashboard:v2.3.1
+    resources:
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+      requests:
+        memory: "1Gi"
+        cpu: "500m"
+    env:
+      - name: BUILD_VERSION
+        value: "v2.0.0-local"
+      - name: DOMAIN
+        value: "e-masjid.my"
+      - name: KEYCLOAK_URL
+        value: "https://loginv2.e-masjid.my"
+  tetapanApi:
+    image: dev4w4n/emasjid-tetapan-api:v2.3.1
+    port: 8085
+    nodePort: 30085
+  tetapanPublicApi:
+    image: dev4w4n/emasjid-tetapan-public-api:v2.3.1
+    port: 8086
+    nodePort: 30086
+  tabungApi:
+    image: dev4w4n/emasjid-tabung-api:v2.3.1
+    port: 8082
+    nodePort: 30082
+  khairatApi:
+    image: dev4w4n/emasjid-khairat-api:v2.3.1
+    port: 8081
+    nodePort: 30081
+  cadanganApi:
+    image: dev4w4n/emasjid-cadangan-api:v2.3.1
+    port: 8083
+    nodePort: 30083
+  cadanganPublicApi:
+    image: dev4w4n/emasjid-cadangan-public-api:v2.3.1
+    port: 8084
+    nodePort: 30084
+  saasApi:
+    image: dev4w4n/emasjid-saas:v2.3.1
+    port: 8080
+    nodePort: 30080
+  publicWeb:
+    image: dev4w4n/emasjid-public-web:v2.3.1
+    port: 3001
+    nodePort: 30001
+    # targetPort: 80
+    # containerPort: 80
+    resources:
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+      requests:
+        memory: "1Gi"
+        cpu: "500m"
+  postgres:
+    storage: 100Mi
+    storageClassName: postgres-storage
+    image: postgres:16-alpine3.19

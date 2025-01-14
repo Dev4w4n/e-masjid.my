@@ -4,15 +4,17 @@ metadata:
   name: saas-api
   labels:
     app: saas-api
+    tenant: {{ .Values.global.tenant }}
 spec:
   selector:
     app: saas-api
+    tenant: {{ .Values.global.tenant }}
   type: NodePort
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
-      nodePort: 30080
+      port: {{ .Values.services.saasApi.port }}
+      targetPort: {{ .Values.services.saasApi.port }}
+      nodePort: {{ .Values.services.saasApi.nodePort }}
 
 ---
 
@@ -22,19 +24,22 @@ metadata:
   name: saas-api
   labels:
     app: saas-api
+    tenant: {{ .Values.global.tenant }}
 spec:
   selector:
     matchLabels:
       app: saas-api
+      tenant: {{ .Values.global.tenant }}
   replicas: 1
   template:
     metadata:
       labels:
         app: saas-api
+        tenant: {{ .Values.global.tenant }}
     spec:
       containers:
         - name: saas-api
-          image: dev4w4n/emasjid-saas:v2.3.1
+          image: {{ .Values.services.saasApi.image }}
           imagePullPolicy: IfNotPresent
           resources:
             limits:
@@ -51,15 +56,30 @@ spec:
             - name: GO_ENV
               value: "docker"
             - name: DB_HOST
-              value: "postgres"
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: DB_HOST
             - name: DB_PORT
-              value: "5432"
-            - name: DB_USER
-              value: "pgsql-saas"
-            - name: DB_PASSWORD
-              value: "pgsql-saas"
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: DB_PORT
             - name: DB_NAME
-              value: "pgsql-saas"
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_PASSWORD
           ports:
-            - containerPort: 8080
+            - containerPort: {{ .Values.services.saasApi.port }}
           args: ["./wait-for-it.sh", "postgres:5432", "--", "./start-and-seed.sh"]

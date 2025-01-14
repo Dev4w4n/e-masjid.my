@@ -25,15 +25,15 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: postgres-storage
   local:
-    path: /mnt/disks/minikube-data  # Path to your local storage directory
+    path: {{ .Values.global.dbNodeMountPath }}
   nodeAffinity:
     required:
       nodeSelectorTerms:
         - matchExpressions:
-            - key: default/disk
+            - key: kubernetes.io/hostname
               operator: In
               values:
-                - ssd  # Ensure the PV is tied to the correct node
+                - {{ .Values.global.dbNode }}
                 
 ---
 
@@ -66,15 +66,24 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
       - name: postgres
-        image: postgres:16-alpine3.19
+        image: {{ .Values.services.postgres.image }}
         imagePullPolicy: IfNotPresent
         env:
           - name: POSTGRES_DB
-            value: pgsql-saas
+            valueFrom:
+              configMapKeyRef:
+                name: db-config
+                key: DB_NAME
           - name: POSTGRES_USER
-            value: pgsql-saas
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: DB_USER
           - name: POSTGRES_PASSWORD
-            value: pgsql-saas
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: DB_PASSWORD
         ports:
         - containerPort: 5432
           name: postgres-data

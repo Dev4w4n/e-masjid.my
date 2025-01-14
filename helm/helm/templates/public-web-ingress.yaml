@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: public-frontend-ingress
+  labels:
+    tenant: {{ .Values.global.tenant }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "{{ .Values.global.tenant }}.e-masjid.my"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: public-web-service
+            port:
+              number: 80
+
+

@@ -1,0 +1,93 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: internal-khairat-dependents-secure-ingress
+  labels:
+    tenant: {{ .Values.global.tenant }}
+  annotations: 
+    nginx.ingress.kubernetes.io/rewrite-target: /dependents/$2
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "{{ .Values.global.tenant }}.e-masjid.my"
+    http:
+      paths:
+      - pathType: ImplementationSpecific
+        path: /secure/dependents(/|$)(.*)
+        backend:
+          service:
+            name: khairat-api
+            port:
+              number: 8081
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: internal-khairat-members-secure-ingress
+  labels:
+    tenant: {{ .Values.global.tenant }}
+  annotations: 
+    nginx.ingress.kubernetes.io/rewrite-target: /members/$2
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "{{ .Values.global.tenant }}.e-masjid.my"
+    http:
+      paths:
+      - pathType: ImplementationSpecific
+        path: /secure/members(/|$)(.*)
+        backend:
+          service:
+            name: khairat-api
+            port:
+              number: 8081
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: internal-khairat-payment-secure-ingress
+  labels:
+    tenant: {{ .Values.global.tenant }}
+  annotations: 
+    nginx.ingress.kubernetes.io/rewrite-target: /payment/$2
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "{{ .Values.global.tenant }}.e-masjid.my"
+    http:
+      paths:
+      - pathType: ImplementationSpecific
+        path: /secure/payment(/|$)(.*)
+        backend:
+          service:
+            name: khairat-api
+            port:
+              number: 8081
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: internal-khairat-tags-secure-ingress
+  labels:
+    tenant: {{ .Values.global.tenant }}
+  annotations: 
+    nginx.ingress.kubernetes.io/rewrite-target: /tags/$2
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "{{ .Values.global.tenant }}.e-masjid.my"
+    http:
+      paths:
+      - pathType: ImplementationSpecific
+        path: /secure/tags(/|$)(.*)
+        backend:
+          service:
+            name: khairat-api
+            port:
+              number: 8081

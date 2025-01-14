@@ -4,15 +4,17 @@ metadata:
   name: khairat-api
   labels:
     app: khairat-api
+    tenant: {{ .Values.global.tenant }}
 spec:
   selector:
     app: khairat-api
+    tenant: {{ .Values.global.tenant }}
   type: NodePort
   ports:
     - protocol: TCP
-      port: 8081
-      targetPort: 8081
-      nodePort: 30081
+      port: {{ .Values.services.khairatApi.port }}
+      targetPort: {{ .Values.services.khairatApi.port }}
+      nodePort: {{ .Values.services.khairatApi.nodePort }}
       
 ---
 
@@ -22,19 +24,22 @@ metadata:
   name: khairat-api
   labels:
     app: khairat-api
+    tenant: {{ .Values.global.tenant }}
 spec:
   selector:
     matchLabels:
       app: khairat-api
+      tenant: {{ .Values.global.tenant }}
   replicas: 1
   template:
     metadata:
       labels:
         app: khairat-api
+        tenant: {{ .Values.global.tenant }}
     spec:
       containers:
         - name: khairat-api
-          image: dev4w4n/emasjid-khairat-api:v2.3.1
+          image: {{ .Values.services.khairatApi.image }}
           imagePullPolicy: IfNotPresent
           resources:
             limits:
@@ -51,15 +56,30 @@ spec:
             - name: GO_ENV
               value: "local"
             - name: DB_HOST
-              value: "postgres"
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: DB_HOST
             - name: DB_PORT
-              value: "5432"
-            - name: DB_USER
-              value: "pgsql-saas"
-            - name: DB_PASSWORD
-              value: "pgsql-saas"
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: DB_PORT
             - name: DB_NAME
-              value: "pgsql-saas"
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_PASSWORD
             - name: ALLOWED_ORIGIN
               value: "*"
             - name: DEPLOY_URL
@@ -69,6 +89,6 @@ spec:
             - name: API_DOC_URL
               value: http://localhost:4000"
           ports:
-            - containerPort: 8081
+            - containerPort: {{ .Values.services.khairatApi.port }}
           args: ["./wait-for-it.sh", "saas-api:8080", "--", "./khairat-api"]
 

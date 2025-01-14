@@ -4,15 +4,17 @@ metadata:
   name: public-web-service
   labels:
     app: public-web
+    tenant: {{ .Values.global.tenant }}
 spec:
   selector:
     app: public-web
+    tenant: {{ .Values.global.tenant }}
   type: NodePort
   ports:
     - protocol: TCP
-      port: 3001
-      targetPort: 80
-      nodePort: 30001 
+      port: {{ .Values.services.publicWeb.port }}
+      targetPort: {{ .Values.services.publicWeb.port }}
+      nodePort: {{ .Values.services.publicWeb.nodePort }}
 
 ---
 
@@ -22,19 +24,22 @@ metadata:
   name: public-web
   labels:
     app: public-web
+    tenant: {{ .Values.global.tenant }}
 spec:
   selector:
     matchLabels:
       app: public-web
+      tenant: {{ .Values.global.tenant }}
   replicas: 1
   template:
     metadata:
       labels:
         app: public-web
+        tenant: {{ .Values.global.tenant }}
     spec:
       containers:
         - name: public-web
-          image: dev4w4n/emasjid-public-web:v2.3.1
+          image: {{ .Values.services.publicWeb.image }}
           imagePullPolicy: IfNotPresent
           resources:
             limits:
@@ -51,14 +56,29 @@ spec:
             - name: GO_ENV
               value: "local"
             - name: DB_HOST
-              value: "postgres"
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: DB_HOST
             - name: DB_PORT
-              value: "5432"
-            - name: DB_USER
-              value: "pgsql-saas"
-            - name: DB_PASSWORD
-              value: "pgsql-saas"
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: DB_PORT
             - name: DB_NAME
-              value: "pgsql-saas"
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_PASSWORD
           ports:
-            - containerPort: 80
+            - containerPort: {{ .Values.services.publicWeb.port }}

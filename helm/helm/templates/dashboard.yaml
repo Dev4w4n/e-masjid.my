@@ -4,15 +4,17 @@ metadata:
   name: dashboard
   labels:
     app: dashboard
+    tenant: {{ .Values.global.tenant }}
 spec:
   selector:
     app: dashboard
+    tenant: {{ .Values.global.tenant }}
   type: NodePort
   ports:
     - protocol: TCP
-      port: 3000
-      targetPort: 80
-      nodePort: 30000
+      port: {{ .Values.services.dashboard.port }}
+      targetPort: {{ .Values.services.dashboard.port }}
+      nodePort: {{ .Values.services.dashboard.nodePort }}
 
 ---
 
@@ -22,19 +24,22 @@ metadata:
   name: dashboard
   labels:
     app: dashboard
+    tenant: {{ .Values.global.tenant }}
 spec:
   selector:
     matchLabels:
       app: dashboard
+      tenant: {{ .Values.global.tenant }}
   replicas: 1
   template:
     metadata:
       labels:
         app: dashboard
+        tenant: {{ .Values.global.tenant }}
     spec:
       containers:
         - name: dashboard
-          image: dev4w4n/emasjid-dashboard:v2.3.1
+          image: {{ .Values.services.dashboard.image }}
           imagePullPolicy: IfNotPresent
           resources:
             limits:
@@ -55,4 +60,4 @@ spec:
             - name: KEYCLOAK_URL
               value: "https://loginv2.e-masjid.my"
           ports:
-            - containerPort: 80
+            - containerPort: {{ .Values.services.dashboard.port }}

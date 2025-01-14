@@ -1,0 +1,105 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: internal-frontend-ingress
+  labels:
+    tenant: {{ .Values.global.tenant }}
+  annotations:
+    nginx.ingress.kubernetes.io/default-backend: "404" # Ensures unmatched paths return 404
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+    - host: "{{ .Values.global.tenant }}.e-masjid.my"
+      http:
+        paths:
+          - path: /ui(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 80
+          - path: /dashboard
+            pathType: Exact
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 80
+          - path: /khairat
+            pathType: Exact
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 80
+          - path: /khairat/carian
+            pathType: Exact
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 80
+          - path: /khairat/daftar/.* # Allows optional paramId
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 80
+          - path: /khairat/tetapan
+            pathType: Exact
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 80
+          - path: /tabung
+            pathType: Exact
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 80
+          - path: /tabung/cetak
+            pathType: Exact
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 80
+          - path: /tabung/daftar/.* # Allows optional paramId
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 80
+          - path: /tabung/tetapan
+            pathType: Exact
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 80
+          - path: /cadangan/senarai
+            pathType: Exact
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 80
+          - path: /cadangan/qr
+            pathType: Exact
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 80
+          - path: /tetapan
+            pathType: Exact
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 80
