@@ -13,7 +13,7 @@ spec:
   ports:
     - protocol: TCP
       port: {{ .Values.services.publicWeb.port }}
-      targetPort: {{ .Values.services.publicWeb.port }}
+      targetPort: {{ .Values.services.publicWeb.targetPort }}
       nodePort: {{ .Values.services.publicWeb.nodePort }}
 
 ---
@@ -81,4 +81,4 @@ spec:
                   name: db-secret
                   key: DB_PASSWORD
           ports:
-            - containerPort: {{ .Values.services.publicWeb.port }}
+            - containerPort: {{ .Values.services.publicWeb.containerPort }}

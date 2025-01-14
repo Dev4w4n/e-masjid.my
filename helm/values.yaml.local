@@ -28,8 +28,8 @@ services:
   dashboard:
     port: 3000
     nodePort: 30000
-    # targetPort: 80
-    # containerPort: 80
+    targetPort: 80
+    containerPort: 80
     image: dev4w4n/emasjid-dashboard:v2.3.1
     resources:
       limits:
@@ -77,8 +77,8 @@ services:
     image: dev4w4n/emasjid-public-web:v2.3.1
     port: 3001
     nodePort: 30001
-    # targetPort: 80
-    # containerPort: 80
+    targetPort: 80
+    containerPort: 80
     resources:
       limits:
         memory: "1Gi"
