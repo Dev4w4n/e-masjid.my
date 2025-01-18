@@ -60,7 +60,6 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /tetapan/$2
     nginx.ingress.kubernetes.io/use-regex: "true"
-  namespace: default
 spec:
   ingressClassName: nginx
   rules:
