@@ -2,10 +2,11 @@
 # Helm Chart Setup for Minikube 
 
 
-1. Set DB Node: Ensure the correct .Values.global.dbNode is selected (default: 'minikube').
+1. Copy Local Configuration `cp values.yaml.local values.yaml`
+2. Verify that the .Values.global.dbNode is set correctly in the values.yaml file. The default value is 'minikube'.
 2. make sure postgres mount path created and exist on node.
     ```
-        sudo mkdir -p /mnt/disks/postgres; sudo chmod 777 /mnt/disks/postgres
+        minikube ssh "sudo mkdir -p /mnt/disks/postgres && sudo chmod 777 /mnt/disks/postgres"
         
     ```
 3. enable ingress
