@@ -1,9 +1,11 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  namespace: "{{ .Values.global.env }}-{{ .Values.global.tenant }}"
   name: internal-tetapan-secure-ingress
   labels:
     tenant: {{ .Values.global.tenant }}
+    env: {{ .Values.global.env | quote }}
   annotations: 
     nginx.ingress.kubernetes.io/rewrite-target: /tetapan
 spec:
@@ -24,9 +26,11 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  namespace: "{{ .Values.global.env }}-{{ .Values.global.tenant }}"
   name: internal-tetapan-types-secure-ingress
   labels:
     tenant: {{ .Values.global.tenant }}
+    env: {{ .Values.global.env | quote }}
   annotations: 
     nginx.ingress.kubernetes.io/rewrite-target: /tetapan-types
 spec:
@@ -48,9 +52,11 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  namespace: "{{ .Values.global.env }}-{{ .Values.global.tenant }}"
   name: public-tetapan-ingress
   labels:
     tenant: {{ .Values.global.tenant }}
+    env: {{ .Values.global.env | quote }}
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /tetapan/$2
     nginx.ingress.kubernetes.io/use-regex: "true"

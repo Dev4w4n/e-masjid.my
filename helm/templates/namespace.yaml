@@ -1,6 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
+  name: "{{ .Values.global.env }}-{{ .Values.global.tenant }}"
   labels:
     tenant: {{ .Values.global.tenant }}
-  name: {{ .Values.global.namespace }}
+    env: {{ .Values.global.env }}

@@ -2,8 +2,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: internal-frontend-ingress
+  namespace: "{{ .Values.global.env }}-{{ .Values.global.tenant }}"
   labels:
     tenant: {{ .Values.global.tenant }}
+    env: {{ .Values.global.env | quote }}
   annotations:
     nginx.ingress.kubernetes.io/default-backend: "404" # Ensures unmatched paths return 404
     nginx.ingress.kubernetes.io/use-regex: "true"

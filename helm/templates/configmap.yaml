@@ -1,10 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: db-config
+  name: "{{ .Values.global.env }}-{{ .Values.global.tenant }}-db-config"
+  namespace: "{{ .Values.global.env }}-{{ .Values.global.tenant }}"
   labels:
-    tenant: {{ .Values.global.tenant }}
+    tenant: {{ .Values.global.tenant | quote }}
+    env: {{ .Values.global.env | quote }}
 data:
-  DB_HOST: {{ .Values.global.db.host }}
+  DB_HOST: {{ .Values.global.db.host | quote }}
   DB_PORT: {{ .Values.global.db.port | quote }}
-  DB_NAME: {{ .Values.global.db.name }}
+  DB_NAME: {{ .Values.global.db.name | quote }}

@@ -2,13 +2,16 @@ apiVersion: v1
 kind: Service
 metadata:
   name: dashboard
+  namespace: "{{ .Values.global.env }}-{{ .Values.global.tenant }}"
   labels:
     app: dashboard
     tenant: {{ .Values.global.tenant }}
+    env: {{ .Values.global.env | quote }}
 spec:
   selector:
     app: dashboard
     tenant: {{ .Values.global.tenant }}
+    env: {{ .Values.global.env | quote }}
   type: NodePort
   ports:
     - protocol: TCP
@@ -22,42 +25,33 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dashboard
+  namespace: "{{ .Values.global.env }}-{{ .Values.global.tenant }}"
   labels:
     app: dashboard
     tenant: {{ .Values.global.tenant }}
+    env: {{ .Values.global.env | quote }}
 spec:
   selector:
     matchLabels:
       app: dashboard
       tenant: {{ .Values.global.tenant }}
+      env: {{ .Values.global.env | quote }}
   replicas: 1
   template:
     metadata:
       labels:
         app: dashboard
         tenant: {{ .Values.global.tenant }}
+        env: {{ .Values.global.env | quote }}
     spec:
       containers:
         - name: dashboard
           image: {{ .Values.services.dashboard.image }}
-          imagePullPolicy: IfNotPresent
-          resources:
-            limits:
-              memory: "1Gi"
-              cpu: "500m"
-            requests:
-              memory: "1Gi"
-              cpu: "500m"   
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
           env:
-            - name: EMASJID_REACT_APP_BUILD_VERSION
-              value: "v2.3.1"
-            - name: EMASJID_REACT_APP_DOMAIN
-              value: "e-masjid.my"
-            - name: BUILD_VERSION
-              value: "v2.0.0-local"
-            - name: DOMAIN
-              value: "e-masjid.my"
-            - name: KEYCLOAK_URL
-              value: "https://loginv2.e-masjid.my"
+            {{- range .Values.services.dashboard.env }}
+            - name: {{ .name | quote }}
+              value: {{ .value | quote }}
+            {{- end }}
           ports:
             - containerPort: {{ .Values.services.dashboard.containerPort }}

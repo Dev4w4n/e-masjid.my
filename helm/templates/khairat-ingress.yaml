@@ -1,9 +1,11 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  namespace: "{{ .Values.global.env }}-{{ .Values.global.tenant }}"
   name: internal-khairat-dependents-secure-ingress
   labels:
     tenant: {{ .Values.global.tenant }}
+    env: {{ .Values.global.env | quote }}
   annotations: 
     nginx.ingress.kubernetes.io/rewrite-target: /dependents/$2
 spec:
@@ -25,9 +27,11 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  namespace: "{{ .Values.global.env }}-{{ .Values.global.tenant }}"
   name: internal-khairat-members-secure-ingress
   labels:
     tenant: {{ .Values.global.tenant }}
+    env: {{ .Values.global.env | quote }}
   annotations: 
     nginx.ingress.kubernetes.io/rewrite-target: /members/$2
 spec:
@@ -49,9 +53,11 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  namespace: "{{ .Values.global.env }}-{{ .Values.global.tenant }}"
   name: internal-khairat-payment-secure-ingress
   labels:
     tenant: {{ .Values.global.tenant }}
+    env: {{ .Values.global.env | quote }}
   annotations: 
     nginx.ingress.kubernetes.io/rewrite-target: /payment/$2
 spec:
@@ -73,9 +79,11 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  namespace: "{{ .Values.global.env }}-{{ .Values.global.tenant }}"
   name: internal-khairat-tags-secure-ingress
   labels:
     tenant: {{ .Values.global.tenant }}
+    env: {{ .Values.global.env | quote }}
   annotations: 
     nginx.ingress.kubernetes.io/rewrite-target: /tags/$2
 spec:

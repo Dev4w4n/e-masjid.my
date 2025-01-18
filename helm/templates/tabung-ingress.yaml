@@ -2,8 +2,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: internal-tabung-secure-ingress
+  namespace: "{{ .Values.global.env }}-{{ .Values.global.tenant }}"
   labels:
     tenant: {{ .Values.global.tenant }}
+    env: {{ .Values.global.env | quote }}
   annotations: 
     nginx.ingress.kubernetes.io/rewrite-target: /tabung
 spec:
@@ -26,8 +28,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: internal-tabung-types-secure-ingress
+  namespace: "{{ .Values.global.env }}-{{ .Values.global.tenant }}"
   labels:
     tenant: {{ .Values.global.tenant }}
+    env: {{ .Values.global.env | quote }}
   annotations: 
     nginx.ingress.kubernetes.io/rewrite-target: /tabung-types
 spec:
@@ -50,8 +54,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: internal-tabung-kutipan-secure-ingress
+  namespace: "{{ .Values.global.env }}-{{ .Values.global.tenant }}"
   labels:
     tenant: {{ .Values.global.tenant }}
+    env: {{ .Values.global.env | quote }}
   annotations: 
     nginx.ingress.kubernetes.io/rewrite-target: /kutipan/$2
 spec:

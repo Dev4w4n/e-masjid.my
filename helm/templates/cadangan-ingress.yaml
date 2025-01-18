@@ -2,9 +2,11 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  namespace: "{{ .Values.global.env }}-{{ .Values.global.tenant }}"
   name: internal-cadangan-secure-ingress
   labels:
     tenant: {{ .Values.global.tenant }}
+    env: {{ .Values.global.env | quote }}
   annotations: 
     nginx.ingress.kubernetes.io/rewrite-target: /cadangan/$2
 spec:
@@ -26,9 +28,11 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  namespace: "{{ .Values.global.env }}-{{ .Values.global.tenant }}"
   name: public-cadangan-ingress
   labels:
     tenant: {{ .Values.global.tenant }}
+    env: {{ .Values.global.env | quote }}
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /cadangan
     # nginx.ingress.kubernetes.io/use-regex: "true"

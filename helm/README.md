@@ -22,7 +22,7 @@
 
 ## Issue
 
- - need to rebuild dashboard image with `process.env.REACT_APP_ENV === 'development'` to bypass keycloak and access dashboard web
+ - need to rebuild dashboard image with `USE_KEYCLOAK: false` to bypass keycloak and access dashboard web
  
  - POST https://tenant.emasjid-my/secure/tetapan/senarai
  - POST https://tenant.emasjid-my/secure/cadangan?page=1&size=25&cadanganTypeId=1&isOpen=true
