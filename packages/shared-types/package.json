@@ -1,0 +1,27 @@
+{
+  "name": "@masjid-suite/shared-types",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared TypeScript type definitions for Masjid Suite",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix"
+  },
+  "devDependencies": {
+    "@masjid-suite/eslint-config": "workspace:*",
+    "typescript": "^5.2.0",
+    "eslint": "^8.57.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}

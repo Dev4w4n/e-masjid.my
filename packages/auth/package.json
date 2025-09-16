@@ -1,0 +1,40 @@
+{
+  "name": "@masjid-suite/auth",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Authentication hooks and utilities for Masjid Suite",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "@supabase/supabase-js": "^2.39.0",
+    "@masjid-suite/shared-types": "workspace:*",
+    "@masjid-suite/supabase-client": "workspace:*"
+  },
+  "devDependencies": {
+    "@masjid-suite/eslint-config": "workspace:*",
+    "@types/react": "^18.2.0",
+    "typescript": "^5.2.0",
+    "vitest": "^1.0.0",
+    "@testing-library/react": "^14.1.0",
+    "@testing-library/react-hooks": "^8.0.1",
+    "eslint": "^8.57.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
+  }
+}

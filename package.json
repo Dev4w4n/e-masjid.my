@@ -1,0 +1,68 @@
+{
+  "name": "masjid-suite",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monorepo for Masjid Suite applications - comprehensive Islamic community management system",
+  "author": "Masjid Suite Contributors",
+  "license": "MIT",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "packageManager": "pnpm@8.15.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "lint:fix": "turbo lint:fix",
+    "type-check": "turbo type-check",
+    "test": "turbo test",
+    "test:watch": "turbo test:watch",
+    "test:coverage": "turbo test:coverage",
+    "test:integration": "turbo test:integration",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "clean": "turbo clean && rm -rf node_modules",
+    "supabase:start": "cd supabase && supabase start",
+    "supabase:stop": "cd supabase && supabase stop",
+    "supabase:reset": "cd supabase && supabase db reset",
+    "supabase:types": "cd supabase && supabase gen types typescript --local > ../packages/shared-types/src/database.ts",
+    "db:migrate": "cd supabase && supabase db push",
+    "db:seed": "cd supabase && supabase db seed",
+    "preview": "turbo preview"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/jsdom": "^21.1.7",
+    "@types/node": "^20.10.0",
+    "dotenv": "^17.2.2",
+    "eslint": "^8.57.0",
+    "jsdom": "^27.0.0",
+    "prettier": "^3.1.0",
+    "turbo": "^2.5.6",
+    "typescript": "^5.2.0",
+    "vite": "^7.1.5"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  },
+  "keywords": [
+    "masjid",
+    "islamic",
+    "community",
+    "management",
+    "profile",
+    "authentication",
+    "monorepo",
+    "turborepo",
+    "react",
+    "typescript",
+    "supabase"
+  ]
+}

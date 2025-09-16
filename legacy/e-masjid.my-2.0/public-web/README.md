@@ -1,70 +1,98 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[![en](https://img.shields.io/badge/lang-en-red.svg)](../README.en.md)
+![Github forks](https://badgen.net/github/forks/Dev4w4n/e-masjid.my?icon=github&label=forks)
+![Github issues](https://img.shields.io/github/issues/Dev4w4n/e-masjid.my)
+![Github last-commit](https://img.shields.io/github/last-commit/Dev4w4n/e-masjid.my)
+![Release build](https://github.com/Dev4w4n/e-masjid.my/actions/workflows/publish-on-tag.yml/badge.svg)
 
-## Available Scripts
+<p align="center">
+	<img src="../public-web/src/assets/home/logo.png" alt="E-Masjid.My" width="80" height="80"/>
+</p>
 
-In the project directory, you can run:
+<h2 align="center"><b>E-Masjid.My Public Web</b></h2>
+<p align="center"><b>Sistem masjid untuk semua</b></p>
+<p align="center">
+	E-Masjid.My ialah sebuah sistem pengurusan masjid percuma dan sumber terbuka (lesen MIT)
+</p><br>
+<h2 align="center">
+	<a href='https://demo.e-masjid.my'>Demo Langsung</a>
+</h2><br>
 
-### `npm start`
+# Falsafah
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Matlamat-matlamat utama sistem ini ialah seperti berikut.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+**Mudah untuk digunakan**
 
-### `npm test`
+- Bukan semua orang pakar IT. Mereka bentuk sebuah sistem untuk orang bukan IT memerlukan pertimbangan yang teliti.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Masa untuk menggunakan kemahiran IT untuk berbuat kebaikan**
 
-### `npm run build`
+- Sumber terbuka ialah suatu bentuk sedekah — sesuatu yang dituntut dalam Islam.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**Jangka hayat yang panjang**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Syarikat pengehosan/teknologi mungkin mati tetapi kami berharap dengan menyerahkan projek ini secara sumber terbuka, projek ini dapat hidup lebih lama demi ummah.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**Beri, bukan ambil**
 
-### `npm run eject`
+- Kita sepatutnya menyumbang kepada komuniti Muslim, terutamanya masjid dan bukan mengambil manfaat daripada mereka.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Prasyarat
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. GIT https://www.git-scm.com/downloads
+2. Docker Desktop https://docs.docker.com/get-docker/
+3. Node 20 https://nodejs.org/en/download
+4. Go https://go.dev/dl/
+5. VSCode https://code.visualstudio.com/download
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Keperluan Minimum Sistem untuk tujuan Pembangunan Sistem
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+1. Pemproses: 1.6 GHz atau lebih pantas
+2. Memori: 8 GB RAM atau lebih tinggi
 
-## Learn More
+## Panduan permulaan pantas (Docker compose)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Fork repo ini
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. _Fork_ repo ini ke akaun Github anda, contoh `https://github.com/<github-user>/e-masjid.my`, dengan menekan butang _Fork_ di bahagian atas sebelah kanan laman web ini.
+2. Setelah selesai _Fork_, _klon_ repo ini ke komputer anda.
 
-### Code Splitting
+```
+git clone https://github.com/<github-user>/e-masjid.my.git
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+3. Setelah selesai _klon_, navigasi ke _folder_ e-masjid.my.
 
-### Analyzing the Bundle Size
+```
+cd e-masjid.my
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+4. Ikut arahan seterusnya seperti di bawah bergantung kepada sistem pengoperasian komputer anda.
 
-### Making a Progressive Web App
+```
+docker compose up -d
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Skrip ini akan membina semua API secara automatik dan melaksanakan arahan docker-compose yang akan menghidupkan 6 _container_ untuk persekitaran pembangunan.
 
-### Advanced Configuration
+Apabila kesemua _container_ telah hidup, anda boleh menghentikan mana-mana _container_ yang tidak diperlukan dalam tugasan anda.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+> :bulb: **Tip:** [Memahami struktur project E‐Masjid.My](https://github.com/Dev4w4n/e-masjid.my/wiki/Memahami-struktur-project-E%E2%80%90Masjid.My)
 
-### Deployment
+## Panduan untuk menyumbang
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+_Fork_ repo ini dan hantar _Pull Request_ anda.
 
-### `npm run build` fails to minify
+Kami mahu input anda! Kami ingin menjadikan penyumbangan kepada projek mudah dan telus, sama ada dengan:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Melaporkan pepijat
+- Menghantar pembetulan
+- Mencadangkan ciri baru
+- Menambah baik ciri
+- Dokumentasi
+- Ujian unit
+
+Atau anda ingin berbual dengan kami, cari kami di [Discord](https://discord.gg/k2zGpWTDpe).
+
+[![Contributors](https://contrib.rocks/image?repo=Dev4w4n/e-masjid.my)](https://github.com/Dev4w4n/e-masjid.my/graphs/contributors)

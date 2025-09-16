@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "declaration": true,
+    "declarationMap": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
+    "types": ["node", "vitest/globals"],
+    "noEmit": false,
+    "baseUrl": ".",
+    "paths": {
+      "@masjid-suite/*": ["../*/src"]
+    }
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "tests/**/*"
+  ]
+}
