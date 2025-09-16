@@ -15,7 +15,7 @@ This quickstart guide will help you set up the Masjid Suite monorepo locally and
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd masjidbro-sk
+cd e-masjid.my
 
 # Install dependencies with pnpm
 pnpm install
@@ -35,7 +35,7 @@ SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
 # Super Admin Configuration
-SUPER_ADMIN_EMAIL=admin@masjidbro.local
+SUPER_ADMIN_EMAIL=admin@.local
 SUPER_ADMIN_PASSWORD=SecureAdminPass123!
 
 # Application Configuration
@@ -71,6 +71,7 @@ pnpm dev --filter=profile-app
 ```
 
 The application will be available at:
+
 - **Profile App**: http://localhost:3000
 - **Supabase Studio**: http://localhost:54323
 
@@ -80,7 +81,7 @@ The application will be available at:
 
 1. **Navigate to the application**: http://localhost:3000
 2. **Sign in as super admin**:
-   - Email: `admin@masjidbro.local`
+   - Email: `admin@e-masjid.my`
    - Password: `SecureAdminPass123!`
 3. **Complete super admin profile**:
    - Full name: "System Administrator"
@@ -93,20 +94,20 @@ The application will be available at:
 1. **Access Masjid Management** (super admin only)
 2. **Create new masjid**:
    ```json
-    {
-      "name": "Masjid Jamek Sungai Rambai",
-      "registration_number": "MSJ-2024-001",
-      "email": "admin@masjidjameksungairambai.org",
-      "phone_number": "+60412345678",
-      "description": "Community mosque in Bukit Mertajam, Pulau Pinang",
-      "address": {
-        "address_line_1": "Jalan Masjid Jamek",
-        "address_line_2": "Sungai Rambai",
-        "city": "Bukit Mertajam",
-        "state": "Pulau Pinang",
-        "postcode": "14000"
-      }
-    }
+   {
+     "name": "Masjid Jamek Sungai Rambai",
+     "registration_number": "MSJ-2024-001",
+     "email": "admin@masjidjameksungairambai.org",
+     "phone_number": "+60412345678",
+     "description": "Community mosque in Bukit Mertajam, Pulau Pinang",
+     "address": {
+       "address_line_1": "Jalan Masjid Jamek",
+       "address_line_2": "Sungai Rambai",
+       "city": "Bukit Mertajam",
+       "state": "Pulau Pinang",
+       "postcode": "14000"
+     }
+   }
    ```
 
 ### Step 3: Register New User
@@ -159,6 +160,7 @@ The application will be available at:
 ## 🧪 Automated Testing
 
 ### Unit Tests
+
 ```bash
 # Run all unit tests
 pnpm test
@@ -171,6 +173,7 @@ pnpm test:watch
 ```
 
 ### Integration Tests
+
 ```bash
 # Run API integration tests
 pnpm test:integration
@@ -180,6 +183,7 @@ pnpm test:db
 ```
 
 ### End-to-End Tests
+
 ```bash
 # Run E2E tests with Playwright
 pnpm test:e2e
@@ -194,6 +198,7 @@ pnpm test:e2e --grep "admin workflow"
 ## 📱 User Interface Testing
 
 ### Profile Completion Flow
+
 1. **Incomplete profile state**:
    - User sees completion prompt
    - Cannot access role-specific features
@@ -210,18 +215,20 @@ pnpm test:e2e --grep "admin workflow"
    - Role-specific UI changes
 
 ### Role-Based Access Control
+
 Test different user experiences:
 
-| Role | Can Access | Cannot Access |
-|------|------------|---------------|
-| Public | Masjid list, details | User management, profile creation |
-| Registered | Profile management, admin applications | User management, masjid creation |
-| Masjid Admin | Assigned masjid management, member profiles | Other masjids, user roles |
-| Super Admin | All features | N/A |
+| Role         | Can Access                                  | Cannot Access                     |
+| ------------ | ------------------------------------------- | --------------------------------- |
+| Public       | Masjid list, details                        | User management, profile creation |
+| Registered   | Profile management, admin applications      | User management, masjid creation  |
+| Masjid Admin | Assigned masjid management, member profiles | Other masjids, user roles         |
+| Super Admin  | All features                                | N/A                               |
 
 ## 🛠️ Development Commands
 
 ### Code Quality
+
 ```bash
 # Lint all packages
 pnpm lint
@@ -237,6 +244,7 @@ pnpm format
 ```
 
 ### Build & Deploy
+
 ```bash
 # Build all applications
 pnpm build
@@ -249,6 +257,7 @@ pnpm preview
 ```
 
 ### Database Management
+
 ```bash
 # Create new migration
 supabase migration new add_new_feature
@@ -268,6 +277,7 @@ supabase gen types typescript --local > packages/shared-types/src/database.ts
 ### Common Issues
 
 **Supabase Connection Error**
+
 ```bash
 # Check Supabase status
 supabase status
@@ -278,6 +288,7 @@ supabase start
 ```
 
 **Build Errors**
+
 ```bash
 # Clean build cache
 pnpm clean
@@ -288,6 +299,7 @@ pnpm install
 ```
 
 **Type Errors**
+
 ```bash
 # Regenerate database types
 supabase gen types typescript --local > packages/shared-types/src/database.ts
@@ -297,14 +309,18 @@ Cmd+Shift+P → "TypeScript: Restart TS Server"
 ```
 
 ### Environment Variables
+
 Ensure all required environment variables are set:
+
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
 - `SUPER_ADMIN_EMAIL`
 - `SUPER_ADMIN_PASSWORD`
 
 ### Port Conflicts
+
 Default ports used:
+
 - Profile App: 3000
 - Supabase API: 54321
 - Supabase Studio: 54323
@@ -315,6 +331,7 @@ Default ports used:
 ### Using curl
 
 **Register user**:
+
 ```bash
 curl -X POST http://localhost:54321/auth/v1/signup \
   -H "Content-Type: application/json" \
@@ -323,6 +340,7 @@ curl -X POST http://localhost:54321/auth/v1/signup \
 ```
 
 **Create profile**:
+
 ```bash
 curl -X POST http://localhost:54321/rest/v1/profiles \
   -H "Content-Type: application/json" \
@@ -341,11 +359,13 @@ curl -X POST http://localhost:54321/rest/v1/profiles \
 ```
 
 ### Using Postman/Insomnia
+
 Import the OpenAPI specification from `contracts/api-spec.yaml` for full API documentation and testing capabilities.
 
 ## 🎯 Success Criteria Validation
 
 ### Functional Requirements Checklist
+
 - [ ] Super admin can sign in with environment credentials
 - [ ] Super admin can create masjids
 - [ ] Users can register and complete profiles
@@ -357,12 +377,14 @@ Import the OpenAPI specification from `contracts/api-spec.yaml` for full API doc
 - [ ] Public users have appropriate access levels
 
 ### Performance Validation
+
 - [ ] Initial page load < 2 seconds
 - [ ] Navigation between pages < 500ms
 - [ ] Form submissions < 1 second
 - [ ] Database queries optimized with proper indexes
 
 ### Security Validation
+
 - [ ] JWT tokens properly validated
 - [ ] Row Level Security policies working
 - [ ] Input validation and sanitization
@@ -381,7 +403,8 @@ For adding new applications to the monorepo, see the [Contributing Guide](../CON
 
 ---
 
-**Need Help?** 
+**Need Help?**
+
 - Check the [Troubleshooting Guide](../docs/troubleshooting.md)
 - Review the [API Documentation](./contracts/api-spec.yaml)
 - Consult the [Development Guidelines](../docs/development.md)
