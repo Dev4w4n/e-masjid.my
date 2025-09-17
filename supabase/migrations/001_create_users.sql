@@ -37,7 +37,7 @@ CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO public.users (id, email, email_verified)
-    VALUES (NEW.id, NEW.email, NEW.email_confirmed);
+    VALUES (NEW.id, NEW.email, NEW.email_confirmed_at IS NOT NULL);
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -52,7 +52,7 @@ CREATE OR REPLACE FUNCTION public.sync_user_email_verification()
 RETURNS TRIGGER AS $$
 BEGIN
     UPDATE public.users 
-    SET email_verified = NEW.email_confirmed,
+    SET email_verified = (NEW.email_confirmed_at IS NOT NULL),
         last_sign_in_at = NEW.last_sign_in_at
     WHERE id = NEW.id;
     RETURN NEW;

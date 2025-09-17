@@ -35,7 +35,8 @@
     "supabase:types": "cd supabase && supabase gen types typescript --local > ../packages/shared-types/src/database.ts",
     "db:migrate": "cd supabase && supabase db push",
     "db:seed": "cd supabase && supabase db seed",
-    "preview": "turbo preview"
+    "preview": "turbo preview",
+    "validate:env": "node scripts/validate-env.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.40.0",

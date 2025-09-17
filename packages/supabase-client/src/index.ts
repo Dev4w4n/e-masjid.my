@@ -1,20 +1,56 @@
-import { createClient, SupabaseClient, User, Session } from '@supabase/supabase-js';
-import type { Database } from '@masjid-suite/shared-types';
+import {
+  createClient,
+  SupabaseClient,
+  User,
+  Session,
+} from "@supabase/supabase-js";
+import type { Database } from "@masjid-suite/shared-types";
 
 // Environment variables for Supabase configuration
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || '';
-const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '';
+// Simplified and more reliable environment variable access
 
-// Allow test environment to use dummy values
-const isTest = process.env.NODE_ENV === 'test';
-const testUrl = 'https://dummy-project.supabase.co';
-const testKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1bW15LXByb2plY3QiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MDAwMDAwMCwiZXhwIjoxOTU1MzU1NjAwfQ.dummy_signature';
+function getEnvironmentVariables() {
+  const isBrowser = typeof window !== "undefined";
+  const isTest =
+    (isBrowser
+      ? (globalThis as any)?.process?.env?.NODE_ENV
+      : process.env.NODE_ENV) === "test";
 
-const finalUrl = SUPABASE_URL || (isTest ? testUrl : '');
-const finalKey = SUPABASE_ANON_KEY || (isTest ? testKey : '');
+  let SUPABASE_URL: string | undefined;
+  let SUPABASE_ANON_KEY: string | undefined;
+
+  if (isBrowser) {
+    // In browser environment, try to get from Vite's import.meta.env or global variables
+    SUPABASE_URL =
+      (globalThis as any)?.VITE_SUPABASE_URL ||
+      (globalThis as any)?.SUPABASE_URL ||
+      (globalThis as any)?.import?.meta?.env?.VITE_SUPABASE_URL;
+    SUPABASE_ANON_KEY =
+      (globalThis as any)?.VITE_SUPABASE_ANON_KEY ||
+      (globalThis as any)?.SUPABASE_ANON_KEY ||
+      (globalThis as any)?.import?.meta?.env?.VITE_SUPABASE_ANON_KEY;
+  } else {
+    // In Node.js environment, use process.env
+    SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+    SUPABASE_ANON_KEY =
+      process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+  }
+
+  return { SUPABASE_URL, SUPABASE_ANON_KEY, isTest };
+}
+
+const { SUPABASE_URL, SUPABASE_ANON_KEY, isTest } = getEnvironmentVariables();
+const testUrl = "https://dummy-project.supabase.co";
+const testKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1bW15LXByb2plY3QiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MDAwMDAwMCwiZXhwIjoxOTU1MzU1NjAwfQ.dummy_signature";
+
+const finalUrl = SUPABASE_URL || (isTest ? testUrl : "");
+const finalKey = SUPABASE_ANON_KEY || (isTest ? testKey : "");
 
 if (!finalUrl || !finalKey) {
-  throw new Error('Missing Supabase environment variables. Please set SUPABASE_URL and SUPABASE_ANON_KEY');
+  throw new Error(
+    "Missing Supabase environment variables. Please set SUPABASE_URL and SUPABASE_ANON_KEY"
+  );
 }
 
 /**
@@ -50,18 +86,22 @@ export class AuthService {
   /**
    * Sign up with email and password
    */
-  async signUp(email: string, password: string, metadata?: Record<string, any>) {
+  async signUp(
+    email: string,
+    password: string,
+    metadata?: Record<string, any>
+  ) {
     const signUpData: any = {
       email,
       password,
     };
-    
+
     if (metadata) {
       signUpData.options = {
         data: metadata,
       };
     }
-    
+
     const { data, error } = await this.client.auth.signUp(signUpData);
 
     if (error) {
@@ -102,7 +142,10 @@ export class AuthService {
    * Get current user
    */
   async getCurrentUser(): Promise<User | null> {
-    const { data: { user }, error } = await this.client.auth.getUser();
+    const {
+      data: { user },
+      error,
+    } = await this.client.auth.getUser();
 
     if (error) {
       throw new Error(`Failed to get current user: ${error.message}`);
@@ -115,7 +158,10 @@ export class AuthService {
    * Get current session
    */
   async getCurrentSession(): Promise<Session | null> {
-    const { data: { session }, error } = await this.client.auth.getSession();
+    const {
+      data: { session },
+      error,
+    } = await this.client.auth.getSession();
 
     if (error) {
       throw new Error(`Failed to get current session: ${error.message}`);
@@ -166,7 +212,9 @@ export class AuthService {
   /**
    * Listen to auth state changes
    */
-  onAuthStateChange(callback: (event: string, session: Session | null) => void) {
+  onAuthStateChange(
+    callback: (event: string, session: Session | null) => void
+  ) {
     return this.client.auth.onAuthStateChange(callback);
   }
 }
@@ -184,17 +232,17 @@ export class DatabaseService {
   /**
    * Generic query builder for any table
    */
-  table<T extends keyof Database['public']['Tables']>(tableName: T): any {
+  table<T extends keyof Database["public"]["Tables"]>(tableName: T): any {
     return this.client.from(tableName);
   }
 
   /**
    * Execute RPC (stored procedure) calls
    */
-  async rpc<T extends keyof Database['public']['Functions']>(
+  async rpc<T extends keyof Database["public"]["Functions"]>(
     functionName: T,
-    params?: Database['public']['Functions'][T]['Args']
-  ): Promise<Database['public']['Functions'][T]['Returns']> {
+    params?: Database["public"]["Functions"][T]["Args"]
+  ): Promise<Database["public"]["Functions"][T]["Returns"]> {
     const { data, error } = await this.client.rpc(functionName, params);
 
     if (error) {
@@ -207,20 +255,24 @@ export class DatabaseService {
   /**
    * Subscribe to real-time changes
    */
-  subscribe<T extends keyof Database['public']['Tables']>(
+  subscribe<T extends keyof Database["public"]["Tables"]>(
     tableName: T,
     callback: (payload: any) => void,
-    event: 'INSERT' | 'UPDATE' | 'DELETE' | '*' = '*',
+    event: "INSERT" | "UPDATE" | "DELETE" | "*" = "*",
     filter?: string
   ) {
     const channel = this.client
       .channel(`${String(tableName)}-changes`)
-      .on('postgres_changes' as any, {
-        event,
-        schema: 'public',
-        table: String(tableName),
-        filter,
-      }, callback)
+      .on(
+        "postgres_changes" as any,
+        {
+          event,
+          schema: "public",
+          table: String(tableName),
+          filter,
+        },
+        callback
+      )
       .subscribe();
 
     return () => {
@@ -231,13 +283,13 @@ export class DatabaseService {
   /**
    * Get count of records
    */
-  async count<T extends keyof Database['public']['Tables']>(
+  async count<T extends keyof Database["public"]["Tables"]>(
     tableName: T,
     filter?: any
   ): Promise<number> {
     let query = this.client
       .from(tableName)
-      .select('*', { count: 'exact', head: true });
+      .select("*", { count: "exact", head: true });
 
     if (filter) {
       query = query.match(filter);
@@ -268,12 +320,13 @@ export class ProfileService {
    */
   async getProfile(userId: string) {
     const { data, error } = await this.db
-      .table('profiles')
-      .select('*')
-      .eq('user_id', userId)
+      .table("profiles")
+      .select("*")
+      .eq("user_id", userId)
       .single();
 
-    if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+    if (error && error.code !== "PGRST116") {
+      // PGRST116 = no rows returned
       throw new Error(`Failed to get profile: ${error.message}`);
     }
 
@@ -283,9 +336,11 @@ export class ProfileService {
   /**
    * Create or update profile
    */
-  async upsertProfile(profile: Database['public']['Tables']['profiles']['Insert']) {
+  async upsertProfile(
+    profile: Database["public"]["Tables"]["profiles"]["Insert"]
+  ) {
     const { data, error } = await this.db
-      .table('profiles')
+      .table("profiles")
       .upsert(profile)
       .select()
       .single();
@@ -302,10 +357,10 @@ export class ProfileService {
    */
   async getProfileAddresses(profileId: string) {
     const { data, error } = await this.db
-      .table('profile_addresses')
-      .select('*')
-      .eq('profile_id', profileId)
-      .order('is_primary', { ascending: false });
+      .table("profile_addresses")
+      .select("*")
+      .eq("profile_id", profileId)
+      .order("is_primary", { ascending: false });
 
     if (error) {
       throw new Error(`Failed to get profile addresses: ${error.message}`);
@@ -317,9 +372,11 @@ export class ProfileService {
   /**
    * Add profile address
    */
-  async addProfileAddress(address: Database['public']['Tables']['profile_addresses']['Insert']) {
+  async addProfileAddress(
+    address: Database["public"]["Tables"]["profile_addresses"]["Insert"]
+  ) {
     const { data, error } = await this.db
-      .table('profile_addresses')
+      .table("profile_addresses")
       .insert(address)
       .select()
       .single();
@@ -347,10 +404,10 @@ export class MasjidService {
    */
   async getAllMasjids() {
     const { data, error } = await this.db
-      .table('masjids')
-      .select('*')
-      .eq('is_active', true)
-      .order('name');
+      .table("masjids")
+      .select("*")
+      .eq("is_active", true)
+      .order("name");
 
     if (error) {
       throw new Error(`Failed to get masjids: ${error.message}`);
@@ -364,9 +421,9 @@ export class MasjidService {
    */
   async getMasjid(masjidId: string) {
     const { data, error } = await this.db
-      .table('masjids')
-      .select('*')
-      .eq('id', masjidId)
+      .table("masjids")
+      .select("*")
+      .eq("id", masjidId)
       .single();
 
     if (error) {
@@ -379,9 +436,11 @@ export class MasjidService {
   /**
    * Create masjid
    */
-  async createMasjid(masjid: Database['public']['Tables']['masjids']['Insert']) {
+  async createMasjid(
+    masjid: Database["public"]["Tables"]["masjids"]["Insert"]
+  ) {
     const { data, error } = await this.db
-      .table('masjids')
+      .table("masjids")
       .insert(masjid)
       .select()
       .single();
@@ -397,13 +456,13 @@ export class MasjidService {
    * Update masjid
    */
   async updateMasjid(
-    masjidId: string, 
-    updates: Database['public']['Tables']['masjids']['Update']
+    masjidId: string,
+    updates: Database["public"]["Tables"]["masjids"]["Update"]
   ) {
     const { data, error } = await this.db
-      .table('masjids')
+      .table("masjids")
       .update(updates)
-      .eq('id', masjidId)
+      .eq("id", masjidId)
       .select()
       .single();
 
@@ -419,8 +478,9 @@ export class MasjidService {
    */
   async getMasjidAdmins(masjidId: string): Promise<any[]> {
     const { data, error } = await this.db
-      .table('masjid_admins')
-      .select(`
+      .table("masjid_admins")
+      .select(
+        `
         *,
         profiles (
           user_id,
@@ -428,8 +488,9 @@ export class MasjidService {
           email,
           phone_number
         )
-      `)
-      .eq('masjid_id', masjidId);
+      `
+      )
+      .eq("masjid_id", masjidId);
 
     if (error) {
       throw new Error(`Failed to get masjid admins: ${error.message}`);
@@ -442,10 +503,10 @@ export class MasjidService {
    * Assign admin to masjid
    */
   async assignAdmin(
-    assignment: Database['public']['Tables']['masjid_admins']['Insert']
-  ): Promise<Database['public']['Tables']['masjid_admins']['Row']> {
+    assignment: Database["public"]["Tables"]["masjid_admins"]["Insert"]
+  ): Promise<Database["public"]["Tables"]["masjid_admins"]["Row"]> {
     const { data, error } = await this.db
-      .table('masjid_admins')
+      .table("masjid_admins")
       .insert(assignment)
       .select()
       .single();
@@ -465,8 +526,8 @@ export const profileService = new ProfileService(databaseService);
 export const masjidService = new MasjidService(databaseService);
 
 // Re-export types for convenience
-export type { Database } from '@masjid-suite/shared-types';
-export type { SupabaseClient, User, Session } from '@supabase/supabase-js';
+export type { Database } from "@masjid-suite/shared-types";
+export type { SupabaseClient, User, Session } from "@supabase/supabase-js";
 
 // Default export
 export default supabase;

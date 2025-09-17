@@ -9,14 +9,16 @@
     "target": "ES2022",
     "lib": ["ES2022", "DOM"],
     "jsx": "react-jsx",
-    "types": ["node", "vitest/globals"]
+    "types": ["node", "vitest/globals"],
+    "noEmit": false,
+    "composite": true,
+    "incremental": true
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "tests/**/*"
+  "include": ["src/**/*"],
+  "exclude": ["dist", "node_modules", "tests/**/*"],
+  "references": [
+    { "path": "../shared-types" },
+    { "path": "../auth" },
+    { "path": "../ui-theme" }
   ]
 }

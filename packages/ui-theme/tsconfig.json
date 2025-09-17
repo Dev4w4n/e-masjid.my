@@ -11,6 +11,8 @@
     "types": ["node", "vitest/globals"],
     "noEmit": false,
     "baseUrl": ".",
+    "composite": true,
+    "incremental": true,
     "paths": {
       "@masjid-suite/*": ["../*/src"]
     },
@@ -21,12 +23,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "tests/**/*"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["dist", "node_modules", "tests/**/*"],
+  "references": []
 }

@@ -1,0 +1,215 @@
+/* Global application styles */
+
+/* Reset and normalize */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family:
+    "Inter",
+    "Noto Sans Arabic",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f5f5f5;
+  line-height: 1.5;
+}
+
+/* Typography utilities */
+.text-arabic {
+  font-family: "Amiri", "Noto Sans Arabic", serif;
+  font-feature-settings:
+    "liga" 1,
+    "calt" 1;
+}
+
+.text-quranic {
+  font-family: "Amiri", serif;
+  font-size: 1.2em;
+  line-height: 1.8;
+  text-align: center;
+}
+
+.text-rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Layout utilities */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.full-height {
+  min-height: 100vh;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Loading states */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e0e0e0;
+  border-top: 4px solid #1976d2;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Form styles */
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.form-section {
+  margin-bottom: 32px;
+}
+
+.form-section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #1976d2;
+}
+
+/* Card styles */
+.card-hover {
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Status indicators */
+.status-active {
+  color: #4caf50;
+}
+
+.status-inactive {
+  color: #f44336;
+}
+
+.status-pending {
+  color: #ff9800;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .container {
+    padding: 0 8px;
+  }
+
+  .form-container {
+    padding: 16px;
+  }
+}
+
+/* Islamic color scheme utilities */
+.color-islamic-green {
+  color: #2e7d32;
+}
+
+.bg-islamic-green {
+  background-color: #2e7d32;
+}
+
+.color-islamic-gold {
+  color: #f57c00;
+}
+
+.bg-islamic-gold {
+  background-color: #f57c00;
+}
+
+.color-malaysian-blue {
+  color: #1976d2;
+}
+
+.bg-malaysian-blue {
+  background-color: #1976d2;
+}
+
+.color-malaysian-red {
+  color: #d32f2f;
+}
+
+.bg-malaysian-red {
+  background-color: #d32f2f;
+}
+
+/* Accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus styles */
+.focus-visible {
+  outline: 2px solid #1976d2;
+  outline-offset: 2px;
+}
+
+/* High contrast support */
+@media (prefers-contrast: high) {
+  .card-hover:hover {
+    border: 2px solid #000;
+  }
+}

@@ -110,7 +110,6 @@ BEGIN
         NEW.full_name IS NOT NULL AND 
         length(trim(NEW.full_name)) > 0 AND
         NEW.phone_number IS NOT NULL AND
-        NEW.home_masjid_id IS NOT NULL AND
         has_address
     );
     
@@ -155,7 +154,7 @@ CREATE OR REPLACE FUNCTION public.create_profile_for_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO public.profiles (user_id, full_name, is_complete)
-    VALUES (NEW.id, '', FALSE);
+    VALUES (NEW.id, 'Unnamed User', FALSE);
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -173,3 +172,110 @@ COMMENT ON COLUMN public.profiles.is_complete IS 'Auto-calculated based on requi
 COMMENT ON COLUMN public.profiles.phone_number IS 'Malaysian phone format: +60-xx-xxxx-xxxx or 0xx-xxxx-xxxx';
 COMMENT ON COLUMN public.profile_addresses.postcode IS 'Malaysian 5-digit postal code (10000-98000)';
 COMMENT ON COLUMN public.profile_addresses.is_primary IS 'Only one primary address allowed per profile';
+
+-- Function to complete user profile (for API endpoints)
+CREATE OR REPLACE FUNCTION public.complete_user_profile(
+    profile_data JSONB,
+    address_data JSONB
+)
+RETURNS JSONB AS $$
+DECLARE
+    user_profile_id UUID;
+    profile_result JSONB;
+    address_result JSONB;
+BEGIN
+    -- Get or verify profile exists for current user
+    SELECT id INTO user_profile_id 
+    FROM public.profiles 
+    WHERE user_id = auth.uid();
+    
+    -- If no profile exists, create one (shouldn't happen due to trigger, but safety check)
+    IF user_profile_id IS NULL THEN
+        INSERT INTO public.profiles (user_id, full_name, is_complete)
+        VALUES (auth.uid(), 'Unnamed User', FALSE)
+        RETURNING id INTO user_profile_id;
+    END IF;
+    
+    -- Update profile with provided data
+    UPDATE public.profiles SET
+        full_name = COALESCE((profile_data->>'full_name')::TEXT, full_name),
+        phone_number = COALESCE((profile_data->>'phone_number')::TEXT, phone_number),
+        preferred_language = COALESCE((profile_data->>'preferred_language')::language_code, preferred_language),
+        home_masjid_id = CASE 
+            WHEN profile_data ? 'home_masjid_id' THEN (profile_data->>'home_masjid_id')::UUID
+            ELSE home_masjid_id
+        END,
+        updated_at = NOW()
+    WHERE id = user_profile_id;
+    
+    -- Handle address if provided
+    IF address_data IS NOT NULL THEN
+        -- Delete existing primary address
+        DELETE FROM public.profile_addresses 
+        WHERE profile_id = user_profile_id AND is_primary = TRUE;
+        
+        -- Insert new address
+        INSERT INTO public.profile_addresses (
+            profile_id,
+            address_line_1,
+            address_line_2,
+            city,
+            state,
+            postcode,
+            country,
+            is_primary
+        ) VALUES (
+            user_profile_id,
+            (address_data->>'address_line_1')::TEXT,
+            (address_data->>'address_line_2')::TEXT,
+            (address_data->>'city')::TEXT,
+            (address_data->>'state')::malaysian_state,
+            (address_data->>'postcode')::TEXT,
+            COALESCE((address_data->>'country')::TEXT, 'MYS'),
+            TRUE
+        );
+    END IF;
+    
+    -- Update completion status after address is created
+    UPDATE public.profiles SET
+        is_complete = (
+            full_name IS NOT NULL AND 
+            length(trim(full_name)) > 0 AND
+            phone_number IS NOT NULL AND
+            EXISTS(
+                SELECT 1 FROM public.profile_addresses 
+                WHERE profile_id = id AND is_primary = TRUE
+            )
+        )
+    WHERE id = user_profile_id;
+    
+    -- Return updated profile with address
+    SELECT jsonb_build_object(
+        'id', p.id,
+        'user_id', p.user_id,
+        'full_name', p.full_name,
+        'phone_number', p.phone_number,
+        'preferred_language', p.preferred_language,
+        'home_masjid_id', p.home_masjid_id,
+        'is_complete', p.is_complete,
+        'address', CASE 
+            WHEN pa.id IS NOT NULL THEN jsonb_build_object(
+                'address_line_1', pa.address_line_1,
+                'address_line_2', pa.address_line_2,
+                'city', pa.city,
+                'state', pa.state,
+                'postcode', pa.postcode,
+                'country', pa.country
+            )
+            ELSE NULL
+        END,
+        'created_at', p.created_at,
+        'updated_at', p.updated_at
+    ) INTO profile_result
+    FROM public.profiles p
+    LEFT JOIN public.profile_addresses pa ON p.id = pa.profile_id AND pa.is_primary = TRUE
+    WHERE p.id = user_profile_id;
+    
+    RETURN profile_result;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

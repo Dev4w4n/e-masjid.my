@@ -16,27 +16,29 @@ CREATE POLICY "users_select_own" ON public.users
     USING (auth.uid() = id);
 
 -- Policy: Super admins can view all users
-CREATE POLICY "users_select_super_admin" ON public.users
-    FOR SELECT
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.users 
-            WHERE id = auth.uid() AND role = 'super_admin'
-        )
-    );
+-- DISABLED: Uses helper function instead of direct table query to avoid recursion
+-- CREATE POLICY "users_select_super_admin" ON public.users
+--     FOR SELECT
+--     USING (
+--         EXISTS (
+--             SELECT 1 FROM public.users 
+--             WHERE id = auth.uid() AND role = 'super_admin'
+--         )
+--     );
 
 -- Policy: Masjid admins can view users in their masjid community
-CREATE POLICY "users_select_masjid_admin" ON public.users
-    FOR SELECT
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.masjid_admins ma
-            JOIN public.profiles p ON p.home_masjid_id = ma.masjid_id
-            WHERE ma.user_id = auth.uid() 
-            AND ma.status = 'active'
-            AND p.user_id = users.id
-        )
-    );
+-- DISABLED: Causes circular dependency with masjid_admins table
+-- CREATE POLICY "users_select_masjid_admin" ON public.users
+--     FOR SELECT
+--     USING (
+--         EXISTS (
+--             SELECT 1 FROM public.masjid_admins ma
+--             JOIN public.profiles p ON p.home_masjid_id = ma.masjid_id
+--             WHERE ma.user_id = auth.uid() 
+--             AND ma.status = 'active'
+--             AND p.user_id = users.id
+--         )
+--     );
 
 -- Policy: Users can update their own record (limited fields)
 CREATE POLICY "users_update_own" ON public.users
@@ -45,14 +47,15 @@ CREATE POLICY "users_update_own" ON public.users
     WITH CHECK (auth.uid() = id);
 
 -- Policy: Super admins can update user roles
-CREATE POLICY "users_update_super_admin" ON public.users
-    FOR UPDATE
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.users 
-            WHERE id = auth.uid() AND role = 'super_admin'
-        )
-    );
+-- DISABLED: Causes recursion by checking users table from users policy
+-- CREATE POLICY "users_update_super_admin" ON public.users
+--     FOR UPDATE
+--     USING (
+--         EXISTS (
+--             SELECT 1 FROM public.users 
+--             WHERE id = auth.uid() AND role = 'super_admin'
+--         )
+--     );
 
 -- ============================================================================
 -- PROFILES TABLE POLICIES
@@ -65,14 +68,17 @@ CREATE POLICY "profiles_all_own" ON public.profiles
     WITH CHECK (auth.uid() = user_id);
 
 -- Policy: Super admins can view all profiles
-CREATE POLICY "profiles_select_super_admin" ON public.profiles
-    FOR SELECT
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.users 
-            WHERE id = auth.uid() AND role = 'super_admin'
-        )
-    );
+-- MOVED TO END: After helper functions are defined
+-- CREATE POLICY "profiles_select_super_admin" ON public.profiles
+--     FOR SELECT
+--     USING (public.is_super_admin());
+
+-- Policy: Super admins can update any profile  
+-- MOVED TO END: After helper functions are defined
+-- CREATE POLICY "profiles_update_super_admin" ON public.profiles
+--     FOR UPDATE
+--     USING (public.is_super_admin())
+--     WITH CHECK (public.is_super_admin());
 
 -- Policy: Masjid admins can view profiles of users who selected their masjid as home
 CREATE POLICY "profiles_select_masjid_admin" ON public.profiles
@@ -107,6 +113,9 @@ CREATE POLICY "profile_addresses_all_own" ON public.profile_addresses
             AND user_id = auth.uid()
         )
     );
+
+-- Policy: Super admins can manage all profile addresses (added after helper functions)
+-- This will be created later in the file after helper functions are defined
 
 -- Policy: Super admins can view all profile addresses
 CREATE POLICY "profile_addresses_select_super_admin" ON public.profile_addresses
@@ -186,32 +195,34 @@ CREATE POLICY "masjid_admins_select_own" ON public.masjid_admins
     USING (auth.uid() = user_id);
 
 -- Policy: Super admins can manage all admin assignments
-CREATE POLICY "masjid_admins_all_super_admin" ON public.masjid_admins
-    FOR ALL
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.users 
-            WHERE id = auth.uid() AND role = 'super_admin'
-        )
-    )
-    WITH CHECK (
-        EXISTS (
-            SELECT 1 FROM public.users 
-            WHERE id = auth.uid() AND role = 'super_admin'
-        )
-    );
+-- DISABLED: Causes recursion by checking users table
+-- CREATE POLICY "masjid_admins_all_super_admin" ON public.masjid_admins
+--     FOR ALL
+--     USING (
+--         EXISTS (
+--             SELECT 1 FROM public.users 
+--             WHERE id = auth.uid() AND role = 'super_admin'
+--         )
+--     )
+--     WITH CHECK (
+--         EXISTS (
+--             SELECT 1 FROM public.users 
+--             WHERE id = auth.uid() AND role = 'super_admin'
+--         )
+--     );
 
 -- Policy: Masjid admins can view other admins of their masjids
-CREATE POLICY "masjid_admins_select_peer_admins" ON public.masjid_admins
-    FOR SELECT
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.masjid_admins ma
-            WHERE ma.user_id = auth.uid() 
-            AND ma.masjid_id = masjid_admins.masjid_id
-            AND ma.status = 'active'
-        )
-    );
+-- DISABLED: Causes infinite recursion by referencing masjid_admins table from masjid_admins policy
+-- CREATE POLICY "masjid_admins_select_peer_admins" ON public.masjid_admins
+--     FOR SELECT
+--     USING (
+--         EXISTS (
+--             SELECT 1 FROM public.masjid_admins ma
+--             WHERE ma.user_id = auth.uid() 
+--             AND ma.masjid_id = masjid_admins.masjid_id
+--             AND ma.status = 'active'
+--         )
+--     );
 
 -- ============================================================================
 -- ADMIN_APPLICATIONS TABLE POLICIES
@@ -324,6 +335,9 @@ GRANT EXECUTE ON FUNCTION public.get_user_admin_assignments(UUID) TO authenticat
 GRANT EXECUTE ON FUNCTION public.get_masjid_admin_list(UUID) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.is_user_masjid_admin(UUID, UUID) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.get_pending_applications() TO authenticated;
+
+-- Grant execute permissions on profile management functions
+GRANT EXECUTE ON FUNCTION public.complete_user_profile(JSONB, JSONB) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.get_masjid_applications(UUID) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.get_masjids_by_state(TEXT) TO authenticated;
 
@@ -334,16 +348,57 @@ GRANT EXECUTE ON FUNCTION public.withdraw_admin_application(UUID, UUID) TO authe
 GRANT EXECUTE ON FUNCTION public.revoke_admin_assignment(UUID, UUID) TO authenticated;
 
 -- ============================================================================
+-- PERMISSIONS FOR AUTH USER CREATION
+-- ============================================================================
+
+-- Grant permissions for user creation during auth process
+GRANT INSERT ON public.users TO authenticated;
+GRANT INSERT ON public.users TO anon;
+GRANT INSERT ON public.profiles TO authenticated; 
+GRANT INSERT ON public.profiles TO anon;
+
+-- Grant permissions ONLY for auth admin to create users via Studio
+-- Regular users are created via Supabase Auth API, not direct table access
+GRANT ALL ON TABLE public.users TO supabase_auth_admin;
+GRANT ALL ON TABLE public.profiles TO supabase_auth_admin;
+
+-- ============================================================================
+-- SECURE INSERT POLICIES
+-- ============================================================================
+
+-- Policy: Only allow INSERT during auth registration via trigger
+-- This prevents direct table insertion while allowing trigger-based creation
+CREATE POLICY "users_insert_auth_only" ON public.users
+    FOR INSERT
+    WITH CHECK (
+        -- Only allow if the user ID exists in auth.users (created via auth flow)
+        EXISTS (SELECT 1 FROM auth.users WHERE id = users.id)
+        AND auth.uid() = id
+    );
+
+-- Policy: Profiles can only be created by triggers or super admins
+-- MOVED TO END: After helper functions are defined
+-- CREATE POLICY "profiles_insert_auth_only" ON public.profiles  
+--     FOR INSERT
+--     WITH CHECK (
+--         -- Allow if user exists in auth.users (trigger creation)
+--         EXISTS (SELECT 1 FROM auth.users WHERE id = profiles.user_id)
+--         AND (
+--             auth.uid() = user_id  -- User creating their own profile
+--             OR public.is_super_admin()  -- Super admin using helper function
+--         )
+--     );
+
+-- ============================================================================
 -- COMMENTS AND DOCUMENTATION
 -- ============================================================================
 
 COMMENT ON POLICY "users_select_own" ON public.users IS 'Users can view their own user record';
-COMMENT ON POLICY "users_select_super_admin" ON public.users IS 'Super admins can view all user records';
-COMMENT ON POLICY "users_select_masjid_admin" ON public.users IS 'Masjid admins can view users in their masjid community';
+-- COMMENT ON POLICY "users_select_masjid_admin" ON public.users IS 'Masjid admins can view users in their masjid community';
 
 COMMENT ON POLICY "profiles_all_own" ON public.profiles IS 'Users have full access to their own profile';
-COMMENT ON POLICY "profiles_select_super_admin" ON public.profiles IS 'Super admins can view all profiles';
-COMMENT ON POLICY "profiles_select_masjid_admin" ON public.profiles IS 'Masjid admins can view profiles of users in their masjid';
+-- COMMENT ON POLICY "profiles_select_super_admin" ON public.profiles IS 'Super admins can view all profiles';
+-- COMMENT ON POLICY "profiles_select_masjid_admin" ON public.profiles IS 'Masjid admins can view profiles of users in their masjid';
 
 COMMENT ON POLICY "masjids_select_public" ON public.masjids IS 'Public read access to active masjids';
 COMMENT ON POLICY "masjids_all_super_admin" ON public.masjids IS 'Super admins can manage all masjids';
@@ -353,3 +408,36 @@ COMMENT ON FUNCTION public.is_super_admin() IS 'Helper function to check if curr
 COMMENT ON FUNCTION public.is_admin_of_masjid(UUID) IS 'Helper function to check if current user is admin of specific masjid';
 COMMENT ON FUNCTION public.get_user_role() IS 'Helper function to get current user role';
 COMMENT ON FUNCTION public.get_user_admin_masjids() IS 'Helper function to get array of masjid IDs user administers';
+
+-- ============================================================================
+-- POLICIES THAT USE HELPER FUNCTIONS (must be created after functions)
+-- ============================================================================
+
+-- Policy: Super admins can view all profiles
+CREATE POLICY "profiles_select_super_admin" ON public.profiles
+    FOR SELECT
+    USING (public.is_super_admin());
+
+-- Policy: Super admins can update any profile
+CREATE POLICY "profiles_update_super_admin" ON public.profiles
+    FOR UPDATE
+    USING (public.is_super_admin())
+    WITH CHECK (public.is_super_admin());
+
+-- Policy: Profiles can only be created by triggers or super admins
+CREATE POLICY "profiles_insert_auth_only" ON public.profiles  
+    FOR INSERT
+    WITH CHECK (
+        -- Allow if user exists in auth.users (trigger creation)
+        EXISTS (SELECT 1 FROM auth.users WHERE id = profiles.user_id)
+        AND (
+            auth.uid() = user_id  -- User creating their own profile
+            OR public.is_super_admin()  -- Super admin using helper function
+        )
+    );
+
+-- Policy: Super admins can manage all profile addresses
+CREATE POLICY "profile_addresses_super_admin" ON public.profile_addresses
+    FOR ALL
+    USING (public.is_super_admin())
+    WITH CHECK (public.is_super_admin());

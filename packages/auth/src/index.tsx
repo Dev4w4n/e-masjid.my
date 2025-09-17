@@ -1,16 +1,23 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { authService, supabase } from '@masjid-suite/supabase-client';
-import type { Database, UserRole } from '@masjid-suite/shared-types';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
+import type { User, Session, AuthChangeEvent } from "@supabase/supabase-js";
+import { authService, supabase } from "@masjid-suite/supabase-client";
+import type { Database, UserRole } from "@masjid-suite/shared-types";
 
 // Extended profile type with user role and UI properties
-type UserWithRole = Database['public']['Tables']['users']['Row'];
-export type ProfileWithRole = Database['public']['Tables']['profiles']['Row'] & {
-  user_role?: UserRole;
-  role?: UserRole; // Alias for compatibility with UI components
-  email?: string; // From users table
-  avatar_url?: string; // For future implementation
-};
+type UserWithRole = Database["public"]["Tables"]["users"]["Row"];
+export type ProfileWithRole =
+  Database["public"]["Tables"]["profiles"]["Row"] & {
+    user_role?: UserRole;
+    role?: UserRole; // Alias for compatibility with UI components
+    email?: string; // From users table
+    avatar_url?: string; // For future implementation
+  };
 
 // Auth context types
 interface AuthContextType {
@@ -21,11 +28,17 @@ interface AuthContextType {
   loading: boolean;
   error: string | null;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, metadata?: Record<string, any>) => Promise<void>;
+  signUp: (
+    email: string,
+    password: string,
+    metadata?: Record<string, any>
+  ) => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updatePassword: (newPassword: string) => Promise<void>;
-  updateProfile: (updates: Partial<Database['public']['Tables']['profiles']['Update']>) => Promise<void>;
+  updateProfile: (
+    updates: Partial<Database["public"]["Tables"]["profiles"]["Update"]>
+  ) => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
 
@@ -54,19 +67,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     async function getInitialSession() {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
         if (mounted) {
           setSession(session);
           setUser(session?.user ?? null);
-          
+
           if (session?.user) {
             await loadUserProfile(session.user.id);
           }
         }
       } catch (err) {
         if (mounted) {
-          setError(err instanceof Error ? err.message : 'Failed to get initial session');
+          setError(
+            err instanceof Error ? err.message : "Failed to get initial session"
+          );
         }
       } finally {
         if (mounted) {
@@ -78,8 +95,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     getInitialSession();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(
+      async (event: AuthChangeEvent, session: Session | null) => {
         if (mounted) {
           setSession(session);
           setUser(session?.user ?? null);
@@ -107,43 +126,46 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       // Get profile data
       const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', userId)
+        .from("profiles")
+        .select("*")
+        .eq("user_id", userId)
         .single();
 
-      if (profileError && profileError.code !== 'PGRST116') { // No rows returned
+      if (profileError && profileError.code !== "PGRST116") {
+        // No rows returned
         throw profileError;
       }
 
       // Get user role and email data
       const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('role, email')
-        .eq('id', userId)
+        .from("users")
+        .select("role, email")
+        .eq("id", userId)
         .single();
 
-      if (userError && userError.code !== 'PGRST116') {
+      if (userError && userError.code !== "PGRST116") {
         throw userError;
       }
 
-      const role = userData?.role || 'public';
-      const email = userData?.email || '';
+      const role = userData?.role || "public";
+      const email = userData?.email || "";
       setUserRole(role);
 
       // Combine profile with role and email
-      const profileWithRole: ProfileWithRole | null = profileData ? {
-        ...profileData,
-        user_role: role,
-        role: role, // Alias for UI compatibility
-        email: email
-        // avatar_url is optional and undefined by default
-      } : null;
+      const profileWithRole: ProfileWithRole | null = profileData
+        ? {
+            ...profileData,
+            user_role: role,
+            role: role, // Alias for UI compatibility
+            email: email,
+            // avatar_url is optional and undefined by default
+          }
+        : null;
 
       setProfile(profileWithRole);
     } catch (err) {
-      console.error('Failed to load user profile:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load profile');
+      console.error("Failed to load user profile:", err);
+      setError(err instanceof Error ? err.message : "Failed to load profile");
     }
   }
 
@@ -154,20 +176,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setError(null);
       await authService.signIn(email, password);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Sign in failed');
+      setError(err instanceof Error ? err.message : "Sign in failed");
       throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  const signUp = async (email: string, password: string, metadata?: Record<string, any>) => {
+  const signUp = async (
+    email: string,
+    password: string,
+    metadata?: Record<string, any>
+  ) => {
     try {
       setLoading(true);
       setError(null);
       await authService.signUp(email, password, metadata);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Sign up failed');
+      setError(err instanceof Error ? err.message : "Sign up failed");
       throw err;
     } finally {
       setLoading(false);
@@ -180,7 +206,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setError(null);
       await authService.signOut();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Sign out failed');
+      setError(err instanceof Error ? err.message : "Sign out failed");
       throw err;
     } finally {
       setLoading(false);
@@ -192,7 +218,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setError(null);
       await authService.resetPassword(email);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Password reset failed');
+      setError(err instanceof Error ? err.message : "Password reset failed");
       throw err;
     }
   };
@@ -202,23 +228,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setError(null);
       await authService.updatePassword(newPassword);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Password update failed');
+      setError(err instanceof Error ? err.message : "Password update failed");
       throw err;
     }
   };
 
-  const updateProfile = async (updates: Partial<Database['public']['Tables']['profiles']['Update']>) => {
+  const updateProfile = async (
+    updates: Partial<Database["public"]["Tables"]["profiles"]["Update"]>
+  ) => {
     try {
       setError(null);
-      
+
       if (!user) {
-        throw new Error('No authenticated user');
+        throw new Error("No authenticated user");
       }
 
       const { data, error } = await supabase
-        .from('profiles')
+        .from("profiles")
         .update(updates)
-        .eq('user_id', user.id)
+        .eq("user_id", user.id)
         .select()
         .single();
 
@@ -228,7 +256,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       setProfile(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Profile update failed');
+      setError(err instanceof Error ? err.message : "Profile update failed");
       throw err;
     }
   };
@@ -264,7 +292,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }
@@ -324,28 +352,28 @@ export class PermissionService {
    * Check if user is super admin (works with ProfileWithRole)
    */
   static isSuperAdmin(profile: ProfileWithRole | null): boolean {
-    return this.hasRole(profile, 'super_admin');
+    return this.hasRole(profile, "super_admin");
   }
 
   /**
    * Check if user is masjid admin (works with ProfileWithRole)
    */
   static isMasjidAdmin(profile: ProfileWithRole | null): boolean {
-    return this.hasRole(profile, 'masjid_admin');
+    return this.hasRole(profile, "masjid_admin");
   }
 
   /**
    * Check if user is registered community member (works with ProfileWithRole)
    */
   static isRegistered(profile: ProfileWithRole | null): boolean {
-    return this.hasRole(profile, 'registered');
+    return this.hasRole(profile, "registered");
   }
 
   /**
    * Check if user is public (works with ProfileWithRole)
    */
   static isPublic(profile: ProfileWithRole | null): boolean {
-    return this.hasRole(profile, 'public');
+    return this.hasRole(profile, "public");
   }
 
   /**
@@ -370,17 +398,17 @@ export class PermissionService {
     masjidId: string
   ): Promise<boolean> {
     if (!profile) return false;
-    
+
     // Super admins can manage any masjid
     if (this.isSuperAdmin(profile)) return true;
-    
+
     // Masjid admins can only manage their assigned masjids
     if (this.isMasjidAdmin(profile)) {
       const { data, error } = await supabase
-        .from('masjid_admins')
-        .select('id')
-        .eq('profile_id', profile.id)
-        .eq('masjid_id', masjidId)
+        .from("masjid_admins")
+        .select("id")
+        .eq("profile_id", profile.id)
+        .eq("masjid_id", masjidId)
         .single();
 
       return !error && !!data;
@@ -394,19 +422,19 @@ export class PermissionService {
    */
   static canViewProfile(
     currentProfile: ProfileWithRole | null,
-    targetProfile: Database['public']['Tables']['profiles']['Row']
+    targetProfile: Database["public"]["Tables"]["profiles"]["Row"]
   ): boolean {
     if (!currentProfile) return false;
-    
+
     // Users can always view their own profile
     if (currentProfile.id === targetProfile.id) return true;
-    
+
     // Super admins can view any profile
     if (this.isSuperAdmin(currentProfile)) return true;
-    
+
     // Masjid admins can view profiles of users in their masjids
     // This would require additional logic to check masjid membership
-    
+
     return false;
   }
 
@@ -415,16 +443,16 @@ export class PermissionService {
    */
   static canEditProfile(
     currentProfile: ProfileWithRole | null,
-    targetProfile: Database['public']['Tables']['profiles']['Row']
+    targetProfile: Database["public"]["Tables"]["profiles"]["Row"]
   ): boolean {
     if (!currentProfile) return false;
-    
+
     // Users can always edit their own profile
     if (currentProfile.id === targetProfile.id) return true;
-    
+
     // Super admins can edit any profile
     if (this.isSuperAdmin(currentProfile)) return true;
-    
+
     return false;
   }
 }
@@ -443,12 +471,14 @@ export function usePermissions() {
     isPublic: () => PermissionService.isPublic(profile),
     hasAdminPrivileges: () => PermissionService.hasAdminPrivileges(profile),
     canManageMasjids: () => PermissionService.canManageMasjids(profile),
-    canManageSpecificMasjid: (masjidId: string) => 
+    canManageSpecificMasjid: (masjidId: string) =>
       PermissionService.canManageSpecificMasjid(profile, masjidId),
-    canViewProfile: (targetProfile: Database['public']['Tables']['profiles']['Row']) =>
-      PermissionService.canViewProfile(profile, targetProfile),
-    canEditProfile: (targetProfile: Database['public']['Tables']['profiles']['Row']) =>
-      PermissionService.canEditProfile(profile, targetProfile),
+    canViewProfile: (
+      targetProfile: Database["public"]["Tables"]["profiles"]["Row"]
+    ) => PermissionService.canViewProfile(profile, targetProfile),
+    canEditProfile: (
+      targetProfile: Database["public"]["Tables"]["profiles"]["Row"]
+    ) => PermissionService.canEditProfile(profile, targetProfile),
   };
 }
 
@@ -462,18 +492,23 @@ interface WithRoleProps {
   fallback?: ReactNode;
 }
 
-export function WithRole({ role, roles, children, fallback = null }: WithRoleProps) {
+export function WithRole({
+  role,
+  roles,
+  children,
+  fallback = null,
+}: WithRoleProps) {
   const { profile } = useAuth();
 
   if (!profile) {
     return <>{fallback}</>;
   }
 
-  const hasAccess = role 
+  const hasAccess = role
     ? PermissionService.hasRole(profile, role)
-    : roles 
-    ? roles.some(r => PermissionService.hasRole(profile, r))
-    : false;
+    : roles
+      ? roles.some((r) => PermissionService.hasRole(profile, r))
+      : false;
 
   return hasAccess ? <>{children}</> : <>{fallback}</>;
 }
@@ -488,7 +523,7 @@ interface AdminOnlyProps {
 
 export function AdminOnly({ children, fallback = null }: AdminOnlyProps) {
   return (
-    <WithRole roles={['super_admin', 'masjid_admin']} fallback={fallback}>
+    <WithRole roles={["super_admin", "masjid_admin"]} fallback={fallback}>
       {children}
     </WithRole>
   );
@@ -508,7 +543,10 @@ export function SuperAdminOnly({ children, fallback = null }: AdminOnlyProps) {
 /**
  * Component for authenticated users only
  */
-export function AuthenticatedOnly({ children, fallback = null }: AdminOnlyProps) {
+export function AuthenticatedOnly({
+  children,
+  fallback = null,
+}: AdminOnlyProps) {
   const { user } = useAuth();
   return user ? <>{children}</> : <>{fallback}</>;
 }
@@ -520,7 +558,9 @@ export function useProtectedRoute(requiredRole?: UserRole) {
   const { user, profile, loading } = useAuth();
 
   const isAuthenticated = !!user;
-  const hasRequiredRole = requiredRole ? PermissionService.hasRole(profile, requiredRole) : true;
+  const hasRequiredRole = requiredRole
+    ? PermissionService.hasRole(profile, requiredRole)
+    : true;
   const canAccess = isAuthenticated && hasRequiredRole;
 
   return {

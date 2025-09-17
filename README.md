@@ -8,7 +8,39 @@
 
 This quickstart guide will help you set up the Masjid Suite monorepo locally and run the Profile Management System. You'll create a super admin account, set up a masjid, and walk through the complete user workflow.
 
-## 🚀 Quick Setup
+## � First-Time System Setup
+
+### Prerequisites Installation
+
+Before running the application, ensure you have the following installed:
+
+1. **Install Supabase CLI**:
+
+   ```bash
+   # Using npm
+   npm install -g supabase
+
+   # Using Homebrew (macOS)
+   brew install supabase/tap/supabase
+
+   # Verify installation
+   supabase --version
+   ```
+
+2. **Start Supabase services**:
+
+   ```bash
+   # Initialize and start Supabase
+   supabase start
+   ```
+
+3. **Setup super admin account**:
+   ```bash
+   # Run the setup script for super admin
+   ./scripts/setup-superadmin.sh
+   ```
+
+## �🚀 Quick Setup
 
 ### 1. Repository Setup
 
@@ -45,15 +77,20 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 ### 3. Start Supabase Backend
 
+> **Note**: If you followed the first-time setup above, Supabase should already be running. Otherwise, run:
+
 ```bash
+# Install Supabase CLI (if not already installed)
 npm install supabase --save-dev
 
+# Initialize Supabase project
 npx supabase init
 
+# Start Supabase services
 npx supabase start
 ```
 
-Run all .sql in `./supabase/migrations`
+Run all .sql files in `./supabase/migrations`
 
 ### 4. Start Development Server
 
@@ -65,7 +102,7 @@ cd ..
 pnpm dev
 
 # Or start specific app
-pnpm dev --filter=profile-app
+pnpm dev --filter=@masjid-suite/profile
 ```
 
 The application will be available at:
@@ -248,7 +285,7 @@ pnpm format
 pnpm build
 
 # Build specific app
-pnpm build --filter=profile-app
+pnpm build --filter=@masjid-suite/profile
 
 # Preview production build
 pnpm preview

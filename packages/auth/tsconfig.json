@@ -15,14 +15,14 @@
     "noEmit": false,
     "strict": true,
     "baseUrl": ".",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "composite": true,
+    "incremental": true
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "tests/**/*"
+  "include": ["src/**/*"],
+  "exclude": ["dist", "node_modules", "tests/**/*"],
+  "references": [
+    { "path": "../shared-types" },
+    { "path": "../supabase-client" }
   ]
 }

@@ -1,313 +1,305 @@
--- Seed data for Masjid Suite Profile Management System
--- This file contains initial data for development and testing
+-- ============================================================================
+-- SEED DATA FOR E-MASJID SUITE PROFILE MODULE
+-- ============================================================================
+-- This file contains sample data for development and testing purposes
+-- Run this after all migrations have been applied
 
 -- ============================================================================
--- SUPER ADMIN USER SETUP
+-- SEED DATA FOR E-MASJID SUITE PROFILE MODULE
 -- ============================================================================
+-- This file contains sample data for development and testing purposes
+-- Run this after all migrations have been applied
 
--- Note: Super admin will be created via Supabase Auth with email from .env
--- This seed sets up the profile for the super admin user
--- The super admin user ID will be inserted by the auth trigger
-
--- ============================================================================
--- SAMPLE MASJIDS
--- ============================================================================
-
--- Insert sample masjids (will be created by super admin)
-INSERT INTO public.masjids (id, name, registration_number, email, phone_number, description, address, status, created_by) VALUES
-
--- Masjid Jamek Sungai Rambai (Primary test masjid)
-(
-    '01234567-89ab-cdef-0123-456789abcdef',
-    'Masjid Jamek Sungai Rambai',
-    'MSJ-2024-001',
-    'admin@masjidjameksungairambai.org',
-    '+60412345678',
-    'Community mosque serving the Sungai Rambai area in Bukit Mertajam. Established in 1985, this mosque serves over 300 families and offers daily prayers, Friday sermons, and religious education programs.',
-    '{"address_line_1": "Jalan Masjid Jamek", "address_line_2": "Sungai Rambai", "city": "Bukit Mertajam", "state": "Penang", "postcode": "14000", "country": "MYS"}',
-    'active',
-    (SELECT id FROM public.users WHERE role = 'super_admin' LIMIT 1)
-),
-
--- Masjid Al-Hidayah (Secondary test masjid)
-(
-    '01234567-89ab-cdef-0123-456789abcde0',
-    'Masjid Al-Hidayah',
-    'MSJ-2024-002',
-    'contact@masjidalhidayah.my',
-    '+60387654321',
-    'Modern community mosque in Shah Alam serving diverse Islamic community with multilingual services and youth programs.',
-    '{"address_line_1": "No. 15, Jalan Masjid Al-Hidayah", "address_line_2": "Seksyen 7", "city": "Shah Alam", "state": "Selangor", "postcode": "40000", "country": "MYS"}',
-    'active',
-    (SELECT id FROM public.users WHERE role = 'super_admin' LIMIT 1)
-),
-
--- Masjid Ar-Rahman (Third test masjid)
-(
-    '01234567-89ab-cdef-0123-456789abcde1',
-    'Masjid Ar-Rahman',
-    'MSJ-2024-003',
-    'info@masjidarrahman.org.my',
-    '+60361234567',
-    'Historic mosque in Kuala Lumpur city center, known for its beautiful architecture and active community outreach programs.',
-    '{"address_line_1": "Jalan Masjid India", "address_line_2": "", "city": "Kuala Lumpur", "state": "Kuala Lumpur", "postcode": "50100", "country": "MYS"}',
-    'active',
-    (SELECT id FROM public.users WHERE role = 'super_admin' LIMIT 1)
-);
+-- NOTE: To seed with sample data, first create users via Supabase Auth
+-- Then uncomment and run the INSERT statements below with actual user IDs
 
 -- ============================================================================
--- SAMPLE REGISTERED USERS
+-- SAMPLE MASJIDS (Uncomment after creating super admin via Auth)
 -- ============================================================================
-
--- Note: These users will be created through the auth system
--- This is just for documentation of test users
--- In development, you can create these users through the registration flow
 
 /*
-Sample users for testing:
+-- First create a super admin user via Supabase Studio:
+-- Email: super.admin@emasjid.my
+-- Password: SuperAdmin123!
+-- Then replace 'YOUR_SUPER_ADMIN_ID' below with the actual UUID
 
-1. Ali bin Abdullah
-   Email: ali@example.com
-   Password: UserPassword123!
-   Role: registered -> masjid_admin (after approval)
-   Home Masjid: Masjid Jamek Sungai Rambai
-
-2. Siti Nurhaliza
-   Email: siti@example.com  
-   Password: UserPassword123!
-   Role: registered
-   Home Masjid: Masjid Al-Hidayah
-
-3. Ahmad Rahman
-   Email: ahmad@example.com
-   Password: UserPassword123!
-   Role: registered -> masjid_admin (after approval)
-   Home Masjid: Masjid Ar-Rahman
-
-4. Fatimah Zahra
-   Email: fatimah@example.com
-   Password: UserPassword123!
-   Role: registered
-   Home Masjid: Masjid Jamek Sungai Rambai
-
-5. Public User (No registration)
-   Can browse masjids without account
+INSERT INTO public.masjids (
+    id,
+    name,
+    registration_number,
+    email,
+    phone_number,
+    description,
+    address,
+    status,
+    created_by,
+    created_at,
+    updated_at
+) VALUES 
+(
+    '550e8400-e29b-41d4-a716-446655440001',
+    'Masjid Al-Hidayah',
+    'MSJ-2024-001',
+    'info@alhidayah.my',
+    '+60379561234',
+    'A peaceful masjid serving the local community with various Islamic programs and activities.',
+    '{
+        "address_line_1": "No. 15, Jalan Masjid Al-Hidayah",
+        "address_line_2": "Seksyen 7",
+        "city": "Shah Alam",
+        "state": "Selangor",
+        "postcode": "40100",
+        "country": "Malaysia"
+    }'::jsonb,
+    'active',
+    'YOUR_SUPER_ADMIN_ID',
+    NOW(),
+    NOW()
+),
+(
+    '550e8400-e29b-41d4-a716-446655440002',
+    'Masjid An-Nur',
+    'MSJ-2024-002',
+    'contact@annur.my',
+    '+60321425678',
+    'Modern masjid with comprehensive facilities for the community.',
+    '{
+        "address_line_1": "Jalan Masjid India",
+        "address_line_2": "",
+        "city": "Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "postcode": "50100",
+        "country": "Malaysia"
+    }'::jsonb,
+    'active',
+    'YOUR_SUPER_ADMIN_ID',
+    NOW(),
+    NOW()
+),
+(
+    '550e8400-e29b-41d4-a716-446655440003',
+    'Masjid At-Taqwa',
+    'MSJ-2024-003',
+    'admin@attaqwa.my',
+    '+60722398765',
+    'Traditional masjid with a strong focus on community education and welfare.',
+    '{
+        "address_line_1": "Jalan Tun Abdul Razak",
+        "address_line_2": "Taman Johor Jaya",
+        "city": "Johor Bahru",
+        "state": "Johor",
+        "postcode": "81100",
+        "country": "Malaysia"
+    }'::jsonb,
+    'active',
+    'YOUR_SUPER_ADMIN_ID',
+    NOW(),
+    NOW()
+);
 */
 
 -- ============================================================================
--- MALAYSIAN POSTAL CODE VALIDATION DATA
+-- SAMPLE USER DATA (for manual insertion after auth users are created)
 -- ============================================================================
 
--- Create table for postal code validation (optional enhancement)
-CREATE TABLE IF NOT EXISTS public.malaysian_postcodes (
-    postcode VARCHAR(5) PRIMARY KEY,
-    city VARCHAR(100) NOT NULL,
-    state malaysian_state NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+-- This section provides INSERT statements that can be run after creating
+-- auth users via Supabase Studio or Auth API
 
--- Insert sample postal codes for major cities
-INSERT INTO public.malaysian_postcodes (postcode, city, state) VALUES
--- Kuala Lumpur
-('50100', 'Kuala Lumpur', 'Kuala Lumpur'),
-('50200', 'Kuala Lumpur', 'Kuala Lumpur'),
-('50300', 'Kuala Lumpur', 'Kuala Lumpur'),
-('50400', 'Kuala Lumpur', 'Kuala Lumpur'),
-('50450', 'Kuala Lumpur', 'Kuala Lumpur'),
-('50470', 'Kuala Lumpur', 'Kuala Lumpur'),
-('50480', 'Kuala Lumpur', 'Kuala Lumpur'),
-('50490', 'Kuala Lumpur', 'Kuala Lumpur'),
+/*
+-- Example: After creating auth users, insert corresponding public.users records
+-- Replace the UUIDs with actual IDs from auth.users
 
--- Selangor
-('40000', 'Shah Alam', 'Selangor'),
-('40100', 'Shah Alam', 'Selangor'),
-('40150', 'Shah Alam', 'Selangor'),
-('40160', 'Shah Alam', 'Selangor'),
-('40170', 'Shah Alam', 'Selangor'),
-('46000', 'Petaling Jaya', 'Selangor'),
-('46100', 'Petaling Jaya', 'Selangor'),
-('46150', 'Petaling Jaya', 'Selangor'),
-('46200', 'Petaling Jaya', 'Selangor'),
-('47000', 'Sungai Buloh', 'Selangor'),
-('47100', 'Puchong', 'Selangor'),
-('47300', 'Kelana Jaya', 'Selangor'),
+-- Super Admin
+INSERT INTO public.users (id, email, role, email_verified, created_at, updated_at) VALUES
+('11111111-1111-1111-1111-111111111111', 'super.admin@emasjid.my', 'super_admin', true, NOW(), NOW());
 
--- Penang
-('10000', 'George Town', 'Penang'),
-('10050', 'George Town', 'Penang'),
-('10100', 'George Town', 'Penang'),
-('10150', 'George Town', 'Penang'),
-('10200', 'George Town', 'Penang'),
-('10250', 'George Town', 'Penang'),
-('10300', 'George Town', 'Penang'),
-('10350', 'George Town', 'Penang'),
-('10400', 'George Town', 'Penang'),
-('10450', 'George Town', 'Penang'),
-('10500', 'George Town', 'Penang'),
-('10550', 'George Town', 'Penang'),
-('10600', 'George Town', 'Penang'),
-('10650', 'George Town', 'Penang'),
-('10700', 'George Town', 'Penang'),
-('10750', 'George Town', 'Penang'),
-('10800', 'George Town', 'Penang'),
-('10850', 'George Town', 'Penang'),
-('10900', 'George Town', 'Penang'),
-('10950', 'George Town', 'Penang'),
-('11000', 'Balik Pulau', 'Penang'),
-('11100', 'Batu Maung', 'Penang'),
-('11200', 'Tanjung Bungah', 'Penang'),
-('11300', 'Air Itam', 'Penang'),
-('11400', 'Ayer Itam', 'Penang'),
-('11500', 'Air Itam', 'Penang'),
-('11600', 'George Town', 'Penang'),
-('11700', 'Gelugor', 'Penang'),
-('11800', 'Gelugor', 'Penang'),
-('11900', 'Bayan Lepas', 'Penang'),
-('12000', 'Butterworth', 'Penang'),
-('12100', 'Butterworth', 'Penang'),
-('12200', 'Butterworth', 'Penang'),
-('12300', 'Butterworth', 'Penang'),
-('13000', 'Kepala Batas', 'Penang'),
-('13100', 'Kepala Batas', 'Penang'),
-('13200', 'Kepala Batas', 'Penang'),
-('13300', 'Kepala Batas', 'Penang'),
-('13400', 'Kepala Batas', 'Penang'),
-('14000', 'Bukit Mertajam', 'Penang'),
-('14100', 'Bukit Mertajam', 'Penang'),
-('14200', 'Bukit Mertajam', 'Penang'),
-('14300', 'Bukit Mertajam', 'Penang'),
+-- Masjid Admins
+INSERT INTO public.users (id, email, role, email_verified, created_at, updated_at) VALUES
+('22222222-2222-2222-2222-222222222222', 'admin.alhidayah@emasjid.my', 'masjid_admin', true, NOW(), NOW()),
+('33333333-3333-3333-3333-333333333333', 'admin.annur@emasjid.my', 'masjid_admin', true, NOW(), NOW());
 
--- Johor
-('80000', 'Johor Bahru', 'Johor'),
-('80100', 'Johor Bahru', 'Johor'),
-('80150', 'Johor Bahru', 'Johor'),
-('80200', 'Johor Bahru', 'Johor'),
-('80250', 'Johor Bahru', 'Johor'),
-('80300', 'Johor Bahru', 'Johor'),
-('81000', 'Kulai', 'Johor'),
-('81100', 'Kulai', 'Johor'),
-('81200', 'Johor Bahru', 'Johor'),
-('81300', 'Johor Bahru', 'Johor'),
-('81400', 'Senai', 'Johor'),
-('81500', 'Senai', 'Johor'),
-('81600', 'Senai', 'Johor'),
-('81700', 'Pasir Gudang', 'Johor'),
-('81800', 'Ulu Tiram', 'Johor'),
-('81900', 'Kota Tinggi', 'Johor'),
+-- Regular Users
+INSERT INTO public.users (id, email, role, email_verified, created_at, updated_at) VALUES
+('44444444-4444-4444-4444-444444444444', 'ahmad.ibrahim@example.com', 'registered', true, NOW(), NOW()),
+('55555555-5555-5555-5555-555555555555', 'fatimah.hassan@example.com', 'registered', true, NOW(), NOW());
 
--- Sabah
-('88000', 'Kota Kinabalu', 'Sabah'),
-('88100', 'Kota Kinabalu', 'Sabah'),
-('88200', 'Kota Kinabalu', 'Sabah'),
-('88300', 'Kota Kinabalu', 'Sabah'),
-('88400', 'Kota Kinabalu', 'Sabah'),
-('88450', 'Kota Kinabalu', 'Sabah'),
-('88460', 'Kota Kinabalu', 'Sabah'),
-('88470', 'Kota Kinabalu', 'Sabah'),
-('88480', 'Kota Kinabalu', 'Sabah'),
-('88490', 'Kota Kinabalu', 'Sabah'),
-('88500', 'Kota Kinabalu', 'Sabah'),
-('88550', 'Kota Kinabalu', 'Sabah'),
-('88560', 'Kota Kinabalu', 'Sabah'),
-('88570', 'Kota Kinabalu', 'Sabah'),
-('88580', 'Kota Kinabalu', 'Sabah'),
-('88590', 'Kota Kinabalu', 'Sabah'),
-('88600', 'Kota Kinabalu', 'Sabah'),
-('88610', 'Kota Kinabalu', 'Sabah'),
-('88620', 'Kota Kinabalu', 'Sabah'),
-('88624', 'Kota Kinabalu', 'Sabah'),
-('88626', 'Kota Kinabalu', 'Sabah'),
-('88628', 'Kota Kinabalu', 'Sabah'),
-('88630', 'Kota Kinabalu', 'Sabah'),
-('88632', 'Kota Kinabalu', 'Sabah'),
-('88634', 'Kota Kinabalu', 'Sabah'),
-('88636', 'Kota Kinabalu', 'Sabah'),
-('88638', 'Kota Kinabalu', 'Sabah'),
-('88640', 'Kota Kinabalu', 'Sabah'),
-('88644', 'Kota Kinabalu', 'Sabah'),
-('88646', 'Kota Kinabalu', 'Sabah'),
-('88648', 'Kota Kinabalu', 'Sabah'),
-('88650', 'Kota Kinabalu', 'Sabah'),
-('88660', 'Kota Kinabalu', 'Sabah'),
-('88661', 'Kota Kinabalu', 'Sabah'),
-('88662', 'Kota Kinabalu', 'Sabah'),
-('88670', 'Kota Kinabalu', 'Sabah'),
-('88672', 'Kota Kinabalu', 'Sabah'),
-('88673', 'Kota Kinabalu', 'Sabah'),
-('88675', 'Kota Kinabalu', 'Sabah'),
-('88676', 'Kota Kinabalu', 'Sabah'),
-('88680', 'Kota Kinabalu', 'Sabah'),
-('88690', 'Kota Kinabalu', 'Sabah'),
+-- Profiles (will be auto-created by trigger, but can be updated)
+UPDATE public.profiles SET 
+    full_name = 'Super Admin',
+    phone_number = '+60-12-345-6789',
+    date_of_birth = '1980-01-01',
+    gender = 'male',
+    preferred_language = 'en',
+    home_masjid_id = '550e8400-e29b-41d4-a716-446655440001',
+    is_complete = true,
+    updated_at = NOW()
+WHERE user_id = '11111111-1111-1111-1111-111111111111';
 
--- Sarawak
-('93000', 'Kuching', 'Sarawak'),
-('93100', 'Kuching', 'Sarawak'),
-('93150', 'Kuching', 'Sarawak'),
-('93200', 'Kuching', 'Sarawak'),
-('93250', 'Kuching', 'Sarawak'),
-('93300', 'Kuching', 'Sarawak'),
-('93350', 'Kuching', 'Sarawak'),
-('93400', 'Kuching', 'Sarawak'),
-('93450', 'Kuching', 'Sarawak'),
-('93500', 'Kuching', 'Sarawak'),
-('93550', 'Kuching', 'Sarawak'),
-('93582', 'Kuching', 'Sarawak'),
-('93586', 'Kuching', 'Sarawak'),
-('93590', 'Kuching', 'Sarawak'),
-('93594', 'Kuching', 'Sarawak'),
-('93596', 'Kuching', 'Sarawak'),
-('93600', 'Kuching', 'Sarawak'),
-('93610', 'Kuching', 'Sarawak'),
-('93614', 'Kuching', 'Sarawak'),
-('93616', 'Kuching', 'Sarawak'),
-('93618', 'Kuching', 'Sarawak'),
-('93620', 'Kuching', 'Sarawak'),
-('93622', 'Kuching', 'Sarawak'),
-('93624', 'Kuching', 'Sarawak'),
-('93626', 'Kuching', 'Sarawak'),
-('93628', 'Kuching', 'Sarawak'),
-('93630', 'Kuching', 'Sarawak'),
-('93632', 'Kuching', 'Sarawak'),
-('93634', 'Kuching', 'Sarawak'),
-('93636', 'Kuching', 'Sarawak'),
-('93638', 'Kuching', 'Sarawak'),
-('93640', 'Kuching', 'Sarawak'),
-('93642', 'Kuching', 'Sarawak'),
-('93644', 'Kuching', 'Sarawak'),
-('93646', 'Kuching', 'Sarawak'),
-('93648', 'Kuching', 'Sarawak'),
-('93650', 'Kuching', 'Sarawak'),
-('93660', 'Kuching', 'Sarawak'),
-('93661', 'Kuching', 'Sarawak'),
-('93662', 'Kuching', 'Sarawak'),
-('93670', 'Kuching', 'Sarawak'),
-('93672', 'Kuching', 'Sarawak'),
-('93673', 'Kuching', 'Sarawak'),
-('93675', 'Kuching', 'Sarawak'),
-('93700', 'Kuching', 'Sarawak'),
-('93710', 'Kuching', 'Sarawak'),
-('93720', 'Kuching', 'Sarawak'),
-('93722', 'Kuching', 'Sarawak'),
-('93724', 'Kuching', 'Sarawak'),
-('93726', 'Kuching', 'Sarawak'),
-('93728', 'Kuching', 'Sarawak'),
-('93730', 'Kuching', 'Sarawak'),
-('93732', 'Kuching', 'Sarawak'),
-('93734', 'Kuching', 'Sarawak'),
-('93736', 'Kuching', 'Sarawak'),
-('93738', 'Kuching', 'Sarawak'),
-('93740', 'Kuching', 'Sarawak'),
-('93742', 'Kuching', 'Sarawak'),
-('93744', 'Kuching', 'Sarawak'),
-('93746', 'Kuching', 'Sarawak'),
-('93748', 'Kuching', 'Sarawak'),
-('93750', 'Kuching', 'Sarawak'),
-('93760', 'Kuching', 'Sarawak'),
-('93762', 'Kuching', 'Sarawak'),
-('93990', 'Kuching', 'Sarawak');
+UPDATE public.profiles SET 
+    full_name = 'Ahmad Ibrahim bin Abdullah',
+    phone_number = '+60-13-456-7890',
+    date_of_birth = '1985-05-15',
+    gender = 'male',
+    preferred_language = 'ms',
+    home_masjid_id = '550e8400-e29b-41d4-a716-446655440001',
+    is_complete = true,
+    updated_at = NOW()
+WHERE user_id = '22222222-2222-2222-2222-222222222222';
 
--- Create index for postcode lookup
-CREATE INDEX IF NOT EXISTS idx_malaysian_postcodes_lookup ON public.malaysian_postcodes(postcode, state);
+UPDATE public.profiles SET 
+    full_name = 'Mohd Zaki bin Hassan',
+    phone_number = '+60-14-567-8901',
+    date_of_birth = '1982-08-22',
+    gender = 'male',
+    preferred_language = 'ms',
+    home_masjid_id = '550e8400-e29b-41d4-a716-446655440002',
+    is_complete = true,
+    updated_at = NOW()
+WHERE user_id = '33333333-3333-3333-3333-333333333333';
+
+UPDATE public.profiles SET 
+    full_name = 'Ahmad Ibrahim',
+    phone_number = '+60-15-678-9012',
+    date_of_birth = '1990-03-10',
+    gender = 'male',
+    preferred_language = 'ms',
+    home_masjid_id = '550e8400-e29b-41d4-a716-446655440001',
+    is_complete = true,
+    updated_at = NOW()
+WHERE user_id = '44444444-4444-4444-4444-444444444444';
+
+UPDATE public.profiles SET 
+    full_name = 'Fatimah Hassan',
+    phone_number = '+60-16-789-0123',
+    date_of_birth = '1988-11-25',
+    gender = 'female',
+    preferred_language = 'ms',
+    home_masjid_id = '550e8400-e29b-41d4-a716-446655440002',
+    is_complete = true,
+    updated_at = NOW()
+WHERE user_id = '55555555-5555-5555-5555-555555555555';
+
+-- Profile Addresses
+INSERT INTO public.profile_addresses (
+    profile_id,
+    address_line_1,
+    address_line_2,
+    city,
+    state,
+    postcode,
+    country,
+    is_primary
+) VALUES
+-- Address for Ahmad Ibrahim (get profile_id from profiles table)
+((SELECT id FROM public.profiles WHERE user_id = '22222222-2222-2222-2222-222222222222'), 
+ 'No. 12, Jalan Harmoni 3/2', 'Taman Harmoni', 'Shah Alam', 'Selangor', '40100', 'Malaysia', true),
+
+-- Address for Mohd Zaki
+((SELECT id FROM public.profiles WHERE user_id = '33333333-3333-3333-3333-333333333333'), 
+ 'No. 45, Jalan Wangsa Maju 5/3', 'Taman Wangsa Maju', 'Kuala Lumpur', 'Kuala Lumpur', '53300', 'Malaysia', true),
+
+-- Address for Ahmad Ibrahim (user)
+((SELECT id FROM public.profiles WHERE user_id = '44444444-4444-4444-4444-444444444444'), 
+ 'No. 78, Jalan Tun Razak 2/1', 'Taman Tun Razak', 'Petaling Jaya', 'Selangor', '46000', 'Malaysia', true),
+
+-- Address for Fatimah Hassan
+((SELECT id FROM public.profiles WHERE user_id = '55555555-5555-5555-5555-555555555555'), 
+ 'No. 23, Jalan Ampang 4/7', 'Taman Ampang', 'Kuala Lumpur', 'Kuala Lumpur', '50450', 'Malaysia', true);
+
+-- Masjid Admin Assignments
+INSERT INTO public.masjid_admins (
+    id,
+    user_id,
+    masjid_id,
+    assigned_by,
+    assigned_at,
+    status,
+    notes
+) VALUES
+('aa111111-1111-1111-1111-111111111111', '22222222-2222-2222-2222-222222222222', '550e8400-e29b-41d4-a716-446655440001', '11111111-1111-1111-1111-111111111111', NOW(), 'active', 'Initial admin assignment'),
+('aa222222-2222-2222-2222-222222222222', '33333333-3333-3333-3333-333333333333', '550e8400-e29b-41d4-a716-446655440002', '11111111-1111-1111-1111-111111111111', NOW(), 'active', 'Initial admin assignment');
+*/
+
+-- ============================================================================
+-- SAMPLE ADMIN APPLICATIONS (for testing the application workflow)
+-- ============================================================================
+
+/*
+-- Example admin applications (uncomment and modify UUIDs after creating users)
+INSERT INTO public.admin_applications (
+    id,
+    user_id,
+    masjid_id,
+    reason,
+    experience,
+    references,
+    status,
+    created_at
+) VALUES
+('app11111-1111-1111-1111-111111111111', '44444444-4444-4444-4444-444444444444', '550e8400-e29b-41d4-a716-446655440003', 
+ 'I would like to contribute to the management of our local masjid and help organize community programs.',
+ 'I have 5 years of experience in community organizing and event management. I am also a regular congregant at this masjid.',
+ 'Ustaz Abdullah (imam), Encik Rahman (current committee member)',
+ 'pending', NOW()),
+
+('app22222-2222-2222-2222-222222222222', '55555555-5555-5555-5555-555555555555', '550e8400-e29b-41d4-a716-446655440003',
+ 'I want to help with the educational programs and youth activities at the masjid.',
+ 'I am a teacher by profession and have been involved in Islamic education for 8 years.',
+ 'Ustazah Khadijah (madrasah teacher), Puan Aminah (youth coordinator)',
+ 'pending', NOW());
+*/
+
+-- ============================================================================
+-- UTILITY QUERIES FOR DEVELOPMENT
+-- ============================================================================
+
+-- View all users with their profiles and masjid assignments
+/*
+SELECT 
+    u.email,
+    u.role,
+    p.full_name,
+    p.phone_number,
+    m.name as home_masjid,
+    ma.masjid_id as admin_masjid_id,
+    ma.status as admin_status
+FROM public.users u
+LEFT JOIN public.profiles p ON u.id = p.user_id
+LEFT JOIN public.masjids m ON p.home_masjid_id = m.id
+LEFT JOIN public.masjid_admins ma ON u.id = ma.user_id AND ma.status = 'active'
+ORDER BY u.role, u.created_at;
+*/
+
+-- View all masjids with their admin count
+/*
+SELECT 
+    m.name,
+    m.address->>'state' as state,
+    m.address->>'city' as city,
+    m.status,
+    COUNT(ma.user_id) as admin_count
+FROM public.masjids m
+LEFT JOIN public.masjid_admins ma ON m.id = ma.masjid_id AND ma.status = 'active'
+GROUP BY m.id, m.name, m.address, m.status
+ORDER BY m.name;
+*/
+
+-- View pending admin applications
+/*
+SELECT 
+    aa.id,
+    u.email,
+    p.full_name,
+    m.name as masjid_name,
+    aa.reason,
+    aa.created_at
+FROM public.admin_applications aa
+JOIN public.users u ON aa.user_id = u.id
+JOIN public.profiles p ON u.id = p.user_id
+JOIN public.masjids m ON aa.masjid_id = m.id
+WHERE aa.status = 'pending'
+ORDER BY aa.created_at;
+*/
 
 -- ============================================================================
 -- DEVELOPMENT HELPER FUNCTIONS
@@ -317,54 +309,88 @@ CREATE INDEX IF NOT EXISTS idx_malaysian_postcodes_lookup ON public.malaysian_po
 CREATE OR REPLACE FUNCTION public.reset_development_data()
 RETURNS void AS $$
 BEGIN
-    -- Only allow in development
-    IF current_setting('app.environment', true) != 'development' THEN
-        RAISE EXCEPTION 'This function can only be used in development environment';
-    END IF;
-    
     -- Delete in reverse dependency order
     DELETE FROM public.admin_applications;
     DELETE FROM public.masjid_admins;
     DELETE FROM public.profile_addresses;
-    DELETE FROM public.profiles;
+    DELETE FROM public.profiles WHERE user_id NOT IN (SELECT id FROM public.users WHERE role = 'super_admin');
     DELETE FROM public.masjids;
     DELETE FROM public.users WHERE role != 'super_admin';
+    DELETE FROM auth.users WHERE email != 'super.admin@emasjid.my';
     
     RAISE NOTICE 'Development data reset completed';
 END;
 $$ LANGUAGE plpgsql;
 
--- Function to create sample data (for development only)
-CREATE OR REPLACE FUNCTION public.create_sample_data()
-RETURNS void AS $$
-BEGIN
-    -- Only allow in development
-    IF current_setting('app.environment', true) != 'development' THEN
-        RAISE EXCEPTION 'This function can only be used in development environment';
-    END IF;
-    
-    -- This function would create sample users, profiles, etc.
-    -- Implementation would go here based on test scenarios
-    
-    RAISE NOTICE 'Sample data creation completed';
-END;
-$$ LANGUAGE plpgsql;
-
--- ============================================================================
--- COMMENTS AND DOCUMENTATION
--- ============================================================================
-
-COMMENT ON TABLE public.malaysian_postcodes IS 'Lookup table for Malaysian postal codes validation';
-COMMENT ON FUNCTION public.reset_development_data() IS 'Development helper to reset all non-super-admin data';
-COMMENT ON FUNCTION public.create_sample_data() IS 'Development helper to create sample test data';
-
--- ============================================================================
--- GRANT PERMISSIONS
--- ============================================================================
-
--- Grant select permission on postcode lookup to authenticated users
-GRANT SELECT ON public.malaysian_postcodes TO authenticated;
-
 -- Grant execute permissions on development functions
 GRANT EXECUTE ON FUNCTION public.reset_development_data() TO authenticated;
-GRANT EXECUTE ON FUNCTION public.create_sample_data() TO authenticated;
+
+-- ============================================================================
+-- DEVELOPMENT NOTES
+-- ============================================================================
+
+/*
+SETUP INSTRUCTIONS:
+
+1. Run all migrations first:
+   supabase db reset
+
+2. Create auth users via Supabase Studio or API:
+   - Go to http://localhost:54323
+   - Navigate to Authentication > Users
+   - Create users with the emails listed above
+
+3. Update the commented INSERT statements above with actual UUIDs from auth.users
+
+4. Run the INSERT statements to populate sample data
+
+5. Test the application with different user roles:
+   - Super admin: Can manage all masjids and users
+   - Masjid admin: Can manage their assigned masjid
+   - Regular users: Can view masjids and apply for admin roles
+
+TESTING SCENARIOS:
+
+1. User Registration Flow:
+   - Create new auth user
+   - Verify profile auto-creation
+   - Test profile completion
+
+2. Admin Application Flow:
+   - Regular user applies for admin role
+   - Super admin reviews and approves/rejects
+   - Verify role changes and permissions
+
+3. Masjid Management:
+   - Admin updates masjid information
+   - Test RLS policies for different user roles
+
+4. Profile Management:
+   - User updates profile information
+   - Test address management
+   - Verify profile completion logic
+
+AUTH USER CREATION EXAMPLES:
+
+1. Super Admin:
+   Email: super.admin@emasjid.my
+   Password: SuperAdmin123!
+
+2. Masjid Admins:
+   Email: admin.alhidayah@emasjid.my
+   Password: Admin123!
+   
+   Email: admin.annur@emasjid.my
+   Password: Admin123!
+
+3. Regular Users:
+   Email: ahmad.ibrahim@example.com
+   Password: User123!
+   
+   Email: fatimah.hassan@example.com
+   Password: User123!
+*/
+
+-- ============================================================================
+-- END OF SEED FILE
+-- ============================================================================
