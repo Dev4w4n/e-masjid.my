@@ -58,8 +58,7 @@ interface ErrorResponse {
 
 const API_BASE_URL = "http://127.0.0.1:54321";
 const REST_API_BASE_URL = "http://127.0.0.1:54321/rest/v1";
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0";
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY ?? "";
 
 describe("POST /admin-applications - Admin Application Submission Contract", () => {
   let userToken: string;
@@ -120,8 +119,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          apikey:
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0",
+          apikey: SUPABASE_ANON_KEY,
         },
         body: JSON.stringify(userCredentials),
       });
@@ -157,8 +155,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            apikey:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0",
+            apikey: SUPABASE_ANON_KEY,
           },
           body: JSON.stringify(incompleteUserCredentials),
         }
@@ -172,8 +169,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          apikey:
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0",
+          apikey: SUPABASE_ANON_KEY,
         },
         body: JSON.stringify(superAdminCredentials),
       });
@@ -222,6 +218,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
         headers: {
           Authorization: `Bearer ${userToken}`,
           "Content-Type": "application/json",
+          apikey: SUPABASE_ANON_KEY,
         },
         body: JSON.stringify(applicationData),
       });

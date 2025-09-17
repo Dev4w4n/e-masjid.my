@@ -50,7 +50,7 @@ interface ErrorResponse {
 }
 
 const API_BASE_URL = "http://127.0.0.1:54321";
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY ?? "";
 
 describe("POST /auth/v1/signup - User Registration Contract", () => {
   const validTestUser = {
