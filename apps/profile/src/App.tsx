@@ -14,9 +14,13 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import Home from "./pages/Home";
 
 /**
- * Main App component with authentication and routing
+ * Auth Route wrapper component - redirects authenticated users away from auth pages
  */
-function App() {
+interface AuthRouteProps {
+  children: React.ReactNode;
+}
+
+function AuthRoute({ children }: AuthRouteProps) {
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -31,13 +35,84 @@ function App() {
       </Box>
     );
   }
-  console.log("App is rendering routes");
+
+  // If user is already authenticated, redirect to home
+  if (user) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <>{children}</>;
+}
+
+/**
+ * Protected Route wrapper component
+ */
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+}
+
+function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/auth/signin" replace />;
+  }
+
+  return <>{children}</>;
+}
+
+/**
+ * Main App component with authentication and routing
+ */
+function App() {
+  const { loading } = useAuth();
+
+  // Show loading spinner while checking authentication state
+  if (loading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Routes>
       {/* Authentication routes (no layout) */}
-      <Route path="/auth/signin" element={<SignIn />} />
-      <Route path="/auth/signup" element={<SignUp />} />
+      <Route
+        path="/auth/signin"
+        element={
+          <AuthRoute>
+            <SignIn />
+          </AuthRoute>
+        }
+      />
+      <Route
+        path="/auth/signup"
+        element={
+          <AuthRoute>
+            <SignUp />
+          </AuthRoute>
+        }
+      />
 
       {/* Main application routes (with layout) */}
       <Route path="/" element={<Layout />}>
@@ -49,24 +124,34 @@ function App() {
         {/* Protected routes */}
         <Route
           path="profile"
-          element={user ? <Profile /> : <Navigate to="/auth/signin" replace />}
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="profile/view"
           element={
-            user ? <ProfileView /> : <Navigate to="/auth/signin" replace />
+            <ProtectedRoute>
+              <ProfileView />
+            </ProtectedRoute>
           }
         />
         <Route
           path="masjids/new"
           element={
-            user ? <MasjidForm /> : <Navigate to="/auth/signin" replace />
+            <ProtectedRoute>
+              <MasjidForm />
+            </ProtectedRoute>
           }
         />
         <Route
           path="masjids/:id/edit"
           element={
-            user ? <MasjidForm /> : <Navigate to="/auth/signin" replace />
+            <ProtectedRoute>
+              <MasjidForm />
+            </ProtectedRoute>
           }
         />
 
@@ -74,17 +159,17 @@ function App() {
         <Route
           path="admin"
           element={
-            user ? <AdminDashboard /> : <Navigate to="/auth/signin" replace />
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
           }
         />
         <Route
           path="admin/applications"
           element={
-            user ? (
+            <ProtectedRoute>
               <AdminApplications />
-            ) : (
-              <Navigate to="/auth/signin" replace />
-            )
+            </ProtectedRoute>
           }
         />
 
