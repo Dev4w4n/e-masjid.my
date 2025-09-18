@@ -60,15 +60,14 @@ As a masjid administrator, I want a digital display system that automatically sh
 
 ### Functional Requirements
 
-- **FR-001**: System MUST be in bahasa malaysia
-- **FR-002**: System MUST display content in fullscreen mode without window borders or controls
-- **FR-003**: System MUST show a carousel of content items as the background layer
-- **FR-004**: System MUST display prayer times as a floating overlay on the front layer
-- **FR-005**: System MUST limit carousel to top 10 content items ranked by accumulated sponsorship funds
-- **FR-006**: System MUST support YouTube video links as content items
-- **FR-007**: System MUST support image links as content items
-- **FR-008**: System MUST allow prayer time position configuration (top, bottom, left, right, center)
-- **FR-009**: System MUST store all content and settings separately for each masjid
+- **FR-001**: System MUST display content in fullscreen mode without window borders or controls
+- **FR-002**: System MUST show a carousel of content items as the background layer
+- **FR-003**: System MUST display prayer times as a floating overlay on the front layer
+- **FR-004**: System MUST limit carousel to top 10 content items ranked by accumulated sponsorship funds
+- **FR-005**: System MUST support YouTube video links as content items
+- **FR-006**: System MUST support image links as content items
+- **FR-007**: System MUST allow prayer time position configuration (top, bottom, left, right, center)
+- **FR-008**: System MUST store all content and settings separately for each masjid
 - **FR-010**: System MUST operate in display-only mode with no data entry capabilities
 - **FR-011**: System MUST automatically transition between content items in the carousel
 - **FR-012**: Prayer times overlay MUST NOT stretch across the entire screen
@@ -83,6 +82,7 @@ As a masjid administrator, I want a digital display system that automatically sh
 - **NFR-002**: Content transitions MUST be smooth and professional
 - **NFR-003**: System MUST be reliable for unattended operation
 - **NFR-004**: Content loading MUST be optimized to prevent delays or buffering issues
+- **NFR-005**: System MUST be in bahasa malaysia
 
 ### Key Entities _(mandatory)_
 
