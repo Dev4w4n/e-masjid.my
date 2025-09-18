@@ -7,7 +7,7 @@
 </p>
 
 <h2 align="center"><b>E-Masjid.My</b></h2>
-<p align="center"><b>Sistem masjid untuk semua</b></p>
+<p align="center"><b>Sistem masjid berasaskan SaaS</b></p>
 
 # Falsafah
 
