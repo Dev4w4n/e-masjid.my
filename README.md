@@ -1,20 +1,52 @@
-# Quickstart Guide: Masjid Suite Profile Management System
+![Github forks](https://badgen.net/github/forks/Dev4w4n/e-masjid.my?icon=github&label=forks)
+![Github issues](https://img.shields.io/github/issues/Dev4w4n/e-masjid.my)
+![Github last-commit](https://img.shields.io/github/last-commit/Dev4w4n/e-masjid.my)
 
-**Date**: 17 September 2025  
-**Prerequisites**: Node.js 18+, pnpm, Docker  
-**Estimated Setup Time**: 30 minutes
+<p align="center">
+  <img src="https://i.postimg.cc/gcSyK8d6/logo.png" alt="E-Masjid.My" width="80" height="80"/>
+</p>
 
-## Overview
+<h2 align="center"><b>E-Masjid.My</b></h2>
+<p align="center"><b>Sistem masjid untuk semua</b></p>
 
-This quickstart guide will help you set up the Masjid Suite monorepo locally and run the Profile Management System. You'll create a super admin account, set up a masjid, and walk through the complete user workflow.
+# Falsafah
 
-## � First-Time System Setup
+Matlamat utama sistem ini adalah seperti berikut.
 
-### Prerequisites Installation
+**Mudah digunakan**
 
-Before running the application, ensure you have the following installed:
+- Tidak semua orang pakar IT. Reka bentuk sistem untuk bukan pakar IT memerlukan pertimbangan teliti.
 
-1. **Install Supabase CLI**:
+**Gunakan kemahiran IT untuk kebaikan**
+
+- Sumber terbuka adalah satu bentuk sedekah yang digalakkan dalam Islam.
+
+**Kekal lama**
+
+- Syarikat hosting/teknologi mungkin tidak kekal, tetapi dengan sumber terbuka, projek ini diharap dapat bertahan lebih lama demi ummah.
+
+**Kita memberi, bukan mengambil**
+
+- Kita sepatutnya menyumbang kepada komuniti Muslim, bukan mengambil manfaat daripada mereka, terutamanya Masjid.
+
+## Prasyarat
+
+Sebelum memulakan, pastikan perkara berikut telah tersedia:
+
+- Supabase CLI
+- Homebrew (untuk macOS)
+- pnpm
+- Node.js
+- Akses ke terminal/shell
+- Sambungan internet untuk klon repositori dan pemasangan kebergantungan
+
+## � Persediaan Sistem Kali Pertama
+
+### Pemasangan Prasyarat
+
+Sebelum menjalankan aplikasi, pastikan anda telah memasang perkara berikut:
+
+1. **Pasang Supabase CLI**:
 
    ```bash
    # Using npm
@@ -27,107 +59,88 @@ Before running the application, ensure you have the following installed:
    supabase --version
    ```
 
-2. **Start Supabase services**:
+2. **Mulakan perkhidmatan Supabase**:
 
    ```bash
    # Initialize and start Supabase
    supabase start
    ```
 
-3. **Setup super admin account**:
+3. **Sediakan akaun super admin**:
    ```bash
-   # Run the setup script for super admin
-   ./scripts/setup-superadmin.sh
+   # Run the setup script
+   ./scripts/setup-env.sh
    ```
 
-## �🚀 Quick Setup
+## �🚀 Persediaan Pantas
 
-### 1. Repository Setup
+### 1. Persediaan Repositori
 
 ```bash
-# Clone the repository
-git clone https://github.com/Dev4w4n/e-masjid.my.git e-masjid.my
-cd e-masjid.my
+# Klon repositori
+git clone https://github.com/Dev4w4n/e-masjid.my.git e-masjid.my-agent-1
+cd e-masjid.my-agent-1
 
-# Install dependencies with pnpm
+# Pasang kebergantungan dengan pnpm
 pnpm install
 
-# Copy environment configuration
+# Salin konfigurasi persekitaran
 cp .env.example .env.local
 ```
 
-### 2. Environment Configuration
+### 2. Konfigurasi Persekitaran
 
-Edit `.env.local` with your configuration:
+Edit `.env.local` dengan konfigurasi anda:
 
 ```bash
-# Supabase Configuration
+# Konfigurasi Supabase
 SUPABASE_URL=http://localhost:54321
 SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
-# Super Admin Configuration
-SUPER_ADMIN_EMAIL=admin@e-masjid.my
-SUPER_ADMIN_PASSWORD=SecureAdminPass123!
+# Konfigurasi Super Admin
+SUPER_ADMIN_EMAIL=super.admin@test.com
+SUPER_ADMIN_PASSWORD=TestPassword123!
 
-# Application Configuration
+# Konfigurasi Aplikasi
 NODE_ENV=development
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-### 3. Start Supabase Backend
-
-> **Note**: If you followed the first-time setup above, Supabase should already be running. Otherwise, run:
+### 4. Mulakan Server Pembangunan
 
 ```bash
-# Install Supabase CLI (if not already installed)
-npm install supabase --save-dev
-
-# Initialize Supabase project
-npx supabase init
-
-# Start Supabase services
-npx supabase start
-```
-
-Run all .sql files in `./supabase/migrations`
-
-### 4. Start Development Server
-
-```bash
-# Return to project root
-cd ..
-
-# Start all applications with Turborepo
+# Di root projek
+# Mulakan semua aplikasi dengan Turborepo
 pnpm dev
 
-# Or start specific app
+# Atau mulakan aplikasi tertentu
 pnpm dev --filter=@masjid-suite/profile
 ```
 
-The application will be available at:
+Aplikasi akan tersedia di:
 
-- **Profile App**: http://localhost:3000
+- **Aplikasi Profil**: http://localhost:3000
 - **Supabase Studio**: http://localhost:54323
 
-## 🧪 Testing the Complete Workflow
+## 🧪 Ujian Aliran Kerja Lengkap
 
-### Step 1: Super Admin Setup
+### Langkah 1: Persediaan Super Admin
 
-1. **Navigate to the application**: http://localhost:3000
-2. **Sign in as super admin**:
-   - Email: `admin@e-masjid.my`
-   - Password: `SecureAdminPass123!`
-3. **Complete super admin profile**:
-   - Full name: "System Administrator"
-   - Phone: "+601234567890"
-   - Address: Fill with valid Malaysian address
-   - Home masjid: Leave empty (will create one)
+1. **Pergi ke aplikasi**: http://localhost:3000
+2. **Log masuk sebagai super admin**:
+   - Emel: `super.admin@test.com`
+   - Kata laluan: `TestPassword123!`
+3. **Lengkapkan profil super admin**:
+   - Nama penuh: "System Administrator"
+   - Telefon: "+601234567890"
+   - Alamat: Isikan alamat Malaysia yang sah
+   - Masjid rumah: Biarkan kosong (akan cipta baru)
 
-### Step 2: Create First Masjid
+### Langkah 2: Cipta Masjid Pertama
 
-1. **Access Masjid Management** (super admin only)
-2. **Create new masjid**:
+1. **Akses Pengurusan Masjid** (hanya super admin)
+2. **Cipta masjid baru**:
    ```json
    {
      "name": "Masjid Jamek Sungai Rambai",
@@ -145,227 +158,227 @@ The application will be available at:
    }
    ```
 
-### Step 3: Register New User
+### Langkah 3: Daftar Pengguna Baru
 
-1. **Open new browser window/incognito** (to simulate different user)
-2. **Navigate to registration**: http://localhost:3000/auth/register
-3. **Register new user**:
-   - Email: `ali@example.com`
-   - Password: `UserPassword123!`
-4. **Complete profile**:
-   - Full name: "Ali bin Abdullah"
-   - Phone: "+60123456789"
-   - Address: Valid Malaysian address
-   - Home masjid: Select "Masjid Jamek Sungai Rambai"
+1. **Buka tetingkap pelayar baru/incognito** (untuk simulasi pengguna lain)
+2. **Pergi ke pendaftaran**: http://localhost:3000/auth/register
+3. **Daftar pengguna baru**:
+   - Emel: `ali@example.com`
+   - Kata laluan: `UserPassword123!`
+4. **Lengkapkan profil**:
+   - Nama penuh: "Ali bin Abdullah"
+   - Telefon: "+60123456789"
+   - Alamat: Alamat Malaysia yang sah
+   - Masjid rumah: Pilih "Masjid Jamek Sungai Rambai"
 
-### Step 4: Apply for Admin Role
+### Langkah 4: Mohon Peranan Admin
 
-1. **As registered user**, navigate to "Admin Application"
-2. **Submit application**:
-   - Select masjid: "Masjid Jamek Sungai Rambai"
-   - Message: "I would like to help manage this masjid"
-3. **Application status**: Should show "Pending"
+1. **Sebagai pengguna berdaftar**, pergi ke "Permohonan Admin"
+2. **Hantar permohonan**:
+   - Pilih masjid: "Masjid Jamek Sungai Rambai"
+   - Mesej: "Saya ingin membantu mengurus masjid ini"
+3. **Status permohonan**: Akan dipaparkan "Menunggu"
 
-### Step 5: Approve Admin Application
+### Langkah 5: Luluskan Permohonan Admin
 
-1. **Switch back to super admin window**
-2. **Navigate to "Admin Applications"**
-3. **Review Ahmad's application**:
-   - Status: Approve
-   - Notes: "Approved for community involvement"
-4. **Confirm approval**
+1. **Tukar semula ke tetingkap super admin**
+2. **Pergi ke "Permohonan Admin"**
+3. **Semak permohonan Ahmad**:
+   - Status: Lulus
+   - Nota: "Diluluskan untuk penglibatan komuniti"
+4. **Sahkan kelulusan**
 
-### Step 6: Test Admin Access
+### Langkah 6: Uji Akses Admin
 
-1. **As Ahmad**, refresh the page
-2. **Role should now be**: "Masjid Admin"
-3. **Access admin features**:
-   - View masjid member list
-   - See pending user profiles for approval
-   - Update masjid information
+1. **Sebagai Ahmad**, segarkan halaman
+2. **Peranan kini**: "Admin Masjid"
+3. **Akses ciri admin**:
+   - Lihat senarai ahli masjid
+   - Lihat profil pengguna yang menunggu kelulusan
+   - Kemaskini maklumat masjid
 
-### Step 7: Test Public User Access
+### Langkah 7: Uji Akses Pengguna Awam
 
-1. **Open another browser window**
-2. **Browse without registration**:
-   - View public masjid list
-   - See masjid details
-   - Attempt restricted action → redirected to register
+1. **Buka tetingkap pelayar lain**
+2. **Layari tanpa pendaftaran**:
+   - Lihat senarai masjid awam
+   - Lihat butiran masjid
+   - Cuba tindakan terhad → akan diarahkan ke pendaftaran
 
-## 🧪 Automated Testing
+## 🧪 Ujian Automatik
 
-### Unit Tests
+### Ujian Unit
 
 ```bash
-# Run all unit tests
+# Jalankan semua ujian unit
 pnpm test
 
-# Run tests with coverage
+# Jalankan ujian dengan liputan
 pnpm test:coverage
 
-# Run tests in watch mode
+# Jalankan ujian dalam mod pantau
 pnpm test:watch
 ```
 
-### Integration Tests
+### Ujian Integrasi
 
 ```bash
-# Run API integration tests
+# Jalankan ujian integrasi API
 pnpm test:integration
 
-# Test database operations
+# Uji operasi pangkalan data
 pnpm test:db
 ```
 
-### End-to-End Tests
+### Ujian Hujung ke Hujung
 
 ```bash
-# Run E2E tests with Playwright
+# Jalankan ujian E2E dengan Playwright
 pnpm test:e2e
 
-# Run E2E tests in UI mode
+# Jalankan ujian E2E dalam mod UI
 pnpm test:e2e:ui
 
-# Test specific user flow
+# Uji aliran pengguna tertentu
 pnpm test:e2e --grep "admin workflow"
 ```
 
-## 📱 User Interface Testing
+## 📱 Ujian Antara Muka Pengguna
 
-### Profile Completion Flow
+### Aliran Lengkap Profil
 
-1. **Incomplete profile state**:
-   - User sees completion prompt
-   - Cannot access role-specific features
-   - Progress indicator shows missing fields
+1. **Keadaan profil tidak lengkap**:
+   - Pengguna melihat arahan melengkapkan profil
+   - Tidak boleh akses ciri khusus peranan
+   - Penunjuk kemajuan menunjukkan medan yang belum lengkap
 
-2. **Form validation**:
-   - Malaysian phone number format
-   - Valid postal codes
-   - Required field indicators
+2. **Pengesahan borang**:
+   - Format nombor telefon Malaysia
+   - Poskod yang sah
+   - Penunjuk medan wajib
 
-3. **Success feedback**:
-   - Profile completion confirmation
-   - Feature unlock notifications
-   - Role-specific UI changes
+3. **Maklum balas kejayaan**:
+   - Pengesahan profil lengkap
+   - Notifikasi ciri dibuka
+   - Perubahan UI mengikut peranan
 
-### Role-Based Access Control
+### Kawalan Akses Berdasarkan Peranan
 
-Test different user experiences:
+Uji pengalaman pengguna berbeza:
 
-| Role         | Can Access                                  | Cannot Access                     |
-| ------------ | ------------------------------------------- | --------------------------------- |
-| Public       | Masjid list, details                        | User management, profile creation |
-| Registered   | Profile management, admin applications      | User management, masjid creation  |
-| Masjid Admin | Assigned masjid management, member profiles | Other masjids, user roles         |
-| Super Admin  | All features                                | N/A                               |
+| Peranan      | Boleh Akses                                    | Tidak Boleh Akses                 |
+| ------------ | ---------------------------------------------- | --------------------------------- |
+| Awam         | Senarai masjid, butiran                        | Pengurusan pengguna, cipta profil |
+| Berdaftar    | Pengurusan profil, permohonan admin            | Pengurusan pengguna, cipta masjid |
+| Admin Masjid | Pengurusan masjid yang ditugaskan, profil ahli | Masjid lain, peranan pengguna     |
+| Super Admin  | Semua ciri                                     | N/A                               |
 
-## 🛠️ Development Commands
+## 🛠️ Arahan Pembangunan
 
-### Code Quality
+### Kualiti Kod
 
 ```bash
-# Lint all packages
+# Lint semua pakej
 pnpm lint
 
-# Fix linting issues
+# Baiki isu lint
 pnpm lint:fix
 
-# Type checking
+# Semak jenis
 pnpm type-check
 
-# Format code
+# Format kod
 pnpm format
 ```
 
-### Build & Deploy
+### Bina & Deploy
 
 ```bash
-# Build all applications
+# Bina semua aplikasi
 pnpm build
 
-# Build specific app
+# Bina aplikasi tertentu
 pnpm build --filter=@masjid-suite/profile
 
-# Preview production build
+# Pratonton binaan produksi
 pnpm preview
 ```
 
-### Database Management
+### Pengurusan Pangkalan Data
 
 ```bash
-# Create new migration
+# Cipta migrasi baru
 supabase migration new add_new_feature
 
-# Apply migrations
+# Laksanakan migrasi
 supabase db push
 
-# Reset database
+# Tetapkan semula pangkalan data
 supabase db reset
 
-# Generate TypeScript types
+# Jana jenis TypeScript
 supabase gen types typescript --local > packages/shared-types/src/database.ts
 ```
 
-## 🔧 Troubleshooting
+## 🔧 Penyelesaian Masalah
 
-### Common Issues
+### Isu Lazim
 
-**Supabase Connection Error**
+**Ralat Sambungan Supabase**
 
 ```bash
-# Check Supabase status
+# Semak status Supabase
 supabase status
 
-# Restart Supabase
+# Mulakan semula Supabase
 supabase stop
 supabase start
 ```
 
-**Build Errors**
+**Ralat Binaan**
 
 ```bash
-# Clean build cache
+# Bersihkan cache binaan
 pnpm clean
 
-# Reinstall dependencies
+# Pasang semula kebergantungan
 rm -rf node_modules
 pnpm install
 ```
 
-**Type Errors**
+**Ralat Jenis**
 
 ```bash
-# Regenerate database types
+# Jana semula jenis pangkalan data
 supabase gen types typescript --local > packages/shared-types/src/database.ts
 
-# Restart TypeScript server in VS Code
+# Mulakan semula pelayan TypeScript dalam VS Code
 Cmd+Shift+P → "TypeScript: Restart TS Server"
 ```
 
-### Environment Variables
+### Pembolehubah Persekitaran
 
-Ensure all required environment variables are set:
+Pastikan semua pembolehubah persekitaran yang diperlukan telah ditetapkan:
 
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
 - `SUPER_ADMIN_EMAIL`
 - `SUPER_ADMIN_PASSWORD`
 
-### Port Conflicts
+### Konflik Port
 
-Default ports used:
+Port lalai yang digunakan:
 
-- Profile App: 3000
+- Aplikasi Profil: 3000
 - Supabase API: 54321
 - Supabase Studio: 54323
 - Supabase Auth: 9999
 
-## 📚 API Testing
+## 📚 Ujian API
 
-### Using curl
+### Menggunakan curl
 
-**Register user**:
+**Daftar pengguna**:
 
 ```bash
 curl -X POST http://localhost:54321/auth/v1/signup \
@@ -374,7 +387,7 @@ curl -X POST http://localhost:54321/auth/v1/signup \
   -d '{"email": "test@example.com", "password": "password123"}'
 ```
 
-**Create profile**:
+**Cipta profil**:
 
 ```bash
 curl -X POST http://localhost:54321/rest/v1/profiles \
@@ -393,53 +406,70 @@ curl -X POST http://localhost:54321/rest/v1/profiles \
   }'
 ```
 
-### Using Postman/Insomnia
+### Menggunakan Postman/Insomnia
 
-Import the OpenAPI specification from `contracts/api-spec.yaml` for full API documentation and testing capabilities.
+Import spesifikasi OpenAPI dari `contracts/api-spec.yaml` untuk dokumentasi API penuh dan keupayaan ujian.
 
-## 🎯 Success Criteria Validation
+## 🎯 Pengesahan Kriteria Kejayaan
 
-### Functional Requirements Checklist
+### Senarai Semak Keperluan Fungsian
 
-- [ ] Super admin can sign in with environment credentials
-- [ ] Super admin can create masjids
-- [ ] Users can register and complete profiles
-- [ ] Profile validation works for Malaysian formats
-- [ ] Users can apply for admin roles
-- [ ] Super admin can approve/reject applications
-- [ ] Masjid admins can manage their masjid
-- [ ] Role-based access control functions correctly
-- [ ] Public users have appropriate access levels
+- [ ] Super admin boleh log masuk dengan kelayakan persekitaran
+- [ ] Super admin boleh cipta masjid
+- [ ] Pengguna boleh daftar dan lengkapkan profil
+- [ ] Pengesahan profil berfungsi untuk format Malaysia
+- [ ] Pengguna boleh mohon peranan admin
+- [ ] Super admin boleh lulus/tolak permohonan
+- [ ] Admin masjid boleh urus masjid mereka
+- [ ] Kawalan akses berdasarkan peranan berfungsi dengan betul
+- [ ] Pengguna awam mempunyai tahap akses yang sesuai
 
-### Performance Validation
+### Pengesahan Prestasi
 
-- [ ] Initial page load < 2 seconds
-- [ ] Navigation between pages < 500ms
-- [ ] Form submissions < 1 second
-- [ ] Database queries optimized with proper indexes
+- [ ] Muat halaman awal < 2 saat
+- [ ] Navigasi antara halaman < 500ms
+- [ ] Penyerahan borang < 1 saat
+- [ ] Pertanyaan pangkalan data dioptimumkan dengan indeks yang betul
 
-### Security Validation
+### Pengesahan Keselamatan
 
-- [ ] JWT tokens properly validated
-- [ ] Row Level Security policies working
-- [ ] Input validation and sanitization
-- [ ] Proper error handling without data leaks
+- [ ] Token JWT disahkan dengan betul
+- [ ] Polisi Keselamatan Tahap Baris berfungsi
+- [ ] Pengesahan dan pembersihan input
+- [ ] Pengendalian ralat yang betul tanpa kebocoran data
 
-## 📈 Next Steps
+## 📈 Langkah Seterusnya
 
-After completing this quickstart:
+Selepas melengkapkan panduan pantas ini:
 
-1. **Explore the codebase structure**
-2. **Read the architecture documentation**
-3. **Set up your development environment**
-4. **Start contributing new features**
+1. **Terokai struktur kod**
+2. **Baca dokumentasi seni bina**
+3. **Sediakan persekitaran pembangunan anda**
+4. **Mula menyumbang ciri baharu**
 
-For adding new applications to the monorepo, see the [Contributing Guide](../CONTRIBUTING.md) and [Specify System Documentation](../.specify/README.md).
+Untuk menambah aplikasi baharu ke monorepo, lihat [Panduan Sumbangan](../CONTRIBUTING.md) dan [Dokumentasi Sistem Specify](../.specify/README.md).
 
 ---
 
-**Need Help?**
+**Perlukan Bantuan?**
 
-- Check the [Troubleshooting Guide](../docs/troubleshooting.md)
-- Review the [API Documentation](./contracts/api-spec.yaml)
-- Consult the [Development Guidelines](../docs/development.md)
+- Semak [Panduan Penyelesaian Masalah](../docs/troubleshooting.md)
+- Semak [Dokumentasi API](./contracts/api-spec.yaml)
+- Rujuk [Garis Panduan Pembangunan](../docs/development.md)
+
+## Panduan untuk menyumbang
+
+_Fork_ repo ini dan hantar _Pull Request_ anda.
+
+Kami mahu input anda! Kami ingin menjadikan penyumbangan kepada projek mudah dan telus, sama ada dengan:
+
+- Melaporkan pepijat
+- Menghantar pembetulan
+- Mencadangkan ciri baru
+- Menambah baik ciri
+- Dokumentasi
+- Ujian unit
+
+Atau anda ingin berbual dengan kami, cari kami di [Discord](https://discord.gg/k2zGpWTDpe).
+
+[![Contributors](https://contrib.rocks/image?repo=Dev4w4n/e-masjid.my)](https://github.com/Dev4w4n/e-masjid.my/graphs/contributors)
