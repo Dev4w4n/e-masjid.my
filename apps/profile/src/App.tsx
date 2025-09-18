@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { useAuth } from "@masjid-suite/auth";
 import Layout from "./components/Layout";
 import SignIn from "./pages/auth/SignIn";
@@ -14,36 +14,24 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import Home from "./pages/Home";
 
 /**
- * Loading component for authentication state
- */
-function LoadingScreen() {
-  return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-      minHeight="100vh"
-      gap={2}
-    >
-      <CircularProgress size={48} />
-      <Typography variant="body1" color="text.secondary">
-        Loading Masjid Suite...
-      </Typography>
-    </Box>
-  );
-}
-
-/**
- * Main application component
+ * Main App component with authentication and routing
  */
 function App() {
   const { user, loading } = useAuth();
 
-  // Show loading screen while authentication is being determined
   if (loading) {
-    return <LoadingScreen />;
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
+  console.log("App is rendering routes");
 
   return (
     <Routes>

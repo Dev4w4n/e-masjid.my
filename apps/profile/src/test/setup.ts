@@ -4,6 +4,24 @@
  */
 
 import { beforeAll } from "vitest";
+import { config as loadEnv } from "dotenv";
+import { resolve } from "path";
+import { existsSync } from "fs";
+
+// Load env files from the monorepo root so process.env is populated in tests
+// Priority: .env -> .env.local -> .env.test -> .env.test.local (later overrides earlier)
+(() => {
+  const monorepoRoot = resolve(process.cwd(), "../../");
+  const files = [".env", ".env.local", ".env.test", ".env.test.local"];
+
+  for (const file of files) {
+    const path = resolve(monorepoRoot, file);
+    if (existsSync(path)) {
+      // Use override: true so more specific files override base values
+      loadEnv({ path, override: true });
+    }
+  }
+})();
 
 // Environment setup
 beforeAll(() => {

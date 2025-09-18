@@ -1,9 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { CssBaseline } from "@mui/material";
 import { AuthProvider } from "@masjid-suite/auth";
-import { MasjidThemeProvider } from "@masjid-suite/ui-theme";
+import { MasjidThemeProvider } from "./ui/theme";
 import App from "./App.tsx";
 import "./index.css";
 
@@ -21,7 +20,6 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <MasjidThemeProvider>
-        <CssBaseline />
         <AuthProvider>
           <App />
         </AuthProvider>
