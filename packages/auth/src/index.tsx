@@ -64,30 +64,53 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Initialize auth state
   useEffect(() => {
     let mounted = true;
+    let loadingTimeout: NodeJS.Timeout;
+
+    // Set a failsafe timeout to ensure loading doesn't hang forever
+    loadingTimeout = setTimeout(() => {
+      if (mounted) {
+        console.warn("Auth loading timeout reached, forcing loading to false");
+        setLoading(false);
+      }
+    }, 10000); // 10 second timeout
 
     async function getInitialSession() {
       try {
+        console.log("🚀 Getting initial session...");
         const {
           data: { session },
         } = await supabase.auth.getSession();
 
         if (mounted) {
+          console.log("📦 Initial session result:", {
+            hasSession: !!session,
+            userId: session?.user?.id || "No session",
+          });
+
           setSession(session);
           setUser(session?.user ?? null);
 
           if (session?.user) {
+            console.log("👤 Initial session has user, loading profile...");
             await loadUserProfile(session.user.id);
+            console.log("✅ Initial profile loading completed");
           }
         }
       } catch (err) {
         if (mounted) {
+          console.error("❌ Error getting initial session:", err);
           setError(
             err instanceof Error ? err.message : "Failed to get initial session"
           );
         }
       } finally {
         if (mounted) {
+          console.log(
+            "🎯 Clearing timeout and setting loading to false (initial)"
+          );
+          clearTimeout(loadingTimeout);
           setLoading(false);
+          console.log("✅ Initial session loading completed");
         }
       }
     }
@@ -100,30 +123,45 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } = supabase.auth.onAuthStateChange(
       async (event: AuthChangeEvent, session: Session | null) => {
         if (mounted) {
+          console.log("🔄 Auth state changed:", event, session?.user?.id);
+          clearTimeout(loadingTimeout); // Clear any existing timeout
+
+          console.log("📝 Setting session and user...");
           setSession(session);
           setUser(session?.user ?? null);
           setError(null);
 
           if (session?.user) {
+            console.log("👤 User found, loading profile...");
             await loadUserProfile(session.user.id);
+            console.log("✅ Profile loading completed");
           } else {
+            console.log("❌ No user, clearing profile...");
             setProfile(null);
+            setUserRole(null);
           }
 
+          console.log("🎯 Setting loading to false...");
           setLoading(false);
+          console.log("✅ Auth state change processing completed");
         }
       }
     );
 
     return () => {
       mounted = false;
+      clearTimeout(loadingTimeout);
       subscription.unsubscribe();
     };
   }, []);
 
   // Load user profile with role
   async function loadUserProfile(userId: string) {
+    console.log("🔍 Starting profile load for user:", userId);
+
     try {
+      console.log("📊 Fetching profile data from database...");
+
       // Get profile data
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
@@ -131,10 +169,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
         .eq("user_id", userId)
         .single();
 
+      console.log("📊 Profile query result:", { profileData, profileError });
+
       if (profileError && profileError.code !== "PGRST116") {
         // No rows returned
+        console.error("❌ Profile error:", profileError);
         throw profileError;
       }
+
+      console.log("👤 Fetching user data from database...");
 
       // Get user role and email data
       const { data: userData, error: userError } = await supabase
@@ -143,12 +186,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
         .eq("id", userId)
         .single();
 
+      console.log("👤 User query result:", { userData, userError });
+
       if (userError && userError.code !== "PGRST116") {
+        console.error("❌ User data error:", userError);
         throw userError;
       }
 
       const role = userData?.role || "public";
       const email = userData?.email || "";
+
+      console.log("🔧 Setting user role:", role);
       setUserRole(role);
 
       // Combine profile with role and email
@@ -162,11 +210,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
           }
         : null;
 
+      console.log("✅ Profile loaded successfully:", {
+        role,
+        email,
+        hasProfile: !!profileData,
+        profileId: profileData?.id,
+      });
+
       setProfile(profileWithRole);
     } catch (err) {
-      console.error("Failed to load user profile:", err);
-      setError(err instanceof Error ? err.message : "Failed to load profile");
+      console.error("❌ Failed to load user profile:", err);
+      // Don't set error state for missing profiles, as they might not exist yet
+      if (err instanceof Error && !err.message.includes("PGRST116")) {
+        setError(err.message);
+      }
+      // Even if profile loading fails, we should still consider the user authenticated
+      // The profile might not exist yet for new users
     }
+
+    console.log("🏁 Profile loading completed for user:", userId);
   }
 
   // Auth methods
