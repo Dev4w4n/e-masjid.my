@@ -66,12 +66,6 @@ Sebelum menjalankan aplikasi, pastikan anda telah memasang perkara berikut:
    supabase start
    ```
 
-3. **Sediakan akaun super admin**:
-   ```bash
-   # Run the setup script
-   ./scripts/setup-env.sh
-   ```
-
 ## �🚀 Persediaan Pantas
 
 ### 1. Persediaan Repositori
@@ -84,30 +78,16 @@ cd e-masjid.my-agent-1
 # Pasang kebergantungan dengan pnpm
 pnpm install
 
-# Salin konfigurasi persekitaran
-cp .env.example .env.local
 ```
 
 ### 2. Konfigurasi Persekitaran
 
-Edit `.env.local` dengan konfigurasi anda:
-
 ```bash
-# Konfigurasi Supabase
-SUPABASE_URL=http://localhost:54321
-SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-
-# Konfigurasi Super Admin
-SUPER_ADMIN_EMAIL=super.admin@test.com
-SUPER_ADMIN_PASSWORD=TestPassword123!
-
-# Konfigurasi Aplikasi
-NODE_ENV=development
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+# Konfigurasi
+./scripts/setup-env.sh
 ```
 
-### 4. Mulakan Server Pembangunan
+### 3. Mulakan Server Pembangunan
 
 ```bash
 # Di root projek
@@ -122,6 +102,12 @@ Aplikasi akan tersedia di:
 
 - **Aplikasi Profil**: http://localhost:3000
 - **Supabase Studio**: http://localhost:54323
+
+### 4. Konfigurasi Spec Kit (Pilihan)
+
+```bash
+uvx --from git+https://github.com/github/spec-kit.git specify init --here
+```
 
 ## 🧪 Ujian Aliran Kerja Lengkap
 
