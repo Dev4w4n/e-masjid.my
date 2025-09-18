@@ -5,6 +5,8 @@ import { resolve } from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  // Load env files from the monorepo root so .env.local at root is picked up
+  envDir: resolve(__dirname, "../../"),
 
   // Development server configuration
   server: {
@@ -80,10 +82,20 @@ export default defineConfig({
         "../../packages/ui-theme/src"
       ),
     },
+    // Ensure single copies across the monorepo during dev
+    dedupe: [
+      "react",
+      "react-dom",
+      "@emotion/react",
+      "@emotion/styled",
+      "@mui/material",
+      "@mui/system",
+    ],
   },
 
   // Environment variables
-  envPrefix: ["VITE_", "SUPABASE_"],
+  // Only expose VITE_ to client to avoid leaking server-only secrets
+  envPrefix: ["VITE_"],
 
   // Define global constants
   define: {

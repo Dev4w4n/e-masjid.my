@@ -11,29 +11,33 @@ import type { Database } from "@masjid-suite/shared-types";
 
 function getEnvironmentVariables() {
   const isBrowser = typeof window !== "undefined";
-  const isTest =
-    (isBrowser
-      ? (globalThis as any)?.process?.env?.NODE_ENV
-      : process.env.NODE_ENV) === "test";
+  const nodeEnv =
+    (typeof process !== "undefined" && process.env && process.env.NODE_ENV) ||
+    undefined;
+  const isTest = nodeEnv === "test";
 
   let SUPABASE_URL: string | undefined;
   let SUPABASE_ANON_KEY: string | undefined;
 
   if (isBrowser) {
-    // In browser environment, try to get from Vite's import.meta.env or global variables
-    SUPABASE_URL =
-      (globalThis as any)?.VITE_SUPABASE_URL ||
-      (globalThis as any)?.SUPABASE_URL ||
-      (globalThis as any)?.import?.meta?.env?.VITE_SUPABASE_URL;
+    // Access Vite's injected env directly via import.meta.env
+    try {
+      // @ts-expect-error Vite provides import.meta.env at build time
+      const env = import.meta.env as Record<string, string | undefined>;
+      SUPABASE_URL = env?.VITE_SUPABASE_URL;
+      SUPABASE_ANON_KEY = env?.VITE_SUPABASE_ANON_KEY;
+    } catch {
+      // ignore; fall back to process.env below (useful in tests/node)
+    }
+  }
+
+  // Fallback for Node.js/test environments
+  if (!SUPABASE_URL) {
+    SUPABASE_URL = process.env?.VITE_SUPABASE_URL || process.env?.SUPABASE_URL;
+  }
+  if (!SUPABASE_ANON_KEY) {
     SUPABASE_ANON_KEY =
-      (globalThis as any)?.VITE_SUPABASE_ANON_KEY ||
-      (globalThis as any)?.SUPABASE_ANON_KEY ||
-      (globalThis as any)?.import?.meta?.env?.VITE_SUPABASE_ANON_KEY;
-  } else {
-    // In Node.js environment, use process.env
-    SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
-    SUPABASE_ANON_KEY =
-      process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+      process.env?.VITE_SUPABASE_ANON_KEY || process.env?.SUPABASE_ANON_KEY;
   }
 
   return { SUPABASE_URL, SUPABASE_ANON_KEY, isTest };

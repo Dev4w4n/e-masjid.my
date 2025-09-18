@@ -4,6 +4,8 @@ import { resolve } from "path";
 
 export default defineConfig({
   plugins: [react()],
+  // Ensure tests also load env files from the monorepo root
+  envDir: resolve(__dirname, "../../"),
   test: {
     globals: true,
     environment: "jsdom",

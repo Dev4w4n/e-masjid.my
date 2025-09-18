@@ -51,7 +51,13 @@
     "vite": "^7.1.5"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.39.0"
+    "@supabase/supabase-js": "^2.39.0",
+    "react-is": "18.3.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "react-is": "^18.3.1"
+    }
   },
   "keywords": [
     "masjid",
