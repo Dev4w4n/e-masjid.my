@@ -8,45 +8,13 @@
 
 This quickstart guide will help you set up the Masjid Suite monorepo locally and run the Profile Management System. You'll create a super admin account, set up a masjid, and walk through the complete user workflow.
 
-## � First-Time System Setup
-
-### Prerequisites Installation
-
-Before running the application, ensure you have the following installed:
-
-1. **Install Supabase CLI**:
-
-   ```bash
-   # Using npm
-   npm install -g supabase
-
-   # Using Homebrew (macOS)
-   brew install supabase/tap/supabase
-
-   # Verify installation
-   supabase --version
-   ```
-
-2. **Start Supabase services**:
-
-   ```bash
-   # Initialize and start Supabase
-   supabase start
-   ```
-
-3. **Setup super admin account**:
-   ```bash
-   # Run the setup script for super admin
-   ./scripts/setup-superadmin.sh
-   ```
-
-## �🚀 Quick Setup
+## 🚀 Quick Setup
 
 ### 1. Repository Setup
 
 ```bash
 # Clone the repository
-git clone https://github.com/Dev4w4n/e-masjid.my.git e-masjid.my
+git clone <repository-url>
 cd e-masjid.my
 
 # Install dependencies with pnpm
@@ -67,7 +35,7 @@ SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
 # Super Admin Configuration
-SUPER_ADMIN_EMAIL=admin@e-masjid.my
+SUPER_ADMIN_EMAIL=admin@.local
 SUPER_ADMIN_PASSWORD=SecureAdminPass123!
 
 # Application Configuration
@@ -77,20 +45,17 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 ### 3. Start Supabase Backend
 
-> **Note**: If you followed the first-time setup above, Supabase should already be running. Otherwise, run:
-
 ```bash
-# Install Supabase CLI (if not already installed)
-npm install supabase --save-dev
+# Start Supabase local development server
+cd supabase
+supabase start
 
-# Initialize Supabase project
-npx supabase init
+# Run database migrations
+supabase db reset
 
-# Start Supabase services
-npx supabase start
+# Seed initial data
+supabase db seed
 ```
-
-Run all .sql files in `./supabase/migrations`
 
 ### 4. Start Development Server
 

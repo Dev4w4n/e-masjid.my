@@ -1,0 +1,43 @@
+{
+  "name": "@masjid-suite/ui-theme",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Islamic-themed Material-UI theme for Masjid Suite",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix"
+  },
+  "dependencies": {
+    "@mui/material": "^5.15.0",
+    "@mui/system": "^5.15.0",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@masjid-suite/eslint-config": "workspace:*",
+    "@types/react": "^18.2.0",
+    "typescript": "^5.2.0",
+    "vitest": "^1.0.0",
+    "@testing-library/react": "^14.1.0",
+    "eslint": "^8.57.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "@mui/material": "^5.0.0",
+    "@emotion/react": "^11.0.0",
+    "@emotion/styled": "^11.0.0"
+  }
+}

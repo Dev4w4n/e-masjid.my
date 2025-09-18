@@ -1,0 +1,43 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    /* Path mapping for workspace packages */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@masjid-suite/auth": ["../../packages/auth/src"],
+      "@masjid-suite/supabase-client": ["../../packages/supabase-client/src"],
+      "@masjid-suite/shared-types": ["../../packages/shared-types/src"],
+      "@masjid-suite/ui-components": ["../../packages/ui-components/src"],
+      "@masjid-suite/ui-theme": ["../../packages/ui-theme/src"]
+    }
+  },
+  "include": ["src"],
+  "references": [
+    { "path": "../../packages/auth" },
+    { "path": "../../packages/supabase-client" },
+    { "path": "../../packages/shared-types" },
+    { "path": "../../packages/ui-components" },
+    { "path": "../../packages/ui-theme" }
+  ]
+}

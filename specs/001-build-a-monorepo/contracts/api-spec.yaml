@@ -1,0 +1,854 @@
+openapi: 3.0.0
+info:
+  title: Masjid Suite Profile Management API
+  description: REST API for user profile management and masjid administration
+  version: 1.0.0
+  contact:
+    name: Masjid Suite Development Team
+    
+servers:
+  - url: http://localhost:54321
+    description: Local Supabase server
+    
+security:
+  - bearerAuth: []
+
+paths:
+  # Authentication Endpoints
+  /auth/sign-up:
+    post:
+      tags: [Authentication]
+      summary: Register new user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                password:
+                  type: string
+                  minLength: 8
+                  example: "securepassword123"
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /auth/sign-in:
+    post:
+      tags: [Authentication]
+      summary: Sign in user with email and password
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Sign in successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/sign-out:
+    post:
+      tags: [Authentication]
+      summary: Sign out current user
+      responses:
+        '200':
+          description: Sign out successful
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Profile Management Endpoints
+  /profiles:
+    get:
+      tags: [Profiles]
+      summary: Get current user's profile
+      responses:
+        '200':
+          description: Profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    post:
+      tags: [Profiles]
+      summary: Create user profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProfileRequest'
+      responses:
+        '201':
+          description: Profile created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    
+    put:
+      tags: [Profiles]
+      summary: Update user profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /profiles/{userId}:
+    get:
+      tags: [Profiles]
+      summary: Get user profile by ID (admin only)
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # Masjid Management Endpoints
+  /masjids:
+    get:
+      tags: [Masjids]
+      summary: List all masjids (public access)
+      security: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: search
+          in: query
+          schema:
+            type: string
+            description: Search by name or location
+      responses:
+        '200':
+          description: Masjids retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MasjidSummary'
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+    
+    post:
+      tags: [Masjids]
+      summary: Create new masjid (super admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMasjidRequest'
+      responses:
+        '201':
+          description: Masjid created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MasjidResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /masjids/{masjidId}:
+    get:
+      tags: [Masjids]
+      summary: Get masjid details
+      security: []
+      parameters:
+        - name: masjidId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Masjid retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MasjidResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    put:
+      tags: [Masjids]
+      summary: Update masjid details (admin only)
+      parameters:
+        - name: masjidId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMasjidRequest'
+      responses:
+        '200':
+          description: Masjid updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MasjidResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # Admin Application Endpoints
+  /admin-applications:
+    get:
+      tags: [Admin Applications]
+      summary: List admin applications (filtered by role)
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, approved, rejected]
+        - name: masjidId
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Applications retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminApplicationResponse'
+    
+    post:
+      tags: [Admin Applications]
+      summary: Submit admin application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAdminApplicationRequest'
+      responses:
+        '201':
+          description: Application submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminApplicationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /admin-applications/{applicationId}:
+    get:
+      tags: [Admin Applications]
+      summary: Get application details
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Application retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminApplicationResponse'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    put:
+      tags: [Admin Applications]
+      summary: Review admin application (super admin only)
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewApplicationRequest'
+      responses:
+        '200':
+          description: Application reviewed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminApplicationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # User Management Endpoints
+  /users:
+    get:
+      tags: [User Management]
+      summary: List users (admin only)
+      parameters:
+        - name: role
+          in: query
+          schema:
+            type: string
+            enum: [super_admin, masjid_admin, registered, public]
+        - name: masjidId
+          in: query
+          schema:
+            type: string
+            format: uuid
+          description: Filter users by masjid association
+      responses:
+        '200':
+          description: Users retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserSummary'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /users/{userId}/role:
+    put:
+      tags: [User Management]
+      summary: Update user role (super admin only)
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [role]
+              properties:
+                role:
+                  type: string
+                  enum: [super_admin, masjid_admin, registered, public]
+      responses:
+        '200':
+          description: Role updated successfully
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # Authentication Schemas
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        session:
+          type: object
+          properties:
+            access_token:
+              type: string
+            token_type:
+              type: string
+              example: bearer
+            expires_in:
+              type: integer
+            refresh_token:
+              type: string
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [super_admin, masjid_admin, registered, public]
+        email_verified:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        last_sign_in_at:
+          type: string
+          format: date-time
+
+    # Profile Schemas
+    CreateProfileRequest:
+      type: object
+      required: [full_name, phone_number, address]
+      properties:
+        full_name:
+          type: string
+          minLength: 2
+          maxLength: 255
+          example: "Ahmad bin Abdullah"
+        phone_number:
+          type: string
+          pattern: '^(\+60|0)[1-9][0-9]{7,9}$'
+          example: "+60123456789"
+        preferred_language:
+          type: string
+          enum: [en, ms, zh, ta]
+          default: en
+        home_masjid_id:
+          type: string
+          format: uuid
+        address:
+          $ref: '#/components/schemas/Address'
+
+    UpdateProfileRequest:
+      type: object
+      properties:
+        full_name:
+          type: string
+          minLength: 2
+          maxLength: 255
+        phone_number:
+          type: string
+          pattern: '^(\+60|0)[1-9][0-9]{7,9}$'
+        preferred_language:
+          type: string
+          enum: [en, ms, zh, ta]
+        home_masjid_id:
+          type: string
+          format: uuid
+        address:
+          $ref: '#/components/schemas/Address'
+
+    ProfileResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        full_name:
+          type: string
+        phone_number:
+          type: string
+        preferred_language:
+          type: string
+        home_masjid_id:
+          type: string
+          format: uuid
+        home_masjid:
+          $ref: '#/components/schemas/MasjidSummary'
+        is_complete:
+          type: boolean
+        address:
+          $ref: '#/components/schemas/Address'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Address:
+      type: object
+      required: [address_line_1, city, state, postcode]
+      properties:
+        address_line_1:
+          type: string
+          maxLength: 255
+          example: "123 Jalan Utama"
+        address_line_2:
+          type: string
+          maxLength: 255
+          example: "Taman Harmoni"
+        city:
+          type: string
+          maxLength: 100
+          example: "Kuala Lumpur"
+        state:
+          type: string
+          enum: [Johor, Kedah, Kelantan, Malacca, "Negeri Sembilan", Pahang, Penang, Perak, Perlis, Sabah, Sarawak, Selangor, Terengganu, "Kuala Lumpur", Labuan, Putrajaya]
+        postcode:
+          type: string
+          pattern: '^[0-9]{5}$'
+          example: "50100"
+        country:
+          type: string
+          default: "MYS"
+          example: "MYS"
+
+    # Masjid Schemas
+    CreateMasjidRequest:
+      type: object
+      required: [name, address]
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          example: "Masjid Al-Hidayah"
+        registration_number:
+          type: string
+          maxLength: 50
+          example: "MSJ-2024-001"
+        email:
+          type: string
+          format: email
+          example: "admin@masjidalhidayah.org"
+        phone_number:
+          type: string
+          pattern: '^(\+60|0)[1-9][0-9]{7,9}$'
+          example: "+60312345678"
+        description:
+          type: string
+          maxLength: 1000
+          example: "A community mosque serving the local Muslim community"
+        address:
+          $ref: '#/components/schemas/Address'
+
+    UpdateMasjidRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        email:
+          type: string
+          format: email
+        phone_number:
+          type: string
+          pattern: '^(\+60|0)[1-9][0-9]{7,9}$'
+        description:
+          type: string
+          maxLength: 1000
+        address:
+          $ref: '#/components/schemas/Address'
+        status:
+          type: string
+          enum: [active, inactive, pending_verification]
+
+    MasjidSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        status:
+          type: string
+
+    MasjidResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        registration_number:
+          type: string
+        email:
+          type: string
+        phone_number:
+          type: string
+        description:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        status:
+          type: string
+        created_by:
+          type: string
+          format: uuid
+        admin_count:
+          type: integer
+        member_count:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    # Admin Application Schemas
+    CreateAdminApplicationRequest:
+      type: object
+      required: [masjid_id]
+      properties:
+        masjid_id:
+          type: string
+          format: uuid
+        application_message:
+          type: string
+          maxLength: 1000
+          example: "I would like to volunteer as an admin for this masjid"
+
+    ReviewApplicationRequest:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [approved, rejected]
+        review_notes:
+          type: string
+          maxLength: 1000
+
+    AdminApplicationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        user:
+          $ref: '#/components/schemas/UserSummary'
+        masjid_id:
+          type: string
+          format: uuid
+        masjid:
+          $ref: '#/components/schemas/MasjidSummary'
+        application_message:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, rejected, withdrawn]
+        review_notes:
+          type: string
+        reviewed_by:
+          type: string
+          format: uuid
+        reviewed_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    # User Management Schemas
+    UserSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        role:
+          type: string
+        full_name:
+          type: string
+        home_masjid:
+          $ref: '#/components/schemas/MasjidSummary'
+        profile_complete:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+
+    # Error Schemas
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type
+        message:
+          type: string
+          description: Human-readable error message
+        details:
+          type: object
+          description: Additional error context
+        timestamp:
+          type: string
+          format: date-time
+
+  responses:
+    BadRequest:
+      description: Bad request - validation errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "validation_error"
+            message: "Invalid phone number format"
+            details:
+              field: "phone_number"
+              pattern: "^(\\+60|0)[1-9][0-9]{7,9}$"
+
+    Unauthorized:
+      description: Unauthorized - invalid or missing authentication
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "unauthorized"
+            message: "Invalid or expired token"
+
+    Forbidden:
+      description: Forbidden - insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "forbidden"
+            message: "Insufficient permissions for this operation"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "not_found"
+            message: "Resource not found"
+
+    Conflict:
+      description: Resource conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "conflict"
+            message: "Email already exists"
+
+tags:
+  - name: Authentication
+    description: User authentication and session management
+  - name: Profiles
+    description: User profile management
+  - name: Masjids
+    description: Mosque management and information
+  - name: Admin Applications
+    description: Masjid admin application workflow
+  - name: User Management
+    description: User administration and role management

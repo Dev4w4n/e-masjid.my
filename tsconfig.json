@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true,
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@masjid-suite/*": ["packages/*/src"]
+    }
+  },
+  "include": ["packages/**/*", "apps/**/*", "vitest.setup.ts"],
+  "exclude": ["node_modules", "dist", ".next", "coverage", "legacy"]
+}
