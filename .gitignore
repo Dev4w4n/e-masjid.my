@@ -1,5 +1,8 @@
 # Root .gitignore for Masjid Suite monorepo
 
+# Legacy apps
+legacy/e-masjid.my-2.0
+
 # Dependencies
 node_modules/
 .pnp
