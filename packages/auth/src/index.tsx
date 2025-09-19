@@ -92,8 +92,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
           if (session?.user) {
             console.log("👤 Initial session has user, loading profile...");
-            await loadUserProfile(session.user.id);
-            console.log("✅ Initial profile loading completed");
+            try {
+              await loadUserProfile(session.user.id);
+              console.log("✅ Initial profile loading completed");
+            } catch (err) {
+              console.error("❌ Initial profile loading failed:", err);
+              // Don't break the auth flow if profile loading fails
+              // The user is still authenticated even if we can't load their profile
+            }
           }
         }
       } catch (err) {
@@ -133,8 +139,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
           if (session?.user) {
             console.log("👤 User found, loading profile...");
-            await loadUserProfile(session.user.id);
-            console.log("✅ Profile loading completed");
+            try {
+              await loadUserProfile(session.user.id);
+              console.log("✅ Profile loading completed");
+            } catch (err) {
+              console.error(
+                "❌ Profile loading failed in auth state change:",
+                err
+              );
+              // Don't break the auth flow if profile loading fails
+              // The user is still authenticated even if we can't load their profile
+            }
           } else {
             console.log("❌ No user, clearing profile...");
             setProfile(null);
@@ -162,16 +177,31 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       console.log("📊 Fetching profile data from database...");
 
-      // Get profile data
-      const { data: profileData, error: profileError } = await supabase
+      // Add timeout to profile data query
+      const profilePromise = supabase
         .from("profiles")
         .select("*")
         .eq("user_id", userId)
         .single();
 
+      const { data: profileData, error: profileError } = await Promise.race([
+        profilePromise,
+        new Promise<{ data: null; error: { message: string } }>((_, reject) =>
+          setTimeout(() => reject(new Error("Profile query timeout")), 5000)
+        ),
+      ]).catch((err) => {
+        console.warn("⏰ Profile query timed out or failed:", err);
+        return { data: null, error: { message: err.message } };
+      });
+
       console.log("📊 Profile query result:", { profileData, profileError });
 
-      if (profileError && profileError.code !== "PGRST116") {
+      if (
+        profileError &&
+        typeof profileError === "object" &&
+        "code" in profileError &&
+        profileError.code !== "PGRST116"
+      ) {
         // No rows returned
         console.error("❌ Profile error:", profileError);
         throw profileError;
@@ -179,16 +209,31 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       console.log("👤 Fetching user data from database...");
 
-      // Get user role and email data
-      const { data: userData, error: userError } = await supabase
+      // Add timeout to user data query
+      const userPromise = supabase
         .from("users")
         .select("role, email")
         .eq("id", userId)
         .single();
 
+      const { data: userData, error: userError } = await Promise.race([
+        userPromise,
+        new Promise<{ data: null; error: { message: string } }>((_, reject) =>
+          setTimeout(() => reject(new Error("User query timeout")), 5000)
+        ),
+      ]).catch((err) => {
+        console.warn("⏰ User query timed out or failed:", err);
+        return { data: null, error: { message: err.message } };
+      });
+
       console.log("👤 User query result:", { userData, userError });
 
-      if (userError && userError.code !== "PGRST116") {
+      if (
+        userError &&
+        typeof userError === "object" &&
+        "code" in userError &&
+        userError.code !== "PGRST116"
+      ) {
         console.error("❌ User data error:", userError);
         throw userError;
       }
@@ -226,6 +271,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
       // Even if profile loading fails, we should still consider the user authenticated
       // The profile might not exist yet for new users
+
+      // Set default values so the app can still function
+      setUserRole("public");
+      setProfile(null);
     }
 
     console.log("🏁 Profile loading completed for user:", userId);
