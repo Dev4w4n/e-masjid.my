@@ -309,14 +309,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
         .from("profiles")
         .update(updates)
         .eq("user_id", user.id)
-        .select()
+        .select("*")
         .single();
 
       if (error) {
         throw error;
       }
 
-      setProfile(data);
+      // Update the profile state with the returned data
+      const updatedProfile: ProfileWithRole = {
+        ...data,
+        user_role: profile?.user_role || "public",
+        role: profile?.role || "public",
+        email: profile?.email || user.email || "",
+      };
+
+      setProfile(updatedProfile);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Profile update failed");
       throw err;

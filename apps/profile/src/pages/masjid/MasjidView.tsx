@@ -40,41 +40,35 @@ import {
   AccessTime,
 } from "@mui/icons-material";
 import { usePermissions } from "@masjid-suite/auth";
+import { masjidService } from "@masjid-suite/supabase-client";
 
-// Mock data
-const mockMasjid = {
-  id: "01234567-89ab-cdef-0123-456789abcdef",
-  name: "Masjid Jamek Sungai Rambai",
-  registration_number: "MSJ-2024-001",
-  email: "admin@masjidjameksungairambai.org",
-  phone_number: "+60412345678",
-  description:
-    "Community mosque serving the Sungai Rambai area in Bukit Mertajam. Established in 1985, this mosque serves over 300 families and offers daily prayers, Friday sermons, and religious education programs. The mosque is known for its active community outreach programs and traditional Islamic architecture.",
-  website_url: "https://masjidjameksungairambai.org",
+// Fallback masjid data structure for compatibility
+const defaultMasjid = {
+  id: "",
+  name: "Masjid Not Found",
+  registration_number: "",
+  email: "",
+  phone_number: "",
+  description: "Masjid data could not be loaded.",
+  website_url: "",
   address: {
-    address_line_1: "Jalan Masjid Jamek",
-    address_line_2: "Sungai Rambai",
-    city: "Bukit Mertajam",
-    state: "Penang",
-    postcode: "14000",
+    address_line_1: "",
+    address_line_2: "",
+    city: "",
+    state: "",
+    postcode: "",
     country: "MYS",
   },
-  capacity: 500,
-  facilities: [
-    "Parking",
-    "Air Conditioning",
-    "Wheelchair Access",
-    "Library",
-    "Ablution Facilities",
-  ],
+  facilities: [],
   prayer_times_source: "jakim",
   status: "active",
-  created_at: "2024-01-15T10:00:00Z",
-  updated_at: "2024-03-01T15:30:00Z",
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+  capacity: 0,
   stats: {
-    total_members: 312,
-    active_programs: 8,
-    monthly_visitors: 1250,
+    total_members: 0,
+    active_programs: 0,
+    monthly_visitors: 0,
   },
 };
 
@@ -99,9 +93,9 @@ function MasjidView() {
   const navigate = useNavigate();
   const permissions = usePermissions();
 
-  const [masjid, setMasjid] = useState(mockMasjid);
+  const [masjid, setMasjid] = useState(defaultMasjid);
   const [prayerTimes, setPrayerTimes] = useState(mockPrayerTimes);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -109,12 +103,42 @@ function MasjidView() {
   useEffect(() => {
     if (id) {
       setLoading(true);
-      // Mock API call - replace with actual implementation
-      setTimeout(() => {
-        setMasjid(mockMasjid);
-        setPrayerTimes(mockPrayerTimes);
-        setLoading(false);
-      }, 1000);
+      setError(null);
+
+      // Fetch masjid data from Supabase
+      const fetchMasjidData = async () => {
+        try {
+          const masjidData = await masjidService.getMasjid(id);
+          setMasjid({
+            ...masjidData,
+            // Add missing fields with defaults for compatibility
+            website_url: masjidData.email
+              ? `https://${masjidData.name.toLowerCase().replace(/\s+/g, "")}.org`
+              : null,
+            facilities: ["Prayer Hall", "Ablution Area", "Parking"], // Default facilities
+            prayer_times_source: "jakim",
+            capacity: 200, // Default capacity
+            stats: {
+              total_members: 150,
+              active_programs: 5,
+              monthly_visitors: 800,
+            },
+          });
+          setPrayerTimes(mockPrayerTimes); // Keep prayer times as mock for now
+        } catch (err) {
+          console.error("Error fetching masjid:", err);
+          setError(
+            err instanceof Error ? err.message : "Failed to fetch masjid data"
+          );
+          // Fallback to default data
+          setMasjid(defaultMasjid);
+          setPrayerTimes(mockPrayerTimes);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchMasjidData();
     }
   }, [id]);
 

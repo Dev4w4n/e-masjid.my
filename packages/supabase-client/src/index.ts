@@ -410,7 +410,7 @@ export class MasjidService {
     const { data, error } = await this.db
       .table("masjids")
       .select("*")
-      .eq("is_active", true)
+      .eq("status", "active")
       .order("name");
 
     if (error) {
