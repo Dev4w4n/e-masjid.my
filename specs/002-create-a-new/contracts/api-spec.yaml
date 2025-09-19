@@ -1,0 +1,449 @@
+openapi: 3.0.3
+info:
+  title: Masjid Digital Display TV App API
+  description: API for managing digital display content and configurations for masjids
+  version: 1.0.0
+  contact:
+    name: e-Masjid.my Development Team
+
+servers:
+  - url: https://api.e-masjid.my/v1
+    description: Production server
+  - url: http://localhost:3000/api/v1
+    description: Development server
+
+paths:
+  /displays/{displayId}/content:
+    get:
+      summary: Get content for display
+      description: Retrieve top 10 sponsored content items for a specific display
+      tags:
+        - Display Content
+      parameters:
+        - name: displayId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Display configuration ID
+      responses:
+        "200":
+          description: Content items successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ContentItem"
+                  meta:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of content items
+                      carousel_interval:
+                        type: integer
+                        description: Seconds between transitions
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /displays/{displayId}/prayer-times:
+    get:
+      summary: Get prayer times for display
+      description: Retrieve current day's prayer times for the masjid
+      tags:
+        - Prayer Times
+      parameters:
+        - name: displayId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Display configuration ID
+        - name: date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Date for prayer times (defaults to today)
+      responses:
+        "200":
+          description: Prayer times successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/PrayerSchedule"
+                  meta:
+                    type: object
+                    properties:
+                      position:
+                        type: string
+                        enum: [top, bottom, left, right, center]
+                        description: Prayer time overlay position
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /displays/{displayId}/config:
+    get:
+      summary: Get display configuration
+      description: Retrieve configuration settings for a specific display
+      tags:
+        - Display Configuration
+      parameters:
+        - name: displayId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Display configuration ID
+      responses:
+        "200":
+          description: Configuration successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/DisplayConfiguration"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    put:
+      summary: Update display configuration
+      description: Update configuration settings for a display
+      tags:
+        - Display Configuration
+      parameters:
+        - name: displayId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Display configuration ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DisplayConfigurationUpdate"
+      responses:
+        "200":
+          description: Configuration successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/DisplayConfiguration"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /displays/{displayId}/heartbeat:
+    post:
+      summary: Send display heartbeat
+      description: Update display activity timestamp
+      tags:
+        - Display Health
+      parameters:
+        - name: displayId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Display configuration ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [online, loading, error]
+                  description: Current display status
+                error_message:
+                  type: string
+                  description: Error details if status is error
+      responses:
+        "200":
+          description: Heartbeat recorded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /masjids/{masjidId}/displays:
+    get:
+      summary: Get displays for masjid
+      description: Retrieve all display configurations for a masjid
+      tags:
+        - Masjid Management
+      parameters:
+        - name: masjidId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Masjid ID
+      responses:
+        "200":
+          description: Displays successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/DisplayConfiguration"
+
+components:
+  schemas:
+    ContentItem:
+      type: object
+      required:
+        - id
+        - title
+        - type
+        - url
+        - sponsorship_amount
+        - duration
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+          maxLength: 200
+          description: Content title in Bahasa Malaysia
+        type:
+          type: string
+          enum: [youtube_video, image]
+        url:
+          type: string
+          format: uri
+          description: YouTube URL or image URL
+        thumbnail_url:
+          type: string
+          format: uri
+          description: Preview image URL
+        sponsorship_amount:
+          type: number
+          format: decimal
+          minimum: 0
+          description: Total sponsorship funds in MYR
+        duration:
+          type: integer
+          minimum: 1
+          description: Duration in seconds for videos or display time for images
+        status:
+          type: string
+          enum: [active, inactive, pending_approval]
+        approved_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    PrayerSchedule:
+      type: object
+      required:
+        - prayer_date
+        - fajr_time
+        - sunrise_time
+        - dhuhr_time
+        - asr_time
+        - maghrib_time
+        - isha_time
+      properties:
+        prayer_date:
+          type: string
+          format: date
+        fajr_time:
+          type: string
+          format: time
+        sunrise_time:
+          type: string
+          format: time
+        dhuhr_time:
+          type: string
+          format: time
+        asr_time:
+          type: string
+          format: time
+        maghrib_time:
+          type: string
+          format: time
+        isha_time:
+          type: string
+          format: time
+        source:
+          type: string
+          description: Data source (e.g., JAKIM_API)
+        fetched_at:
+          type: string
+          format: date-time
+
+    DisplayConfiguration:
+      type: object
+      required:
+        - id
+        - masjid_id
+        - display_name
+        - prayer_time_position
+        - carousel_interval
+      properties:
+        id:
+          type: string
+          format: uuid
+        masjid_id:
+          type: string
+          format: uuid
+        display_name:
+          type: string
+          maxLength: 50
+        prayer_time_position:
+          type: string
+          enum: [top, bottom, left, right, center]
+        carousel_interval:
+          type: integer
+          minimum: 5
+          maximum: 300
+          description: Seconds between content transitions
+        max_content_items:
+          type: integer
+          minimum: 1
+          maximum: 20
+          default: 10
+        auto_refresh_interval:
+          type: integer
+          minimum: 1
+          maximum: 60
+          description: Minutes between data refresh
+        is_active:
+          type: boolean
+          default: true
+        last_heartbeat:
+          type: string
+          format: date-time
+          nullable: true
+
+    DisplayConfigurationUpdate:
+      type: object
+      properties:
+        display_name:
+          type: string
+          maxLength: 50
+        prayer_time_position:
+          type: string
+          enum: [top, bottom, left, right, center]
+        carousel_interval:
+          type: integer
+          minimum: 5
+          maximum: 300
+        max_content_items:
+          type: integer
+          minimum: 1
+          maximum: 20
+        auto_refresh_interval:
+          type: integer
+          minimum: 1
+          maximum: 60
+        is_active:
+          type: boolean
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: "VALIDATION_ERROR"
+            message: "Invalid input parameters"
+            details:
+              field: "carousel_interval"
+              reason: "Must be between 5 and 300 seconds"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: "RESOURCE_NOT_FOUND"
+            message: "Display configuration not found"
+
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: "INTERNAL_ERROR"
+            message: "An unexpected error occurred"
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: Display Content
+    description: Operations for managing content displayed on TV screens
+  - name: Prayer Times
+    description: Operations for retrieving prayer time information
+  - name: Display Configuration
+    description: Operations for managing display settings
+  - name: Display Health
+    description: Operations for monitoring display status
+  - name: Masjid Management
+    description: Operations for masjid-level display management
