@@ -168,9 +168,7 @@ function MasjidView() {
 
   const handleDelete = async () => {
     try {
-      // Mock API call - replace with actual implementation
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Deleting masjid:", id);
+      await masjidService.deleteMasjid(id!);
       navigate("/masjids");
     } catch (error) {
       console.error("Failed to delete masjid:", error);
