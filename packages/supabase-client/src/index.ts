@@ -391,6 +391,67 @@ export class ProfileService {
 
     return data;
   }
+
+  /**
+   * Update profile address
+   */
+  async updateProfileAddress(
+    addressId: string,
+    updates: Database["public"]["Tables"]["profile_addresses"]["Update"]
+  ) {
+    const { data, error } = await this.db
+      .table("profile_addresses")
+      .update(updates)
+      .eq("id", addressId)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to update profile address: ${error.message}`);
+    }
+
+    return data;
+  }
+
+  /**
+   * Delete profile address
+   */
+  async deleteProfileAddress(addressId: string) {
+    const { error } = await this.db
+      .table("profile_addresses")
+      .delete()
+      .eq("id", addressId);
+
+    if (error) {
+      throw new Error(`Failed to delete profile address: ${error.message}`);
+    }
+  }
+
+  /**
+   * Set primary address (automatically unsets other primary addresses)
+   */
+  async setPrimaryAddress(profileId: string, addressId: string) {
+    // First, unset all primary addresses for this profile
+    await this.db
+      .table("profile_addresses")
+      .update({ is_primary: false })
+      .eq("profile_id", profileId);
+
+    // Then set the specified address as primary
+    const { data, error } = await this.db
+      .table("profile_addresses")
+      .update({ is_primary: true })
+      .eq("id", addressId)
+      .eq("profile_id", profileId)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to set primary address: ${error.message}`);
+    }
+
+    return data;
+  }
 }
 
 /**
