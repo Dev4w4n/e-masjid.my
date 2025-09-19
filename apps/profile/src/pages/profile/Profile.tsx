@@ -34,6 +34,7 @@ import {
   Visibility,
 } from "@mui/icons-material";
 import { useAuth, useProfile } from "@masjid-suite/auth";
+import { useMasjids } from "../../hooks/useMasjids";
 import {
   MALAYSIAN_STATES,
   isValidMalaysianPhone,
@@ -83,6 +84,7 @@ function Profile() {
   const navigate = useNavigate();
   const { user, updateProfile } = useAuth();
   const { profile, refreshProfile } = useProfile();
+  const { masjids, loading: masjidsLoading } = useMasjids();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -317,19 +319,18 @@ function Profile() {
                       name="homeMasjidId"
                       control={control}
                       render={({ field }) => (
-                        <FormControl fullWidth disabled={isLoading}>
+                        <FormControl
+                          fullWidth
+                          disabled={isLoading || masjidsLoading}
+                        >
                           <InputLabel>Home Masjid (Optional)</InputLabel>
                           <Select {...field} label="Home Masjid (Optional)">
                             <MenuItem value="">None</MenuItem>
-                            <MenuItem value="masjid-1">
-                              Masjid Jamek Sungai Rambai
-                            </MenuItem>
-                            <MenuItem value="masjid-2">
-                              Masjid Al-Hidayah
-                            </MenuItem>
-                            <MenuItem value="masjid-3">
-                              Masjid Ar-Rahman
-                            </MenuItem>
+                            {masjids.map((masjid) => (
+                              <MenuItem key={masjid.id} value={masjid.id}>
+                                {masjid.name}
+                              </MenuItem>
+                            ))}
                           </Select>
                         </FormControl>
                       )}
