@@ -32,9 +32,12 @@ import {
   Add,
   Delete,
   Visibility,
+  Star,
+  StarBorder,
 } from "@mui/icons-material";
 import { useAuth, useProfile } from "@masjid-suite/auth";
 import { useMasjids } from "../../hooks/useMasjids";
+import { useAddresses } from "../../hooks/useAddresses";
 import {
   MALAYSIAN_STATES,
   isValidMalaysianPhone,
@@ -85,10 +88,18 @@ function Profile() {
   const { user, updateProfile } = useAuth();
   const { profile, refreshProfile } = useProfile();
   const { masjids, loading: masjidsLoading } = useMasjids();
+  const {
+    addresses,
+    loading: addressesLoading,
+    error: addressesError,
+    addAddress,
+    deleteAddress,
+    setPrimaryAddress,
+  } = useAddresses();
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [addresses, setAddresses] = useState<AddressFormData[]>([]);
   const [showAddAddress, setShowAddAddress] = useState(false);
 
   const {
@@ -170,11 +181,20 @@ function Profile() {
       setIsLoading(true);
       setError(null);
 
-      // In a real app, this would save to the database
-      setAddresses((prev) => [...prev, data]);
+      // Add the address to the database using the hook
+      await addAddress({
+        address_line_1: data.addressLine1,
+        address_line_2: data.addressLine2 || null,
+        city: data.city,
+        state: data.state as any, // Type assertion for state enum
+        postcode: data.postcode,
+        address_type: data.addressType,
+        country: "MYS",
+        is_primary: addresses.length === 0, // Make it primary if it's the first address
+      });
+
       setShowAddAddress(false);
       resetAddress();
-
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
@@ -189,8 +209,36 @@ function Profile() {
     }
   };
 
-  const removeAddress = (index: number) => {
-    setAddresses((prev) => prev.filter((_, i) => i !== index));
+  const removeAddress = async (addressId: string) => {
+    try {
+      setError(null);
+      await deleteAddress(addressId);
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (err) {
+      console.error("Address delete error:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to delete address. Please try again."
+      );
+    }
+  };
+
+  const handleSetPrimaryAddress = async (addressId: string) => {
+    try {
+      setError(null);
+      await setPrimaryAddress(addressId);
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (err) {
+      console.error("Set primary address error:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to set primary address. Please try again."
+      );
+    }
   };
 
   return (
@@ -214,6 +262,11 @@ function Profile() {
       {error && (
         <Alert severity="error" sx={{ mb: 3 }}>
           {error}
+        </Alert>
+      )}
+      {addressesError && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          Address Error: {addressesError}
         </Alert>
       )}
 
@@ -377,11 +430,22 @@ function Profile() {
                 Addresses
               </Typography>
 
+              {/* Loading state for addresses */}
+              {addressesLoading && (
+                <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
+                  <CircularProgress size={24} />
+                </Box>
+              )}
+
               {/* Existing Addresses */}
-              {addresses.length > 0 && (
+              {!addressesLoading && addresses.length > 0 && (
                 <Box sx={{ mb: 2 }}>
-                  {addresses.map((address, index) => (
-                    <Card key={index} variant="outlined" sx={{ mb: 1, p: 2 }}>
+                  {addresses.map((address) => (
+                    <Card
+                      key={address.id}
+                      variant="outlined"
+                      sx={{ mb: 1, p: 2 }}
+                    >
                       <Box
                         sx={{
                           display: "flex",
@@ -390,30 +454,60 @@ function Profile() {
                         }}
                       >
                         <Box sx={{ flex: 1 }}>
-                          <Typography variant="body2" fontWeight="medium">
-                            {String(address.addressLine1)}
-                          </Typography>
-                          {address.addressLine2 && (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                              mb: 1,
+                            }}
+                          >
+                            <Typography variant="body2" fontWeight="medium">
+                              {address.address_line_1}
+                            </Typography>
+                            {address.is_primary && (
+                              <Chip
+                                size="small"
+                                label="Primary"
+                                color="primary"
+                                icon={<Star />}
+                              />
+                            )}
+                          </Box>
+                          {address.address_line_2 && (
                             <Typography variant="body2" color="text.secondary">
-                              {String(address.addressLine2)}
+                              {address.address_line_2}
                             </Typography>
                           )}
                           <Typography variant="body2" color="text.secondary">
-                            {String(address.city)}, {String(address.state)}{" "}
-                            {String(address.postcode)}
+                            {address.city}, {address.state} {address.postcode}
                           </Typography>
                           <Chip
                             size="small"
-                            label={String(address.addressType)}
+                            label={address.address_type}
                             sx={{ mt: 1 }}
                           />
                         </Box>
-                        <IconButton
-                          size="small"
-                          onClick={() => removeAddress(index)}
-                        >
-                          <Delete />
-                        </IconButton>
+                        <Box sx={{ display: "flex", gap: 1 }}>
+                          {!address.is_primary && (
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                handleSetPrimaryAddress(address.id)
+                              }
+                              title="Set as primary"
+                            >
+                              <StarBorder />
+                            </IconButton>
+                          )}
+                          <IconButton
+                            size="small"
+                            onClick={() => removeAddress(address.id)}
+                            color="error"
+                          >
+                            <Delete />
+                          </IconButton>
+                        </Box>
                       </Box>
                     </Card>
                   ))}
@@ -421,7 +515,7 @@ function Profile() {
               )}
 
               {/* Add Address Button */}
-              {!showAddAddress && (
+              {!showAddAddress && !addressesLoading && (
                 <Button
                   variant="outlined"
                   startIcon={<Add />}
@@ -451,7 +545,7 @@ function Profile() {
                     size="small"
                     error={!!errorsAddress.addressLine1}
                     helperText={errorsAddress.addressLine1?.message}
-                    disabled={isLoading}
+                    disabled={isLoading || addressesLoading}
                     sx={{ mb: 1 }}
                   />
 
@@ -460,7 +554,7 @@ function Profile() {
                     fullWidth
                     label="Address Line 2 (Optional)"
                     size="small"
-                    disabled={isLoading}
+                    disabled={isLoading || addressesLoading}
                     sx={{ mb: 1 }}
                   />
 
@@ -471,7 +565,7 @@ function Profile() {
                     size="small"
                     error={!!errorsAddress.city}
                     helperText={errorsAddress.city?.message}
-                    disabled={isLoading}
+                    disabled={isLoading || addressesLoading}
                     sx={{ mb: 1 }}
                   />
 
@@ -481,7 +575,11 @@ function Profile() {
                     render={({ field }) => (
                       <FormControl fullWidth size="small" sx={{ mb: 1 }}>
                         <InputLabel>State</InputLabel>
-                        <Select {...field} label="State" disabled={isLoading}>
+                        <Select
+                          {...field}
+                          label="State"
+                          disabled={isLoading || addressesLoading}
+                        >
                           {MALAYSIAN_STATES.map((state) => (
                             <MenuItem key={state} value={state}>
                               {state}
@@ -499,7 +597,7 @@ function Profile() {
                     size="small"
                     error={!!errorsAddress.postcode}
                     helperText={errorsAddress.postcode?.message}
-                    disabled={isLoading}
+                    disabled={isLoading || addressesLoading}
                     sx={{ mb: 1 }}
                   />
 
@@ -509,7 +607,11 @@ function Profile() {
                     render={({ field }) => (
                       <FormControl fullWidth size="small" sx={{ mb: 2 }}>
                         <InputLabel>Type</InputLabel>
-                        <Select {...field} label="Type" disabled={isLoading}>
+                        <Select
+                          {...field}
+                          label="Type"
+                          disabled={isLoading || addressesLoading}
+                        >
                           <MenuItem value="home">Home</MenuItem>
                           <MenuItem value="work">Work</MenuItem>
                           <MenuItem value="other">Other</MenuItem>
@@ -524,7 +626,7 @@ function Profile() {
                       variant="contained"
                       size="small"
                       startIcon={<Save />}
-                      disabled={isLoading}
+                      disabled={isLoading || addressesLoading}
                     >
                       Save
                     </Button>
@@ -536,7 +638,7 @@ function Profile() {
                         setShowAddAddress(false);
                         resetAddress();
                       }}
-                      disabled={isLoading}
+                      disabled={isLoading || addressesLoading}
                     >
                       Cancel
                     </Button>
