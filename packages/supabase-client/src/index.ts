@@ -582,6 +582,20 @@ export class MasjidService {
 
     return data;
   }
+
+  /**
+   * Delete masjid
+   */
+  async deleteMasjid(masjidId: string): Promise<void> {
+    const { error } = await this.db
+      .table("masjids")
+      .delete()
+      .eq("id", masjidId);
+
+    if (error) {
+      throw new Error(`Failed to delete masjid: ${error.message}`);
+    }
+  }
 }
 
 // Create service instances
