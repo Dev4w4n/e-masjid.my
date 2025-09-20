@@ -554,30 +554,36 @@ export class MasjidService {
 
   /**
    * Get masjid admins
+   * Uses optimized SQL function to avoid N+1 query problems
    */
   async getMasjidAdmins(masjidId: string): Promise<any[]> {
-    const { data, error } = await this.db
-      .table("masjid_admins")
-      .select(
-        `
-        *,
-        users!masjid_admins_user_id_fkey (
-          id,
-          email,
-          profiles (
-            full_name,
-            phone_number
-          )
-        )
-      `
-      )
-      .eq("masjid_id", masjidId);
+    try {
+      const data = await this.db.rpc("get_masjid_admin_list", {
+        target_masjid_id: masjidId,
+      });
 
-    if (error) {
-      throw new Error(`Failed to get masjid admins: ${error.message}`);
+      // Transform the data to match the expected format for backward compatibility
+      const transformedData = (data || []).map((admin: any) => ({
+        id: admin.user_id, // Map user_id to id for the admin record
+        user_id: admin.user_id,
+        status: admin.assignment_status,
+        assigned_at: admin.assigned_at,
+        users: {
+          id: admin.user_id,
+          email: admin.email,
+          profiles: {
+            full_name: admin.full_name,
+            phone_number: admin.phone_number,
+          },
+        },
+      }));
+
+      return transformedData;
+    } catch (error) {
+      throw new Error(
+        `Failed to get masjid admins: ${error instanceof Error ? error.message : "Unknown error"}`
+      );
     }
-
-    return data || [];
   }
 
   /**
