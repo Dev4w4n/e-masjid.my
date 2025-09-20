@@ -12,7 +12,6 @@ import {
   Avatar,
   Alert,
   CircularProgress,
-  Paper,
   List,
   ListItem,
   ListItemIcon,
@@ -22,6 +21,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  TextField,
+  Snackbar,
 } from "@mui/material";
 import {
   ArrowBack,
@@ -38,6 +39,8 @@ import {
   Share,
   Mosque,
   AccessTime,
+  ContactMail,
+  Send,
 } from "@mui/icons-material";
 import { usePermissions } from "@masjid-suite/auth";
 import { masjidService } from "@masjid-suite/supabase-client";
@@ -65,11 +68,6 @@ const defaultMasjid = {
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
   capacity: 0,
-  stats: {
-    total_members: 0,
-    active_programs: 0,
-    monthly_visitors: 0,
-  },
 };
 
 const mockPrayerTimes = {
@@ -95,9 +93,20 @@ function MasjidView() {
 
   const [masjid, setMasjid] = useState(defaultMasjid);
   const [prayerTimes, setPrayerTimes] = useState(mockPrayerTimes);
+  const [admins, setAdmins] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [adminsLoading, setAdminsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [contactDialogOpen, setContactDialogOpen] = useState(false);
+  const [contactForm, setContactForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+  const [contactLoading, setContactLoading] = useState(false);
+  const [contactSuccess, setContactSuccess] = useState(false);
 
   // Load masjid data
   useEffect(() => {
@@ -112,17 +121,7 @@ function MasjidView() {
           setMasjid({
             ...masjidData,
             // Add missing fields with defaults for compatibility
-            website_url: masjidData.email
-              ? `https://${masjidData.name.toLowerCase().replace(/\s+/g, "")}.org`
-              : null,
-            facilities: ["Prayer Hall", "Ablution Area", "Parking"], // Default facilities
             prayer_times_source: "jakim",
-            capacity: 200, // Default capacity
-            stats: {
-              total_members: 150,
-              active_programs: 5,
-              monthly_visitors: 800,
-            },
           });
           setPrayerTimes(mockPrayerTimes); // Keep prayer times as mock for now
         } catch (err) {
@@ -141,6 +140,30 @@ function MasjidView() {
       fetchMasjidData();
     }
   }, [id]);
+
+  // Load masjid admins if user has permissions
+  useEffect(() => {
+    if (id) {
+      // Check permissions inside the effect to avoid dependency issues
+      if (permissions.canManageMasjids()) {
+        setAdminsLoading(true);
+
+        const fetchAdmins = async () => {
+          try {
+            const adminData = await masjidService.getMasjidAdmins(id);
+            setAdmins(adminData);
+          } catch (err) {
+            console.error("Error fetching masjid admins:", err);
+            // Don't set error for admins, just log it
+          } finally {
+            setAdminsLoading(false);
+          }
+        };
+
+        fetchAdmins();
+      }
+    }
+  }, [id]); // Only depend on id, not permissions
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -188,6 +211,26 @@ function MasjidView() {
       // Fallback to clipboard
       navigator.clipboard.writeText(window.location.href);
       // Could show a toast notification here
+    }
+  };
+
+  const handleContactSubmit = async () => {
+    setContactLoading(true);
+    try {
+      // Simulate sending contact form (in real app, would call API)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setContactSuccess(true);
+      setContactDialogOpen(false);
+      setContactForm({
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Failed to send contact message:", error);
+    } finally {
+      setContactLoading(false);
     }
   };
 
@@ -283,6 +326,10 @@ function MasjidView() {
               <Share />
             </IconButton>
 
+            <IconButton onClick={() => setContactDialogOpen(true)}>
+              <ContactMail />
+            </IconButton>
+
             {permissions.canManageMasjids() && (
               <>
                 <Button
@@ -322,6 +369,54 @@ function MasjidView() {
               <Typography variant="body1" paragraph>
                 {masjid.description}
               </Typography>
+            </CardContent>
+          </Card>
+
+          {/* Photo Gallery */}
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Photo Gallery
+              </Typography>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: 200,
+                  border: 2,
+                  borderColor: "grey.300",
+                  borderStyle: "dashed",
+                  borderRadius: 2,
+                  bgcolor: "grey.50",
+                }}
+              >
+                <Box sx={{ textAlign: "center" }}>
+                  <Mosque sx={{ fontSize: 48, color: "grey.400", mb: 1 }} />
+                  <Typography variant="body2" color="text.secondary">
+                    No photos available yet
+                  </Typography>
+                  {permissions.canManageMasjids() && (
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      display="block"
+                      sx={{ mt: 1 }}
+                    >
+                      Photo upload feature coming soon
+                    </Typography>
+                  )}
+                </Box>
+              </Box>
+
+              {permissions.canManageMasjids() && (
+                <Box sx={{ mt: 2 }}>
+                  <Button variant="outlined" size="small" disabled>
+                    Upload Photos (Coming Soon)
+                  </Button>
+                </Box>
+              )}
             </CardContent>
           </Card>
 
@@ -438,6 +533,87 @@ function MasjidView() {
               </CardContent>
             </Card>
           )}
+
+          {/* Administrators */}
+          {permissions.canManageMasjids() && (
+            <Card sx={{ mb: 3 }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Administrators
+                </Typography>
+
+                {adminsLoading ? (
+                  <Typography variant="body2" color="text.secondary">
+                    Loading administrators...
+                  </Typography>
+                ) : admins.length > 0 ? (
+                  <List dense>
+                    {admins.map((admin, index) => (
+                      <ListItem key={index} sx={{ px: 0 }}>
+                        <ListItemIcon>
+                          <People color="action" />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={
+                            admin.users?.profiles?.full_name || "Unknown"
+                          }
+                          secondary={
+                            <Box>
+                              <Typography variant="caption" display="block">
+                                {admin.users?.email}
+                              </Typography>
+                              {admin.users?.profiles?.phone_number && (
+                                <Typography variant="caption" display="block">
+                                  {admin.users.profiles.phone_number}
+                                </Typography>
+                              )}
+                              <Chip
+                                size="small"
+                                label={admin.status}
+                                color={
+                                  admin.status === "active"
+                                    ? "success"
+                                    : "default"
+                                }
+                                sx={{ mt: 0.5 }}
+                              />
+                            </Box>
+                          }
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    No administrators assigned to this masjid.
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Recent Activities */}
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Recent Activities
+              </Typography>
+
+              <Typography variant="body2" color="text.secondary">
+                No recent activities to display. This section will show upcoming
+                events, programs, and announcements from the masjid once the
+                events management system is implemented.
+              </Typography>
+
+              {permissions.canManageMasjids() && (
+                <Box sx={{ mt: 2 }}>
+                  <Button variant="outlined" size="small" disabled>
+                    Manage Events (Coming Soon)
+                  </Button>
+                </Box>
+              )}
+            </CardContent>
+          </Card>
         </Grid>
 
         {/* Sidebar */}
@@ -489,52 +665,6 @@ function MasjidView() {
               </Typography>
             </CardContent>
           </Card>
-
-          {/* Statistics */}
-          {masjid.stats && (
-            <Card sx={{ mb: 3 }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Statistics
-                </Typography>
-
-                <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <Paper sx={{ p: 2, textAlign: "center" }}>
-                      <Typography variant="h4" color="primary">
-                        {masjid.stats.total_members}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        Members
-                      </Typography>
-                    </Paper>
-                  </Grid>
-
-                  <Grid item xs={6}>
-                    <Paper sx={{ p: 2, textAlign: "center" }}>
-                      <Typography variant="h4" color="primary">
-                        {masjid.stats.active_programs}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        Programs
-                      </Typography>
-                    </Paper>
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <Paper sx={{ p: 2, textAlign: "center" }}>
-                      <Typography variant="h4" color="primary">
-                        {masjid.stats.monthly_visitors.toLocaleString()}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        Monthly Visitors
-                      </Typography>
-                    </Paper>
-                  </Grid>
-                </Grid>
-              </CardContent>
-            </Card>
-          )}
 
           {/* Meta Information */}
           <Card>
@@ -604,6 +734,101 @@ function MasjidView() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Contact Form Dialog */}
+      <Dialog
+        open={contactDialogOpen}
+        onClose={() => setContactDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Contact {masjid.name}</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Send a message to the administrators of this masjid.
+          </Typography>
+
+          <Grid container spacing={2} sx={{ mt: 1 }}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Your Name"
+                value={contactForm.name}
+                onChange={(e) =>
+                  setContactForm({ ...contactForm, name: e.target.value })
+                }
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Your Email"
+                type="email"
+                value={contactForm.email}
+                onChange={(e) =>
+                  setContactForm({ ...contactForm, email: e.target.value })
+                }
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Phone Number (Optional)"
+                value={contactForm.phone}
+                onChange={(e) =>
+                  setContactForm({ ...contactForm, phone: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Message"
+                multiline
+                rows={4}
+                value={contactForm.message}
+                onChange={(e) =>
+                  setContactForm({ ...contactForm, message: e.target.value })
+                }
+                required
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setContactDialogOpen(false)}>Cancel</Button>
+          <Button
+            onClick={handleContactSubmit}
+            variant="contained"
+            startIcon={<Send />}
+            disabled={
+              contactLoading ||
+              !contactForm.name ||
+              !contactForm.email ||
+              !contactForm.message
+            }
+          >
+            {contactLoading ? "Sending..." : "Send Message"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Success Snackbar */}
+      <Snackbar
+        open={contactSuccess}
+        autoHideDuration={6000}
+        onClose={() => setContactSuccess(false)}
+      >
+        <Alert
+          onClose={() => setContactSuccess(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          Your message has been sent successfully!
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }
