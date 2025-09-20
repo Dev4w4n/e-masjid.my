@@ -233,13 +233,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
           .eq("user_id", userId)
           .single();
 
+        let timeoutId: NodeJS.Timeout | undefined;
         const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => {
+          timeoutId = setTimeout(() => {
             reject(new Error("Database query timeout after 5 seconds"));
           }, 5000); // Shorter timeout for faster feedback
         });
 
         queryResult = await Promise.race([queryPromise, timeoutPromise]);
+
+        // Clear the timeout if the query succeeded
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
       } catch (timeoutError) {
         console.warn(
           "⚠️ Database query timed out, attempting fallback...",
@@ -248,16 +254,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         // Fallback: Try to get just user data without profile
         try {
+          let fallbackTimeoutId: NodeJS.Timeout | undefined;
           const { data: userData, error: userError } = (await Promise.race([
             supabase
               .from("users")
               .select("role, email")
               .eq("id", userId)
               .single(),
-            new Promise((_, reject) =>
-              setTimeout(() => reject(new Error("Fallback timeout")), 3000)
-            ),
+            new Promise((_, reject) => {
+              fallbackTimeoutId = setTimeout(
+                () => reject(new Error("Fallback timeout")),
+                3000
+              );
+            }),
           ])) as any;
+
+          // Clear the fallback timeout if the query succeeded
+          if (fallbackTimeoutId) {
+            clearTimeout(fallbackTimeoutId);
+          }
 
           if (userError) {
             console.error("❌ Fallback user query failed:", userError);
