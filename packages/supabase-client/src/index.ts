@@ -522,9 +522,15 @@ export class MasjidService {
   async createMasjid(
     masjid: Database["public"]["Tables"]["masjids"]["Insert"]
   ) {
+    // Ensure facilities is properly formatted as JSON array
+    const masjidData = {
+      ...masjid,
+      facilities: masjid.facilities || [],
+    };
+
     const { data, error } = await this.db
       .table("masjids")
-      .insert(masjid)
+      .insert(masjidData)
       .select()
       .single();
 
@@ -542,9 +548,17 @@ export class MasjidService {
     masjidId: string,
     updates: Database["public"]["Tables"]["masjids"]["Update"]
   ) {
+    // Ensure facilities is properly formatted as JSON array if provided
+    const updateData = {
+      ...updates,
+      ...(updates.facilities !== undefined && {
+        facilities: updates.facilities || [],
+      }),
+    };
+
     const { data, error } = await this.db
       .table("masjids")
-      .update(updates)
+      .update(updateData)
       .eq("id", masjidId)
       .select()
       .single();
@@ -668,6 +682,111 @@ export class MasjidService {
     if (error) {
       throw new Error(`Failed to delete masjid: ${error.message}`);
     }
+  }
+
+  /**
+   * Update masjid website URL
+   */
+  async updateMasjidWebsite(masjidId: string, websiteUrl: string | null) {
+    const { data, error } = await this.db
+      .table("masjids")
+      .update({ website_url: websiteUrl })
+      .eq("id", masjidId)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to update masjid website: ${error.message}`);
+    }
+
+    return data;
+  }
+
+  /**
+   * Update masjid capacity
+   */
+  async updateMasjidCapacity(masjidId: string, capacity: number | null) {
+    const { data, error } = await this.db
+      .table("masjids")
+      .update({ capacity })
+      .eq("id", masjidId)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to update masjid capacity: ${error.message}`);
+    }
+
+    return data;
+  }
+
+  /**
+   * Update masjid facilities
+   */
+  async updateMasjidFacilities(masjidId: string, facilities: string[]) {
+    const { data, error } = await this.db
+      .table("masjids")
+      .update({ facilities: facilities || [] })
+      .eq("id", masjidId)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to update masjid facilities: ${error.message}`);
+    }
+
+    return data;
+  }
+
+  /**
+   * Search masjids by facilities
+   */
+  async searchMasjidsByFacilities(requiredFacilities: string[]) {
+    if (!requiredFacilities.length) {
+      return this.getAllMasjids();
+    }
+
+    const { data, error } = await this.db
+      .table("masjids")
+      .select("*")
+      .eq("status", "active")
+      .contains("facilities", requiredFacilities)
+      .order("name");
+
+    if (error) {
+      throw new Error(
+        `Failed to search masjids by facilities: ${error.message}`
+      );
+    }
+
+    return data || [];
+  }
+
+  /**
+   * Get masjids by capacity range
+   */
+  async getMasjidsByCapacity(minCapacity?: number, maxCapacity?: number) {
+    let query = this.db
+      .table("masjids")
+      .select("*")
+      .eq("status", "active")
+      .not("capacity", "is", null);
+
+    if (minCapacity !== undefined) {
+      query = query.gte("capacity", minCapacity);
+    }
+
+    if (maxCapacity !== undefined) {
+      query = query.lte("capacity", maxCapacity);
+    }
+
+    const { data, error } = await query.order("capacity");
+
+    if (error) {
+      throw new Error(`Failed to get masjids by capacity: ${error.message}`);
+    }
+
+    return data || [];
   }
 }
 

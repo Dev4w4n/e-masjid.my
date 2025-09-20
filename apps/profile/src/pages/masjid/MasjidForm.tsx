@@ -511,7 +511,7 @@ function MasjidForm() {
             email: masjidData.email || "",
             phone_number: masjidData.phone_number || "",
             description: masjidData.description || "",
-            website_url: "", // Not stored in database yet
+            website_url: masjidData.website_url || "",
             address: {
               address_line_1: masjidData.address.address_line_1,
               address_line_2: masjidData.address.address_line_2 || "",
@@ -520,8 +520,10 @@ function MasjidForm() {
               postcode: masjidData.address.postcode,
               country: masjidData.address.country as "MYS",
             },
-            capacity: undefined, // Not stored in database yet
-            facilities: [], // Not stored in database yet
+            capacity: masjidData.capacity || undefined,
+            facilities: Array.isArray(masjidData.facilities)
+              ? masjidData.facilities
+              : [],
             prayer_times_source: "jakim" as const,
             status: masjidData.status as
               | "active"
@@ -564,6 +566,9 @@ function MasjidForm() {
         email: data.email || null,
         phone_number: data.phone_number || null,
         description: data.description || null,
+        website_url: data.website_url || null,
+        capacity: data.capacity || null,
+        facilities: data.facilities || [],
         address: {
           address_line_1: data.address.address_line_1,
           address_line_2: data.address.address_line_2 || null,
@@ -622,6 +627,14 @@ function MasjidForm() {
             "Please enter a valid Malaysian phone number starting with +60.";
         } else if (error.message.includes("Email")) {
           errorMessage = "Please enter a valid email address.";
+        } else if (error.message.includes("website_url")) {
+          errorMessage =
+            "Please enter a valid website URL starting with http:// or https://.";
+        } else if (error.message.includes("capacity")) {
+          errorMessage = "Please enter a valid capacity (positive number).";
+        } else if (error.message.includes("facilities")) {
+          errorMessage =
+            "There was an issue with the facilities list. Please check for duplicates or invalid entries.";
         } else {
           errorMessage = error.message;
         }

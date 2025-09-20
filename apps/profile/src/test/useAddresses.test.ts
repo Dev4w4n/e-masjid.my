@@ -2,6 +2,9 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { useAddresses } from "../hooks/useAddresses";
 import { profileService } from "@masjid-suite/supabase-client";
+import type { Database } from "@masjid-suite/shared-types";
+
+type ProfileAddress = Database["public"]["Tables"]["profile_addresses"]["Row"];
 
 // Mock the dependencies
 vi.mock("@masjid-suite/auth", () => ({
@@ -208,12 +211,14 @@ describe("useAddresses", () => {
 
     // Check that the addresses were updated locally
     const updatedAddresses = result.current.addresses;
-    expect(updatedAddresses.find((a) => a.id === "addr-1")?.is_primary).toBe(
-      false
-    );
-    expect(updatedAddresses.find((a) => a.id === "addr-2")?.is_primary).toBe(
-      true
-    );
+    expect(
+      updatedAddresses.find((a: ProfileAddress) => a.id === "addr-1")
+        ?.is_primary
+    ).toBe(false);
+    expect(
+      updatedAddresses.find((a: ProfileAddress) => a.id === "addr-2")
+        ?.is_primary
+    ).toBe(true);
   });
 
   it("should handle errors properly", async () => {
