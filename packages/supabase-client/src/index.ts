@@ -391,6 +391,67 @@ export class ProfileService {
 
     return data;
   }
+
+  /**
+   * Update profile address
+   */
+  async updateProfileAddress(
+    addressId: string,
+    updates: Database["public"]["Tables"]["profile_addresses"]["Update"]
+  ) {
+    const { data, error } = await this.db
+      .table("profile_addresses")
+      .update(updates)
+      .eq("id", addressId)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to update profile address: ${error.message}`);
+    }
+
+    return data;
+  }
+
+  /**
+   * Delete profile address
+   */
+  async deleteProfileAddress(addressId: string) {
+    const { error } = await this.db
+      .table("profile_addresses")
+      .delete()
+      .eq("id", addressId);
+
+    if (error) {
+      throw new Error(`Failed to delete profile address: ${error.message}`);
+    }
+  }
+
+  /**
+   * Set primary address (automatically unsets other primary addresses)
+   */
+  async setPrimaryAddress(profileId: string, addressId: string) {
+    // First, unset all primary addresses for this profile
+    await this.db
+      .table("profile_addresses")
+      .update({ is_primary: false })
+      .eq("profile_id", profileId);
+
+    // Then set the specified address as primary
+    const { data, error } = await this.db
+      .table("profile_addresses")
+      .update({ is_primary: true })
+      .eq("id", addressId)
+      .eq("profile_id", profileId)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to set primary address: ${error.message}`);
+    }
+
+    return data;
+  }
 }
 
 /**
@@ -410,7 +471,7 @@ export class MasjidService {
     const { data, error } = await this.db
       .table("masjids")
       .select("*")
-      .eq("is_active", true)
+      .eq("status", "active")
       .order("name");
 
     if (error) {
@@ -443,9 +504,15 @@ export class MasjidService {
   async createMasjid(
     masjid: Database["public"]["Tables"]["masjids"]["Insert"]
   ) {
+    // Ensure facilities is properly formatted as JSON array
+    const masjidData = {
+      ...masjid,
+      facilities: masjid.facilities || [],
+    };
+
     const { data, error } = await this.db
       .table("masjids")
-      .insert(masjid)
+      .insert(masjidData)
       .select()
       .single();
 
@@ -463,9 +530,17 @@ export class MasjidService {
     masjidId: string,
     updates: Database["public"]["Tables"]["masjids"]["Update"]
   ) {
+    // Ensure facilities is properly formatted as JSON array if provided
+    const updateData = {
+      ...updates,
+      ...(updates.facilities !== undefined && {
+        facilities: updates.facilities || [],
+      }),
+    };
+
     const { data, error } = await this.db
       .table("masjids")
-      .update(updates)
+      .update(updateData)
       .eq("id", masjidId)
       .select()
       .single();
@@ -479,28 +554,36 @@ export class MasjidService {
 
   /**
    * Get masjid admins
+   * Uses optimized SQL function to avoid N+1 query problems
    */
   async getMasjidAdmins(masjidId: string): Promise<any[]> {
-    const { data, error } = await this.db
-      .table("masjid_admins")
-      .select(
-        `
-        *,
-        profiles (
-          user_id,
-          full_name,
-          email,
-          phone_number
-        )
-      `
-      )
-      .eq("masjid_id", masjidId);
+    try {
+      const data = await this.db.rpc("get_masjid_admin_list", {
+        target_masjid_id: masjidId,
+      });
 
-    if (error) {
-      throw new Error(`Failed to get masjid admins: ${error.message}`);
+      // Transform the data to match the expected format for backward compatibility
+      const transformedData = (data || []).map((admin: any) => ({
+        id: admin.user_id, // Map user_id to id for the admin record
+        user_id: admin.user_id,
+        status: admin.assignment_status,
+        assigned_at: admin.assigned_at,
+        users: {
+          id: admin.user_id,
+          email: admin.email,
+          profiles: {
+            full_name: admin.full_name,
+            phone_number: admin.phone_number,
+          },
+        },
+      }));
+
+      return transformedData;
+    } catch (error) {
+      throw new Error(
+        `Failed to get masjid admins: ${error instanceof Error ? error.message : "Unknown error"}`
+      );
     }
-
-    return data || [];
   }
 
   /**
@@ -520,6 +603,125 @@ export class MasjidService {
     }
 
     return data;
+  }
+
+  /**
+   * Delete masjid
+   */
+  async deleteMasjid(masjidId: string): Promise<void> {
+    const { error } = await this.db
+      .table("masjids")
+      .delete()
+      .eq("id", masjidId);
+
+    if (error) {
+      throw new Error(`Failed to delete masjid: ${error.message}`);
+    }
+  }
+
+  /**
+   * Update masjid website URL
+   */
+  async updateMasjidWebsite(masjidId: string, websiteUrl: string | null) {
+    const { data, error } = await this.db
+      .table("masjids")
+      .update({ website_url: websiteUrl })
+      .eq("id", masjidId)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to update masjid website: ${error.message}`);
+    }
+
+    return data;
+  }
+
+  /**
+   * Update masjid capacity
+   */
+  async updateMasjidCapacity(masjidId: string, capacity: number | null) {
+    const { data, error } = await this.db
+      .table("masjids")
+      .update({ capacity })
+      .eq("id", masjidId)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to update masjid capacity: ${error.message}`);
+    }
+
+    return data;
+  }
+
+  /**
+   * Update masjid facilities
+   */
+  async updateMasjidFacilities(masjidId: string, facilities: string[]) {
+    const { data, error } = await this.db
+      .table("masjids")
+      .update({ facilities: facilities || [] })
+      .eq("id", masjidId)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to update masjid facilities: ${error.message}`);
+    }
+
+    return data;
+  }
+
+  /**
+   * Search masjids by facilities
+   */
+  async searchMasjidsByFacilities(requiredFacilities: string[]) {
+    if (!requiredFacilities.length) {
+      return this.getAllMasjids();
+    }
+
+    const { data, error } = await this.db
+      .table("masjids")
+      .select("*")
+      .eq("status", "active")
+      .contains("facilities", requiredFacilities)
+      .order("name");
+
+    if (error) {
+      throw new Error(
+        `Failed to search masjids by facilities: ${error.message}`
+      );
+    }
+
+    return data || [];
+  }
+
+  /**
+   * Get masjids by capacity range
+   */
+  async getMasjidsByCapacity(minCapacity?: number, maxCapacity?: number) {
+    let query = this.db
+      .table("masjids")
+      .select("*")
+      .eq("status", "active")
+      .not("capacity", "is", null);
+
+    if (minCapacity !== undefined) {
+      query = query.gte("capacity", minCapacity);
+    }
+
+    if (maxCapacity !== undefined) {
+      query = query.lte("capacity", maxCapacity);
+    }
+
+    const { data, error } = await query.order("capacity");
+
+    if (error) {
+      throw new Error(`Failed to get masjids by capacity: ${error.message}`);
+    }
+
+    return data || [];
   }
 }
 

@@ -9,6 +9,7 @@ import {
   Grid,
   Avatar,
   Paper,
+  CircularProgress,
 } from "@mui/material";
 import {
   Person,
@@ -25,8 +26,57 @@ import { useAuth, usePermissions } from "@masjid-suite/auth";
  * Home/Dashboard page component
  */
 function Home() {
-  const { user, profile } = useAuth();
+  const { user, profile, loading, error } = useAuth();
   const permissions = usePermissions();
+
+  // Debug logging
+  console.log("Home component render:", {
+    hasUser: !!user,
+    userId: user?.id,
+    hasProfile: !!profile,
+    loading,
+    error,
+  });
+
+  // Show loading state if still loading
+  if (loading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="80vh"
+        flexDirection="column"
+      >
+        <CircularProgress size={60} />
+        <Typography variant="h6" sx={{ mt: 2 }}>
+          Loading your dashboard...
+        </Typography>
+      </Box>
+    );
+  }
+
+  // Show error state if there's an error
+  if (error) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="50vh"
+          flexDirection="column"
+        >
+          <Typography variant="h5" color="error" gutterBottom>
+            Authentication Error
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            {error}
+          </Typography>
+        </Box>
+      </Container>
+    );
+  }
 
   const stats = [
     { label: "Total Masjids", value: "3", icon: <Mosque /> },

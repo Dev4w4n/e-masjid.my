@@ -24,6 +24,7 @@ import {
 import { ArrowBack, Save } from "@mui/icons-material";
 import { usePermissions } from "@masjid-suite/auth";
 import { MalaysianState } from "@masjid-suite/shared-types";
+import { masjidService, authService } from "@masjid-suite/supabase-client";
 
 // Validation schema
 const masjidSchema = z.object({
@@ -55,7 +56,8 @@ const masjidSchema = z.object({
   description: z
     .string()
     .min(10, "Description must be at least 10 characters")
-    .max(1000, "Description must not exceed 1000 characters"),
+    .max(1000, "Description must not exceed 1000 characters")
+    .optional(),
 
   website_url: z
     .string()
@@ -236,32 +238,52 @@ function MasjidForm() {
   useEffect(() => {
     if (isEdit && id) {
       setLoading(true);
-      // Mock data loading - replace with actual API call
-      setTimeout(() => {
-        const mockMasjid = {
-          name: "Masjid Jamek Sungai Rambai",
-          registration_number: "MSJ-2024-001",
-          email: "admin@masjidjameksungairambai.org",
-          phone_number: "+60412345678",
-          description:
-            "Community mosque serving the Sungai Rambai area in Bukit Mertajam. Established in 1985, this mosque serves over 300 families and offers daily prayers, Friday sermons, and religious education programs.",
-          website_url: "https://masjidjameksungairambai.org",
-          address: {
-            address_line_1: "Jalan Masjid Jamek",
-            address_line_2: "Sungai Rambai",
-            city: "Bukit Mertajam",
-            state: "Penang" as MalaysianState,
-            postcode: "14000",
-            country: "MYS" as const,
-          },
-          capacity: 500,
-          facilities: ["Parking", "Air Conditioning", "Library"],
-          prayer_times_source: "jakim" as const,
-          status: "active" as const,
-        };
-        reset(mockMasjid);
-        setLoading(false);
-      }, 1000);
+
+      const loadMasjidData = async () => {
+        try {
+          const masjidData = await masjidService.getMasjid(id);
+
+          // Transform the data to match form structure
+          const formData = {
+            name: masjidData.name,
+            registration_number: masjidData.registration_number || "",
+            email: masjidData.email || "",
+            phone_number: masjidData.phone_number || "",
+            description: masjidData.description || "",
+            website_url: masjidData.website_url || "",
+            address: {
+              address_line_1: masjidData.address.address_line_1,
+              address_line_2: masjidData.address.address_line_2 || "",
+              city: masjidData.address.city,
+              state: masjidData.address.state as MalaysianState,
+              postcode: masjidData.address.postcode,
+              country: masjidData.address.country as "MYS",
+            },
+            capacity: masjidData.capacity || undefined,
+            facilities: Array.isArray(masjidData.facilities)
+              ? masjidData.facilities
+              : [],
+            prayer_times_source: "jakim" as const,
+            status: masjidData.status as
+              | "active"
+              | "inactive"
+              | "pending_verification",
+          };
+
+          reset(formData);
+        } catch (error) {
+          console.error("Failed to load masjid data:", error);
+          const errorMessage =
+            error instanceof Error
+              ? error.message
+              : "Failed to load masjid data. Please try again.";
+          setSubmitError(errorMessage);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      loadMasjidData();
     }
   }, [isEdit, id, reset]);
 
@@ -270,11 +292,45 @@ function MasjidForm() {
       setSubmitError(null);
       setLoading(true);
 
-      // Mock API call - replace with actual implementation
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Get current user
+      const currentUser = await authService.getCurrentUser();
+      if (!currentUser) {
+        throw new Error("User not authenticated");
+      }
 
-      console.log("Submitting masjid data:", data);
+      // Prepare masjid data for API
+      const masjidData = {
+        name: data.name,
+        registration_number: data.registration_number || null,
+        email: data.email || null,
+        phone_number: data.phone_number || null,
+        description: data.description || null,
+        website_url: data.website_url || null,
+        capacity: data.capacity || null,
+        facilities: data.facilities || [],
+        address: {
+          address_line_1: data.address.address_line_1,
+          address_line_2: data.address.address_line_2 || null,
+          city: data.address.city,
+          state: data.address.state,
+          postcode: data.address.postcode,
+          country: data.address.country,
+        },
+        status: data.status || ("active" as const),
+        created_by: currentUser.id,
+      };
 
+      let result;
+      if (isEdit && id) {
+        // Update existing masjid
+        const { created_by, ...updateData } = masjidData;
+        result = await masjidService.updateMasjid(id, updateData);
+      } else {
+        // Create new masjid
+        result = await masjidService.createMasjid(masjidData);
+      }
+
+      console.log("Masjid saved successfully:", result);
       setSubmitSuccess(true);
 
       // Redirect after successful submission
@@ -287,7 +343,43 @@ function MasjidForm() {
       }, 1500);
     } catch (error) {
       console.error("Failed to save masjid:", error);
-      setSubmitError("Failed to save masjid. Please try again.");
+
+      // Handle specific error types
+      let errorMessage = "Failed to save masjid. Please try again.";
+
+      if (error instanceof Error) {
+        if (
+          error.message.includes("Only super administrators can create masjids")
+        ) {
+          errorMessage =
+            "You don't have permission to create masjids. Only super administrators can create new masjids.";
+        } else if (error.message.includes("unique constraint")) {
+          errorMessage =
+            "A masjid with this registration number already exists. Please use a different registration number.";
+        } else if (error.message.includes("Address must contain")) {
+          errorMessage =
+            "Please ensure all required address fields are filled correctly.";
+        } else if (error.message.includes("Postcode must be")) {
+          errorMessage = "Please enter a valid Malaysian postcode (5 digits).";
+        } else if (error.message.includes("Phone number")) {
+          errorMessage =
+            "Please enter a valid Malaysian phone number starting with +60.";
+        } else if (error.message.includes("Email")) {
+          errorMessage = "Please enter a valid email address.";
+        } else if (error.message.includes("website_url")) {
+          errorMessage =
+            "Please enter a valid website URL starting with http:// or https://.";
+        } else if (error.message.includes("capacity")) {
+          errorMessage = "Please enter a valid capacity (positive number).";
+        } else if (error.message.includes("facilities")) {
+          errorMessage =
+            "There was an issue with the facilities list. Please check for duplicates or invalid entries.";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      setSubmitError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -403,7 +495,7 @@ function MasjidForm() {
                           fullWidth
                           multiline
                           rows={4}
-                          label="Description *"
+                          label="Description"
                           placeholder="Describe the masjid, its history, services, and community..."
                           error={!!errors.description}
                           helperText={errors.description?.message}

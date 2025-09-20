@@ -12,7 +12,6 @@ import {
   Avatar,
   Alert,
   CircularProgress,
-  Paper,
   List,
   ListItem,
   ListItemIcon,
@@ -22,6 +21,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  TextField,
+  Snackbar,
 } from "@mui/material";
 import {
   ArrowBack,
@@ -38,44 +39,35 @@ import {
   Share,
   Mosque,
   AccessTime,
+  ContactMail,
+  Send,
 } from "@mui/icons-material";
 import { usePermissions } from "@masjid-suite/auth";
+import { masjidService } from "@masjid-suite/supabase-client";
 
-// Mock data
-const mockMasjid = {
-  id: "01234567-89ab-cdef-0123-456789abcdef",
-  name: "Masjid Jamek Sungai Rambai",
-  registration_number: "MSJ-2024-001",
-  email: "admin@masjidjameksungairambai.org",
-  phone_number: "+60412345678",
-  description:
-    "Community mosque serving the Sungai Rambai area in Bukit Mertajam. Established in 1985, this mosque serves over 300 families and offers daily prayers, Friday sermons, and religious education programs. The mosque is known for its active community outreach programs and traditional Islamic architecture.",
-  website_url: "https://masjidjameksungairambai.org",
+// Fallback masjid data structure for compatibility
+const defaultMasjid = {
+  id: "",
+  name: "Masjid Not Found",
+  registration_number: "",
+  email: "",
+  phone_number: "",
+  description: "Masjid data could not be loaded.",
+  website_url: "",
   address: {
-    address_line_1: "Jalan Masjid Jamek",
-    address_line_2: "Sungai Rambai",
-    city: "Bukit Mertajam",
-    state: "Penang",
-    postcode: "14000",
+    address_line_1: "",
+    address_line_2: "",
+    city: "",
+    state: "",
+    postcode: "",
     country: "MYS",
   },
-  capacity: 500,
-  facilities: [
-    "Parking",
-    "Air Conditioning",
-    "Wheelchair Access",
-    "Library",
-    "Ablution Facilities",
-  ],
+  facilities: [],
   prayer_times_source: "jakim",
   status: "active",
-  created_at: "2024-01-15T10:00:00Z",
-  updated_at: "2024-03-01T15:30:00Z",
-  stats: {
-    total_members: 312,
-    active_programs: 8,
-    monthly_visitors: 1250,
-  },
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+  capacity: 0,
 };
 
 const mockPrayerTimes = {
@@ -99,24 +91,79 @@ function MasjidView() {
   const navigate = useNavigate();
   const permissions = usePermissions();
 
-  const [masjid, setMasjid] = useState(mockMasjid);
+  const [masjid, setMasjid] = useState(defaultMasjid);
   const [prayerTimes, setPrayerTimes] = useState(mockPrayerTimes);
-  const [loading, setLoading] = useState(false);
+  const [admins, setAdmins] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [adminsLoading, setAdminsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [contactDialogOpen, setContactDialogOpen] = useState(false);
+  const [contactForm, setContactForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+  const [contactLoading, setContactLoading] = useState(false);
+  const [contactSuccess, setContactSuccess] = useState(false);
 
   // Load masjid data
   useEffect(() => {
     if (id) {
       setLoading(true);
-      // Mock API call - replace with actual implementation
-      setTimeout(() => {
-        setMasjid(mockMasjid);
-        setPrayerTimes(mockPrayerTimes);
-        setLoading(false);
-      }, 1000);
+      setError(null);
+
+      // Fetch masjid data from Supabase
+      const fetchMasjidData = async () => {
+        try {
+          const masjidData = await masjidService.getMasjid(id);
+          setMasjid({
+            ...masjidData,
+            // Add missing fields with defaults for compatibility
+            prayer_times_source: "jakim",
+          });
+          setPrayerTimes(mockPrayerTimes); // Keep prayer times as mock for now
+        } catch (err) {
+          console.error("Error fetching masjid:", err);
+          setError(
+            err instanceof Error ? err.message : "Failed to fetch masjid data"
+          );
+          // Fallback to default data
+          setMasjid(defaultMasjid);
+          setPrayerTimes(mockPrayerTimes);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchMasjidData();
     }
   }, [id]);
+
+  // Load masjid admins if user has permissions
+  useEffect(() => {
+    if (id) {
+      // Check permissions inside the effect to avoid dependency issues
+      if (permissions.canManageMasjids()) {
+        setAdminsLoading(true);
+
+        const fetchAdmins = async () => {
+          try {
+            const adminData = await masjidService.getMasjidAdmins(id);
+            setAdmins(adminData);
+          } catch (err) {
+            console.error("Error fetching masjid admins:", err);
+            // Don't set error for admins, just log it
+          } finally {
+            setAdminsLoading(false);
+          }
+        };
+
+        fetchAdmins();
+      }
+    }
+  }, [id]); // Only depend on id, not permissions
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -144,9 +191,7 @@ function MasjidView() {
 
   const handleDelete = async () => {
     try {
-      // Mock API call - replace with actual implementation
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Deleting masjid:", id);
+      await masjidService.deleteMasjid(id!);
       navigate("/masjids");
     } catch (error) {
       console.error("Failed to delete masjid:", error);
@@ -166,6 +211,26 @@ function MasjidView() {
       // Fallback to clipboard
       navigator.clipboard.writeText(window.location.href);
       // Could show a toast notification here
+    }
+  };
+
+  const handleContactSubmit = async () => {
+    setContactLoading(true);
+    try {
+      // Simulate sending contact form (in real app, would call API)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setContactSuccess(true);
+      setContactDialogOpen(false);
+      setContactForm({
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Failed to send contact message:", error);
+    } finally {
+      setContactLoading(false);
     }
   };
 
@@ -261,6 +326,10 @@ function MasjidView() {
               <Share />
             </IconButton>
 
+            <IconButton onClick={() => setContactDialogOpen(true)}>
+              <ContactMail />
+            </IconButton>
+
             {permissions.canManageMasjids() && (
               <>
                 <Button
@@ -300,6 +369,54 @@ function MasjidView() {
               <Typography variant="body1" paragraph>
                 {masjid.description}
               </Typography>
+            </CardContent>
+          </Card>
+
+          {/* Photo Gallery */}
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Photo Gallery
+              </Typography>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: 200,
+                  border: 2,
+                  borderColor: "grey.300",
+                  borderStyle: "dashed",
+                  borderRadius: 2,
+                  bgcolor: "grey.50",
+                }}
+              >
+                <Box sx={{ textAlign: "center" }}>
+                  <Mosque sx={{ fontSize: 48, color: "grey.400", mb: 1 }} />
+                  <Typography variant="body2" color="text.secondary">
+                    No photos available yet
+                  </Typography>
+                  {permissions.canManageMasjids() && (
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      display="block"
+                      sx={{ mt: 1 }}
+                    >
+                      Photo upload feature coming soon
+                    </Typography>
+                  )}
+                </Box>
+              </Box>
+
+              {permissions.canManageMasjids() && (
+                <Box sx={{ mt: 2 }}>
+                  <Button variant="outlined" size="small" disabled>
+                    Upload Photos (Coming Soon)
+                  </Button>
+                </Box>
+              )}
             </CardContent>
           </Card>
 
@@ -416,6 +533,87 @@ function MasjidView() {
               </CardContent>
             </Card>
           )}
+
+          {/* Administrators */}
+          {permissions.canManageMasjids() && (
+            <Card sx={{ mb: 3 }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Administrators
+                </Typography>
+
+                {adminsLoading ? (
+                  <Typography variant="body2" color="text.secondary">
+                    Loading administrators...
+                  </Typography>
+                ) : admins.length > 0 ? (
+                  <List dense>
+                    {admins.map((admin, index) => (
+                      <ListItem key={index} sx={{ px: 0 }}>
+                        <ListItemIcon>
+                          <People color="action" />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={
+                            admin.users?.profiles?.full_name || "Unknown"
+                          }
+                          secondary={
+                            <Box>
+                              <Typography variant="caption" display="block">
+                                {admin.users?.email}
+                              </Typography>
+                              {admin.users?.profiles?.phone_number && (
+                                <Typography variant="caption" display="block">
+                                  {admin.users.profiles.phone_number}
+                                </Typography>
+                              )}
+                              <Chip
+                                size="small"
+                                label={admin.status}
+                                color={
+                                  admin.status === "active"
+                                    ? "success"
+                                    : "default"
+                                }
+                                sx={{ mt: 0.5 }}
+                              />
+                            </Box>
+                          }
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    No administrators assigned to this masjid.
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Recent Activities */}
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Recent Activities
+              </Typography>
+
+              <Typography variant="body2" color="text.secondary">
+                No recent activities to display. This section will show upcoming
+                events, programs, and announcements from the masjid once the
+                events management system is implemented.
+              </Typography>
+
+              {permissions.canManageMasjids() && (
+                <Box sx={{ mt: 2 }}>
+                  <Button variant="outlined" size="small" disabled>
+                    Manage Events (Coming Soon)
+                  </Button>
+                </Box>
+              )}
+            </CardContent>
+          </Card>
         </Grid>
 
         {/* Sidebar */}
@@ -467,52 +665,6 @@ function MasjidView() {
               </Typography>
             </CardContent>
           </Card>
-
-          {/* Statistics */}
-          {masjid.stats && (
-            <Card sx={{ mb: 3 }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Statistics
-                </Typography>
-
-                <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <Paper sx={{ p: 2, textAlign: "center" }}>
-                      <Typography variant="h4" color="primary">
-                        {masjid.stats.total_members}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        Members
-                      </Typography>
-                    </Paper>
-                  </Grid>
-
-                  <Grid item xs={6}>
-                    <Paper sx={{ p: 2, textAlign: "center" }}>
-                      <Typography variant="h4" color="primary">
-                        {masjid.stats.active_programs}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        Programs
-                      </Typography>
-                    </Paper>
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <Paper sx={{ p: 2, textAlign: "center" }}>
-                      <Typography variant="h4" color="primary">
-                        {masjid.stats.monthly_visitors.toLocaleString()}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        Monthly Visitors
-                      </Typography>
-                    </Paper>
-                  </Grid>
-                </Grid>
-              </CardContent>
-            </Card>
-          )}
 
           {/* Meta Information */}
           <Card>
@@ -582,6 +734,101 @@ function MasjidView() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Contact Form Dialog */}
+      <Dialog
+        open={contactDialogOpen}
+        onClose={() => setContactDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Contact {masjid.name}</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Send a message to the administrators of this masjid.
+          </Typography>
+
+          <Grid container spacing={2} sx={{ mt: 1 }}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Your Name"
+                value={contactForm.name}
+                onChange={(e) =>
+                  setContactForm({ ...contactForm, name: e.target.value })
+                }
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Your Email"
+                type="email"
+                value={contactForm.email}
+                onChange={(e) =>
+                  setContactForm({ ...contactForm, email: e.target.value })
+                }
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Phone Number (Optional)"
+                value={contactForm.phone}
+                onChange={(e) =>
+                  setContactForm({ ...contactForm, phone: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Message"
+                multiline
+                rows={4}
+                value={contactForm.message}
+                onChange={(e) =>
+                  setContactForm({ ...contactForm, message: e.target.value })
+                }
+                required
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setContactDialogOpen(false)}>Cancel</Button>
+          <Button
+            onClick={handleContactSubmit}
+            variant="contained"
+            startIcon={<Send />}
+            disabled={
+              contactLoading ||
+              !contactForm.name ||
+              !contactForm.email ||
+              !contactForm.message
+            }
+          >
+            {contactLoading ? "Sending..." : "Send Message"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Success Snackbar */}
+      <Snackbar
+        open={contactSuccess}
+        autoHideDuration={6000}
+        onClose={() => setContactSuccess(false)}
+      >
+        <Alert
+          onClose={() => setContactSuccess(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          Your message has been sent successfully!
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }

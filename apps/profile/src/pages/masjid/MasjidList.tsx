@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -19,6 +19,7 @@ import {
   Avatar,
   InputAdornment,
   Skeleton,
+  Alert,
 } from "@mui/material";
 import {
   Search,
@@ -32,68 +33,8 @@ import {
   Mosque,
 } from "@mui/icons-material";
 import { usePermissions } from "@masjid-suite/auth";
-import { MalaysianState } from "@masjid-suite/shared-types";
-
-// Mock data for demonstration
-const mockMasjids = [
-  {
-    id: "01234567-89ab-cdef-0123-456789abcdef",
-    name: "Masjid Jamek Sungai Rambai",
-    registration_number: "MSJ-2024-001",
-    email: "admin@masjidjameksungairambai.org",
-    phone_number: "+60412345678",
-    description:
-      "Community mosque serving the Sungai Rambai area in Bukit Mertajam. Established in 1985, this mosque serves over 300 families and offers daily prayers, Friday sermons, and religious education programs.",
-    address: {
-      address_line_1: "Jalan Masjid Jamek",
-      address_line_2: "Sungai Rambai",
-      city: "Bukit Mertajam",
-      state: "Penang",
-      postcode: "14000",
-      country: "MYS",
-    },
-    status: "active",
-    created_at: "2024-01-15T10:00:00Z",
-  },
-  {
-    id: "01234567-89ab-cdef-0123-456789abcde0",
-    name: "Masjid Al-Hidayah",
-    registration_number: "MSJ-2024-002",
-    email: "contact@masjidalhidayah.my",
-    phone_number: "+60387654321",
-    description:
-      "Modern community mosque in Shah Alam serving diverse Islamic community with multilingual services and youth programs.",
-    address: {
-      address_line_1: "No. 15, Jalan Masjid Al-Hidayah",
-      address_line_2: "Seksyen 7",
-      city: "Shah Alam",
-      state: "Selangor",
-      postcode: "40000",
-      country: "MYS",
-    },
-    status: "active",
-    created_at: "2024-02-01T10:00:00Z",
-  },
-  {
-    id: "01234567-89ab-cdef-0123-456789abcde1",
-    name: "Masjid Ar-Rahman",
-    registration_number: "MSJ-2024-003",
-    email: "info@masjidarrahman.org.my",
-    phone_number: "+60361234567",
-    description:
-      "Historic mosque in Kuala Lumpur city center, known for its beautiful architecture and active community outreach programs.",
-    address: {
-      address_line_1: "Jalan Masjid India",
-      address_line_2: "",
-      city: "Kuala Lumpur",
-      state: "Kuala Lumpur",
-      postcode: "50100",
-      country: "MYS",
-    },
-    status: "active",
-    created_at: "2024-01-20T10:00:00Z",
-  },
-];
+import { MalaysianState, Database } from "@masjid-suite/shared-types";
+import { masjidService } from "@masjid-suite/supabase-client";
 
 const malaysianStates: MalaysianState[] = [
   "Johor",
@@ -114,28 +55,63 @@ const malaysianStates: MalaysianState[] = [
   "Putrajaya",
 ];
 
+type MasjidRow = Database["public"]["Tables"]["masjids"]["Row"];
+
 /**
  * Masjid list page component
  */
 function MasjidList() {
   const navigate = useNavigate();
   const permissions = usePermissions();
-  const [masjids] = useState(mockMasjids);
-  const [loading] = useState(false);
+  const [masjids, setMasjids] = useState<MasjidRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedState, setSelectedState] = useState<string>("");
   const [showFilters, setShowFilters] = useState(false);
 
+  // Fetch masjids from Supabase
+  useEffect(() => {
+    const fetchMasjids = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const masjidsData = await masjidService.getAllMasjids();
+        setMasjids(masjidsData);
+      } catch (err) {
+        console.error("Error fetching masjids:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch masjids"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMasjids();
+  }, []);
+
   // Filter masjids based on search and state
-  const filteredMasjids = masjids.filter((masjid) => {
+  const filteredMasjids = masjids.filter((masjid: MasjidRow) => {
     const matchesSearch =
       !searchTerm ||
       masjid.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      masjid.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      masjid.address.city.toLowerCase().includes(searchTerm.toLowerCase());
+      (masjid.description || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      (typeof masjid.address === "object" &&
+        masjid.address &&
+        "city" in masjid.address &&
+        (masjid.address.city as string)
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()));
 
     const matchesState =
-      !selectedState || masjid.address.state === selectedState;
+      !selectedState ||
+      (typeof masjid.address === "object" &&
+        masjid.address &&
+        "state" in masjid.address &&
+        masjid.address.state === selectedState);
 
     return matchesSearch && matchesState;
   });
@@ -154,6 +130,8 @@ function MasjidList() {
   };
 
   const formatAddress = (address: any) => {
+    if (!address || typeof address !== "object") return "";
+
     const parts = [
       address.address_line_1,
       address.address_line_2,
@@ -194,6 +172,13 @@ function MasjidList() {
           </Button>
         )}
       </Box>
+
+      {/* Error Alert */}
+      {error && (
+        <Alert severity="error" sx={{ mb: 4 }}>
+          {error}
+        </Alert>
+      )}
 
       {/* Search and Filters */}
       <Card sx={{ mb: 4 }}>
@@ -384,9 +369,9 @@ function MasjidList() {
                     color="text.secondary"
                     sx={{ mb: 2 }}
                   >
-                    {masjid.description.length > 120
+                    {masjid.description && masjid.description.length > 120
                       ? `${masjid.description.substring(0, 120)}...`
-                      : masjid.description}
+                      : masjid.description || "No description available"}
                   </Typography>
 
                   {/* Address */}

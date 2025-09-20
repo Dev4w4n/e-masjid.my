@@ -64,30 +64,68 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Initialize auth state
   useEffect(() => {
     let mounted = true;
+    let loadingTimeout: NodeJS.Timeout;
+    let isInitialLoadComplete = false;
+
+    // OPTIMIZATION 3: Increase failsafe timeout to be more reasonable
+    // Set a failsafe timeout to ensure loading doesn't hang forever
+    loadingTimeout = setTimeout(() => {
+      if (mounted) {
+        console.warn(
+          "Auth loading timeout reached (30s), forcing loading to false"
+        );
+        setLoading(false);
+      }
+    }, 30000); // Increased from 10s to 30s for better stability
 
     async function getInitialSession() {
       try {
+        console.log("🚀 Getting initial session...");
         const {
           data: { session },
         } = await supabase.auth.getSession();
 
         if (mounted) {
+          console.log("📦 Initial session result:", {
+            hasSession: !!session,
+            userId: session?.user?.id || "No session",
+          });
+
           setSession(session);
           setUser(session?.user ?? null);
 
           if (session?.user) {
-            await loadUserProfile(session.user.id);
+            console.log("👤 Initial session has user, loading profile...");
+            try {
+              await loadUserProfile(session.user.id);
+              console.log("✅ Initial profile loading completed");
+            } catch (err) {
+              console.error("❌ Initial profile loading failed:", err);
+              // Don't break the auth flow if profile loading fails
+              // The user is still authenticated even if we can't load their profile
+            }
           }
         }
       } catch (err) {
         if (mounted) {
+          console.error("❌ Error getting initial session:", err);
           setError(
             err instanceof Error ? err.message : "Failed to get initial session"
           );
         }
       } finally {
         if (mounted) {
+          console.log(
+            "🎯 Clearing timeout and setting loading to false (initial)"
+          );
+          clearTimeout(loadingTimeout);
           setLoading(false);
+          // FIX: Set the flag AFTER loading is complete to prevent race conditions
+          isInitialLoadComplete = true;
+          console.log(
+            "✅ Initial session loading completed - loading state:",
+            false
+          );
         }
       }
     }
@@ -100,73 +138,273 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } = supabase.auth.onAuthStateChange(
       async (event: AuthChangeEvent, session: Session | null) => {
         if (mounted) {
+          console.log("🔄 Auth state changed:", event, session?.user?.id);
+
+          // FIX: For INITIAL_SESSION during page refresh, ensure loading gets handled
+          if (event === "INITIAL_SESSION" && !isInitialLoadComplete) {
+            console.log(
+              "⏭️ Skipping INITIAL_SESSION processing (handled by getInitialSession)"
+            );
+            // But make sure loading gets set to false if there's no user
+            if (!session?.user) {
+              console.log(
+                "🎯 No user in INITIAL_SESSION, ensuring loading is false"
+              );
+              setLoading(false);
+            }
+            return;
+          }
+
+          clearTimeout(loadingTimeout); // Clear any existing timeout
+
+          console.log("📝 Setting session and user...");
           setSession(session);
           setUser(session?.user ?? null);
           setError(null);
 
           if (session?.user) {
-            await loadUserProfile(session.user.id);
+            console.log("👤 User found, loading profile...");
+            // FIX: Set loading to true while profile loading is in progress
+            setLoading(true);
+            try {
+              await loadUserProfile(session.user.id);
+              console.log("✅ Profile loading completed");
+            } catch (err) {
+              console.error(
+                "❌ Profile loading failed in auth state change:",
+                err
+              );
+              // Don't break the auth flow if profile loading fails
+              // The user is still authenticated even if we can't load their profile
+            } finally {
+              // FIX: Always set loading to false after profile loading completes
+              console.log(
+                "🎯 Setting loading to false after profile loading..."
+              );
+              setLoading(false);
+              console.log(
+                "✅ Profile loading completed - loading state:",
+                false
+              );
+            }
           } else {
+            console.log("❌ No user, clearing profile...");
             setProfile(null);
+            setUserRole(null);
+            // FIX: Set loading to false immediately when no user
+            console.log("🎯 Setting loading to false (no user)...");
+            setLoading(false);
+            console.log("✅ No user - loading state:", false);
           }
 
-          setLoading(false);
+          console.log("✅ Auth state change processing completed");
         }
       }
     );
 
     return () => {
       mounted = false;
+      clearTimeout(loadingTimeout);
       subscription.unsubscribe();
     };
   }, []);
 
   // Load user profile with role
   async function loadUserProfile(userId: string) {
+    console.log("🔍 Starting profile load for user:", userId);
+
     try {
-      // Get profile data
-      const { data: profileData, error: profileError } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("user_id", userId)
-        .single();
+      console.log("📊 Fetching profile and user data from database...");
 
-      if (profileError && profileError.code !== "PGRST116") {
-        // No rows returned
-        throw profileError;
+      // Add timeout wrapper to prevent hanging queries during page refresh
+      let queryResult;
+      try {
+        const queryPromise = supabase
+          .from("profiles")
+          .select(
+            `
+            *,
+            users!profiles_user_id_fkey (
+              role,
+              email
+            )
+          `
+          )
+          .eq("user_id", userId)
+          .single();
+
+        let timeoutId: NodeJS.Timeout | undefined;
+        const timeoutPromise = new Promise((_, reject) => {
+          timeoutId = setTimeout(() => {
+            reject(new Error("Database query timeout after 5 seconds"));
+          }, 5000); // Shorter timeout for faster feedback
+        });
+
+        queryResult = await Promise.race([queryPromise, timeoutPromise]);
+
+        // Clear the timeout if the query succeeded
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+      } catch (timeoutError) {
+        console.warn(
+          "⚠️ Database query timed out, attempting fallback...",
+          timeoutError
+        );
+
+        // Fallback: Try to get just user data without profile
+        try {
+          let fallbackTimeoutId: NodeJS.Timeout | undefined;
+          const { data: userData, error: userError } = (await Promise.race([
+            supabase
+              .from("users")
+              .select("role, email")
+              .eq("id", userId)
+              .single(),
+            new Promise((_, reject) => {
+              fallbackTimeoutId = setTimeout(
+                () => reject(new Error("Fallback timeout")),
+                3000
+              );
+            }),
+          ])) as any;
+
+          // Clear the fallback timeout if the query succeeded
+          if (fallbackTimeoutId) {
+            clearTimeout(fallbackTimeoutId);
+          }
+
+          if (userError) {
+            console.error("❌ Fallback user query failed:", userError);
+            throw userError;
+          }
+
+          console.log(
+            "🔧 Using fallback - setting user role only:",
+            userData?.role || "public"
+          );
+          setUserRole(userData?.role || "public");
+          setProfile(null);
+          return;
+        } catch (fallbackError) {
+          console.error(
+            "❌ Both main and fallback queries failed:",
+            fallbackError
+          );
+          // Set safe defaults and continue
+          setUserRole("public");
+          setProfile(null);
+          return;
+        }
       }
 
-      // Get user role and email data
-      const { data: userData, error: userError } = await supabase
-        .from("users")
-        .select("role, email")
-        .eq("id", userId)
-        .single();
+      const { data: combinedData, error: combinedError } = queryResult as any;
 
-      if (userError && userError.code !== "PGRST116") {
-        throw userError;
+      console.log("📊 Combined query result:", {
+        hasCombinedData: !!combinedData,
+        combinedError: combinedError?.code || null,
+      });
+
+      // Handle the case where profile doesn't exist yet
+      if (combinedError && combinedError.code === "PGRST116") {
+        console.log("👤 No profile found, fetching user data only...");
+
+        // Profile doesn't exist, but we still need user role and email
+        const { data: userData, error: userError } = await supabase
+          .from("users")
+          .select("role, email")
+          .eq("id", userId)
+          .single();
+
+        if (userError) {
+          console.error("❌ User data error:", userError);
+          throw userError;
+        }
+
+        const role = userData?.role || "public";
+        const email = userData?.email || "";
+
+        console.log("🔧 Setting user role (no profile):", role);
+        setUserRole(role);
+        setProfile(null);
+
+        console.log("✅ User data loaded (no profile yet):", { role, email });
+        return;
       }
 
-      const role = userData?.role || "public";
-      const email = userData?.email || "";
+      // Handle other errors
+      if (combinedError) {
+        console.error("❌ Combined query error:", combinedError);
+        throw combinedError;
+      }
+
+      // Extract data from the combined result
+      const profileData = combinedData;
+      const userData = combinedData?.users;
+
+      if (!userData) {
+        console.error("❌ No user data found in combined result");
+        throw new Error("User data not found");
+      }
+
+      const role = userData.role || "public";
+      const email = userData.email || "";
+
+      console.log("🔧 Setting user role:", role);
       setUserRole(role);
 
       // Combine profile with role and email
-      const profileWithRole: ProfileWithRole | null = profileData
-        ? {
-            ...profileData,
-            user_role: role,
-            role: role, // Alias for UI compatibility
-            email: email,
-            // avatar_url is optional and undefined by default
-          }
-        : null;
+      const profileWithRole: ProfileWithRole = {
+        ...profileData,
+        user_role: role,
+        role: role, // Alias for UI compatibility
+        email: email,
+        // avatar_url is optional and undefined by default
+      };
+
+      console.log("✅ Profile loaded successfully:", {
+        role,
+        email,
+        hasProfile: true,
+        profileId: profileData.id,
+      });
 
       setProfile(profileWithRole);
     } catch (err) {
-      console.error("Failed to load user profile:", err);
-      setError(err instanceof Error ? err.message : "Failed to load profile");
+      console.error("❌ Failed to load user profile:", err);
+
+      // OPTIMIZATION 2: Improved error handling with fallback strategy
+      // If the optimized query fails, try to at least get user role
+      try {
+        console.log("🔄 Attempting fallback user role fetch...");
+        const { data: userData, error: userError } = await supabase
+          .from("users")
+          .select("role, email")
+          .eq("id", userId)
+          .single();
+
+        if (!userError && userData) {
+          const role = userData.role || "public";
+          console.log("🔧 Setting fallback user role:", role);
+          setUserRole(role);
+          setProfile(null);
+          return;
+        }
+      } catch (fallbackErr) {
+        console.warn("⚠️ Fallback user role fetch also failed:", fallbackErr);
+      }
+
+      // Don't set error state for missing profiles, as they might not exist yet
+      if (err instanceof Error && !err.message.includes("PGRST116")) {
+        setError(err.message);
+      }
+
+      // Set default values so the app can still function
+      setUserRole("public");
+      setProfile(null);
     }
+
+    console.log("🏁 Profile loading completed for user:", userId);
   }
 
   // Auth methods
@@ -243,18 +481,36 @@ export function AuthProvider({ children }: AuthProviderProps) {
         throw new Error("No authenticated user");
       }
 
+      // OPTIMIZATION 4: Use optimized query for profile updates
       const { data, error } = await supabase
         .from("profiles")
         .update(updates)
         .eq("user_id", user.id)
-        .select()
+        .select(
+          `
+          *,
+          users!profiles_user_id_fkey (
+            role,
+            email
+          )
+        `
+        )
         .single();
 
       if (error) {
         throw error;
       }
 
-      setProfile(data);
+      // Update the profile state with the returned data
+      const userData = data?.users;
+      const updatedProfile: ProfileWithRole = {
+        ...data,
+        user_role: userData?.role || profile?.user_role || "public",
+        role: userData?.role || profile?.role || "public",
+        email: userData?.email || profile?.email || user.email || "",
+      };
+
+      setProfile(updatedProfile);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Profile update failed");
       throw err;
