@@ -561,11 +561,13 @@ export class MasjidService {
       .select(
         `
         *,
-        profiles (
-          user_id,
-          full_name,
+        users!masjid_admins_user_id_fkey (
+          id,
           email,
-          phone_number
+          profiles (
+            full_name,
+            phone_number
+          )
         )
       `
       )
