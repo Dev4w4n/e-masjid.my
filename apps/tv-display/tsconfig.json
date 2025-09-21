@@ -1,8 +1,18 @@
 {
+<<<<<<< HEAD
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "ES2020",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
+=======
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "ES6"
+    ],
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -19,6 +29,7 @@
         "name": "next"
       }
     ],
+<<<<<<< HEAD
     /* Path mapping for workspace packages */
     "baseUrl": ".",
     "paths": {
@@ -31,6 +42,22 @@
       "@masjid-suite/shared-types": ["../../packages/shared-types/src"],
       "@masjid-suite/ui-components": ["../../packages/ui-components/src"],
       "@masjid-suite/ui-theme": ["../../packages/ui-theme/src"]
+=======
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@/components/*": [
+        "./src/components/*"
+      ],
+      "@/lib/*": [
+        "./src/lib/*"
+      ],
+      "@/types/*": [
+        "./src/types/*"
+      ]
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
     }
   },
   "include": [
@@ -41,6 +68,7 @@
   ],
   "exclude": [
     "node_modules"
+<<<<<<< HEAD
   ],
   "references": [
     { "path": "../../packages/auth" },
@@ -48,5 +76,7 @@
     { "path": "../../packages/shared-types" },
     { "path": "../../packages/ui-components" },
     { "path": "../../packages/ui-theme" }
+=======
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
   ]
 }

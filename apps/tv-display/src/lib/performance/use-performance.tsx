@@ -27,7 +27,11 @@ interface LazyImageProps {
   onError?: () => void;
 }
 
+<<<<<<< HEAD
 export interface PerformanceHookReturn {
+=======
+interface PerformanceHookReturn {
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
   // Component metrics
   renderCount: number;
   renderTime: number;

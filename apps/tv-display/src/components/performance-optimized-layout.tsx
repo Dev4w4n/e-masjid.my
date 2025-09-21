@@ -204,7 +204,11 @@ export const PerformanceOptimizedLayout: React.FC<PerformanceOptimizedLayoutProp
               prayerTimes={{
                 id: `prayer-${Date.now()}`,
                 masjid_id: displayId,
+<<<<<<< HEAD
                 prayer_date: new Date().toISOString().split('T')[0] || '',
+=======
+                prayer_date: new Date().toISOString().split('T')[0],
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
                 fajr_time: '05:30',
                 sunrise_time: '07:00', 
                 dhuhr_time: '13:15',

@@ -9,7 +9,11 @@ import { useEffect } from 'react';
 import { performanceMonitor } from './performance-monitor';
 import { cacheManager } from './cache-manager';
 import { getPerformanceConfig } from './performance-config';
+<<<<<<< HEAD
 import { usePerformance, type PerformanceHookReturn } from './use-performance';
+=======
+import { usePerformance } from './use-performance';
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
 
 // Initialize performance system
 export const initializePerformanceSystem = () => {
@@ -66,7 +70,11 @@ export const initializePerformanceSystem = () => {
 };
 
 // React hook for TV display performance optimization
+<<<<<<< HEAD
 export const useTVDisplayPerformance = (): PerformanceHookReturn => {
+=======
+export const useTVDisplayPerformance = () => {
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
   const performance = usePerformance({
     enableLazyLoading: true,
     enableImageOptimization: true,
@@ -184,7 +192,11 @@ export const contentOptimizations = {
   extractYouTubeId: (url: string): string | null => {
     const regex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/;
     const match = url.match(regex);
+<<<<<<< HEAD
     return match && match[1] ? match[1] : null;
+=======
+    return match ? match[1] : null;
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
   }
 };
 
@@ -279,12 +291,16 @@ export const networkOptimizations = {
 
     return (url: string, options?: RequestInit): Promise<Response> => {
       return new Promise((resolve, reject) => {
+<<<<<<< HEAD
         requestQueue.push({ 
           url, 
           ...(options ? { options } : {}), 
           resolve, 
           reject 
         });
+=======
+        requestQueue.push({ url, options, resolve, reject });
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
         
         if (!batchTimeout) {
           batchTimeout = setTimeout(processBatch, 100);

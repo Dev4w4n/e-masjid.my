@@ -2,7 +2,11 @@
  * Prayer Times API Route
  * GET /api/displays/[id]/prayer-times - Get prayer times for a display's masjid
  * 
+<<<<<<< HEAD
  * Integrates with JAKIM API to fetch real Malaysian prayer times data.
+=======
+ * Returns mock prayer times data for now. Can be enhanced later with real JAKIM API integration.
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -12,12 +16,18 @@ import {
   PrayerTimes,
   PrayerTimeConfig,
   PrayerTimesResponse,
+<<<<<<< HEAD
 } from '@masjid-suite/shared-types';
 import {
   ApiError,
   createApiError 
 } from '../../../../../lib/api-utils';
 import { jakimApi, MalaysianZone } from '../../../../../lib/services/jakim-api';
+=======
+  ApiError,
+  createApiError 
+} from '@masjid-suite/shared-types';
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
 
 // Initialize Supabase client
 const supabase = createClient<Database>(
@@ -32,7 +42,11 @@ export async function GET(
   try {
     const { id: displayId } = await params;
     const url = new URL(request.url);
+<<<<<<< HEAD
     const dateParam: string = url.searchParams.get('date') || new Date().toISOString().split('T')[0] || '';
+=======
+    const dateParam = url.searchParams.get('date') || new Date().toISOString().split('T')[0];
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
 
     // Get display and its masjid information
     const { data: display, error: displayError } = await supabase
@@ -42,11 +56,22 @@ export async function GET(
         masjids (
           id,
           name,
+<<<<<<< HEAD
           address,
           jakim_zone_code
         )
       `)
       .eq('id', displayId)
+=======
+          location,
+          state,
+          latitude,
+          longitude
+        )
+      `)
+      .eq('id', displayId)
+      .eq('is_active', true)
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       .single();
 
     if (displayError || !display || !display.masjids) {
@@ -58,6 +83,7 @@ export async function GET(
 
     const masjid = display.masjids as any;
 
+<<<<<<< HEAD
     // Extract address information from JSON
     const address = masjid.address || {};
     const state = address.state || '';
@@ -188,6 +214,72 @@ export async function GET(
         }
       });
     }
+=======
+    // For now, return mock prayer times
+    // This can be enhanced later with real JAKIM API integration
+    const prayerTimes: PrayerTimes = {
+      id: `${masjid.id}-${dateParam}`,
+      masjid_id: masjid.id,
+      prayer_date: dateParam,
+      fajr_time: '05:45',
+      sunrise_time: '07:05',
+      dhuhr_time: '13:15',
+      asr_time: '16:30',
+      maghrib_time: '19:20',
+      isha_time: '20:35',
+      source: 'CACHED_FALLBACK',
+      fetched_at: new Date().toISOString(),
+      manual_adjustments: {
+        fajr: 0,
+        sunrise: 0,
+        dhuhr: 0,
+        asr: 0,
+        maghrib: 0,
+        isha: 0
+      },
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
+    const config: PrayerTimeConfig = {
+      masjid_id: masjid.id,
+      zone_code: determineZoneCode(masjid.state, masjid.location),
+      location_name: masjid.location || masjid.name,
+      latitude: masjid.latitude,
+      longitude: masjid.longitude,
+      show_seconds: false,
+      highlight_current_prayer: true,
+      next_prayer_countdown: true,
+      adjustments: {
+        fajr: 0,
+        sunrise: 0,
+        dhuhr: 0,
+        asr: 0,
+        maghrib: 0,
+        isha: 0
+      },
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
+    const response: PrayerTimesResponse = {
+      data: prayerTimes,
+      meta: config as any, // Type assertion for now
+      links: {
+        self: new URL(request.url).toString()
+      },
+      error: null
+    };
+
+    return NextResponse.json(response, {
+      headers: {
+        'Cache-Control': 'private, max-age=1800', // 30 minutes cache
+        'X-Prayer-Source': 'MOCK_DATA',
+        'X-Last-Fetched': new Date().toISOString(),
+        'X-Zone-Code': config.zone_code,
+      }
+    });
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
 
   } catch (error) {
     console.error('Error fetching prayer times:', error);
@@ -210,20 +302,35 @@ function determineZoneCode(state?: string, location?: string): string {
   const PRAYER_ZONES: Record<string, string> = {
     'kuala-lumpur': 'WLY01',
     'selangor': 'SGR01',
+<<<<<<< HEAD
     'johor': 'JHR02', // Changed to JHR02 which is more common
     'penang': 'PNG01',
     'perak': 'PRK02', // Changed to PRK02 which is more common
+=======
+    'johor': 'JHR01',
+    'penang': 'PNG01',
+    'perak': 'PRK01',
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
     'negeri-sembilan': 'NGS01',
     'melaka': 'MLK01',
     'kedah': 'KDH01',
     'kelantan': 'KTN01',
     'terengganu': 'TRG01',
+<<<<<<< HEAD
     'pahang': 'PHG02', // Changed to PHG02 which is more common
     'sabah': 'SBH07', // Changed to SBH07 which is more common (Kota Kinabalu)
     'sarawak': 'SWK08', // Changed to SWK08 which is more common (Kuching)
     'federal-territory': 'WLY01',
     'putrajaya': 'WLY01',
     'labuan': 'WLY02' // Labuan is actually WLY02
+=======
+    'pahang': 'PHG01',
+    'sabah': 'SBH01',
+    'sarawak': 'SWK01',
+    'federal-territory': 'WLY01',
+    'putrajaya': 'WLY01',
+    'labuan': 'SBH01'
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
   };
   
   const normalizedState = state.toLowerCase().replace(/\s+/g, '-');

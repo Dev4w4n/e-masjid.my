@@ -1,6 +1,7 @@
 /**
  * Offline Mode Integration Tests
  * 
+<<<<<<< HEAD
  * Tests the complete offline mode functionality with API mocking
  */
 
@@ -13,6 +14,21 @@ test.describe('Offline Mode Integration Tests', () => {
     await setupApiMocks(page);
     await navigateToDisplay(page);
   });
+=======
+ * Tests the complete offline fallback functionality from user stories
+ * These tests MUST FAIL initially until implementation is complete (TDD)
+ * 
+ * Expected to fail: Offline mode functionality doesn't exist yet
+ * Success criteria: All tests pass after offline handling implementation
+ */
+
+import { test, expect } from '@playwright/test';
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001';
+const SAMPLE_DISPLAY_ID = '550e8400-e29b-41d4-a716-446655440000';
+
+test.describe('Offline Mode Integration Tests', () => {
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
   test('displays cached content when API is unavailable', async ({ page }) => {
     // First, load content normally to populate cache
     await page.route(`**/api/displays/${SAMPLE_DISPLAY_ID}/content`, async (route) => {

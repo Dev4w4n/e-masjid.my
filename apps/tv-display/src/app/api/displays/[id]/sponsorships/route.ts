@@ -14,12 +14,19 @@ import {
   Database,
   Sponsorship,
   SponsorshipTier,
+<<<<<<< HEAD
 } from '@masjid-suite/shared-types';
 import {
   ApiError,
   ApiResponse,
   createApiError 
 } from '../../../../../lib/api-utils';
+=======
+  ApiError,
+  ApiResponse,
+  createApiError 
+} from '@masjid-suite/shared-types';
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
 
 // Initialize Supabase client
 const supabase = createClient<Database>(
@@ -91,6 +98,7 @@ export async function GET(
 
     // Parse filters
     const filters: SponsorshipFilters = {
+<<<<<<< HEAD
       ...(searchParams.get('status') && { status: searchParams.get('status')?.split(',') as any }),
       ...(searchParams.get('tier') && { tier: searchParams.get('tier')?.split(',') as SponsorshipTier[] }),
       ...(searchParams.get('min_amount') && { min_amount: parseFloat(searchParams.get('min_amount')!) }),
@@ -99,6 +107,16 @@ export async function GET(
       ...(searchParams.get('date_from') && { date_from: searchParams.get('date_from')! }),
       ...(searchParams.get('date_to') && { date_to: searchParams.get('date_to')! }),
       ...(searchParams.get('content_id') && { content_id: searchParams.get('content_id')! })
+=======
+      status: searchParams.get('status')?.split(',') as any,
+      tier: searchParams.get('tier')?.split(',') as SponsorshipTier[],
+      min_amount: searchParams.get('min_amount') ? parseFloat(searchParams.get('min_amount')!) : undefined,
+      max_amount: searchParams.get('max_amount') ? parseFloat(searchParams.get('max_amount')!) : undefined,
+      payment_method: searchParams.get('payment_method')?.split(',') as any,
+      date_from: searchParams.get('date_from') || undefined,
+      date_to: searchParams.get('date_to') || undefined,
+      content_id: searchParams.get('content_id') || undefined
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
     };
 
     // Build query with joins to get content information
@@ -169,8 +187,13 @@ export async function GET(
       content_id: sponsorship.content_id,
       masjid_id: sponsorship.masjid_id,
       sponsor_name: sponsorship.sponsor_name,
+<<<<<<< HEAD
       ...(sponsorship.sponsor_email && { sponsor_email: sponsorship.sponsor_email }),
       ...(sponsorship.sponsor_phone && { sponsor_phone: sponsorship.sponsor_phone }),
+=======
+      sponsor_email: sponsorship.sponsor_email || undefined,
+      sponsor_phone: sponsorship.sponsor_phone || undefined,
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       
       amount: sponsorship.amount,
       currency: sponsorship.currency as 'MYR',
@@ -179,10 +202,17 @@ export async function GET(
       payment_method: sponsorship.payment_method as any,
       payment_reference: sponsorship.payment_reference,
       payment_status: sponsorship.payment_status as any,
+<<<<<<< HEAD
       ...(sponsorship.payment_date && { payment_date: sponsorship.payment_date }),
       
       show_sponsor_name: sponsorship.show_sponsor_name,
       ...(sponsorship.sponsor_message && { sponsor_message: sponsorship.sponsor_message }),
+=======
+      payment_date: sponsorship.payment_date || undefined,
+      
+      show_sponsor_name: sponsorship.show_sponsor_name,
+      sponsor_message: sponsorship.sponsor_message || undefined,
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       
       created_at: sponsorship.created_at || new Date().toISOString(),
       updated_at: sponsorship.updated_at || new Date().toISOString()
@@ -381,8 +411,13 @@ export async function POST(
       content_id: createdSponsorship.content_id,
       masjid_id: createdSponsorship.masjid_id,
       sponsor_name: createdSponsorship.sponsor_name,
+<<<<<<< HEAD
       ...(createdSponsorship.sponsor_email && { sponsor_email: createdSponsorship.sponsor_email }),
       ...(createdSponsorship.sponsor_phone && { sponsor_phone: createdSponsorship.sponsor_phone }),
+=======
+      sponsor_email: createdSponsorship.sponsor_email || undefined,
+      sponsor_phone: createdSponsorship.sponsor_phone || undefined,
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       
       amount: createdSponsorship.amount,
       currency: createdSponsorship.currency as 'MYR',
@@ -391,10 +426,17 @@ export async function POST(
       payment_method: createdSponsorship.payment_method as any,
       payment_reference: createdSponsorship.payment_reference,
       payment_status: createdSponsorship.payment_status as any,
+<<<<<<< HEAD
       ...(createdSponsorship.payment_date && { payment_date: createdSponsorship.payment_date }),
       
       show_sponsor_name: createdSponsorship.show_sponsor_name,
       ...(createdSponsorship.sponsor_message && { sponsor_message: createdSponsorship.sponsor_message }),
+=======
+      payment_date: createdSponsorship.payment_date || undefined,
+      
+      show_sponsor_name: createdSponsorship.show_sponsor_name,
+      sponsor_message: createdSponsorship.sponsor_message || undefined,
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       
       created_at: createdSponsorship.created_at || new Date().toISOString(),
       updated_at: createdSponsorship.updated_at || new Date().toISOString()

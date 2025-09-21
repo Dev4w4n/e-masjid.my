@@ -198,8 +198,12 @@ export const tvSecurityUtils = {
       } else if (urlObj.pathname === '/watch') {
         videoId = urlObj.searchParams.get('v');
       } else if (urlObj.pathname.startsWith('/embed/')) {
+<<<<<<< HEAD
         const parts = urlObj.pathname.split('/embed/');
         videoId = parts[1] || null;
+=======
+        videoId = urlObj.pathname.split('/embed/')[1];
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       }
       
       if (!videoId || !/^[a-zA-Z0-9_-]{11}$/.test(videoId)) {

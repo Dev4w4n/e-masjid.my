@@ -15,12 +15,19 @@ import {
   DisplayContentResponse,
   ContentType,
   SponsorshipTier,
+<<<<<<< HEAD
 } from '@masjid-suite/shared-types';
 import {
   ApiError,
   createApiResponse,
   createApiError 
 } from '../../../../../lib/api-utils';
+=======
+  ApiError,
+  createApiResponse,
+  createApiError 
+} from '@masjid-suite/shared-types';
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
 
 // Initialize Supabase client
 const supabase = createClient<Database>(
@@ -52,11 +59,14 @@ export async function GET(
     const offset = (page - 1) * limit;
 
     // Parse filters with proper type casting
+<<<<<<< HEAD
     const minAmount = searchParams.get('min_amount');
     const maxAmount = searchParams.get('max_amount');
     const dateFrom = searchParams.get('date_from');
     const dateTo = searchParams.get('date_to');
     
+=======
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
     const filters: ContentFilters = {
       status: searchParams.get('status')?.split(',').filter(s => 
         ['active', 'pending', 'rejected', 'expired'].includes(s)
@@ -64,10 +74,17 @@ export async function GET(
       type: searchParams.get('type')?.split(',').filter(t =>
         ['image', 'youtube_video', 'text_announcement', 'event_poster'].includes(t)
       ) as Array<'image' | 'youtube_video' | 'text_announcement' | 'event_poster'> || undefined,
+<<<<<<< HEAD
       ...(minAmount && { min_amount: parseFloat(minAmount) }),
       ...(maxAmount && { max_amount: parseFloat(maxAmount) }),
       ...(dateFrom && { date_from: dateFrom }),
       ...(dateTo && { date_to: dateTo })
+=======
+      min_amount: searchParams.get('min_amount') ? parseFloat(searchParams.get('min_amount')!) : undefined,
+      max_amount: searchParams.get('max_amount') ? parseFloat(searchParams.get('max_amount')!) : undefined,
+      date_from: searchParams.get('date_from') || undefined,
+      date_to: searchParams.get('date_to') || undefined
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
     };
 
     // Verify display exists and get display configuration
@@ -86,7 +103,10 @@ export async function GET(
     }
 
     // Build content query with filters
+<<<<<<< HEAD
     // Include content for this specific display OR content for all displays (display_id IS NULL)
+=======
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
     let query = supabase
       .from('display_content')
       .select(`
@@ -98,7 +118,11 @@ export async function GET(
           amount
         )
       `)
+<<<<<<< HEAD
       .or(`display_id.eq.${displayId},display_id.is.null`)
+=======
+      .eq('display_id', displayId)
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       .order('sponsorship_amount', { ascending: false })
       .order('created_at', { ascending: false });
 
@@ -126,7 +150,11 @@ export async function GET(
     const { count } = await supabase
       .from('display_content')
       .select('*', { count: 'exact', head: true })
+<<<<<<< HEAD
       .or(`display_id.eq.${displayId},display_id.is.null`);
+=======
+      .eq('display_id', displayId);
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
 
     // Get paginated content
     const { data: content, error: contentError } = await query
@@ -146,6 +174,7 @@ export async function GET(
       masjid_id: display.masjid_id,
       display_id: item.display_id || '',
       title: item.title,
+<<<<<<< HEAD
       ...(item.description && { description: item.description }),
       type: item.type,
       url: item.url,
@@ -154,17 +183,35 @@ export async function GET(
       ...(item.sponsorship_tier && { sponsorship_tier: item.sponsorship_tier }),
       payment_status: item.payment_status,
       ...(item.payment_reference && { payment_reference: item.payment_reference }),
+=======
+      description: item.description || undefined,
+      type: item.type,
+      url: item.url,
+      thumbnail_url: item.thumbnail_url || undefined,
+      sponsorship_amount: item.sponsorship_amount,
+      sponsorship_tier: item.sponsorship_tier || undefined,
+      payment_status: item.payment_status,
+      payment_reference: item.payment_reference || undefined,
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       duration: item.duration,
       start_date: item.start_date,
       end_date: item.end_date,
       status: item.status,
       submitted_by: item.submitted_by,
       submitted_at: item.submitted_at || item.created_at || '',
+<<<<<<< HEAD
       ...(item.approved_by && { approved_by: item.approved_by }),
       ...(item.approved_at && { approved_at: item.approved_at }),
       ...(item.rejection_reason && { rejection_reason: item.rejection_reason }),
       ...(item.file_size && { file_size: item.file_size }),
       ...(item.file_type && { file_type: item.file_type }),
+=======
+      approved_by: item.approved_by || undefined,
+      approved_at: item.approved_at || undefined,
+      rejection_reason: item.rejection_reason || undefined,
+      file_size: item.file_size || undefined,
+      file_type: item.file_type || undefined,
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       created_at: item.created_at || '',
       updated_at: item.updated_at || ''
     })) || [];
@@ -173,7 +220,11 @@ export async function GET(
     const { data: stats } = await supabase
       .from('display_content')
       .select('status')
+<<<<<<< HEAD
       .or(`display_id.eq.${displayId},display_id.is.null`);
+=======
+      .eq('display_id', displayId);
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
 
     const activeCount = stats?.filter(s => s.status === 'active').length || 0;
     const pendingCount = stats?.filter(s => s.status === 'pending').length || 0;
@@ -213,8 +264,13 @@ export async function GET(
       },
       links: {
         self: new URL(request.url).toString(),
+<<<<<<< HEAD
         ...(nextPage && { next: `${new URL(request.url).origin}${new URL(request.url).pathname}?page=${nextPage}&limit=${limit}` }),
         ...(prevPage && { prev: `${new URL(request.url).origin}${new URL(request.url).pathname}?page=${prevPage}&limit=${limit}` })
+=======
+        next: nextPage ? `${new URL(request.url).origin}${new URL(request.url).pathname}?page=${nextPage}&limit=${limit}` : undefined,
+        prev: prevPage ? `${new URL(request.url).origin}${new URL(request.url).pathname}?page=${prevPage}&limit=${limit}` : undefined
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       },
       error: null
     };
@@ -584,6 +640,7 @@ export async function POST(
       masjid_id: createdContent.masjid_id,
       display_id: createdContent.display_id || displayId,
       title: createdContent.title,
+<<<<<<< HEAD
       ...(createdContent.description && { description: createdContent.description }),
       type: createdContent.type as ContentType,
       url: createdContent.url,
@@ -593,6 +650,17 @@ export async function POST(
       ...(createdContent.sponsorship_tier && { sponsorship_tier: createdContent.sponsorship_tier as SponsorshipTier }),
       payment_status: createdContent.payment_status as any,
       ...(createdContent.payment_reference && { payment_reference: createdContent.payment_reference }),
+=======
+      description: createdContent.description || undefined,
+      type: createdContent.type as ContentType,
+      url: createdContent.url,
+      thumbnail_url: createdContent.thumbnail_url || undefined,
+      
+      sponsorship_amount: createdContent.sponsorship_amount,
+      sponsorship_tier: createdContent.sponsorship_tier as SponsorshipTier || undefined,
+      payment_status: createdContent.payment_status as any,
+      payment_reference: createdContent.payment_reference || undefined,
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       
       duration: createdContent.duration,
       start_date: createdContent.start_date,
@@ -601,12 +669,21 @@ export async function POST(
       status: createdContent.status as any,
       submitted_by: createdContent.submitted_by,
       submitted_at: createdContent.submitted_at || new Date().toISOString(),
+<<<<<<< HEAD
       ...(createdContent.approved_by && { approved_by: createdContent.approved_by }),
       ...(createdContent.approved_at && { approved_at: createdContent.approved_at }),
       ...(createdContent.rejection_reason && { rejection_reason: createdContent.rejection_reason }),
       
       ...(createdContent.file_size && { file_size: createdContent.file_size }),
       ...(createdContent.file_type && { file_type: createdContent.file_type }),
+=======
+      approved_by: createdContent.approved_by || undefined,
+      approved_at: createdContent.approved_at || undefined,
+      rejection_reason: createdContent.rejection_reason || undefined,
+      
+      file_size: createdContent.file_size || undefined,
+      file_type: createdContent.file_type || undefined,
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       created_at: createdContent.created_at || new Date().toISOString(),
       updated_at: createdContent.updated_at || new Date().toISOString()
     };

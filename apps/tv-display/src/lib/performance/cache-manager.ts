@@ -149,7 +149,11 @@ class AdvancedCacheManager {
       lastAccessed: Date.now(),
       size: this.calculateSize(processedValue),
       compressed,
+<<<<<<< HEAD
       ...(tags ? { tags } : {})
+=======
+      tags
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
     };
 
     // Check if we need to evict entries
@@ -407,8 +411,11 @@ class AdvancedCacheManager {
     if (this.accessOrder.length === 0) return;
     
     const lruKey = this.accessOrder[0];
+<<<<<<< HEAD
     if (!lruKey) return;
     
+=======
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
     const entry = this.cache.get(lruKey);
     
     if (entry) {
@@ -517,20 +524,28 @@ class AdvancedCacheManager {
       if (dict[wc] !== undefined) {
         w = wc;
       } else {
+<<<<<<< HEAD
         const wCode = dict[w];
         if (wCode !== undefined) {
           result.push(wCode);
         }
+=======
+        result.push(dict[w]);
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
         dict[wc] = dictSize++;
         w = c;
       }
     }
 
     if (w !== '') {
+<<<<<<< HEAD
       const wCode = dict[w];
       if (wCode !== undefined) {
         result.push(wCode);
       }
+=======
+      result.push(dict[w]);
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
     }
 
     return String.fromCharCode(...result);
@@ -550,22 +565,33 @@ class AdvancedCacheManager {
     }
 
     const codes = compressed.split('').map(c => c.charCodeAt(0));
+<<<<<<< HEAD
     const firstCode = codes[0];
     if (firstCode === undefined) {
       return '';
     }
     
     w = String.fromCharCode(firstCode);
+=======
+    w = String.fromCharCode(codes[0]);
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
     result.push(w);
 
     for (let i = 1; i < codes.length; i++) {
       const k = codes[i];
+<<<<<<< HEAD
       if (k === undefined) continue;
       
       let entry: string;
 
       if (dict[k] !== undefined) {
         entry = dict[k]!;
+=======
+      let entry: string;
+
+      if (dict[k] !== undefined) {
+        entry = dict[k];
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       } else if (k === dictSize) {
         entry = w + w.charAt(0);
       } else {

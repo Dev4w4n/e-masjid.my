@@ -1,5 +1,6 @@
 // Barrel exports for @masjid-suite/shared-types package
 
+<<<<<<< HEAD
 export * from "./database";
 export * from "./types";
 export * from "./validation";
@@ -272,6 +273,13 @@ export {
   validateDisplayLayout,
   validateContentAssignment,
 } from "./display-content-assignment";
+=======
+export * from "./database.js";
+export * from "./types.js";
+export * from "./validation.js";
+export * from "./address.js";
+export * from "./tv-display.js";
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
 // Export specific API response types to avoid conflicts
 export type {
   DisplayContentResponse,
@@ -286,10 +294,18 @@ export type {
   CreateContentRequest,
   UpdateContentRequest,
   CreateSponsorshipRequest,
+<<<<<<< HEAD
 } from "./api-responses";
+=======
+} from "./api-responses.js";
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
 export {
   createApiResponse,
   createApiError,
   isApiError,
   isApiSuccess,
+<<<<<<< HEAD
 } from "./api-responses";
+=======
+} from "./api-responses.js";
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)

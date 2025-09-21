@@ -140,10 +140,14 @@ export function DisplayStatus({
         
         setState(prev => ({
           ...prev,
+<<<<<<< HEAD
           systemInfo: { 
             ...prev.systemInfo, 
             ...(newSystemInfo.battery && { battery: newSystemInfo.battery })
           }
+=======
+          systemInfo: { ...prev.systemInfo, battery: newSystemInfo.battery }
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
         }));
       });
     }
@@ -320,11 +324,15 @@ export function DisplayStatus({
     // Minimal status indicator for normal operation
     return (
       <div className={`fixed top-2 right-2 z-50 ${className}`}>
+<<<<<<< HEAD
         <div 
           className={`w-3 h-3 rounded-full ${getStatusColor(state.status.is_online, state.healthGrade)}`}
           data-testid="display-status"
           data-status={state.status.is_online ? 'online' : 'offline'}
         />
+=======
+        <div className={`w-3 h-3 rounded-full ${getStatusColor(state.status.is_online, state.healthGrade)}`} />
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       </div>
     );
   }
@@ -332,11 +340,15 @@ export function DisplayStatus({
   return (
     <div className={`fixed top-4 right-4 z-50 ${className}`}>
       {/* Status card */}
+<<<<<<< HEAD
       <div 
         className="bg-black/80 text-white rounded-lg p-4 min-w-80 shadow-lg"
         data-testid="display-status"
         data-status={state.status?.is_online ? 'online' : 'offline'}
       >
+=======
+      <div className="bg-black/80 text-white rounded-lg p-4 min-w-80 shadow-lg">
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold">Display Status</h3>

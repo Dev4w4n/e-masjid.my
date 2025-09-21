@@ -1,5 +1,6 @@
 {
   "name": "@masjid-suite/tv-display",
+<<<<<<< HEAD
   "version": "1.0.0",
   "private": true,
   "description": "TV display Next.js application for Masjid Suite",
@@ -14,6 +15,17 @@
     "test": "vitest",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest --coverage",
+=======
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev --port 3001",
+    "lint": "next lint",
+    "start": "next start",
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
     "test:e2e": "playwright test",
     "test:contracts": "playwright test tests/contract",
     "test:integration": "playwright test tests/integration",
@@ -41,10 +53,14 @@
     "@types/node": "^20.8.0",
     "@types/react": "^18.2.33",
     "@types/react-dom": "^18.2.14",
+<<<<<<< HEAD
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "@vitejs/plugin-react": "^4.1.1",
     "@vitest/coverage-v8": "^1.1.0",
+=======
+    "@vitejs/plugin-react": "^4.1.1",
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
     "autoprefixer": "^10.4.16",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
     "eslint": "^8.52.0",
@@ -52,10 +68,17 @@
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.5",
     "typescript": "^5.2.2",
+<<<<<<< HEAD
     "vitest": "^1.1.0"
   },
   "engines": {
     "node": ">=18.0.0",
     "pnpm": ">=8.0.0"
+=======
+    "vitest": "^0.34.6"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
   }
 }

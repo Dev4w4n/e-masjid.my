@@ -337,11 +337,15 @@ class SecurityManager {
         });
       }
 
+<<<<<<< HEAD
       return { 
         isValid, 
         errors, 
         ...(isValid ? { sanitized: sanitized as T } : {})
       };
+=======
+      return { isValid, errors, sanitized: isValid ? sanitized as T : undefined };
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
 
     } catch (error) {
       this.logSecurityEvent('invalid_input', 'high', 'validation_error', {
@@ -581,8 +585,11 @@ class SecurityManager {
   ): void {
     if (!this.config.enableAuditLogging) return;
 
+<<<<<<< HEAD
     const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : undefined;
     
+=======
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
     const logEntry: SecurityAuditLog = {
       id: this.generateSecureToken(),
       timestamp: Date.now(),
@@ -590,7 +597,11 @@ class SecurityManager {
       severity,
       source,
       details,
+<<<<<<< HEAD
       ...(userAgent ? { userAgent } : {}),
+=======
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       ipAddress: 'unknown', // Would be provided by server in real implementation
       blocked
     };

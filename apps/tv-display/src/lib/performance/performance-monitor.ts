@@ -351,9 +351,13 @@ class PerformanceMonitor {
           const entries = list.getEntries();
           if (entries.length > 0) {
             const lastEntry = entries[entries.length - 1];
+<<<<<<< HEAD
             if (lastEntry) {
               this.recordMetric('lcp', lastEntry.startTime, 'ms', 'rendering');
             }
+=======
+            this.recordMetric('lcp', lastEntry.startTime, 'ms', 'rendering');
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
           }
         });
         lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });

@@ -1,6 +1,10 @@
 'use client';
 
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
+=======
+import { useEffect, useState } from 'react';
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
 
 interface ClientOnlyProps {
   children: React.ReactNode;

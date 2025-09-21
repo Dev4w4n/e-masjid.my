@@ -5,6 +5,7 @@
  * types for all API endpoints across the application
  */
 
+<<<<<<< HEAD
 // Import required types from tv-display.ts
 import type {
   DisplayContent,
@@ -21,6 +22,8 @@ import type {
   DisplayOrientation,
 } from "./tv-display";
 
+=======
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
 // ============================================================================
 // Core API Response Types
 // ============================================================================
@@ -658,3 +661,22 @@ export const DEFAULT_CACHE_TTL = 300; // 5 minutes
 
 export const API_VERSION = "v1";
 export const API_BASE_PATH = "/api/v1";
+<<<<<<< HEAD
+=======
+
+// Import required types from tv-display.ts
+import type {
+  DisplayContent,
+  PrayerTimes,
+  DisplayConfig,
+  DisplayStatus,
+  Sponsorship,
+  DisplayAnalytics,
+  ContentType,
+  ContentStatus,
+  SponsorshipTier,
+  PrayerTimePosition,
+  DisplayResolution,
+  DisplayOrientation,
+} from "./tv-display.js";
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)

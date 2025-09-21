@@ -16,7 +16,11 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   
   /* Opt out of parallel tests on CI. */
+<<<<<<< HEAD
   workers: process.env.CI ? 1 : 2,
+=======
+  workers: process.env.CI ? 1 : undefined,
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
   
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [

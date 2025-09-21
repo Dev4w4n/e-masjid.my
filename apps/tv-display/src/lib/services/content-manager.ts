@@ -461,10 +461,14 @@ export class ContentManagementService {
         .sort((a, b) => b.options.priority - a.options.priority);
 
       if (highPriorityItems.length > 0) {
+<<<<<<< HEAD
         const firstHighPriorityItem = highPriorityItems[0];
         if (firstHighPriorityItem) {
           await this.processQueueItem(firstHighPriorityItem);
         }
+=======
+        await this.processQueueItem(highPriorityItems[0]);
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       } else {
         // Process oldest normal priority item
         const oldestItem = Array.from(this.processingQueue.values())

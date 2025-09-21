@@ -62,11 +62,18 @@ const nextConfig = {
 
   // Transpile workspace packages
   transpilePackages: [
+<<<<<<< HEAD
     '@masjid-suite/auth',
     '@masjid-suite/shared-types',
     '@masjid-suite/supabase-client', 
     '@masjid-suite/ui-components',
     '@masjid-suite/ui-theme',
+=======
+    '@masjid-suite/shared-types',
+    '@masjid-suite/supabase-client', 
+    '@masjid-suite/ui-components',
+    '@masjid-suite/auth',
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
   ],
 
   // Output standalone for potential Docker deployment

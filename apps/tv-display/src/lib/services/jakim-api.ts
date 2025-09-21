@@ -1,15 +1,25 @@
 /**
+<<<<<<< HEAD
  * JAKIM API Service - Real Implementation
  * 
  * This service integrates with the Malaysian government prayer times API.
  * 
  * @see https://www.e-solat.gov.my/index.php for actual JAKIM prayer times
  * @see https://api.waktusolat.app/v2/solat/ for API documentation
+=======
+ * JAKIM API Service - Mock Implementation
+ * 
+ * This is a mock implementation of the JAKIM API service for development and testing.
+ * In production, this would integrate with the actual Malaysian government prayer times API.
+ * 
+ * @see https://www.e-solat.gov.my/index.php for actual JAKIM prayer times
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
  */
 
 import { PrayerTimes } from '@masjid-suite/shared-types';
 
 /**
+<<<<<<< HEAD
  * Real JAKIM API response format from waktusolat.app
  */
 interface JakimApiResponse {
@@ -121,6 +131,41 @@ export const MALAYSIAN_ZONES = {
   // Wilayah Persekutuan
   'WLY01': 'Kuala Lumpur, Putrajaya',
   'WLY02': 'Labuan'
+=======
+ * JAKIM API response format (mocked based on typical e-solat API structure)
+ */
+interface JakimApiResponse {
+  status: string;
+  serverTime: string;
+  periode: string;
+  lang: string;
+  zone: string;
+  bearing: string;
+  data: {
+    date: string;
+    timings: {
+      Fajr: string;
+      Sunrise: string;
+      Dhuhr: string;
+      Asr: string;
+      Maghrib: string;
+      Isha: string;
+    };
+  }[];
+}
+
+/**
+ * Malaysian prayer time zones (simplified for mock)
+ */
+export const MALAYSIAN_ZONES = {
+  'SGR01': 'Perlis, Kedah, Penang, Perak',
+  'SGR02': 'Selangor, KL, Putrajaya, Negeri Sembilan',
+  'SGR03': 'Pahang, Johor',
+  'SGR04': 'Kelantan, Terengganu',
+  'SGR05': 'Sabah',
+  'SGR06': 'Sarawak',
+  'SGR07': 'Labuan'
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
 } as const;
 
 export type MalaysianZone = keyof typeof MALAYSIAN_ZONES;
@@ -136,19 +181,29 @@ interface JakimApiConfig {
   retryAttempts: number;
   /** Timeout in milliseconds */
   timeout: number;
+<<<<<<< HEAD
   /** Base URL for the JAKIM API */
   baseUrl: string;
+=======
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
 }
 
 /**
  * Default configuration for JAKIM API
  */
 const DEFAULT_CONFIG: JakimApiConfig = {
+<<<<<<< HEAD
   zone: 'WLY01', // Default to Kuala Lumpur
   cacheDuration: 60, // 1 hour cache
   retryAttempts: 3,
   timeout: 10000, // 10 seconds
   baseUrl: 'https://api.waktusolat.app/v2/solat'
+=======
+  zone: 'SGR02', // Default to Selangor/KL
+  cacheDuration: 60, // 1 hour cache
+  retryAttempts: 3,
+  timeout: 10000 // 10 seconds
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
 };
 
 /**
@@ -230,11 +285,19 @@ export class JakimApiService {
     try {
       console.log(`[JakimAPI] Fetching prayer times for zone ${zone}, date ${date}`);
       
+<<<<<<< HEAD
       // Real API call to waktusolat.app
       const response = await this.fetchFromJakimApi(zone);
       
       // Transform API response to our format
       const prayerTimes = this.transformApiResponse(response, masjidId, zone, date);
+=======
+      // Mock API call (in production, this would be actual HTTP request)
+      const response = await this.mockJakimApiCall(zone, date);
+      
+      // Transform API response to our format
+      const prayerTimes = this.transformApiResponse(response, masjidId, zone);
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       
       // Cache the result
       this.cache.set(cacheKey, prayerTimes, zone);
@@ -282,6 +345,7 @@ export class JakimApiService {
   }
 
   /**
+<<<<<<< HEAD
    * Fetch prayer times from the real JAKIM API
    */
   private async fetchFromJakimApi(zone: MalaysianZone): Promise<JakimApiResponse> {
@@ -324,6 +388,71 @@ export class JakimApiService {
       
       throw error;
     }
+=======
+   * Mock JAKIM API call - simulates actual API response
+   * In production, this would be replaced with actual HTTP requests
+   */
+  private async mockJakimApiCall(zone: MalaysianZone, date: string): Promise<JakimApiResponse> {
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, Math.random() * 1000 + 500));
+    
+    // Generate realistic prayer times based on zone and date
+    const baseTimes = this.generateBasePrayerTimes(zone, date);
+    
+    return {
+      status: "OK",
+      serverTime: new Date().toISOString(),
+      periode: date,
+      lang: "ms",
+      zone,
+      bearing: "292.5", // Qibla direction for Malaysia
+      data: [{
+        date,
+        timings: baseTimes
+      }]
+    };
+  }
+
+  /**
+   * Generate realistic prayer times for Malaysian zones
+   */
+  private generateBasePrayerTimes(zone: MalaysianZone, date: string) {
+    // Base times for different zones (simplified)
+    const zoneOffsets = {
+      'SGR01': { fajr: '05:45', sunrise: '07:05', dhuhr: '13:15', asr: '16:35', maghrib: '19:25', isha: '20:35' },
+      'SGR02': { fajr: '05:50', sunrise: '07:10', dhuhr: '13:20', asr: '16:40', maghrib: '19:30', isha: '20:40' },
+      'SGR03': { fajr: '05:48', sunrise: '07:08', dhuhr: '13:18', asr: '16:38', maghrib: '19:28', isha: '20:38' },
+      'SGR04': { fajr: '05:42', sunrise: '07:02', dhuhr: '13:12', asr: '16:32', maghrib: '19:22', isha: '20:32' },
+      'SGR05': { fajr: '05:30', sunrise: '06:50', dhuhr: '13:00', asr: '16:20', maghrib: '19:10', isha: '20:20' },
+      'SGR06': { fajr: '05:35', sunrise: '06:55', dhuhr: '13:05', asr: '16:25', maghrib: '19:15', isha: '20:25' },
+      'SGR07': { fajr: '05:32', sunrise: '06:52', dhuhr: '13:02', asr: '16:22', maghrib: '19:12', isha: '20:22' }
+    };
+
+    // Add slight daily variation (±5 minutes) to simulate seasonal changes
+    const variation = () => {
+      const minutes = Math.floor(Math.random() * 11) - 5; // -5 to +5 minutes
+      return minutes;
+    };
+
+    const addMinutes = (time: string, minutes: number): string => {
+      const [hours, mins] = time.split(':').map(Number);
+      const totalMinutes = hours * 60 + mins + minutes;
+      const newHours = Math.floor(totalMinutes / 60) % 24;
+      const newMins = totalMinutes % 60;
+      return `${newHours.toString().padStart(2, '0')}:${newMins.toString().padStart(2, '0')}`;
+    };
+
+    const base = zoneOffsets[zone];
+    
+    return {
+      Fajr: addMinutes(base.fajr, variation()),
+      Sunrise: addMinutes(base.sunrise, variation()),
+      Dhuhr: addMinutes(base.dhuhr, variation()),
+      Asr: addMinutes(base.asr, variation()),
+      Maghrib: addMinutes(base.maghrib, variation()),
+      Isha: addMinutes(base.isha, variation())
+    };
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
   }
 
   /**
@@ -332,6 +461,7 @@ export class JakimApiService {
   private transformApiResponse(
     response: JakimApiResponse,
     masjidId: string,
+<<<<<<< HEAD
     zone: MalaysianZone,
     targetDate: string
   ): PrayerTimes {
@@ -368,6 +498,23 @@ export class JakimApiService {
       asr_time: formatTime(prayerData.asr),
       maghrib_time: formatTime(prayerData.maghrib),
       isha_time: formatTime(prayerData.isha),
+=======
+    zone: MalaysianZone
+  ): PrayerTimes {
+    const data = response.data[0];
+    const now = new Date().toISOString();
+
+    return {
+      id: `jakim-${zone}-${data.date}-${Date.now()}`,
+      masjid_id: masjidId,
+      prayer_date: data.date,
+      fajr_time: data.timings.Fajr,
+      sunrise_time: data.timings.Sunrise,
+      dhuhr_time: data.timings.Dhuhr,
+      asr_time: data.timings.Asr,
+      maghrib_time: data.timings.Maghrib,
+      isha_time: data.timings.Isha,
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       source: 'JAKIM_API',
       fetched_at: now,
       created_at: now,
@@ -384,10 +531,14 @@ export class JakimApiService {
     const end = new Date(endDate);
 
     while (current <= end) {
+<<<<<<< HEAD
       const dateString = current.toISOString().split('T')[0];
       if (dateString) {
         dates.push(dateString);
       }
+=======
+      dates.push(current.toISOString().split('T')[0]);
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       current.setDate(current.getDate() + 1);
     }
 
@@ -426,9 +577,15 @@ export const jakimApi = new JakimApiService();
  */
 export async function getTodayPrayerTimes(
   masjidId: string,
+<<<<<<< HEAD
   zone: MalaysianZone = 'WLY01'
 ): Promise<PrayerTimes> {
   const today = new Date().toISOString().split('T')[0]!;
+=======
+  zone: MalaysianZone = 'SGR02'
+): Promise<PrayerTimes> {
+  const today = new Date().toISOString().split('T')[0];
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
   return jakimApi.fetchPrayerTimes(masjidId, today, zone);
 }
 
@@ -437,14 +594,23 @@ export async function getTodayPrayerTimes(
  */
 export async function getMonthlyPrayerTimes(
   masjidId: string,
+<<<<<<< HEAD
   zone: MalaysianZone = 'WLY01'
+=======
+  zone: MalaysianZone = 'SGR02'
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
 ): Promise<PrayerTimes[]> {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
   
+<<<<<<< HEAD
   const startDate = startOfMonth.toISOString().split('T')[0]!;
   const endDate = endOfMonth.toISOString().split('T')[0]!;
+=======
+  const startDate = startOfMonth.toISOString().split('T')[0];
+  const endDate = endOfMonth.toISOString().split('T')[0];
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
   
   return jakimApi.fetchPrayerTimesRange(masjidId, startDate, endDate, zone);
 }

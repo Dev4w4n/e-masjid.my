@@ -15,6 +15,7 @@ const SAMPLE_DISPLAY_ID = '550e8400-e29b-41d4-a716-446655440000';
 
 test.describe('Prayer Times Overlay Integration Tests', () => {
   test.beforeEach(async ({ page }) => {
+<<<<<<< HEAD
     // Ensure browser is considered online for API calls
     await page.addInitScript(() => {
       // Override navigator.onLine to return true
@@ -153,6 +154,14 @@ test.describe('Prayer Times Overlay Integration Tests', () => {
   test('displays prayer times overlay on top of content carousel', async ({ page }) => {
     // Wait for the content carousel to load
     await page.waitForSelector('[data-testid="content-carousel"]', { timeout: 30000 });
+=======
+    // Navigate to the TV display page
+    await page.goto(`${BASE_URL}/display/${SAMPLE_DISPLAY_ID}`);
+  });
+
+  test('displays prayer times overlay on top of content carousel', async ({ page }) => {
+    await page.waitForSelector('[data-testid="content-carousel"]');
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
     
     // Verify prayer times overlay is visible
     const prayerOverlay = page.locator('[data-testid="prayer-times-overlay"]');

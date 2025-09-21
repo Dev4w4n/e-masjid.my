@@ -858,6 +858,8 @@ export type Database = {
     Views: {
       [_ in never]: never;
     };
+      [_ in never]: never;
+    };
     Functions: {
       approve_admin_application: {
         Args: {
@@ -927,6 +929,7 @@ export type Database = {
       };
       get_pending_applications: {
         Args: Record<PropertyKey, never>;
+        Args: Record<PropertyKey, never>;
         Returns: {
           application_id: string;
           application_message: string;
@@ -954,6 +957,9 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: string[];
       };
+        Args: Record<PropertyKey, never>;
+        Returns: string[];
+      };
       get_user_role: {
         Args: Record<PropertyKey, never>;
         Returns: Database["public"]["Enums"]["user_role"];
@@ -963,6 +969,9 @@ export type Database = {
         Returns: boolean;
       };
       is_super_admin: {
+        Args: Record<PropertyKey, never>;
+        Returns: boolean;
+      };
         Args: Record<PropertyKey, never>;
         Returns: boolean;
       };

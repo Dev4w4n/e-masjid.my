@@ -124,7 +124,11 @@ export function ContentCarousel({
       const newIndex = (prev.currentIndex + 1) % prev.content.length;
       const newContent = prev.content[newIndex];
       
+<<<<<<< HEAD
       onContentChange?.(newContent || null);
+=======
+      onContentChange?.(newContent);
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       
       return {
         ...prev,
@@ -141,7 +145,11 @@ export function ContentCarousel({
       const newIndex = prev.currentIndex === 0 ? prev.content.length - 1 : prev.currentIndex - 1;
       const newContent = prev.content[newIndex];
       
+<<<<<<< HEAD
       onContentChange?.(newContent || null);
+=======
+      onContentChange?.(newContent);
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
       
       return {
         ...prev,
@@ -181,17 +189,24 @@ export function ContentCarousel({
   // Touch event handlers for swipe navigation
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     const touch = e.touches[0];
+<<<<<<< HEAD
     if (touch) {
       touchStartRef.current = { x: touch.clientX, y: touch.clientY };
     }
+=======
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
   }, []);
 
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
     if (!touchStartRef.current) return;
 
     const touch = e.changedTouches[0];
+<<<<<<< HEAD
     if (!touch) return;
     
+=======
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
     const deltaX = touch.clientX - touchStartRef.current.x;
     const deltaY = touch.clientY - touchStartRef.current.y;
 
@@ -249,10 +264,14 @@ export function ContentCarousel({
   // Loading state
   if (state.isLoading && state.content.length === 0) {
     return (
+<<<<<<< HEAD
       <div 
         className={`flex items-center justify-center h-full bg-gray-900 ${className}`}
         data-testid="content-carousel-loading"
       >
+=======
+      <div className={`flex items-center justify-center h-full bg-gray-900 ${className}`}>
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-white mx-auto mb-4"></div>
           <p className="text-white text-xl">Loading content...</p>
@@ -264,10 +283,14 @@ export function ContentCarousel({
   // Error state
   if (state.error && state.content.length === 0) {
     return (
+<<<<<<< HEAD
       <div 
         className={`flex items-center justify-center h-full bg-red-900 ${className}`}
         data-testid="content-carousel-error"
       >
+=======
+      <div className={`flex items-center justify-center h-full bg-red-900 ${className}`}>
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
         <div className="text-center p-8">
           <div className="text-red-300 text-6xl mb-4">⚠️</div>
           <h2 className="text-white text-2xl font-bold mb-2">Content Load Error</h2>
@@ -286,10 +309,14 @@ export function ContentCarousel({
   // No content state
   if (state.content.length === 0) {
     return (
+<<<<<<< HEAD
       <div 
         className={`flex items-center justify-center h-full bg-blue-900 ${className}`}
         data-testid="content-carousel-empty"
       >
+=======
+      <div className={`flex items-center justify-center h-full bg-blue-900 ${className}`}>
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
         <div className="text-center p-8">
           <div className="text-blue-300 text-6xl mb-4">📺</div>
           <h2 className="text-white text-2xl font-bold mb-2">No Active Content</h2>
@@ -302,6 +329,7 @@ export function ContentCarousel({
   const currentContent = state.content[state.currentIndex];
   const transitionClasses = getTransitionClasses();
 
+<<<<<<< HEAD
   // If no current content, show empty state
   if (!currentContent) {
     return (
@@ -318,12 +346,15 @@ export function ContentCarousel({
     );
   }
 
+=======
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
   return (
     <div
       ref={containerRef}
       className={`relative h-full overflow-hidden bg-black ${className}`}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
+<<<<<<< HEAD
       data-testid="content-carousel"
       data-loaded={state.content.length > 0 ? 'true' : 'false'}
     >
@@ -337,6 +368,14 @@ export function ContentCarousel({
         <ContentViewer
           content={currentContent}
           {...(onError && { onError })}
+=======
+    >
+      {/* Main content display */}
+      <div className={`relative h-full ${transitionClasses}`}>
+        <ContentViewer
+          content={currentContent}
+          onError={onError}
+>>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
           className="h-full"
         />
         
