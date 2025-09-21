@@ -1,0 +1,209 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global styles for TV display optimization */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  html {
+    /* Optimize for TV display */
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #000000;
+    color: #ffffff;
+    font-family: system-ui, -apple-system, sans-serif;
+    overflow: hidden; /* Prevent scrolling on TV displays */
+  }
+  
+  /* Ensure all text is readable from TV viewing distance */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+  }
+  
+  /* Remove default margins that might affect layout */
+  p, h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+  }
+}
+
+@layer components {
+  /* TV Display specific component styles */
+  .tv-display-container {
+    @apply w-screen h-screen relative overflow-hidden bg-black;
+  }
+  
+  .content-layer {
+    @apply absolute inset-0 z-10;
+  }
+  
+  .prayer-overlay {
+    @apply absolute z-20 rounded-lg p-4;
+  }
+  
+  .prayer-overlay-top {
+    @apply top-4 left-1/2 transform -translate-x-1/2;
+  }
+  
+  .prayer-overlay-bottom {
+    @apply bottom-4 left-1/2 transform -translate-x-1/2;
+  }
+  
+  .prayer-overlay-left {
+    @apply left-4 top-1/2 transform -translate-y-1/2;
+  }
+  
+  .prayer-overlay-right {
+    @apply right-4 top-1/2 transform -translate-y-1/2;
+  }
+  
+  .prayer-overlay-center {
+    @apply top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+  }
+  
+  /* Content carousel styles */
+  .carousel-container {
+    @apply w-full h-full relative;
+  }
+  
+  .carousel-item {
+    @apply absolute inset-0 w-full h-full;
+  }
+  
+  .carousel-item-enter {
+    @apply animate-fade-in;
+  }
+  
+  .carousel-item-exit {
+    @apply animate-fade-out;
+  }
+  
+  /* YouTube video optimization for TV */
+  .youtube-player {
+    @apply w-full h-full;
+  }
+  
+  .youtube-player iframe {
+    @apply w-full h-full;
+  }
+  
+  /* Image display optimization */
+  .content-image {
+    @apply w-full h-full object-cover;
+  }
+  
+  /* Prayer time text styling */
+  .prayer-text {
+    @apply text-lg font-semibold text-white;
+  }
+  
+  .prayer-time {
+    @apply text-xl font-bold text-yellow-300;
+  }
+  
+  /* Error state styling */
+  .error-overlay {
+    @apply absolute inset-0 z-50 bg-red-900 bg-opacity-80 flex items-center justify-center;
+  }
+  
+  .error-message {
+    @apply text-2xl text-center text-white p-8;
+  }
+}
+
+@layer utilities {
+  /* Custom animations */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  
+  @keyframes fade-in-out {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+    50% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-in-out;
+  }
+  
+  .animate-fade-out {
+    animation: fade-out 0.5s ease-in-out;
+  }
+  
+  .animate-fade-in-out {
+    animation: fade-in-out 5s ease-in-out;
+  }
+  
+  /* TV-specific utility classes */
+  .tv-safe-area {
+    @apply p-8; /* Safe area for TV overscan */
+  }
+  
+  .tv-text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  
+  /* Performance optimizations */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  
+  /* Smooth transitions for 60fps */
+  .smooth-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Hide scrollbars */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Portrait mode adjustments */
+  .portrait {
+    @apply flex flex-col;
+  }
+  
+  /* Landscape mode adjustments */
+  .landscape {
+    @apply flex flex-row;
+  }
+}

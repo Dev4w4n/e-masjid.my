@@ -1,0 +1,52 @@
+{
+  "name": "@masjid-suite/tv-display",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev --port 3001",
+    "lint": "next lint",
+    "start": "next start",
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:e2e": "playwright test",
+    "test:contracts": "playwright test tests/contract",
+    "test:integration": "playwright test tests/integration",
+    "playwright:install": "playwright install"
+  },
+  "dependencies": {
+    "@masjid-suite/shared-types": "workspace:*",
+    "@masjid-suite/supabase-client": "workspace:*",
+    "@masjid-suite/ui-components": "workspace:*",
+    "@tanstack/react-query": "^5.8.4",
+    "clsx": "^2.0.0",
+    "date-fns": "^2.30.0",
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-player": "^2.13.0",
+    "tailwind-merge": "^2.0.0",
+    "zustand": "^4.4.7"
+  },
+  "devDependencies": {
+    "@masjid-suite/eslint-config": "workspace:*",
+    "@playwright/test": "^1.55.0",
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/react": "^14.1.0",
+    "@types/node": "^20.8.0",
+    "@types/react": "^18.2.33",
+    "@types/react-dom": "^18.2.14",
+    "@vitejs/plugin-react": "^4.1.1",
+    "autoprefixer": "^10.4.16",
+    "babel-plugin-react-compiler": "19.1.0-rc.3",
+    "eslint": "^8.52.0",
+    "eslint-config-next": "^15.0.0",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.5",
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.6"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

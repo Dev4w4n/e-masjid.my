@@ -1,50 +1,65 @@
 // Application-specific types for Masjid Suite Profile Management System
 
-import type { Database } from './database.js';
+import type { Database } from "./database.js";
 
 // Re-export database types for convenience
-export type { Database } from './database.js';
+export type { Database } from "./database.js";
 
 // Table row types
-export type User = Database['public']['Tables']['users']['Row'];
-export type Profile = Database['public']['Tables']['profiles']['Row'];
-export type ProfileAddress = Database['public']['Tables']['profile_addresses']['Row'];
-export type Masjid = Database['public']['Tables']['masjids']['Row'];
-export type MasjidAdmin = Database['public']['Tables']['masjid_admins']['Row'];
-export type AdminApplication = Database['public']['Tables']['admin_applications']['Row'];
-export type MalaysianPostcode = Database['public']['Tables']['malaysian_postcodes']['Row'];
+export type User = Database["public"]["Tables"]["users"]["Row"];
+export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+export type ProfileAddress =
+  Database["public"]["Tables"]["profile_addresses"]["Row"];
+export type Masjid = Database["public"]["Tables"]["masjids"]["Row"];
+export type MasjidAdmin = Database["public"]["Tables"]["masjid_admins"]["Row"];
+export type AdminApplication =
+  Database["public"]["Tables"]["admin_applications"]["Row"];
+// export type MalaysianPostcode = Database['public']['Tables']['malaysian_postcodes']['Row']; // Removed - not in current schema
 
 // Insert types
-export type UserInsert = Database['public']['Tables']['users']['Insert'];
-export type ProfileInsert = Database['public']['Tables']['profiles']['Insert'];
-export type ProfileAddressInsert = Database['public']['Tables']['profile_addresses']['Insert'];
-export type MasjidInsert = Database['public']['Tables']['masjids']['Insert'];
-export type MasjidAdminInsert = Database['public']['Tables']['masjid_admins']['Insert'];
-export type AdminApplicationInsert = Database['public']['Tables']['admin_applications']['Insert'];
+export type UserInsert = Database["public"]["Tables"]["users"]["Insert"];
+export type ProfileInsert = Database["public"]["Tables"]["profiles"]["Insert"];
+export type ProfileAddressInsert =
+  Database["public"]["Tables"]["profile_addresses"]["Insert"];
+export type MasjidInsert = Database["public"]["Tables"]["masjids"]["Insert"];
+export type MasjidAdminInsert =
+  Database["public"]["Tables"]["masjid_admins"]["Insert"];
+export type AdminApplicationInsert =
+  Database["public"]["Tables"]["admin_applications"]["Insert"];
 
 // Update types
-export type UserUpdate = Database['public']['Tables']['users']['Update'];
-export type ProfileUpdate = Database['public']['Tables']['profiles']['Update'];
-export type ProfileAddressUpdate = Database['public']['Tables']['profile_addresses']['Update'];
-export type MasjidUpdate = Database['public']['Tables']['masjids']['Update'];
-export type MasjidAdminUpdate = Database['public']['Tables']['masjid_admins']['Update'];
-export type AdminApplicationUpdate = Database['public']['Tables']['admin_applications']['Update'];
+export type UserUpdate = Database["public"]["Tables"]["users"]["Update"];
+export type ProfileUpdate = Database["public"]["Tables"]["profiles"]["Update"];
+export type ProfileAddressUpdate =
+  Database["public"]["Tables"]["profile_addresses"]["Update"];
+export type MasjidUpdate = Database["public"]["Tables"]["masjids"]["Update"];
+export type MasjidAdminUpdate =
+  Database["public"]["Tables"]["masjid_admins"]["Update"];
+export type AdminApplicationUpdate =
+  Database["public"]["Tables"]["admin_applications"]["Update"];
 
 // Enum types
-export type UserRole = Database['public']['Enums']['user_role'];
-export type LanguageCode = Database['public']['Enums']['language_code'];
-export type AddressType = Database['public']['Enums']['address_type'];
-export type MalaysianState = Database['public']['Enums']['malaysian_state'];
-export type MasjidStatus = Database['public']['Enums']['masjid_status'];
-export type AdminAssignmentStatus = Database['public']['Enums']['admin_assignment_status'];
-export type ApplicationStatus = Database['public']['Enums']['application_status'];
+export type UserRole = Database["public"]["Enums"]["user_role"];
+export type LanguageCode = Database["public"]["Enums"]["language_code"];
+export type AddressType = Database["public"]["Enums"]["address_type"];
+export type MalaysianState = Database["public"]["Enums"]["malaysian_state"];
+export type MasjidStatus = Database["public"]["Enums"]["masjid_status"];
+export type AdminAssignmentStatus =
+  Database["public"]["Enums"]["admin_assignment_status"];
+export type ApplicationStatus =
+  Database["public"]["Enums"]["application_status"];
 
 // Function return types
-export type UserAdminAssignment = Database['public']['Functions']['get_user_admin_assignments']['Returns'][0];
-export type MasjidAdminList = Database['public']['Functions']['get_masjid_admin_list']['Returns'][0];
-export type MasjidApplication = Database['public']['Functions']['get_masjid_applications']['Returns'][0];
-export type PendingApplication = Database['public']['Functions']['get_pending_applications']['Returns'][0];
-export type MasjidByState = Database['public']['Functions']['get_masjids_by_state']['Returns'][0];
+export type UserAdminAssignment =
+  Database["public"]["Functions"]["get_user_admin_assignments"]["Returns"][0];
+export type MasjidAdminList =
+  Database["public"]["Functions"]["get_masjid_admin_list"]["Returns"][0];
+export type MasjidApplication =
+  Database["public"]["Functions"]["get_masjid_applications"]["Returns"][0];
+export type PendingApplication =
+  Database["public"]["Functions"]["get_pending_applications"]["Returns"][0];
+export type MasjidByState =
+  Database["public"]["Functions"]["get_masjids_by_state"]["Returns"][0];
 
 // Composite types for API responses
 export interface UserWithProfile extends User {
@@ -107,7 +122,7 @@ export interface MasjidAddress {
   city: string;
   state: MalaysianState;
   postcode: string;
-  country: 'MYS';
+  country: "MYS";
 }
 
 // Form types for frontend
@@ -141,7 +156,7 @@ export interface AdminApplicationFormData {
 }
 
 export interface ApplicationReviewData {
-  status: 'approved' | 'rejected';
+  status: "approved" | "rejected";
   review_notes?: string;
 }
 
@@ -188,7 +203,7 @@ export interface PaginationParams {
 
 export interface SortParams {
   column: string;
-  direction: 'asc' | 'desc';
+  direction: "asc" | "desc";
 }
 
 export interface UserFilters {
@@ -214,65 +229,79 @@ export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type RequiredFields<T, K extends keyof T> = T & Required<Pick<T, K>>;
 
 // Constants
-export const USER_ROLES: UserRole[] = ['super_admin', 'masjid_admin', 'registered', 'public'];
-export const LANGUAGE_CODES: LanguageCode[] = ['en', 'ms', 'zh', 'ta'];
-export const ADDRESS_TYPES: AddressType[] = ['home', 'work', 'other'];
-export const MASJID_STATUSES: MasjidStatus[] = ['active', 'inactive', 'pending_verification'];
-export const APPLICATION_STATUSES: ApplicationStatus[] = ['pending', 'approved', 'rejected', 'withdrawn'];
-export const ADMIN_ASSIGNMENT_STATUSES: AdminAssignmentStatus[] = ['active', 'inactive', 'pending', 'revoked'];
+export const USER_ROLES: UserRole[] = [
+  "super_admin",
+  "masjid_admin",
+  "registered",
+  "public",
+];
+export const LANGUAGE_CODES: LanguageCode[] = ["en", "ms", "zh", "ta"];
+export const ADDRESS_TYPES: AddressType[] = ["home", "work", "other"];
+export const MASJID_STATUSES: MasjidStatus[] = [
+  "active",
+  "inactive",
+  "pending_verification",
+];
+export const APPLICATION_STATUSES: ApplicationStatus[] = [
+  "pending",
+  "approved",
+  "rejected",
+  "withdrawn",
+];
+export const ADMIN_ASSIGNMENT_STATUSES: AdminAssignmentStatus[] = [
+  "active",
+  "inactive",
+  "pending",
+  "revoked",
+];
 
 export const MALAYSIAN_STATES: MalaysianState[] = [
-  'Johor',
-  'Kedah', 
-  'Kelantan',
-  'Malacca',
-  'Negeri Sembilan',
-  'Pahang',
-  'Penang',
-  'Perak',
-  'Perlis',
-  'Sabah',
-  'Sarawak',
-  'Selangor',
-  'Terengganu',
-  'Kuala Lumpur',
-  'Labuan',
-  'Putrajaya'
+  "Johor",
+  "Kedah",
+  "Kelantan",
+  "Malacca",
+  "Negeri Sembilan",
+  "Pahang",
+  "Penang",
+  "Perak",
+  "Perlis",
+  "Sabah",
+  "Sarawak",
+  "Selangor",
+  "Terengganu",
+  "Kuala Lumpur",
+  "Labuan",
+  "Putrajaya",
 ];
 
 // Language labels
 export const LANGUAGE_LABELS: Record<LanguageCode, string> = {
-  en: 'English',
-  ms: 'Bahasa Malaysia',
-  zh: '中文',
-  ta: 'தமிழ்'
+  en: "English",
+  ms: "Bahasa Malaysia",
+  zh: "中文",
+  ta: "தமிழ்",
 };
 
 // Role permissions
 export const ROLE_PERMISSIONS = {
   super_admin: [
-    'create_masjid',
-    'manage_all_users',
-    'approve_admin_applications',
-    'revoke_admin_assignments',
-    'view_all_data'
+    "create_masjid",
+    "manage_all_users",
+    "approve_admin_applications",
+    "revoke_admin_assignments",
+    "view_all_data",
   ],
   masjid_admin: [
-    'manage_assigned_masjid',
-    'view_masjid_members',
-    'update_masjid_info'
+    "manage_assigned_masjid",
+    "view_masjid_members",
+    "update_masjid_info",
   ],
-  registered: [
-    'manage_own_profile',
-    'apply_for_admin',
-    'view_public_masjids'
-  ],
-  public: [
-    'view_public_masjids'
-  ]
+  registered: ["manage_own_profile", "apply_for_admin", "view_public_masjids"],
+  public: ["view_public_masjids"],
 } as const;
 
-export type Permission = typeof ROLE_PERMISSIONS[keyof typeof ROLE_PERMISSIONS][number];
+export type Permission =
+  (typeof ROLE_PERMISSIONS)[keyof typeof ROLE_PERMISSIONS][number];
 
 // Error types
 export interface ValidationError {

@@ -1,0 +1,24 @@
+{
+  "extends": [
+    "@masjid-suite/eslint-config/react"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    // TV Display specific rules
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "react-hooks/exhaustive-deps": "warn",
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    
+    // Performance rules for TV displays
+    "react/jsx-no-bind": "error",
+    "react/jsx-no-leaked-render": "error"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}
