@@ -15,12 +15,82 @@ const SAMPLE_DISPLAY_ID = '550e8400-e29b-41d4-a716-446655440000';
 
 test.describe('Prayer Times Overlay Integration Tests', () => {
   test.beforeEach(async ({ page }) => {
+    // Mock API responses for consistent testing
+    await page.route(`**/api/displays/${SAMPLE_DISPLAY_ID}/config`, async (route) => {
+      const json = {
+        data: {
+          id: SAMPLE_DISPLAY_ID,
+          masjid_id: 'masjid-001',
+          display_name: 'Prayer Overlay Test Display',
+          prayer_time_position: 'top',
+          carousel_interval: 10,
+          max_content_items: 5,
+          auto_refresh_interval: 3,
+          is_active: true,
+          last_heartbeat: new Date().toISOString()
+        }
+      };
+      await route.fulfill({ json });
+    });
+
+    await page.route(`**/api/displays/${SAMPLE_DISPLAY_ID}/content`, async (route) => {
+      const json = {
+        data: [
+          {
+            id: 'content-001',
+            masjid_id: 'masjid-001',
+            display_id: SAMPLE_DISPLAY_ID,
+            title: 'Test Content 1',
+            type: 'text_announcement',
+            url: 'text:announcement',
+            duration: 10,
+            status: 'active',
+            submitted_by: 'user-001',
+            start_date: new Date().toISOString(),
+            end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+            sponsorship_amount: 50,
+            sponsorship_tier: 'bronze',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }
+        ],
+        meta: {
+          total: 1,
+          page: 1,
+          limit: 20,
+          has_more: false
+        }
+      };
+      await route.fulfill({ json });
+    });
+
+    await page.route(`**/api/displays/${SAMPLE_DISPLAY_ID}/prayer-times`, async (route) => {
+      const json = {
+        data: {
+          fajr_time: '05:45:00',
+          sunrise_time: '07:10:00',
+          dhuhr_time: '13:15:00',
+          asr_time: '16:30:00',
+          maghrib_time: '19:20:00',
+          isha_time: '20:35:00',
+          prayer_date: new Date().toISOString().split('T')[0]
+        },
+        meta: {
+          position: 'top',
+          font_size: 'medium',
+          color: '#ffffff',
+          background_opacity: 0.8
+        }
+      };
+      await route.fulfill({ json });
+    });
+
     // Navigate to the TV display page
     await page.goto(`${BASE_URL}/display/${SAMPLE_DISPLAY_ID}`);
   });
 
   test('displays prayer times overlay on top of content carousel', async ({ page }) => {
-    await page.waitForSelector('[data-testid="content-carousel"]');
+    await page.waitForSelector('[data-testid="content-carousel"]', { timeout: 30000 });
     
     // Verify prayer times overlay is visible
     const prayerOverlay = page.locator('[data-testid="prayer-times-overlay"]');

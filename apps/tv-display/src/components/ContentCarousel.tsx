@@ -295,9 +295,16 @@ export function ContentCarousel({
       className={`relative h-full overflow-hidden bg-black ${className}`}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
+      data-testid="content-carousel"
+      data-loaded={state.content.length > 0 ? 'true' : 'false'}
     >
       {/* Main content display */}
-      <div className={`relative h-full ${transitionClasses}`}>
+      <div 
+        className={`relative h-full ${transitionClasses}`}
+        data-testid={`content-item-${state.currentIndex}`}
+        data-content-type={currentContent.type}
+        data-active="true"
+      >
         <ContentViewer
           content={currentContent}
           onError={onError}

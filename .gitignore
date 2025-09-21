@@ -3,6 +3,11 @@
 # Legacy apps
 legacy/e-masjid.my-2.0
 
+# playwright reports directory
+**/test-results/
+**/blob-report/
+**/playwright/.cache/
+
 # Dependencies
 node_modules/
 .pnp

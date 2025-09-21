@@ -317,7 +317,11 @@ export function DisplayStatus({
     // Minimal status indicator for normal operation
     return (
       <div className={`fixed top-2 right-2 z-50 ${className}`}>
-        <div className={`w-3 h-3 rounded-full ${getStatusColor(state.status.is_online, state.healthGrade)}`} />
+        <div 
+          className={`w-3 h-3 rounded-full ${getStatusColor(state.status.is_online, state.healthGrade)}`}
+          data-testid="display-status"
+          data-status={state.status.is_online ? 'online' : 'offline'}
+        />
       </div>
     );
   }
@@ -325,7 +329,11 @@ export function DisplayStatus({
   return (
     <div className={`fixed top-4 right-4 z-50 ${className}`}>
       {/* Status card */}
-      <div className="bg-black/80 text-white rounded-lg p-4 min-w-80 shadow-lg">
+      <div 
+        className="bg-black/80 text-white rounded-lg p-4 min-w-80 shadow-lg"
+        data-testid="display-status"
+        data-status={state.status?.is_online ? 'online' : 'offline'}
+      >
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold">Display Status</h3>

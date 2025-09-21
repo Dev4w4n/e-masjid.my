@@ -287,6 +287,8 @@ export function PrayerTimesOverlay({
         color,
         backgroundColor: `rgba(0, 0, 0, ${backgroundOpacity})`
       }}
+      data-testid="prayer-times-overlay"
+      data-loaded="true"
     >
       <div className={`
         ${layoutClasses} 
@@ -302,6 +304,7 @@ export function PrayerTimesOverlay({
               ${prayer.isNext ? 'animate-pulse' : ''}
               transition-all duration-300
             `}
+            data-testid={`prayer-${prayer.name}`}
           >
             {/* Prayer name */}
             <div className={`${isVertical ? 'text-center' : 'mr-2'} font-medium`}>
@@ -319,10 +322,13 @@ export function PrayerTimesOverlay({
 
             {/* Countdown for next prayer */}
             {config.next_prayer_countdown && prayer.isNext && prayer.countdown && (
-              <div className={`
-                ${isVertical ? 'text-center text-sm' : 'ml-2 text-sm'} 
-                text-green-300 font-medium
-              `}>
+              <div 
+                className={`
+                  ${isVertical ? 'text-center text-sm' : 'ml-2 text-sm'} 
+                  text-green-300 font-medium
+                `}
+                data-testid="next-prayer-countdown"
+              >
                 {prayer.countdown.hours > 0 && `${prayer.countdown.hours}h `}
                 {prayer.countdown.minutes}m {prayer.countdown.seconds}s
               </div>
