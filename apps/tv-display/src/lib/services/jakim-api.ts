@@ -1,5 +1,6 @@
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * JAKIM API Service - Real Implementation
  * 
  * This service integrates with the Malaysian government prayer times API.
@@ -8,17 +9,24 @@
  * @see https://api.waktusolat.app/v2/solat/ for API documentation
 =======
  * JAKIM API Service - Mock Implementation
+=======
+ * JAKIM API Service - Real Implementation
+>>>>>>> 8d5ddaf (feat: Add JAKIM API integration tests and enhance masjid service)
  * 
- * This is a mock implementation of the JAKIM API service for development and testing.
- * In production, this would integrate with the actual Malaysian government prayer times API.
+ * This service integrates with the Malaysian government prayer times API.
  * 
  * @see https://www.e-solat.gov.my/index.php for actual JAKIM prayer times
+<<<<<<< HEAD
 >>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
+=======
+ * @see https://api.waktusolat.app/v2/solat/ for API documentation
+>>>>>>> 8d5ddaf (feat: Add JAKIM API integration tests and enhance masjid service)
  */
 
 import { PrayerTimes } from '@masjid-suite/shared-types';
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Real JAKIM API response format from waktusolat.app
  */
@@ -133,31 +141,34 @@ export const MALAYSIAN_ZONES = {
   'WLY02': 'Labuan'
 =======
  * JAKIM API response format (mocked based on typical e-solat API structure)
+=======
+ * Real JAKIM API response format from waktusolat.app
+>>>>>>> 8d5ddaf (feat: Add JAKIM API integration tests and enhance masjid service)
  */
 interface JakimApiResponse {
-  status: string;
-  serverTime: string;
-  periode: string;
-  lang: string;
   zone: string;
-  bearing: string;
-  data: {
-    date: string;
-    timings: {
-      Fajr: string;
-      Sunrise: string;
-      Dhuhr: string;
-      Asr: string;
-      Maghrib: string;
-      Isha: string;
-    };
-  }[];
+  year: number;
+  month: string;
+  month_number: number;
+  last_updated: string | null;
+  prayers: Array<{
+    day: number;
+    hijri: string;
+    fajr: number;     // Unix timestamp
+    syuruk: number;   // Unix timestamp
+    dhuhr: number;    // Unix timestamp
+    asr: number;      // Unix timestamp
+    maghrib: number;  // Unix timestamp
+    isha: number;     // Unix timestamp
+  }>;
 }
 
 /**
- * Malaysian prayer time zones (simplified for mock)
+ * Malaysian prayer time zones from JAKIM
+ * These are the official zone codes used by the Malaysian government
  */
 export const MALAYSIAN_ZONES = {
+<<<<<<< HEAD
   'SGR01': 'Perlis, Kedah, Penang, Perak',
   'SGR02': 'Selangor, KL, Putrajaya, Negeri Sembilan',
   'SGR03': 'Pahang, Johor',
@@ -166,6 +177,94 @@ export const MALAYSIAN_ZONES = {
   'SGR06': 'Sarawak',
   'SGR07': 'Labuan'
 >>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
+=======
+  // Johor
+  'JHR01': 'Pulau Aur dan Pulau Pemanggil',
+  'JHR02': 'Johor Bahru, Kota Tinggi, Mersing, Kulai',
+  'JHR03': 'Kluang, Pontian',
+  'JHR04': 'Batu Pahat, Muar, Segamat, Gemas Johor, Tangkak',
+  
+  // Kedah
+  'KDH01': 'Kota Setar, Kubang Pasu, Pokok Sena',
+  'KDH02': 'Kuala Muda, Yan, Pendang',
+  'KDH03': 'Padang Terap, Sik',
+  'KDH04': 'Baling',
+  'KDH05': 'Bandar Baharu, Kulim',
+  'KDH06': 'Langkawi',
+  'KDH07': 'Puncak Gunung Jerai',
+  
+  // Kelantan
+  'KTN01': 'Kota Bharu, Bachok, Pasir Mas, Tumpat, Pasir Puteh, Kuala Krai, Machang',
+  'KTN02': 'Gua Musang, Jeli, Jajahan Kecil Lojing',
+  
+  // Malacca
+  'MLK01': 'SELURUH NEGERI MELAKA',
+  
+  // Negeri Sembilan
+  'NGS01': 'Tampin, Jempol',
+  'NGS02': 'Jelebu, Kuala Pilah, Rembau',
+  'NGS03': 'Port Dickson, Seremban',
+  
+  // Pahang
+  'PHG01': 'Pulau Tioman',
+  'PHG02': 'Kuantan, Pekan, Rompin, Muadzam Shah',
+  'PHG03': 'Jerantut, Temerloh, Maran, Bera, Chenor, Jengka',
+  'PHG04': 'Bentong, Lipis, Raub',
+  'PHG05': 'Genting Sempah, Janda Baik, Bukit Tinggi',
+  'PHG06': 'Cameron Highlands, Genting Higlands, Bukit Fraser',
+  
+  // Perak
+  'PRK01': 'Tapah, Slim River, Tanjung Malim',
+  'PRK02': 'Kuala Kangsar, Sg. Siput, Ipoh, Batu Gajah, Kampar',
+  'PRK03': 'Lenggong, Pengkalan Hulu, Grik',
+  'PRK04': 'Temengor, Belum',
+  'PRK05': 'Kg Gajah, Teluk Intan, Bagan Datuk, Seri Iskandar, Beruas, Parit, Lumut, Sitiawan, Pulau Pangkor',
+  'PRK06': 'Selama, Taiping, Bagan Serai, Parit Buntar',
+  'PRK07': 'Bukit Larut',
+  
+  // Perlis
+  'PLS01': 'SELURUH NEGERI PERLIS',
+  
+  // Penang
+  'PNG01': 'SELURUH NEGERI PULAU PINANG',
+  
+  // Sabah
+  'SBH01': 'Bahagian Sandakan (Timur), Bukit Garam, Semawang, Temanggong, Tambisan, Bandar Sandakan, Sukau',
+  'SBH02': 'Beluran, Telupid, Pinangah, Terusan, Kuamut, Bahagian Sandakan (Barat)',
+  'SBH03': 'Lahad Datu, Silabukan, Kunak, Sahabat, Semporna, Tungku, Bahagian Tawau (Timur)',
+  'SBH04': 'Tawau, Balong, Merotai, Kalabakan, Bahagian Tawau (Barat)',
+  'SBH05': 'Kudat, Kota Marudu, Pitas, Pulau Banggi, Bahagian Kudat',
+  'SBH06': 'Gunung Kinabalu',
+  'SBH07': 'Kota Kinabalu, Ranau, Kota Belud, Tuaran, Penampang, Papar, Putatan, Bahagian Pantai Barat',
+  'SBH08': 'Pensiangan, Keningau, Tambunan, Nabawan, Bahagian Pendalaman (Atas)',
+  'SBH09': 'Beaufort, Kuala Penyu, Sipitang, Tenom, Long Pasia, Membakut, Weston, Bahagian Pendalaman (Bawah)',
+  
+  // Sarawak
+  'SWK01': 'Limbang, Lawas, Sundar, Trusan',
+  'SWK02': 'Miri, Niah, Bekenu, Sibuti, Marudi',
+  'SWK03': 'Pandan, Belaga, Suai, Tatau, Sebauh, Bintulu',
+  'SWK04': 'Sibu, Mukah, Dalat, Song, Igan, Oya, Balingian, Kanowit, Kapit',
+  'SWK05': 'Sarikei, Matu, Julau, Rajang, Daro, Bintangor, Belawai',
+  'SWK06': 'Lubok Antu, Sri Aman, Roban, Debak, Kabong, Lingga, Engkelili, Betong, Spaoh, Pusa, Saratok',
+  'SWK07': 'Serian, Simunjan, Samarahan, Sebuyau, Meludam',
+  'SWK08': 'Kuching, Bau, Lundu, Sematan',
+  'SWK09': 'Zon Khas (Kampung Patarikan)',
+  
+  // Selangor
+  'SGR01': 'Gombak, Petaling, Sepang, Hulu Langat, Hulu Selangor, Shah Alam',
+  'SGR02': 'Kuala Selangor, Sabak Bernam',
+  'SGR03': 'Klang, Kuala Langat',
+  
+  // Terengganu
+  'TRG01': 'Kuala Terengganu, Marang',
+  'TRG02': 'Besut, Setiu',
+  'TRG03': 'Hulu Terengganu',
+  'TRG04': 'Dungun, Kemaman',
+  
+  // Wilayah Persekutuan
+  'WLY01': 'Kuala Lumpur, Putrajaya',
+  'WLY02': 'Labuan'
+>>>>>>> 8d5ddaf (feat: Add JAKIM API integration tests and enhance masjid service)
 } as const;
 
 export type MalaysianZone = keyof typeof MALAYSIAN_ZONES;
@@ -182,16 +281,22 @@ interface JakimApiConfig {
   /** Timeout in milliseconds */
   timeout: number;
 <<<<<<< HEAD
+<<<<<<< HEAD
   /** Base URL for the JAKIM API */
   baseUrl: string;
 =======
 >>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
+=======
+  /** Base URL for the JAKIM API */
+  baseUrl: string;
+>>>>>>> 8d5ddaf (feat: Add JAKIM API integration tests and enhance masjid service)
 }
 
 /**
  * Default configuration for JAKIM API
  */
 const DEFAULT_CONFIG: JakimApiConfig = {
+<<<<<<< HEAD
 <<<<<<< HEAD
   zone: 'WLY01', // Default to Kuala Lumpur
   cacheDuration: 60, // 1 hour cache
@@ -204,6 +309,13 @@ const DEFAULT_CONFIG: JakimApiConfig = {
   retryAttempts: 3,
   timeout: 10000 // 10 seconds
 >>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
+=======
+  zone: 'WLY01', // Default to Kuala Lumpur
+  cacheDuration: 60, // 1 hour cache
+  retryAttempts: 3,
+  timeout: 10000, // 10 seconds
+  baseUrl: 'https://api.waktusolat.app/v2/solat'
+>>>>>>> 8d5ddaf (feat: Add JAKIM API integration tests and enhance masjid service)
 };
 
 /**
@@ -286,6 +398,7 @@ export class JakimApiService {
       console.log(`[JakimAPI] Fetching prayer times for zone ${zone}, date ${date}`);
       
 <<<<<<< HEAD
+<<<<<<< HEAD
       // Real API call to waktusolat.app
       const response = await this.fetchFromJakimApi(zone);
       
@@ -298,6 +411,13 @@ export class JakimApiService {
       // Transform API response to our format
       const prayerTimes = this.transformApiResponse(response, masjidId, zone);
 >>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
+=======
+      // Real API call to waktusolat.app
+      const response = await this.fetchFromJakimApi(zone);
+      
+      // Transform API response to our format
+      const prayerTimes = this.transformApiResponse(response, masjidId, zone, date);
+>>>>>>> 8d5ddaf (feat: Add JAKIM API integration tests and enhance masjid service)
       
       // Cache the result
       this.cache.set(cacheKey, prayerTimes, zone);
@@ -346,6 +466,7 @@ export class JakimApiService {
 
   /**
 <<<<<<< HEAD
+<<<<<<< HEAD
    * Fetch prayer times from the real JAKIM API
    */
   private async fetchFromJakimApi(zone: MalaysianZone): Promise<JakimApiResponse> {
@@ -391,14 +512,17 @@ export class JakimApiService {
 =======
    * Mock JAKIM API call - simulates actual API response
    * In production, this would be replaced with actual HTTP requests
+=======
+   * Fetch prayer times from the real JAKIM API
+>>>>>>> 8d5ddaf (feat: Add JAKIM API integration tests and enhance masjid service)
    */
-  private async mockJakimApiCall(zone: MalaysianZone, date: string): Promise<JakimApiResponse> {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, Math.random() * 1000 + 500));
+  private async fetchFromJakimApi(zone: MalaysianZone): Promise<JakimApiResponse> {
+    const url = `${this.config.baseUrl}/${zone}`;
     
-    // Generate realistic prayer times based on zone and date
-    const baseTimes = this.generateBasePrayerTimes(zone, date);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
     
+<<<<<<< HEAD
     return {
       status: "OK",
       serverTime: new Date().toISOString(),
@@ -453,6 +577,42 @@ export class JakimApiService {
       Isha: addMinutes(base.isha, variation())
     };
 >>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
+=======
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'User-Agent': 'e-masjid.my/1.0'
+        },
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json() as JakimApiResponse;
+      
+      // The API doesn't have a status field, just check if we have prayers data
+      if (!data.prayers || data.prayers.length === 0) {
+        throw new Error('No prayer times data received');
+      }
+      
+      return data;
+      
+    } catch (error) {
+      clearTimeout(timeoutId);
+      
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Request timeout');
+      }
+      
+      throw error;
+    }
+>>>>>>> 8d5ddaf (feat: Add JAKIM API integration tests and enhance masjid service)
   }
 
   /**
@@ -461,6 +621,7 @@ export class JakimApiService {
   private transformApiResponse(
     response: JakimApiResponse,
     masjidId: string,
+<<<<<<< HEAD
 <<<<<<< HEAD
     zone: MalaysianZone,
     targetDate: string
@@ -500,13 +661,37 @@ export class JakimApiService {
       isha_time: formatTime(prayerData.isha),
 =======
     zone: MalaysianZone
+=======
+    zone: MalaysianZone,
+    targetDate: string
+>>>>>>> 8d5ddaf (feat: Add JAKIM API integration tests and enhance masjid service)
   ): PrayerTimes {
-    const data = response.data[0];
     const now = new Date().toISOString();
+    
+    // Extract day from target date (YYYY-MM-DD format)
+    const targetDay = parseInt(targetDate.split('-')[2], 10);
+    
+    // Find the prayer data for the target day
+    const prayerData = response.prayers.find(p => p.day === targetDay);
+    
+    if (!prayerData) {
+      throw new Error(`No prayer times found for day ${targetDay} in ${response.zone}`);
+    }
+
+    // Helper function to convert Unix timestamp to HH:MM format
+    const formatTime = (timestamp: number): string => {
+      const date = new Date(timestamp * 1000);
+      return date.toLocaleTimeString('en-US', { 
+        hour12: false, 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+    };
 
     return {
-      id: `jakim-${zone}-${data.date}-${Date.now()}`,
+      id: `jakim-${zone}-${targetDate}-${Date.now()}`,
       masjid_id: masjidId,
+<<<<<<< HEAD
       prayer_date: data.date,
       fajr_time: data.timings.Fajr,
       sunrise_time: data.timings.Sunrise,
@@ -515,6 +700,15 @@ export class JakimApiService {
       maghrib_time: data.timings.Maghrib,
       isha_time: data.timings.Isha,
 >>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
+=======
+      prayer_date: targetDate,
+      fajr_time: formatTime(prayerData.fajr),
+      sunrise_time: formatTime(prayerData.syuruk),
+      dhuhr_time: formatTime(prayerData.dhuhr),
+      asr_time: formatTime(prayerData.asr),
+      maghrib_time: formatTime(prayerData.maghrib),
+      isha_time: formatTime(prayerData.isha),
+>>>>>>> 8d5ddaf (feat: Add JAKIM API integration tests and enhance masjid service)
       source: 'JAKIM_API',
       fetched_at: now,
       created_at: now,
@@ -578,11 +772,15 @@ export const jakimApi = new JakimApiService();
 export async function getTodayPrayerTimes(
   masjidId: string,
 <<<<<<< HEAD
+<<<<<<< HEAD
   zone: MalaysianZone = 'WLY01'
 ): Promise<PrayerTimes> {
   const today = new Date().toISOString().split('T')[0]!;
 =======
   zone: MalaysianZone = 'SGR02'
+=======
+  zone: MalaysianZone = 'WLY01'
+>>>>>>> 8d5ddaf (feat: Add JAKIM API integration tests and enhance masjid service)
 ): Promise<PrayerTimes> {
   const today = new Date().toISOString().split('T')[0];
 >>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
@@ -595,10 +793,14 @@ export async function getTodayPrayerTimes(
 export async function getMonthlyPrayerTimes(
   masjidId: string,
 <<<<<<< HEAD
+<<<<<<< HEAD
   zone: MalaysianZone = 'WLY01'
 =======
   zone: MalaysianZone = 'SGR02'
 >>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
+=======
+  zone: MalaysianZone = 'WLY01'
+>>>>>>> 8d5ddaf (feat: Add JAKIM API integration tests and enhance masjid service)
 ): Promise<PrayerTimes[]> {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);

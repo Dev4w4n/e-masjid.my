@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 -- Seed data for E-Masjid Suite
 -- This will be automatically run when starting Supabase
 
@@ -21,22 +22,28 @@ BEGIN
   RAISE NOTICE 'Basic seed data loaded. Complex relational data is handled by setup-supabase.sh script.';
 =======
 -- Seed data for TV Display System
+=======
+-- Seed data for E-Masjid Suite
+>>>>>>> 8d5ddaf (feat: Add JAKIM API integration tests and enhance masjid service)
 -- This will be automatically run when starting Supabase
 
--- Wait for user data to be created first
--- This should be run after users and masjids are created
+-- Note: TV Display system data is now handled by the setup-supabase.sh script
+-- This ensures proper dynamic ID assignment and relationship management
 
--- Function to get first masjid ID (will be created by the test script)
+-- Basic seed data that doesn't require dynamic relationships can be added here
+-- Complex relational data should be added via the setup script for proper ID management
+
+-- You can add static lookup data, configuration values, or other data that
+-- doesn't depend on dynamically generated UUIDs here
+
+-- Example of static data that could go here:
+-- INSERT INTO prayer_zones (code, name, description) VALUES 
+--   ('WLY01', 'Kuala Lumpur', 'Federal Territory of Kuala Lumpur'),
+--   ('JHR01', 'Pulau Aur dan Pulau Pemanggil', 'Johor zone 1');
+
 DO $$
-DECLARE
-  test_masjid_id UUID;
-  test_user_id UUID;
-  display_1_id UUID;
-  display_2_id UUID;
-  content_1_id UUID;
-  content_2_id UUID;
-  content_3_id UUID;
 BEGIN
+<<<<<<< HEAD
   -- Get a test masjid ID - if none exists, create a minimal one
   SELECT id INTO test_masjid_id FROM masjids LIMIT 1;
   
@@ -246,4 +253,7 @@ BEGIN
   RAISE NOTICE 'Created content items: %, %, %', content_1_id, content_2_id, content_3_id;
 
 >>>>>>> 37fcc95 (feat: Implement TV Display Database Schema and Seed Data)
+=======
+  RAISE NOTICE 'Basic seed data loaded. Complex relational data is handled by setup-supabase.sh script.';
+>>>>>>> 8d5ddaf (feat: Add JAKIM API integration tests and enhance masjid service)
 END $$;

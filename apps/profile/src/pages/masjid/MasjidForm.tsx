@@ -499,52 +499,33 @@ function MasjidForm() {
   useEffect(() => {
     if (isEdit && id) {
       setLoading(true);
-
-      const loadMasjidData = async () => {
-        try {
-          const masjidData = await masjidService.getMasjid(id);
-
-          // Transform the data to match form structure
-          const formData = {
-            name: masjidData.name,
-            registration_number: masjidData.registration_number || "",
-            email: masjidData.email || "",
-            phone_number: masjidData.phone_number || "",
-            description: masjidData.description || "",
-            website_url: masjidData.website_url || "",
-            address: {
-              address_line_1: masjidData.address.address_line_1,
-              address_line_2: masjidData.address.address_line_2 || "",
-              city: masjidData.address.city,
-              state: masjidData.address.state as MalaysianState,
-              postcode: masjidData.address.postcode,
-              country: masjidData.address.country as "MYS",
-            },
-            capacity: masjidData.capacity || undefined,
-            facilities: Array.isArray(masjidData.facilities)
-              ? masjidData.facilities
-              : [],
-            prayer_times_source: "jakim" as const,
-            status: masjidData.status as
-              | "active"
-              | "inactive"
-              | "pending_verification",
-          };
-
-          reset(formData);
-        } catch (error) {
-          console.error("Failed to load masjid data:", error);
-          const errorMessage =
-            error instanceof Error
-              ? error.message
-              : "Failed to load masjid data. Please try again.";
-          setSubmitError(errorMessage);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      loadMasjidData();
+      // Mock data loading - replace with actual API call
+      setTimeout(() => {
+        const mockMasjid = {
+          name: "Masjid Jamek Sungai Rambai",
+          registration_number: "MSJ-2024-001",
+          email: "admin@masjidjameksungairambai.org",
+          phone_number: "+60412345678",
+          description:
+            "Community mosque serving the Sungai Rambai area in Bukit Mertajam. Established in 1985, this mosque serves over 300 families and offers daily prayers, Friday sermons, and religious education programs.",
+          website_url: "https://masjidjameksungairambai.org",
+          address: {
+            address_line_1: "Jalan Masjid Jamek",
+            address_line_2: "Sungai Rambai",
+            city: "Bukit Mertajam",
+            state: "Penang" as MalaysianState,
+            postcode: "14000",
+            country: "MYS" as const,
+          },
+          capacity: 500,
+          facilities: ["Parking", "Air Conditioning", "Library"],
+          prayer_times_source: "jakim" as const,
+          jakim_zone_code: "WLY01",
+          status: "active" as const,
+        };
+        reset(mockMasjid);
+        setLoading(false);
+      }, 1000);
     }
   }, [isEdit, id, reset]);
 
