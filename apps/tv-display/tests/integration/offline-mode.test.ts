@@ -1,19 +1,18 @@
 /**
  * Offline Mode Integration Tests
  * 
- * Tests the complete offline fallback functionality from user stories
- * These tests MUST FAIL initially until implementation is complete (TDD)
- * 
- * Expected to fail: Offline mode functionality doesn't exist yet
- * Success criteria: All tests pass after offline handling implementation
+ * Tests the complete offline mode functionality with API mocking
  */
 
 import { test, expect } from '@playwright/test';
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001';
-const SAMPLE_DISPLAY_ID = '550e8400-e29b-41d4-a716-446655440000';
+import { setupOfflineApiMocks, setupApiMocks, navigateToDisplay, SAMPLE_DISPLAY_ID } from '../utils/api-mocks';
 
 test.describe('Offline Mode Integration Tests', () => {
+  test.beforeEach(async ({ page }) => {
+    // Start with online mode
+    await setupApiMocks(page);
+    await navigateToDisplay(page);
+  });
   test('displays cached content when API is unavailable', async ({ page }) => {
     // First, load content normally to populate cache
     await page.route(`**/api/displays/${SAMPLE_DISPLAY_ID}/content`, async (route) => {

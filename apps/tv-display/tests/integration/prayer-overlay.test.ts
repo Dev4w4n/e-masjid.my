@@ -15,6 +15,15 @@ const SAMPLE_DISPLAY_ID = '550e8400-e29b-41d4-a716-446655440000';
 
 test.describe('Prayer Times Overlay Integration Tests', () => {
   test.beforeEach(async ({ page }) => {
+    // Ensure browser is considered online for API calls
+    await page.addInitScript(() => {
+      // Override navigator.onLine to return true
+      Object.defineProperty(navigator, 'onLine', {
+        writable: true,
+        value: true,
+      });
+    });
+
     // Mock API responses for consistent testing
     await page.route(`**/api/displays/${SAMPLE_DISPLAY_ID}/config`, async (route) => {
       const json = {
@@ -27,13 +36,31 @@ test.describe('Prayer Times Overlay Integration Tests', () => {
           max_content_items: 5,
           auto_refresh_interval: 3,
           is_active: true,
-          last_heartbeat: new Date().toISOString()
+          last_heartbeat: new Date().toISOString(),
+          resolution: '1920x1080',
+          orientation: 'landscape',
+          prayer_time_font_size: 'medium',
+          prayer_time_color: '#ffffff',
+          prayer_time_background_opacity: 0.8,
+          content_transition_type: 'fade',
+          show_sponsorship_amounts: true,
+          sponsorship_tier_colors: {
+            bronze: '#CD7F32',
+            silver: '#C0C0C0', 
+            gold: '#FFD700',
+            platinum: '#E5E4E2'
+          },
+          heartbeat_interval: 30000
         }
       };
-      await route.fulfill({ json });
+      await route.fulfill({ 
+        status: 200,
+        contentType: 'application/json',
+        json 
+      });
     });
 
-    await page.route(`**/api/displays/${SAMPLE_DISPLAY_ID}/content`, async (route) => {
+    await page.route(`**/api/displays/${SAMPLE_DISPLAY_ID}/content*`, async (route) => {
       const json = {
         data: [
           {
@@ -41,15 +68,18 @@ test.describe('Prayer Times Overlay Integration Tests', () => {
             masjid_id: 'masjid-001',
             display_id: SAMPLE_DISPLAY_ID,
             title: 'Test Content 1',
+            description: 'Test content for prayer overlay testing',
             type: 'text_announcement',
             url: 'text:announcement',
             duration: 10,
             status: 'active',
             submitted_by: 'user-001',
+            submitted_at: new Date().toISOString(),
             start_date: new Date().toISOString(),
             end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
             sponsorship_amount: 50,
             sponsorship_tier: 'bronze',
+            payment_status: 'paid',
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           }
@@ -58,13 +88,32 @@ test.describe('Prayer Times Overlay Integration Tests', () => {
           total: 1,
           page: 1,
           limit: 20,
-          has_more: false
-        }
+          offset: 0,
+          has_more: false,
+          next_page: null,
+          prev_page: null,
+          last_updated: new Date().toISOString(),
+          carousel_interval: 10,
+          next_refresh: new Date(Date.now() + 10000).toISOString(),
+          total_active: 1,
+          total_pending: 0,
+          sponsorship_revenue: 50
+        },
+        links: {
+          self: `${BASE_URL}/api/displays/${SAMPLE_DISPLAY_ID}/content`,
+          next: null,
+          prev: null
+        },
+        error: null
       };
-      await route.fulfill({ json });
+      await route.fulfill({ 
+        status: 200,
+        contentType: 'application/json',
+        json 
+      });
     });
 
-    await page.route(`**/api/displays/${SAMPLE_DISPLAY_ID}/prayer-times`, async (route) => {
+    await page.route(`**/api/displays/${SAMPLE_DISPLAY_ID}/prayer-times*`, async (route) => {
       const json = {
         data: {
           fajr_time: '05:45:00',
@@ -79,17 +128,30 @@ test.describe('Prayer Times Overlay Integration Tests', () => {
           position: 'top',
           font_size: 'medium',
           color: '#ffffff',
-          background_opacity: 0.8
-        }
+          background_opacity: 0.8,
+          zone_code: 'WLY01',
+          location_name: 'Kuala Lumpur',
+          source: 'JAKIM',
+          last_updated: new Date().toISOString()
+        },
+        error: null
       };
-      await route.fulfill({ json });
+      await route.fulfill({ 
+        status: 200,
+        contentType: 'application/json',
+        json 
+      });
     });
 
     // Navigate to the TV display page
     await page.goto(`${BASE_URL}/display/${SAMPLE_DISPLAY_ID}`);
+    
+    // Wait a moment for network status to be established
+    await page.waitForTimeout(1000);
   });
 
   test('displays prayer times overlay on top of content carousel', async ({ page }) => {
+    // Wait for the content carousel to load
     await page.waitForSelector('[data-testid="content-carousel"]', { timeout: 30000 });
     
     // Verify prayer times overlay is visible
