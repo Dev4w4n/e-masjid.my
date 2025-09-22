@@ -410,7 +410,7 @@ export class MasjidService {
     const { data, error } = await this.db
       .table("masjids")
       .select("*")
-      .eq("is_active", true)
+      .eq("status", "active")
       .order("name");
 
     if (error) {
@@ -435,6 +435,24 @@ export class MasjidService {
     }
 
     return data;
+  }
+
+  /**
+   * Get masjids by JAKIM zone code
+   */
+  async getMasjidsByZone(zoneCode: string) {
+    const { data, error } = await this.db
+      .table("masjids")
+      .select("*")
+      .eq("jakim_zone_code", zoneCode)
+      .eq("status", "active")
+      .order("name");
+
+    if (error) {
+      throw new Error(`Failed to get masjids by zone: ${error.message}`);
+    }
+
+    return data || [];
   }
 
   /**
@@ -472,6 +490,61 @@ export class MasjidService {
 
     if (error) {
       throw new Error(`Failed to update masjid: ${error.message}`);
+    }
+
+    return data;
+  }
+
+  /**
+   * Update masjid JAKIM zone code
+   */
+  async updateMasjidZoneCode(masjidId: string, zoneCode: string) {
+    const { data, error } = await this.db
+      .table("masjids")
+      .update({ jakim_zone_code: zoneCode })
+      .eq("id", masjidId)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to update masjid zone code: ${error.message}`);
+    }
+
+    return data;
+  }
+
+  /**
+   * Get masjid prayer time configuration
+   */
+  async getMasjidPrayerConfig(masjidId: string) {
+    const { data, error } = await this.db
+      .table("prayer_time_config")
+      .select("*")
+      .eq("masjid_id", masjidId)
+      .single();
+
+    if (error && error.code !== "PGRST116") {
+      // PGRST116 = no rows returned
+      throw new Error(`Failed to get prayer config: ${error.message}`);
+    }
+
+    return data;
+  }
+
+  /**
+   * Create or update prayer time configuration
+   */
+  async upsertPrayerConfig(
+    config: Database["public"]["Tables"]["prayer_time_config"]["Insert"]
+  ) {
+    const { data, error } = await this.db
+      .table("prayer_time_config")
+      .upsert(config)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to upsert prayer config: ${error.message}`);
     }
 
     return data;

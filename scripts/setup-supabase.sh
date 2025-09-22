@@ -52,6 +52,339 @@ echo -e "${BLUE}   • API URL: $API_URL${NC}"
 echo -e "${BLUE}   • Anon Key: ${ANON_KEY:0:20}...${NC}"
 echo -e "${BLUE}   • Service Role Key: ${SERVICE_ROLE_KEY:0:20}...${NC}"
 
+# Function to create TV display test data
+create_tv_display_data() {
+    local test_user_id="$1"
+    local masjid_admin_id="$2"
+    
+    echo -e "${BLUE}Creating TV display test data...${NC}"
+    
+    # First, fix the trigger function issue that's causing problems during seed data creation
+    psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" << 'EOSQL'
+-- Fix the trigger function to not call another trigger function
+CREATE OR REPLACE FUNCTION public.validate_masjid_address_with_zone()
+RETURNS TRIGGER AS $$
+DECLARE
+    suggested_zone VARCHAR(10);
+BEGIN
+    -- Inline address validation instead of calling another trigger function
+    -- Check required address fields
+    IF NOT (
+        NEW.address ? 'address_line_1' AND
+        NEW.address ? 'city' AND
+        NEW.address ? 'state' AND
+        NEW.address ? 'postcode' AND
+        NEW.address ? 'country'
+    ) THEN
+        RAISE EXCEPTION 'Address must contain address_line_1, city, state, postcode, and country';
+    END IF;
+    
+    -- Validate postcode format
+    IF NOT (NEW.address->>'postcode' ~ '^[0-9]{5}$') THEN
+        RAISE EXCEPTION 'Postcode must be 5 digits';
+    END IF;
+    
+    -- Validate postcode range for Malaysia
+    IF (NEW.address->>'postcode')::INTEGER NOT BETWEEN 10000 AND 98000 THEN
+        RAISE EXCEPTION 'Invalid Malaysian postcode range';
+    END IF;
+    
+    -- Auto-suggest zone code based on state if not provided
+    IF NEW.jakim_zone_code IS NULL THEN
+        CASE NEW.address->>'state'
+            WHEN 'Kuala Lumpur' THEN suggested_zone := 'WLY01';
+            WHEN 'Putrajaya' THEN suggested_zone := 'WLY01';
+            WHEN 'Labuan' THEN suggested_zone := 'WLY02';
+            WHEN 'Selangor' THEN suggested_zone := 'SGR01';
+            WHEN 'Johor' THEN suggested_zone := 'JHR02';
+            WHEN 'Kedah' THEN suggested_zone := 'KDH01';
+            WHEN 'Kelantan' THEN suggested_zone := 'KTN01';
+            WHEN 'Malacca' THEN suggested_zone := 'MLK01';
+            WHEN 'Negeri Sembilan' THEN suggested_zone := 'NGS01';
+            WHEN 'Pahang' THEN suggested_zone := 'PHG02';
+            WHEN 'Perak' THEN suggested_zone := 'PRK02';
+            WHEN 'Perlis' THEN suggested_zone := 'PLS01';
+            WHEN 'Penang' THEN suggested_zone := 'PNG01';
+            WHEN 'Sabah' THEN suggested_zone := 'SBH07';
+            WHEN 'Sarawak' THEN suggested_zone := 'SWK08';
+            WHEN 'Terengganu' THEN suggested_zone := 'TRG01';
+            ELSE suggested_zone := 'WLY01'; -- Default to Kuala Lumpur
+        END CASE;
+        
+        NEW.jakim_zone_code := suggested_zone;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+EOSQL
+    
+    # Create TV display test data SQL
+    cat > /tmp/tv_display_seed.sql << 'EOL'
+-- TV Display System Seed Data with Dynamic IDs
+-- This creates test data for the TV display system
+
+DO $$
+DECLARE
+  test_masjid_id UUID;
+  test_user_id UUID;
+  masjid_admin_id UUID;
+  display_1_id UUID;
+  display_2_id UUID;
+  content_1_id UUID;
+  content_2_id UUID;
+  content_3_id UUID;
+BEGIN
+  -- Get the first active masjid
+  SELECT id INTO test_masjid_id 
+  FROM masjids 
+  WHERE status = 'active' 
+  LIMIT 1;
+  
+  -- If no masjids exist, skip seeding
+  IF test_masjid_id IS NULL THEN
+    RAISE NOTICE 'No active masjids found - skipping TV display seed data.';
+    RETURN;
+  END IF;
+  
+  -- Get test users
+  SELECT id INTO test_user_id 
+  FROM users 
+  WHERE email LIKE '%test.com' OR email = 'user1@test.com'
+  LIMIT 1;
+  
+  SELECT id INTO masjid_admin_id 
+  FROM users 
+  WHERE email LIKE 'masjid.admin%' OR role = 'super_admin'
+  LIMIT 1;
+  
+  -- Use super admin if no specific users found
+  IF test_user_id IS NULL THEN
+    SELECT id INTO test_user_id FROM users WHERE role = 'super_admin' LIMIT 1;
+  END IF;
+  
+  IF masjid_admin_id IS NULL THEN
+    SELECT id INTO masjid_admin_id FROM users WHERE role = 'super_admin' LIMIT 1;
+  END IF;
+  
+  IF test_user_id IS NULL OR masjid_admin_id IS NULL THEN
+    RAISE NOTICE 'No users found - skipping TV display seed data.';
+    RETURN;
+  END IF;
+
+  -- Insert test TV displays
+  INSERT INTO tv_displays (
+    id, masjid_id, display_name, description, 
+    resolution, orientation, carousel_interval, 
+    prayer_time_position, is_active
+  ) VALUES 
+    (
+      gen_random_uuid(),
+      test_masjid_id,
+      'Main Hall Display',
+      'Primary display for the main prayer hall',
+      '1920x1080',
+      'landscape',
+      10,
+      'top',
+      true
+    )
+  RETURNING id INTO display_1_id;
+
+  INSERT INTO tv_displays (
+    id, masjid_id, display_name, description,
+    resolution, orientation, carousel_interval,
+    prayer_time_position, is_active
+  ) VALUES 
+    (
+      gen_random_uuid(),
+      test_masjid_id,
+      'Entrance Display',
+      'Display at the mosque entrance',
+      '1920x1080',
+      'landscape',
+      15,
+      'center',
+      true
+    )
+  RETURNING id INTO display_2_id;
+
+  -- Insert test display content
+  INSERT INTO display_content (
+    id, masjid_id, display_id, title, type, url, duration,
+    status, submitted_by, start_date, end_date
+  ) VALUES 
+    (
+      gen_random_uuid(),
+      test_masjid_id,
+      NULL, -- Available for all displays
+      'Welcome to Our Masjid',
+      'text_announcement',
+      'data:text/plain;base64,V2VsY29tZSB0byBvdXIgbWFzamlk', -- "Welcome to our masjid" in base64
+      10,
+      'active',
+      test_user_id,
+      CURRENT_DATE,
+      CURRENT_DATE + INTERVAL '30 days'
+    )
+  RETURNING id INTO content_1_id;
+
+  INSERT INTO display_content (
+    id, masjid_id, display_id, title, type, url, duration,
+    status, submitted_by, start_date, end_date, sponsorship_amount
+  ) VALUES 
+    (
+      gen_random_uuid(),
+      test_masjid_id,
+      NULL,
+      'Friday Prayer Announcement',
+      'text_announcement',
+      'data:text/plain;base64,RnJpZGF5IFByYXllciBBbm5vdW5jZW1lbnQ=', -- "Friday Prayer Announcement"
+      15,
+      'active',
+      masjid_admin_id,
+      CURRENT_DATE,
+      CURRENT_DATE + INTERVAL '7 days',
+      50.00
+    )
+  RETURNING id INTO content_2_id;
+
+  INSERT INTO display_content (
+    id, masjid_id, display_id, title, type, url, duration,
+    status, submitted_by, start_date, end_date, sponsorship_amount
+  ) VALUES 
+    (
+      gen_random_uuid(),
+      test_masjid_id,
+      display_1_id, -- Only for main hall display
+      'Donation Information',
+      'text_announcement',
+      'data:text/plain;base64,U3VwcG9ydCBPdXIgTWFzamlk', -- "Support Our Masjid"
+      12,
+      'active',
+      test_user_id,
+      CURRENT_DATE,
+      CURRENT_DATE + INTERVAL '14 days',
+      25.00
+    )
+  RETURNING id INTO content_3_id;
+
+  -- Insert test prayer times
+  INSERT INTO prayer_times (
+    masjid_id, prayer_date, fajr_time, sunrise_time, dhuhr_time, 
+    asr_time, maghrib_time, isha_time, source
+  ) VALUES 
+    (
+      test_masjid_id,
+      CURRENT_DATE,
+      '05:45:00',
+      '07:10:00',
+      '13:15:00',
+      '16:30:00',
+      '19:20:00',
+      '20:35:00',
+      'MANUAL_ENTRY'
+    ),
+    (
+      test_masjid_id,
+      CURRENT_DATE + INTERVAL '1 day',
+      '05:46:00',
+      '07:11:00',
+      '13:15:00',
+      '16:29:00',
+      '19:19:00',
+      '20:34:00',
+      'MANUAL_ENTRY'
+    );
+
+  -- Insert prayer time configuration (only if not exists)
+  INSERT INTO prayer_time_config (
+    masjid_id, zone_code, location_name, latitude, longitude
+  ) 
+  SELECT 
+    test_masjid_id,
+    'WLY01',
+    'Kuala Lumpur',
+    3.139003,
+    101.686855
+  WHERE NOT EXISTS (
+    SELECT 1 FROM prayer_time_config WHERE masjid_id = test_masjid_id
+  );
+
+  -- Insert test sponsorships
+  INSERT INTO sponsorships (
+    content_id, masjid_id, sponsor_name, sponsor_email, amount, 
+    tier, payment_method, payment_reference, payment_status
+  ) VALUES 
+    (
+      content_2_id,
+      test_masjid_id,
+      'Local Islamic Bookstore',
+      'contact@islamicbooks.com',
+      50.00,
+      'silver',
+      'fpx',
+      'TXN-001-TEST',
+      'paid'
+    ),
+    (
+      content_3_id,
+      test_masjid_id,
+      'Halal Restaurant',
+      'info@halalrestaurant.com',
+      25.00,
+      'bronze',
+      'bank_transfer',
+      'TXN-002-TEST',
+      'paid'
+    );
+
+  -- Insert display status
+  INSERT INTO display_status (
+    display_id, is_online, current_content_id, content_load_time, 
+    api_response_time, uptime_percentage
+  ) VALUES 
+    (
+      display_1_id,
+      true,
+      content_1_id,
+      150,
+      45,
+      99.5
+    ),
+    (
+      display_2_id,
+      true,
+      content_2_id,
+      120,
+      38,
+      98.8
+    );
+
+  RAISE NOTICE 'TV Display seed data inserted successfully!';
+  RAISE NOTICE 'Created displays: %, %', display_1_id, display_2_id;
+  RAISE NOTICE 'Created content items: %, %, %', content_1_id, content_2_id, content_3_id;
+  RAISE NOTICE 'Associated with masjid: %', test_masjid_id;
+
+END $$;
+EOL
+    
+    # Execute the TV display seed data
+    psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" -f /tmp/tv_display_seed.sql 2>&1 | tee /tmp/tv_display_output.log
+    
+    # Check for errors
+    if grep -q "ERROR" /tmp/tv_display_output.log; then
+        echo -e "${RED}❌ Errors occurred while loading TV display data:${NC}"
+        grep "ERROR" /tmp/tv_display_output.log
+        return 1
+    fi
+    
+    # Clean up temporary file
+    rm -f /tmp/tv_display_seed.sql /tmp/tv_display_output.log
+    
+    echo -e "${GREEN}✅ TV display test data created successfully!${NC}"
+}
+
 # Function to create environment files
 create_env_files() {
     local env_type="$1"
@@ -367,7 +700,7 @@ SET is_complete = (
 )
 WHERE user_id IN ('$SUPER_ADMIN_ID', '$MASJID_ADMIN_ID', '$USER1_ID', '$USER2_ID', '$USER3_ID', '$INCOMPLETE_USER_ID');
 
--- Create test masjids
+  -- Create test masjids
 INSERT INTO public.masjids (
   id, name, registration_number, email, phone_number, description, 
   address, status, created_by
@@ -426,9 +759,7 @@ BEGIN
       '{"address_line_1": "30 Pending Street", "city": "Ipoh", "state": "Perak", "postcode": "30000", "country": "MYS"}',
       'pending_verification',
       '$SUPER_ADMIN_ID'
-    );
-    
-  -- Associate profiles with home masjids
+    );  -- Associate profiles with home masjids
   UPDATE public.profiles 
   SET home_masjid_id = first_masjid_id
   WHERE user_id IN ('$MASJID_ADMIN_ID', '$USER1_ID');
@@ -516,6 +847,95 @@ END \$\$;
 EOL
     
     # Load generated test data into the database
+    psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" << 'EOSQL'
+-- Fix the trigger function to not call another trigger function
+CREATE OR REPLACE FUNCTION public.validate_masjid_address_with_zone()
+RETURNS TRIGGER AS $$
+DECLARE
+    suggested_zone VARCHAR(10);
+BEGIN
+    -- Inline address validation instead of calling another trigger function
+    -- Check required address fields
+    IF NOT (
+        NEW.address ? 'address_line_1' AND
+        NEW.address ? 'city' AND
+        NEW.address ? 'state' AND
+        NEW.address ? 'postcode' AND
+        NEW.address ? 'country'
+    ) THEN
+        RAISE EXCEPTION 'Address must contain address_line_1, city, state, postcode, and country';
+    END IF;
+    
+    -- Validate postcode format
+    IF NOT (NEW.address->>'postcode' ~ '^[0-9]{5}$') THEN
+        RAISE EXCEPTION 'Postcode must be 5 digits';
+    END IF;
+    
+    -- Validate postcode range for Malaysia
+    IF (NEW.address->>'postcode')::INTEGER NOT BETWEEN 10000 AND 98000 THEN
+        RAISE EXCEPTION 'Invalid Malaysian postcode range';
+    END IF;
+    
+    -- Auto-suggest zone code based on state if not provided
+    IF NEW.jakim_zone_code IS NULL THEN
+        CASE NEW.address->>'state'
+            WHEN 'Kuala Lumpur' THEN suggested_zone := 'WLY01';
+            WHEN 'Putrajaya' THEN suggested_zone := 'WLY01';
+            WHEN 'Labuan' THEN suggested_zone := 'WLY02';
+            WHEN 'Selangor' THEN suggested_zone := 'SGR01';
+            WHEN 'Johor' THEN suggested_zone := 'JHR02';
+            WHEN 'Kedah' THEN suggested_zone := 'KDH01';
+            WHEN 'Kelantan' THEN suggested_zone := 'KTN01';
+            WHEN 'Malacca' THEN suggested_zone := 'MLK01';
+            WHEN 'Negeri Sembilan' THEN suggested_zone := 'NGS01';
+            WHEN 'Pahang' THEN suggested_zone := 'PHG02';
+            WHEN 'Perak' THEN suggested_zone := 'PRK02';
+            WHEN 'Perlis' THEN suggested_zone := 'PLS01';
+            WHEN 'Penang' THEN suggested_zone := 'PNG01';
+            WHEN 'Sabah' THEN suggested_zone := 'SBH07';
+            WHEN 'Sarawak' THEN suggested_zone := 'SWK08';
+            WHEN 'Terengganu' THEN suggested_zone := 'TRG01';
+            ELSE suggested_zone := 'WLY01'; -- Default to Kuala Lumpur
+        END CASE;
+        
+        NEW.jakim_zone_code := suggested_zone;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Fix the sync_prayer_time_config function to properly cast JSON values
+CREATE OR REPLACE FUNCTION public.sync_prayer_time_config()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Update prayer_time_config table when jakim_zone_code changes
+    IF OLD.jakim_zone_code IS DISTINCT FROM NEW.jakim_zone_code THEN
+        UPDATE prayer_time_config 
+        SET zone_code = NEW.jakim_zone_code,
+            updated_at = NOW()
+        WHERE masjid_id = NEW.id;
+        
+        -- Create prayer_time_config if it doesn't exist
+        IF NOT FOUND THEN
+            INSERT INTO prayer_time_config (
+                masjid_id,
+                zone_code,
+                location_name
+            ) VALUES (
+                NEW.id,
+                NEW.jakim_zone_code,
+                COALESCE((NEW.address->>'city')::text, '') || ', ' || COALESCE((NEW.address->>'state')::text, '')
+            );
+        END IF;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+EOSQL
+    
+    # Load generated test data into the database
     psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" -f "$TEST_DATA_FILE" 2>&1 | tee /tmp/psql_output.log
     
     # Check for errors
@@ -526,6 +946,9 @@ EOL
     fi
     
     echo -e "${GREEN}✅ Test data loaded successfully!${NC}"
+    
+    # Create TV display test data
+    create_tv_display_data "$USER1_ID" "$MASJID_ADMIN_ID"
     
     # Generate and store API keys for tests
     echo -e "${BLUE}5. Generating environment files...${NC}"
@@ -610,8 +1033,12 @@ else
             if echo "$VERIFICATION" | grep -q "super_admin"; then
                 echo -e "${GREEN}✅ Setup verification successful!${NC}"
                 
+                # Create TV display test data for default setup
+                echo -e "${BLUE}6. Creating sample TV display data...${NC}"
+                create_tv_display_data "$USER_ID" "$USER_ID"
+                
                 # Generate environment files
-                echo -e "${BLUE}6. Generating environment files...${NC}"
+                echo -e "${BLUE}7. Generating environment files...${NC}"
                 create_env_files "development" "admin@e-masjid.my" "SuperAdmin123!" "$USER_ID"
                 create_env_files "test" "admin@e-masjid.my" "SuperAdmin123!" "$USER_ID"
             else

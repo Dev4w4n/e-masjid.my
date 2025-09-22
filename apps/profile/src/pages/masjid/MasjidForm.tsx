@@ -120,6 +120,14 @@ const masjidSchema = z.object({
     })
     .optional(),
 
+  jakim_zone_code: z
+    .string()
+    .regex(/^[A-Z]{3}[0-9]{2}$/, {
+      message:
+        "Zone code must be in format: 3 letters + 2 digits (e.g., WLY01)",
+    })
+    .optional(),
+
   status: z
     .enum(["active", "inactive", "pending_verification"], {
       errorMap: () => ({ message: "Please select a valid status" }),
@@ -167,6 +175,258 @@ const prayerTimeSources = [
   { value: "jakim", label: "JAKIM (Automatic)" },
   { value: "auto", label: "Auto-detect Location" },
   { value: "manual", label: "Manual Entry" },
+];
+
+const jakimZones = [
+  // Kuala Lumpur & Federal Territory
+  {
+    value: "WLY01",
+    label: "WLY01 - Kuala Lumpur, Putrajaya",
+    state: "Kuala Lumpur",
+  },
+  { value: "WLY02", label: "WLY02 - Labuan", state: "Labuan" },
+
+  // Johor
+  { value: "JHR01", label: "JHR01 - Pulau Aur dan Pemanggil", state: "Johor" },
+  {
+    value: "JHR02",
+    label: "JHR02 - Johor Bahru, Kota Tinggi, Mersing, Kulai",
+    state: "Johor",
+  },
+  { value: "JHR03", label: "JHR03 - Kluang, Pontian", state: "Johor" },
+  {
+    value: "JHR04",
+    label: "JHR04 - Batu Pahat, Muar, Segamat, Gemas Johor, Tangkak",
+    state: "Johor",
+  },
+
+  // Kedah
+  {
+    value: "KDH01",
+    label: "KDH01 - Kota Setar, Kubang Pasu, Pokok Sena",
+    state: "Kedah",
+  },
+  { value: "KDH02", label: "KDH02 - Kuala Muda, Yan, Pendang", state: "Kedah" },
+  { value: "KDH03", label: "KDH03 - Padang Terap, Sik", state: "Kedah" },
+  { value: "KDH04", label: "KDH04 - Baling", state: "Kedah" },
+  { value: "KDH05", label: "KDH05 - Bandar Baharu, Kulim", state: "Kedah" },
+  { value: "KDH06", label: "KDH06 - Langkawi", state: "Kedah" },
+  { value: "KDH07", label: "KDH07 - Puncak Gunung Jerai", state: "Kedah" },
+
+  // Kelantan
+  {
+    value: "KTN01",
+    label:
+      "KTN01 - Kota Bharu, Bachok, Pasir Mas, Tumpat, Pasir Puteh, Kuala Krai, Machang",
+    state: "Kelantan",
+  },
+  {
+    value: "KTN02",
+    label: "KTN02 - Gua Musang, Jeli, Jajahan Kecil Lojing",
+    state: "Kelantan",
+  },
+
+  // Melaka
+  { value: "MLK01", label: "MLK01 - Seluruh Negeri Melaka", state: "Malacca" },
+
+  // Negeri Sembilan
+  { value: "NGS01", label: "NGS01 - Tampin, Jempol", state: "Negeri Sembilan" },
+  {
+    value: "NGS02",
+    label: "NGS02 - Jelebu, Kuala Pilah, Rembau",
+    state: "Negeri Sembilan",
+  },
+  {
+    value: "NGS03",
+    label: "NGS03 - Port Dickson, Seremban",
+    state: "Negeri Sembilan",
+  },
+
+  // Pahang
+  { value: "PHG01", label: "PHG01 - Pulau Tioman", state: "Pahang" },
+  {
+    value: "PHG02",
+    label: "PHG02 - Kuantan, Pekan, Rompin, Muadzam Shah",
+    state: "Pahang",
+  },
+  {
+    value: "PHG03",
+    label: "PHG03 - Jerantut, Temerloh, Maran, Bera, Chenor, Jengka",
+    state: "Pahang",
+  },
+  { value: "PHG04", label: "PHG04 - Bentong, Lipis, Raub", state: "Pahang" },
+  {
+    value: "PHG05",
+    label: "PHG05 - Genting Sempah, Janda Baik, Bukit Tinggi",
+    state: "Pahang",
+  },
+  {
+    value: "PHG06",
+    label: "PHG06 - Cameron Highlands, Genting Higlands, Bukit Fraser",
+    state: "Pahang",
+  },
+
+  // Perak
+  {
+    value: "PRK01",
+    label: "PRK01 - Tapah, Slim River, Tanjung Malim",
+    state: "Perak",
+  },
+  {
+    value: "PRK02",
+    label: "PRK02 - Kuala Kangsar, Sg. Siput, Ipoh, Batu Gajah, Kampar",
+    state: "Perak",
+  },
+  {
+    value: "PRK03",
+    label: "PRK03 - Lenggong, Pengkalan Hulu, Grik",
+    state: "Perak",
+  },
+  { value: "PRK04", label: "PRK04 - Temengor, Belum", state: "Perak" },
+  {
+    value: "PRK05",
+    label:
+      "PRK05 - Kg Gajah, Teluk Intan, Bagan Datuk, Seri Iskandar, Beruas, Parit, Lumut, Sitiawan, Pulau Pangkor",
+    state: "Perak",
+  },
+  {
+    value: "PRK06",
+    label: "PRK06 - Selama, Taiping, Bagan Serai, Parit Buntar",
+    state: "Perak",
+  },
+  { value: "PRK07", label: "PRK07 - Bukit Larut", state: "Perak" },
+
+  // Perlis
+  { value: "PLS01", label: "PLS01 - Seluruh Negeri Perlis", state: "Perlis" },
+
+  // Penang
+  {
+    value: "PNG01",
+    label: "PNG01 - Seluruh Negeri Pulau Pinang",
+    state: "Penang",
+  },
+
+  // Sabah
+  {
+    value: "SBH01",
+    label:
+      "SBH01 - Bahagian Sandakan (Timur), Bukit Garam, Semawang, Temanggong, Tambisan, Bandar Sandakan, Sukau",
+    state: "Sabah",
+  },
+  {
+    value: "SBH02",
+    label:
+      "SBH02 - Beluran, Telupid, Pinangah, Terusan, Kuamut, Bahagian Sandakan (Barat)",
+    state: "Sabah",
+  },
+  {
+    value: "SBH03",
+    label:
+      "SBH03 - Lahad Datu, Silabukan, Kunak, Sahabat, Semporna, Tungku, Bahagian Tawau (Timur)",
+    state: "Sabah",
+  },
+  {
+    value: "SBH04",
+    label: "SBH04 - Tawau, Balong, Merotai, Kalabakan, Bahagian Tawau (Barat)",
+    state: "Sabah",
+  },
+  {
+    value: "SBH05",
+    label: "SBH05 - Kudat, Kota Marudu, Pitas, Pulau Banggi, Bahagian Kudat",
+    state: "Sabah",
+  },
+  { value: "SBH06", label: "SBH06 - Gunung Kinabalu", state: "Sabah" },
+  {
+    value: "SBH07",
+    label:
+      "SBH07 - Kota Kinabalu, Ranau, Kota Belud, Tuaran, Penampang, Papar, Putatan, Bahagian Pantai Barat",
+    state: "Sabah",
+  },
+  {
+    value: "SBH08",
+    label:
+      "SBH08 - Pensiangan, Keningau, Tambunan, Nabawan, Bahagian Pendalaman (Atas)",
+    state: "Sabah",
+  },
+  {
+    value: "SBH09",
+    label:
+      "SBH09 - Beaufort, Kuala Penyu, Sipitang, Tenom, Long Pasia, Membakut, Weston, Bahagian Pendalaman (Bawah)",
+    state: "Sabah",
+  },
+
+  // Sarawak
+  {
+    value: "SWK01",
+    label: "SWK01 - Limbang, Lawas, Sundar, Trusan",
+    state: "Sarawak",
+  },
+  {
+    value: "SWK02",
+    label: "SWK02 - Miri, Niah, Bekenu, Sibuti, Marudi",
+    state: "Sarawak",
+  },
+  {
+    value: "SWK03",
+    label: "SWK03 - Pandan, Belaga, Suai, Tatau, Sebauh, Bintulu",
+    state: "Sarawak",
+  },
+  {
+    value: "SWK04",
+    label:
+      "SWK04 - Sibu, Mukah, Dalat, Song, Igan, Oya, Balingian, Kanowit, Kapit",
+    state: "Sarawak",
+  },
+  {
+    value: "SWK05",
+    label: "SWK05 - Sarikei, Matu, Julau, Rajang, Daro, Bintangor, Belawai",
+    state: "Sarawak",
+  },
+  {
+    value: "SWK06",
+    label:
+      "SWK06 - Lubok Antu, Sri Aman, Roban, Debak, Kabong, Lingga, Engkelili, Betong, Spaoh, Pusa, Saratok",
+    state: "Sarawak",
+  },
+  {
+    value: "SWK07",
+    label: "SWK07 - Serian, Simunjan, Samarahan, Sebuyau, Meludam",
+    state: "Sarawak",
+  },
+  {
+    value: "SWK08",
+    label: "SWK08 - Kuching, Bau, Lundu, Sematan",
+    state: "Sarawak",
+  },
+  {
+    value: "SWK09",
+    label: "SWK09 - Zon Khas (Kampung Patarikan)",
+    state: "Sarawak",
+  },
+
+  // Selangor
+  {
+    value: "SGR01",
+    label:
+      "SGR01 - Gombak, Petaling, Sepang, Hulu Langat, Hulu Selangor, Shah Alam",
+    state: "Selangor",
+  },
+  {
+    value: "SGR02",
+    label: "SGR02 - Kuala Selangor, Sabak Bernam",
+    state: "Selangor",
+  },
+  { value: "SGR03", label: "SGR03 - Klang, Kuala Langat", state: "Selangor" },
+
+  // Terengganu
+  {
+    value: "TRG01",
+    label: "TRG01 - Kuala Terengganu, Marang",
+    state: "Terengganu",
+  },
+  { value: "TRG02", label: "TRG02 - Besut, Setiu", state: "Terengganu" },
+  { value: "TRG03", label: "TRG03 - Hulu Terengganu", state: "Terengganu" },
+  { value: "TRG04", label: "TRG04 - Dungun, Kemaman", state: "Terengganu" },
 ];
 
 const statusOptions = [
@@ -226,6 +486,7 @@ function MasjidForm() {
       capacity: undefined,
       facilities: [],
       prayer_times_source: "jakim",
+      jakim_zone_code: "WLY01", // Default to Kuala Lumpur
       status: "active",
     },
   });
@@ -257,6 +518,7 @@ function MasjidForm() {
           capacity: 500,
           facilities: ["Parking", "Air Conditioning", "Library"],
           prayer_times_source: "jakim" as const,
+          jakim_zone_code: "WLY01",
           status: "active" as const,
         };
         reset(mockMasjid);
@@ -643,6 +905,42 @@ function MasjidForm() {
                       )}
                     />
                   </Grid>
+
+                  {watch("prayer_times_source") === "jakim" && (
+                    <Grid item xs={12} md={6}>
+                      <Controller
+                        name="jakim_zone_code"
+                        control={control}
+                        render={({ field }) => (
+                          <FormControl
+                            fullWidth
+                            error={!!errors.jakim_zone_code}
+                          >
+                            <InputLabel>JAKIM Zone *</InputLabel>
+                            <Select {...field} label="JAKIM Zone *">
+                              {jakimZones
+                                .filter(
+                                  (zone) =>
+                                    !watch("address.state") ||
+                                    zone.state === watch("address.state") ||
+                                    zone.state === "Kuala Lumpur" // Always show KL zones
+                                )
+                                .map((zone) => (
+                                  <MenuItem key={zone.value} value={zone.value}>
+                                    {zone.label}
+                                  </MenuItem>
+                                ))}
+                            </Select>
+                            {errors.jakim_zone_code && (
+                              <FormHelperText>
+                                {errors.jakim_zone_code.message}
+                              </FormHelperText>
+                            )}
+                          </FormControl>
+                        )}
+                      />
+                    </Grid>
+                  )}
 
                   <Grid item xs={12}>
                     <Typography variant="subtitle2" gutterBottom>
