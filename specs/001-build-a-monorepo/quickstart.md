@@ -67,7 +67,7 @@ cd ..
 pnpm dev
 
 # Or start specific app
-pnpm dev --filter=@masjid-suite/profile
+pnpm dev --filter=@masjid-suite/hub
 ```
 
 The application will be available at:
@@ -250,7 +250,7 @@ pnpm format
 pnpm build
 
 # Build specific app
-pnpm build --filter=@masjid-suite/profile
+pnpm build --filter=@masjid-suite/hub
 
 # Preview production build
 pnpm preview

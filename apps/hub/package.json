@@ -1,8 +1,8 @@
 {
-  "name": "@masjid-suite/profile",
+  "name": "@masjid-suite/hub",
   "version": "1.0.0",
   "private": true,
-  "description": "Profile management React application for Masjid Suite",
+  "description": "Central hub React application for Masjid Suite",
   "type": "module",
   "scripts": {
     "dev": "vite",

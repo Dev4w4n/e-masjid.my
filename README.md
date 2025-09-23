@@ -95,7 +95,7 @@ pnpm install
 pnpm dev
 
 # Atau mulakan aplikasi tertentu
-pnpm dev --filter=@masjid-suite/profile
+pnpm dev --filter=@masjid-suite/hub
 ```
 
 Aplikasi akan tersedia di:
@@ -284,7 +284,7 @@ pnpm format
 pnpm build
 
 # Bina aplikasi tertentu
-pnpm build --filter=@masjid-suite/profile
+pnpm build --filter=@masjid-suite/hub
 
 # Pratonton binaan produksi
 pnpm preview

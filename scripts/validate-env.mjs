@@ -133,21 +133,21 @@ if (turboConfig) {
 
 // Check Vite configuration
 console.log('\n⚡ Checking Vite configuration...');
-const viteConfigPath = resolve(__dirname, '../apps/profile/vite.config.ts');
+const viteConfigPath = resolve(__dirname, '../apps/hub/vite.config.ts');
 const viteConfig = readEnvFile(viteConfigPath);
 
 if (viteConfig) {
   if (viteConfig.includes('envPrefix')) {
-    console.log('✅ envPrefix configuration found in profile app');
+    console.log('✅ envPrefix configuration found in hub app');
     const envPrefixMatch = viteConfig.match(/envPrefix:\s*\[(.*?)\]/s);
     if (envPrefixMatch) {
       console.log(`   Prefixes: ${envPrefixMatch[1]}`);
     }
   } else {
-    console.log('⚠️  envPrefix configuration not found in profile app');
+    console.log('⚠️  envPrefix configuration not found in hub app');
   }
 } else {
-  console.log('❌ Profile app vite.config.ts not found');
+  console.log('❌ Hub app vite.config.ts not found');
 }
 
 // Check supabase client configuration

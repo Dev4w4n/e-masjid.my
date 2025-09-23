@@ -8,7 +8,7 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-console.log('=== Profile App Environment Variables Validation ===\n');
+console.log('=== Hub App Environment Variables Validation ===\n');
 
 // Check if .env.local exists and has required variables
 const envPath = resolve(__dirname, '../../../.env.local');
@@ -57,7 +57,7 @@ try {
   }
   
   console.log('\n=== Recommendations ===');
-  console.log('1. The profile app should now load environment variables from .env.local');
+  console.log('1. The hub app should now load environment variables from .env.local');
   console.log('2. Check browser console for environment variable values');
   console.log('3. If issues persist, restart the dev server');
   

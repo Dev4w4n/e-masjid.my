@@ -127,3 +127,5 @@ apps/profile/tests/test-data-generated.sql
 supabase/.branches
 supabase/.temp
 supabase/functions/.env
+
+test-data-generated.sql

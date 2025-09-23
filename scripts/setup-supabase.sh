@@ -615,8 +615,8 @@ if [ "$SETUP_TYPE" = "test" ]; then
     echo -e "${BLUE}4. Creating dynamic test data SQL file...${NC}"
     
     # Generate the test data SQL with the actual user IDs
-    TEST_DATA_TEMPLATE="apps/profile/tests/test-data.sql"
-    TEST_DATA_FILE="apps/profile/tests/test-data-generated.sql"
+    TEST_DATA_TEMPLATE="apps/hub/tests/test-data.sql"
+    TEST_DATA_FILE="apps/hub/tests/test-data-generated.sql"
     
     if [ ! -f "$TEST_DATA_TEMPLATE" ]; then
         echo -e "${RED}Error: Test data template file not found: $TEST_DATA_TEMPLATE${NC}"
