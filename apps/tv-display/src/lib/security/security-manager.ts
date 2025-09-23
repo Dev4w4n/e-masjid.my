@@ -337,7 +337,11 @@ class SecurityManager {
         });
       }
 
-      return { isValid, errors, sanitized: isValid ? sanitized as T : undefined };
+      return { 
+        isValid, 
+        errors, 
+        ...(isValid ? { sanitized: sanitized as T } : {})
+      };
 
     } catch (error) {
       this.logSecurityEvent('invalid_input', 'high', 'validation_error', {
@@ -577,6 +581,8 @@ class SecurityManager {
   ): void {
     if (!this.config.enableAuditLogging) return;
 
+    const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : undefined;
+    
     const logEntry: SecurityAuditLog = {
       id: this.generateSecureToken(),
       timestamp: Date.now(),
@@ -584,7 +590,7 @@ class SecurityManager {
       severity,
       source,
       details,
-      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
+      ...(userAgent ? { userAgent } : {}),
       ipAddress: 'unknown', // Would be provided by server in real implementation
       blocked
     };

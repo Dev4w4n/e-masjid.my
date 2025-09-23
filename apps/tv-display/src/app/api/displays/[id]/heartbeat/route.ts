@@ -11,9 +11,11 @@ import { createClient } from '@supabase/supabase-js';
 import { 
   Database,
   DisplayStatus,
+} from '@masjid-suite/shared-types';
+import {
   ApiError,
   createApiError 
-} from '@masjid-suite/shared-types';
+} from '../../../../../lib/api-utils';
 
 // Initialize Supabase client
 const supabase = createClient<Database>(
@@ -152,13 +154,11 @@ export async function POST(
       .single();
 
     if (existingStatus) {
-      // Update existing status
+      // Update existing status (exclude created_at since we don't want to update it)
+      const { created_at, ...updateData } = statusData;
       const { error: statusUpdateError } = await supabase
         .from('display_status')
-        .update({
-          ...statusData,
-          created_at: undefined // Don't update created_at
-        })
+        .update(updateData)
         .eq('display_id', displayId);
 
       if (statusUpdateError) {
@@ -176,7 +176,7 @@ export async function POST(
     }
 
     // Record analytics data for daily aggregation (simplified)
-    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+    const today: string = new Date().toISOString().split('T')[0] || ''; // YYYY-MM-DD format
     
     // Check if analytics record exists for today
     const { data: existingAnalytics } = await supabase
@@ -267,7 +267,7 @@ export async function POST(
       force_refresh: forceRefresh,
       server_time: now,
       display_status: displayStatus,
-      messages: messages.length > 0 ? messages : undefined
+      ...(messages.length > 0 && { messages })
     };
 
     return NextResponse.json({
@@ -326,14 +326,14 @@ export async function GET(
       display_id: status.display_id,
       is_online: status.is_online,
       last_seen: status.last_seen || new Date().toISOString(),
-      current_content_id: status.current_content_id || undefined,
+      ...(status.current_content_id && { current_content_id: status.current_content_id }),
       content_load_time: status.content_load_time,
       api_response_time: status.api_response_time,
       error_count_24h: status.error_count_24h,
       uptime_percentage: status.uptime_percentage,
-      browser_info: status.browser_info || undefined,
-      screen_resolution: status.screen_resolution || undefined,
-      device_info: status.device_info || undefined,
+      ...(status.browser_info && { browser_info: status.browser_info }),
+      ...(status.screen_resolution && { screen_resolution: status.screen_resolution }),
+      ...(status.device_info && { device_info: status.device_info }),
       created_at: status.created_at || new Date().toISOString(),
       updated_at: status.updated_at || new Date().toISOString()
     };

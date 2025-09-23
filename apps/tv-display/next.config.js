@@ -62,10 +62,11 @@ const nextConfig = {
 
   // Transpile workspace packages
   transpilePackages: [
+    '@masjid-suite/auth',
     '@masjid-suite/shared-types',
     '@masjid-suite/supabase-client', 
     '@masjid-suite/ui-components',
-    '@masjid-suite/auth',
+    '@masjid-suite/ui-theme',
   ],
 
   // Output standalone for potential Docker deployment

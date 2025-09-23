@@ -1,10 +1,12 @@
 // Barrel exports for @masjid-suite/shared-types package
 
-export * from "./database.js";
-export * from "./types.js";
-export * from "./validation.js";
-export * from "./address.js";
-export * from "./tv-display.js";
+export * from "./database";
+export * from "./types";
+export * from "./validation";
+export * from "./address";
+export * from "./tv-display";
+export * from "./mock-data";
+export * from "./e2e-test-helpers";
 // Masjid TV Display types (avoid conflict with database Masjid type)
 export type {
   Masjid as TvDisplayMasjid,
@@ -17,7 +19,7 @@ export type {
   SUPPORTED_TIMEZONES,
   MASJID_VALIDATION,
   DEFAULT_TIMEZONE,
-} from "./masjid.js";
+} from "./masjid";
 export {
   isValidJakimZone,
   isValidTimezone,
@@ -29,7 +31,7 @@ export {
   createMasjid,
   formatMasjidDisplayName,
   getMasjidState,
-} from "./masjid.js";
+} from "./masjid";
 // ContentItem types (avoid conflicts with api-responses.ts)
 export type {
   ContentItem as TvDisplayContentItem,
@@ -50,7 +52,7 @@ export type {
   MIN_SPONSORSHIP_AMOUNT,
   MAX_FILE_SIZE,
   SUPPORTED_IMAGE_FORMATS,
-} from "./content-item.js";
+} from "./content-item";
 export {
   isValidYouTubeUrl,
   isValidImageUrl,
@@ -69,7 +71,7 @@ export {
   isCreateContentRequest as isTvDisplayCreateContentRequest,
   isUpdateContentRequest as isTvDisplayUpdateContentRequest,
   createContentItem,
-} from "./content-item.js";
+} from "./content-item";
 // DisplayConfiguration types
 export type {
   DisplayConfiguration,
@@ -106,7 +108,7 @@ export type {
   DISPLAY_LANGUAGES,
   DATE_FORMATS,
   COMMON_RESOLUTIONS,
-} from "./display-config.js";
+} from "./display-config";
 export {
   isValidBrightnessLevel,
   isValidVolumeLevel,
@@ -128,7 +130,7 @@ export {
   formatResolution,
   getRecommendedFontSize,
   validateDisplayConfiguration,
-} from "./display-config.js";
+} from "./display-config";
 // PrayerSchedule types
 export type {
   PrayerSchedule,
@@ -155,7 +157,7 @@ export type {
   DEFAULT_REFRESH_INTERVAL,
   MAX_ADVANCE_DAYS,
   JAKIM_API,
-} from "./prayer-schedule.js";
+} from "./prayer-schedule";
 export {
   isValidPrayerName,
   isValidCalculationMethod,
@@ -175,7 +177,7 @@ export {
   convertJakimResponse,
   getCalculationMethodName,
   validatePrayerScheduleConfig,
-} from "./prayer-schedule.js";
+} from "./prayer-schedule";
 // SponsorshipRecord types
 export type {
   SponsorshipRecord,
@@ -202,7 +204,7 @@ export type {
   SPONSORSHIP_TYPE_BENEFITS,
   SPONSORSHIP_VALIDATION,
   MIN_SPONSORSHIP_AMOUNTS,
-} from "./sponsorship-record.js";
+} from "./sponsorship-record";
 export {
   isValidSponsorshipType,
   isValidSponsorshipStatus,
@@ -223,7 +225,7 @@ export {
   createSponsorshipRecord,
   validateSponsorshipDates,
   validateSponsorshipRecord,
-} from "./sponsorship-record.js";
+} from "./sponsorship-record";
 // DisplayContentAssignment types
 export type {
   DisplayContentAssignment,
@@ -250,7 +252,7 @@ export type {
   DEFAULT_DISPLAY_LAYOUT,
   LAYOUT_PRESETS,
   ASSIGNMENT_VALIDATION,
-} from "./display-content-assignment.js";
+} from "./display-content-assignment";
 export {
   isValidAssignmentStatus,
   isValidAssignmentPriority,
@@ -269,7 +271,7 @@ export {
   validateAssignmentDates,
   validateDisplayLayout,
   validateContentAssignment,
-} from "./display-content-assignment.js";
+} from "./display-content-assignment";
 // Export specific API response types to avoid conflicts
 export type {
   DisplayContentResponse,
@@ -284,10 +286,10 @@ export type {
   CreateContentRequest,
   UpdateContentRequest,
   CreateSponsorshipRequest,
-} from "./api-responses.js";
+} from "./api-responses";
 export {
   createApiResponse,
   createApiError,
   isApiError,
   isApiSuccess,
-} from "./api-responses.js";
+} from "./api-responses";

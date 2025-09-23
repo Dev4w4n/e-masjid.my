@@ -3,10 +3,11 @@
  * 
  * Comprehensive end-to-end test covering the full TV display functionality
  * from initial loading through content cycling, prayer times updates, and
- * error handling scenarios.
+ * error handling scenarios. Uses real Supabase data for realistic testing.
  */
 
 import { test, expect, Page, BrowserContext } from '@playwright/test';
+import { E2ETestDataManager, type E2ETestData } from '@masjid-suite/shared-types';
 
 // Test configuration for TV display
 const TV_DISPLAY_CONFIG = {
@@ -15,15 +16,40 @@ const TV_DISPLAY_CONFIG = {
   timeout: 30000
 };
 
-// Mock display data
-const MOCK_DISPLAY_ID = 'test-display-001';
-const MOCK_MASJID_ID = 'test-masjid-001';
-
 test.describe('TV Display Flow E2E Tests', () => {
   let page: Page;
   let context: BrowserContext;
+  let testDataManager: E2ETestDataManager;
+  let testData: E2ETestData;
+  let displayId: string;
+  let masjidId: string;
+
+  // Helper function to get fresh display ID for tests that might need isolation
+  async function getFreshDisplayId(): Promise<string> {
+    // Use the existing test data first
+    if (testData.displays && testData.displays.length > 0) {
+      return testData.displays[0]!.id;
+    }
+    
+    // Fallback: create a new display if needed
+    console.log('⚠️ Creating fresh display for test isolation');
+    const freshTestData = await testDataManager.setupTestData();
+    if (!freshTestData.displays || freshTestData.displays.length === 0) {
+      throw new Error('Failed to create fresh display for test');
+    }
+    return freshTestData.displays[0]!.id;
+  }
 
   test.beforeAll(async ({ browser }) => {
+    // Verify environment variables are set
+    const requiredEnvVars = ['SUPABASE_URL', 'SUPABASE_ANON_KEY', 'SUPABASE_SERVICE_ROLE_KEY'];
+    const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+    
+    if (missingEnvVars.length > 0) {
+      throw new Error(`Missing required environment variables: ${missingEnvVars.join(', ')}. 
+        Please ensure these are set in your .env file or test environment.`);
+    }
+
     context = await browser.newContext({
       viewport: TV_DISPLAY_CONFIG.viewport,
       userAgent: TV_DISPLAY_CONFIG.userAgent
@@ -32,16 +58,55 @@ test.describe('TV Display Flow E2E Tests', () => {
 
     // Set longer timeout for TV display scenarios
     page.setDefaultTimeout(TV_DISPLAY_CONFIG.timeout);
+
+    // Initialize E2E test setup with real Supabase data
+    testDataManager = new E2ETestDataManager({
+      testDataPrefix: 'e2e-display-test',
+      cleanupAfterTests: true,
+      maxTestDataAge: 60
+    });
+    
+    console.log('🔧 Setting up E2E test data...');
+    
+    try {
+      // Setup test data
+      testData = await testDataManager.setupTestData();
+    } catch (error) {
+      console.error('❌ Failed to setup test data:', error);
+      throw new Error(`E2E test setup failed: ${error instanceof Error ? error.message : 'Unknown error'}. 
+        Check your Supabase connection and ensure the database is running.`);
+    }
+    
+    // Ensure we have test data
+    if (!testData.displays || testData.displays.length === 0) {
+      throw new Error('No test displays were created. Check Supabase connection and permissions.');
+    }
+    
+    if (!testData.masjid || !testData.masjid.id) {
+      throw new Error('No test masjid was created. Check Supabase connection and permissions.');
+    }
+    
+    // Use the first display from test data (guaranteed to exist after checks above)
+    displayId = testData.displays[0]!.id;
+    masjidId = testData.masjid.id;
+
+    console.log(`🔧 Test setup complete - Display: ${displayId}, Masjid: ${masjidId}`);
+    console.log(`📊 Created ${testData.displays.length} displays and ${testData.content.length} content items`);
   });
 
   test.afterAll(async () => {
+    // Cleanup test data
+    if (testDataManager) {
+      await testDataManager.cleanupTestData(testData);
+      console.log('🧹 Test cleanup completed');
+    }
     await context.close();
   });
 
   test.describe('Initial Loading Flow', () => {
     test('should load display page and show loading state', async () => {
-      // Navigate to display page
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      // Navigate to display page using dynamically created display ID
+      await page.goto(`/display/${displayId}`);
 
       // Check that page loads
       await expect(page).toHaveTitle(/TV Display/);
@@ -58,9 +123,22 @@ test.describe('TV Display Flow E2E Tests', () => {
       console.log('✓ Display page loaded successfully');
     });
 
+    test('should load with fresh display ID if needed', async () => {
+      // Example of getting a fresh display ID for this specific test
+      const freshDisplayId = await getFreshDisplayId();
+      
+      // Navigate to display page
+      await page.goto(`/display/${freshDisplayId}`);
+
+      // Check that page loads
+      await expect(page).toHaveTitle(/TV Display/);
+
+      console.log(`✓ Display page loaded with fresh ID: ${freshDisplayId}`);
+    });
+
     test('should initialize display components', async () => {
       // Navigate to display page
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       // Wait for main display components to be present
       await expect(page.locator('[data-testid="content-carousel"]')).toBeVisible({ timeout: 10000 });
@@ -72,7 +150,7 @@ test.describe('TV Display Flow E2E Tests', () => {
 
     test('should establish API connections', async () => {
       // Navigate to display page
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       // Wait for network requests to complete
       await page.waitForLoadState('networkidle');
@@ -91,7 +169,7 @@ test.describe('TV Display Flow E2E Tests', () => {
 
   test.describe('Content Cycling Flow', () => {
     test('should cycle through content items automatically', async () => {
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       // Wait for content carousel to load
       const carousel = page.locator('[data-testid="content-carousel"]');
@@ -119,7 +197,7 @@ test.describe('TV Display Flow E2E Tests', () => {
     });
 
     test('should display different content types correctly', async () => {
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       // Wait for content to load
       await page.waitForSelector('[data-testid="content-carousel"]');
@@ -158,7 +236,7 @@ test.describe('TV Display Flow E2E Tests', () => {
     });
 
     test('should handle smooth transitions between content', async () => {
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       const carousel = page.locator('[data-testid="content-carousel"]');
       await expect(carousel).toBeVisible();
@@ -186,7 +264,7 @@ test.describe('TV Display Flow E2E Tests', () => {
 
   test.describe('Prayer Times Display', () => {
     test('should display current prayer times', async () => {
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       const prayerOverlay = page.locator('[data-testid="prayer-times-overlay"]');
       await expect(prayerOverlay).toBeVisible();
@@ -207,7 +285,7 @@ test.describe('TV Display Flow E2E Tests', () => {
     });
 
     test('should show next prayer countdown', async () => {
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       const nextPrayerCountdown = page.locator('[data-testid="next-prayer-countdown"]');
       await expect(nextPrayerCountdown).toBeVisible();
@@ -220,7 +298,7 @@ test.describe('TV Display Flow E2E Tests', () => {
     });
 
     test('should update prayer times in real-time', async () => {
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       const nextPrayerCountdown = page.locator('[data-testid="next-prayer-countdown"]');
       await expect(nextPrayerCountdown).toBeVisible();
@@ -239,7 +317,7 @@ test.describe('TV Display Flow E2E Tests', () => {
     });
 
     test('should handle prayer time position configuration', async () => {
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       const prayerOverlay = page.locator('[data-testid="prayer-times-overlay"]');
       await expect(prayerOverlay).toBeVisible();
@@ -256,7 +334,7 @@ test.describe('TV Display Flow E2E Tests', () => {
 
   test.describe('Display Status and Monitoring', () => {
     test('should show display status indicator', async () => {
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       const statusIndicator = page.locator('[data-testid="display-status"]');
       await expect(statusIndicator).toBeVisible();
@@ -270,7 +348,7 @@ test.describe('TV Display Flow E2E Tests', () => {
     });
 
     test('should handle network status changes', async () => {
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       // Simulate offline condition
       await page.context().setOffline(true);
@@ -294,7 +372,7 @@ test.describe('TV Display Flow E2E Tests', () => {
     });
 
     test('should display last updated timestamp', async () => {
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       const lastUpdated = page.locator('[data-testid="last-updated"], [data-testid="sync-status"]');
       
@@ -316,7 +394,7 @@ test.describe('TV Display Flow E2E Tests', () => {
     test('should load within acceptable time limits', async () => {
       const startTime = Date.now();
       
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
       
       // Wait for main content to be visible
       await expect(page.locator('[data-testid="content-carousel"]')).toBeVisible();
@@ -330,7 +408,7 @@ test.describe('TV Display Flow E2E Tests', () => {
     });
 
     test('should maintain 60fps during transitions', async () => {
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       // Wait for content to load
       await page.waitForSelector('[data-testid="content-carousel"]');
@@ -359,7 +437,7 @@ test.describe('TV Display Flow E2E Tests', () => {
     });
 
     test('should handle memory usage efficiently', async () => {
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       // Get initial memory usage
       const initialMemory = await page.evaluate(() => {
@@ -389,7 +467,7 @@ test.describe('TV Display Flow E2E Tests', () => {
 
   test.describe('Accessibility and TV Display Optimization', () => {
     test('should have appropriate contrast ratios', async () => {
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       // Check for high contrast elements suitable for TV viewing
       const textElements = page.locator('h1, h2, h3, p, span').first();
@@ -413,7 +491,7 @@ test.describe('TV Display Flow E2E Tests', () => {
     });
 
     test('should support keyboard navigation for accessibility', async () => {
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       // Check if interactive elements are keyboard accessible
       const interactiveElements = page.locator('button, [tabindex], [role="button"]');
@@ -432,7 +510,7 @@ test.describe('TV Display Flow E2E Tests', () => {
     });
 
     test('should use TV-appropriate fonts and sizing', async () => {
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       // Check prayer times text sizing (should be large for TV viewing)
       const prayerTimesText = page.locator('[data-testid="prayer-times-overlay"] .prayer-time');
@@ -457,7 +535,7 @@ test.describe('TV Display Flow E2E Tests', () => {
         route.fulfill({ status: 500, body: 'Internal Server Error' });
       });
 
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       // Should show error state or fallback content
       const errorIndicator = page.locator('[data-testid="error-state"], [data-testid="fallback-content"]');
@@ -479,7 +557,7 @@ test.describe('TV Display Flow E2E Tests', () => {
         }
       });
 
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       // Should eventually succeed after retries
       await expect(page.locator('[data-testid="content-carousel"]')).toBeVisible({ timeout: 20000 });
@@ -489,7 +567,7 @@ test.describe('TV Display Flow E2E Tests', () => {
     });
 
     test('should maintain functionality during intermittent connectivity', async () => {
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
 
       // Wait for initial load
       await expect(page.locator('[data-testid="content-carousel"]')).toBeVisible();
@@ -515,7 +593,7 @@ test.describe('TV Display Flow E2E Tests', () => {
       const startTime = Date.now();
 
       // 1. Initial page load
-      await page.goto(`/display/${MOCK_DISPLAY_ID}`);
+      await page.goto(`/display/${displayId}`);
       console.log('1. ✓ Page loaded');
 
       // 2. Wait for all components to initialize

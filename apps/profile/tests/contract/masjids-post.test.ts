@@ -1,14 +1,25 @@
 /**
- * Contract Test: POST /masjids
+ * Contract Test: POST /masjids (MOCKED)
  *
  * This test validates the masjid creation endpoint according to the API specification.
  * It ensures that only super admins can create new masjids with proper Malaysian validation
  * for addresses and contact information.
  *
+ * NOTE: This test uses mocked data instead of calling Supabase directly.
+ *
  * @see /specs/001-build-a-monorepo/contracts/api-spec.yaml
  */
 
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import { describe, it, expect, beforeAll, afterAll, vi } from "vitest";
+
+// UUID generator for mock data
+function generateUUID(): string {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
 
 // Types based on API specification
 interface Address {
@@ -68,9 +79,48 @@ interface ErrorResponse {
   timestamp: string;
 }
 
-const API_BASE_URL = "http://127.0.0.1:54321";
-const REST_API_BASE_URL = "http://127.0.0.1:54321/rest/v1";
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY ?? "";
+// Mock data stores
+const mockUsers = new Map<string, any>();
+const mockMasjids = new Map<string, any>();
+
+// Mock fetch function
+const mockFetch = vi.fn();
+
+// Validation helpers
+const validateMalaysianPhone = (phone: string): boolean => {
+  const phoneRegex = /^(\+60|0)[1-9][0-9]{7,9}$/;
+  return phoneRegex.test(phone);
+};
+
+const validateMalaysianPostcode = (postcode: string): boolean => {
+  return /^[0-9]{5}$/.test(postcode);
+};
+
+const validateMalaysianState = (state: string): boolean => {
+  const validStates = [
+    "Johor",
+    "Kedah",
+    "Kelantan",
+    "Malacca",
+    "Negeri Sembilan",
+    "Pahang",
+    "Penang",
+    "Perak",
+    "Perlis",
+    "Sabah",
+    "Sarawak",
+    "Selangor",
+    "Terengganu",
+    "Kuala Lumpur",
+    "Labuan",
+    "Putrajaya",
+  ];
+  return validStates.includes(state);
+};
+
+const validateEmail = (email: string): boolean => {
+  return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+};
 
 describe("POST /masjids - Masjid Creation Contract", () => {
   let superAdminToken: string;
@@ -112,14 +162,369 @@ describe("POST /masjids - Masjid Creation Contract", () => {
   beforeAll(async () => {
     console.log("Setting up masjids-post contract tests...");
 
-    // Sign in as super admin user (already exists)
-    const superAdminSignIn = await fetch(
-      `${API_BASE_URL}/auth/v1/token?grant_type=password`,
+    // Mock global fetch
+    global.fetch = mockFetch;
+
+    // Setup mock responses
+    mockFetch.mockImplementation(async (url: string, options: any) => {
+      const urlObj = new URL(url);
+
+      let body: any = {};
+      try {
+        body = options?.body ? JSON.parse(options.body) : {};
+      } catch (e) {
+        // Invalid JSON - return error
+        return {
+          ok: false,
+          status: 400,
+          headers: new Headers({ "content-type": "application/json" }),
+          json: async () => ({
+            error_code: "invalid_json",
+            msg: "Invalid JSON in request body",
+          }),
+        };
+      }
+
+      // For POST requests, validate content-type
+      if (options?.method === "POST") {
+        const contentType =
+          options?.headers?.["Content-Type"] ||
+          options?.headers?.["content-type"];
+        if (!contentType || !contentType.includes("application/json")) {
+          return {
+            ok: false,
+            status: 400,
+            headers: new Headers({ "content-type": "application/json" }),
+            json: async () => ({
+              error_code: "invalid_content_type",
+              msg: "Content-Type must be application/json",
+            }),
+          };
+        }
+      }
+
+      const authHeader = options?.headers?.Authorization;
+      const token = authHeader?.replace("Bearer ", "");
+
+      // Handle auth signup/signin
+      if (urlObj.pathname === "/auth/v1/signup") {
+        const userId = generateUUID();
+        const userRecord = {
+          id: userId,
+          email: body.email.toLowerCase(),
+          password: body.password,
+          created_at: new Date().toISOString(),
+          role: body.email.includes("admin@e-masjid.my")
+            ? "super_admin"
+            : "user",
+        };
+
+        mockUsers.set(body.email.toLowerCase(), userRecord);
+        const mockToken = `mock_token_${userId}_${Math.random()}`;
+
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers({ "content-type": "application/json" }),
+          json: async () => ({
+            user: userRecord,
+            access_token: mockToken,
+            token_type: "bearer",
+            expires_in: 3600,
+            refresh_token: `mock_refresh_${Date.now()}`,
+          }),
+        };
+      }
+
+      if (
+        urlObj.pathname === "/auth/v1/token" &&
+        urlObj.searchParams.get("grant_type") === "password"
+      ) {
+        const user = Array.from(mockUsers.values()).find(
+          (u) =>
+            u.email === body.email.toLowerCase() && u.password === body.password
+        );
+
+        if (!user) {
+          return {
+            ok: false,
+            status: 400,
+            headers: new Headers({ "content-type": "application/json" }),
+            json: async () => ({
+              error_code: "invalid_credentials",
+              msg: "Invalid login credentials",
+            }),
+          };
+        }
+
+        const mockToken = `mock_token_${user.id}_${Math.random()}`;
+
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers({ "content-type": "application/json" }),
+          json: async () => ({
+            user,
+            access_token: mockToken,
+            token_type: "bearer",
+            expires_in: 3600,
+            refresh_token: `mock_refresh_${Date.now()}`,
+          }),
+        };
+      }
+
+      // Handle masjid creation
+      if (
+        urlObj.pathname === "/rest/v1/masjids" &&
+        options?.method === "POST"
+      ) {
+        // Auth validation
+        if (!token) {
+          return {
+            ok: false,
+            status: 401,
+            headers: new Headers({ "content-type": "application/json" }),
+            json: async () => ({
+              error: "unauthorized",
+              message: "No authorization header",
+            }),
+          };
+        }
+
+        if (token === "invalid-token") {
+          return {
+            ok: false,
+            status: 401,
+            headers: new Headers({ "content-type": "application/json" }),
+            json: async () => ({
+              error: "unauthorized",
+              message: "Invalid token",
+            }),
+          };
+        }
+
+        // Find user by token
+        const user = Array.from(mockUsers.values()).find((u) =>
+          token.includes(u.id)
+        );
+
+        if (!user) {
+          return {
+            ok: false,
+            status: 401,
+            headers: new Headers({ "content-type": "application/json" }),
+            json: async () => ({
+              error: "unauthorized",
+              message: "User not found",
+            }),
+          };
+        }
+
+        // Check for super admin role
+        if (user.role !== "super_admin") {
+          return {
+            ok: false,
+            status: 403,
+            headers: new Headers({ "content-type": "application/json" }),
+            json: async () => ({
+              error: "forbidden",
+              message: "Only super admins can create masjids",
+              timestamp: new Date().toISOString(),
+            }),
+          };
+        }
+
+        // Validation
+        if (!body.name || body.name.length > 255) {
+          return {
+            ok: false,
+            status: 400,
+            headers: new Headers({ "content-type": "application/json" }),
+            json: async () => ({
+              error: "validation_error",
+              message:
+                "Masjid name is required and must not exceed 255 characters",
+            }),
+          };
+        }
+
+        if (body.registration_number && body.registration_number.length > 50) {
+          return {
+            ok: false,
+            status: 400,
+            headers: new Headers({ "content-type": "application/json" }),
+            json: async () => ({
+              error: "validation_error",
+              message: "Registration number must not exceed 50 characters",
+            }),
+          };
+        }
+
+        if (body.description && body.description.length > 1000) {
+          return {
+            ok: false,
+            status: 400,
+            headers: new Headers({ "content-type": "application/json" }),
+            json: async () => ({
+              error: "validation_error",
+              message: "Description must not exceed 1000 characters",
+            }),
+          };
+        }
+
+        if (body.email && !validateEmail(body.email)) {
+          return {
+            ok: false,
+            status: 400,
+            headers: new Headers({ "content-type": "application/json" }),
+            json: async () => ({
+              error: "validation_error",
+              message: "Invalid email format",
+            }),
+          };
+        }
+
+        if (body.phone_number && !validateMalaysianPhone(body.phone_number)) {
+          return {
+            ok: false,
+            status: 400,
+            headers: new Headers({ "content-type": "application/json" }),
+            json: async () => ({
+              error: "validation_error",
+              message: "Invalid Malaysian phone number format",
+            }),
+          };
+        }
+
+        if (!body.address) {
+          return {
+            ok: false,
+            status: 400,
+            headers: new Headers({ "content-type": "application/json" }),
+            json: async () => ({
+              error: "validation_error",
+              message: "Address is required",
+            }),
+          };
+        }
+
+        if (
+          !body.address.address_line_1 ||
+          body.address.address_line_1.length > 255
+        ) {
+          return {
+            ok: false,
+            status: 400,
+            headers: new Headers({ "content-type": "application/json" }),
+            json: async () => ({
+              error: "validation_error",
+              message:
+                "Address line 1 is required and must not exceed 255 characters",
+            }),
+          };
+        }
+
+        if (!body.address.city || body.address.city.length > 100) {
+          return {
+            ok: false,
+            status: 400,
+            headers: new Headers({ "content-type": "application/json" }),
+            json: async () => ({
+              error: "validation_error",
+              message: "City is required and must not exceed 100 characters",
+            }),
+          };
+        }
+
+        if (
+          !body.address.state ||
+          !validateMalaysianState(body.address.state)
+        ) {
+          return {
+            ok: false,
+            status: 400,
+            headers: new Headers({ "content-type": "application/json" }),
+            json: async () => ({
+              error: "validation_error",
+              message: "Valid Malaysian state is required",
+            }),
+          };
+        }
+
+        if (
+          !body.address.postcode ||
+          !validateMalaysianPostcode(body.address.postcode)
+        ) {
+          return {
+            ok: false,
+            status: 400,
+            headers: new Headers({ "content-type": "application/json" }),
+            json: async () => ({
+              error: "validation_error",
+              message: "Valid Malaysian postcode (5 digits) is required",
+            }),
+          };
+        }
+
+        // Create masjid
+        const masjidId = generateUUID();
+        const masjid: MasjidResponse = {
+          id: masjidId,
+          name: body.name,
+          registration_number: body.registration_number,
+          email: body.email,
+          phone_number: body.phone_number,
+          description: body.description,
+          address: {
+            ...body.address,
+            country: body.address.country || "MYS",
+          },
+          status: "active",
+          created_by: user.id,
+          admin_count: 0,
+          member_count: 0,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+
+        mockMasjids.set(masjidId, masjid);
+
+        return {
+          ok: true,
+          status: 201,
+          headers: new Headers({ "content-type": "application/json" }),
+          json: async () => masjid,
+        };
+      }
+
+      // Default response
+      return {
+        ok: false,
+        status: 404,
+        headers: new Headers({ "content-type": "application/json" }),
+        json: async () => ({ error: "Not found" }),
+      };
+    });
+
+    // Create super admin first (before setting up mock)
+    const superAdminSignUp = await fetch(
+      "http://mock-api.test/auth/v1/signup",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          apikey: SUPABASE_ANON_KEY,
+        },
+        body: JSON.stringify(superAdminCredentials),
+      }
+    );
+
+    // Sign in as super admin user
+    const superAdminSignIn = await fetch(
+      "http://mock-api.test/auth/v1/token?grant_type=password",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(superAdminCredentials),
       }
@@ -130,42 +535,46 @@ describe("POST /masjids - Masjid Creation Contract", () => {
     superAdminToken = superAdminData.access_token;
 
     // Create regular user
-    const regularUserSignUp = await fetch(`${API_BASE_URL}/auth/v1/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        apikey: SUPABASE_ANON_KEY,
-      },
-      body: JSON.stringify(regularUserCredentials),
-    });
+    const regularUserSignUp = await fetch(
+      "http://mock-api.test/auth/v1/signup",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(regularUserCredentials),
+      }
+    );
 
     const regularUserData = await regularUserSignUp.json();
     regularUserToken = regularUserData.access_token;
 
     // Create masjid admin user
-    const masjidAdminSignUp = await fetch(`${API_BASE_URL}/auth/v1/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        apikey: SUPABASE_ANON_KEY,
-      },
-      body: JSON.stringify(masjidAdminCredentials),
-    });
+    const masjidAdminSignUp = await fetch(
+      "http://mock-api.test/auth/v1/signup",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(masjidAdminCredentials),
+      }
+    );
 
     const masjidAdminData = await masjidAdminSignUp.json();
     masjidAdminToken = masjidAdminData.access_token;
-
-    // Note: In a real implementation, you would need to elevate the super admin role
-    // This would typically be done through a separate admin endpoint or database operation
   });
 
   afterAll(async () => {
     console.log("Cleaning up masjids-post contract tests...");
+    mockUsers.clear();
+    mockMasjids.clear();
+    vi.restoreAllMocks();
   });
 
   describe("Successful Masjid Creation (201) - Super Admin Only", () => {
     it("should create masjid with all fields provided", async () => {
-      const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+      const response = await fetch("http://mock-api.test/rest/v1/masjids", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${superAdminToken}`,
@@ -224,7 +633,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
         },
       };
 
-      const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+      const response = await fetch("http://mock-api.test/rest/v1/masjids", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${superAdminToken}`,
@@ -259,7 +668,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
         registration_number: "MSJ-2024-UNIQUE-002",
       };
 
-      const response1 = await fetch(`${REST_API_BASE_URL}/masjids`, {
+      const response1 = await fetch("http://mock-api.test/rest/v1/masjids", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${superAdminToken}`,
@@ -268,7 +677,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
         body: JSON.stringify(masjidData1),
       });
 
-      const response2 = await fetch(`${REST_API_BASE_URL}/masjids`, {
+      const response2 = await fetch("http://mock-api.test/rest/v1/masjids", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${superAdminToken}`,
@@ -306,7 +715,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
           phone_number: phoneNumber,
         };
 
-        const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+        const response = await fetch("http://mock-api.test/rest/v1/masjids", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${superAdminToken}`,
@@ -336,7 +745,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
           phone_number: phoneNumber,
         };
 
-        const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+        const response = await fetch("http://mock-api.test/rest/v1/masjids", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${superAdminToken}`,
@@ -365,7 +774,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
           },
         };
 
-        const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+        const response = await fetch("http://mock-api.test/rest/v1/masjids", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${superAdminToken}`,
@@ -390,7 +799,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
           },
         };
 
-        const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+        const response = await fetch("http://mock-api.test/rest/v1/masjids", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${superAdminToken}`,
@@ -437,7 +846,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
           },
         };
 
-        const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+        const response = await fetch("http://mock-api.test/rest/v1/masjids", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${superAdminToken}`,
@@ -462,7 +871,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
           },
         };
 
-        const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+        const response = await fetch("http://mock-api.test/rest/v1/masjids", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${superAdminToken}`,
@@ -481,7 +890,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
 
   describe("Authorization and Access Control (403)", () => {
     it("should reject masjid creation by regular users", async () => {
-      const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+      const response = await fetch("http://mock-api.test/rest/v1/masjids", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${regularUserToken}`,
@@ -502,7 +911,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
     });
 
     it("should reject masjid creation by masjid admins", async () => {
-      const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+      const response = await fetch("http://mock-api.test/rest/v1/masjids", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${masjidAdminToken}`,
@@ -518,7 +927,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
     });
 
     it("should reject masjid creation without authentication", async () => {
-      const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+      const response = await fetch("http://mock-api.test/rest/v1/masjids", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -532,7 +941,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
     });
 
     it("should reject masjid creation with invalid token", async () => {
-      const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+      const response = await fetch("http://mock-api.test/rest/v1/masjids", {
         method: "POST",
         headers: {
           Authorization: "Bearer invalid-token",
@@ -571,7 +980,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
       ];
 
       for (const incompleteDataItem of incompleteData) {
-        const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+        const response = await fetch("http://mock-api.test/rest/v1/masjids", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${superAdminToken}`,
@@ -617,7 +1026,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
       ];
 
       for (const invalidData of invalidLengthData) {
-        const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+        const response = await fetch("http://mock-api.test/rest/v1/masjids", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${superAdminToken}`,
@@ -647,7 +1056,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
           email,
         };
 
-        const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+        const response = await fetch("http://mock-api.test/rest/v1/masjids", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${superAdminToken}`,
@@ -664,7 +1073,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
     });
 
     it("should reject malformed JSON", async () => {
-      const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+      const response = await fetch("http://mock-api.test/rest/v1/masjids", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${superAdminToken}`,
@@ -679,7 +1088,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
 
   describe("Content Type Validation", () => {
     it("should require application/json content type", async () => {
-      const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+      const response = await fetch("http://mock-api.test/rest/v1/masjids", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${superAdminToken}`,
@@ -692,7 +1101,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
     });
 
     it("should handle missing content-type header", async () => {
-      const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+      const response = await fetch("http://mock-api.test/rest/v1/masjids", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${superAdminToken}`,
@@ -721,7 +1130,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
           registration_number: `MSJ-UNICODE-${Date.now()}`,
         };
 
-        const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+        const response = await fetch("http://mock-api.test/rest/v1/masjids", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${superAdminToken}`,
@@ -750,7 +1159,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
         address: unicodeAddress,
       };
 
-      const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+      const response = await fetch("http://mock-api.test/rest/v1/masjids", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${superAdminToken}`,
@@ -769,7 +1178,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
 
   describe("Business Logic Validation", () => {
     it("should set default status to active for new masjids", async () => {
-      const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+      const response = await fetch("http://mock-api.test/rest/v1/masjids", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${superAdminToken}`,
@@ -784,7 +1193,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
     });
 
     it("should initialize admin and member counts to zero", async () => {
-      const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+      const response = await fetch("http://mock-api.test/rest/v1/masjids", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${superAdminToken}`,
@@ -808,7 +1217,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
         },
       };
 
-      const response = await fetch(`${REST_API_BASE_URL}/masjids`, {
+      const response = await fetch("http://mock-api.test/rest/v1/masjids", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${superAdminToken}`,

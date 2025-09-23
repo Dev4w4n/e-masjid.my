@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { performanceMonitor } from './performance-monitor';
 import { cacheManager } from './cache-manager';
 import { getPerformanceConfig } from './performance-config';
-import { usePerformance } from './use-performance';
+import { usePerformance, type PerformanceHookReturn } from './use-performance';
 
 // Initialize performance system
 export const initializePerformanceSystem = () => {
@@ -66,7 +66,7 @@ export const initializePerformanceSystem = () => {
 };
 
 // React hook for TV display performance optimization
-export const useTVDisplayPerformance = () => {
+export const useTVDisplayPerformance = (): PerformanceHookReturn => {
   const performance = usePerformance({
     enableLazyLoading: true,
     enableImageOptimization: true,
@@ -184,7 +184,7 @@ export const contentOptimizations = {
   extractYouTubeId: (url: string): string | null => {
     const regex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/;
     const match = url.match(regex);
-    return match ? match[1] : null;
+    return match && match[1] ? match[1] : null;
   }
 };
 
@@ -279,7 +279,12 @@ export const networkOptimizations = {
 
     return (url: string, options?: RequestInit): Promise<Response> => {
       return new Promise((resolve, reject) => {
-        requestQueue.push({ url, options, resolve, reject });
+        requestQueue.push({ 
+          url, 
+          ...(options ? { options } : {}), 
+          resolve, 
+          reject 
+        });
         
         if (!batchTimeout) {
           batchTimeout = setTimeout(processBatch, 100);

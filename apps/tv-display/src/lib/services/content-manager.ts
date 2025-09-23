@@ -461,7 +461,10 @@ export class ContentManagementService {
         .sort((a, b) => b.options.priority - a.options.priority);
 
       if (highPriorityItems.length > 0) {
-        await this.processQueueItem(highPriorityItems[0]);
+        const firstHighPriorityItem = highPriorityItems[0];
+        if (firstHighPriorityItem) {
+          await this.processQueueItem(firstHighPriorityItem);
+        }
       } else {
         // Process oldest normal priority item
         const oldestItem = Array.from(this.processingQueue.values())

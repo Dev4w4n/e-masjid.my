@@ -173,6 +173,25 @@ BEGIN
   END IF;
 
   -- Insert test TV displays
+  -- First display with fixed UUID for contract tests
+  INSERT INTO tv_displays (
+    id, masjid_id, display_name, description, 
+    resolution, orientation, carousel_interval, 
+    prayer_time_position, is_active
+  ) VALUES 
+    (
+      '550e8400-e29b-41d4-a716-446655440000'::uuid,
+      test_masjid_id,
+      'Contract Test Display',
+      'Display specifically for contract testing',
+      '1920x1080',
+      'landscape',
+      10,
+      'top',
+      true
+    );
+
+  -- Additional dynamic display  
   INSERT INTO tv_displays (
     id, masjid_id, display_name, description, 
     resolution, orientation, carousel_interval, 

@@ -2,7 +2,7 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "@typescript-eslint/recommended",
-    "eslint-config-prettier",
+    "prettier",
   ],
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint", "import"],

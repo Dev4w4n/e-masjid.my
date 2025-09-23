@@ -104,7 +104,7 @@ export function PrayerTimesOverlay({
     const prayerDates = prayers.map(prayer => {
       const [hours, minutes] = prayer.time.split(':').map(Number);
       const prayerDate = new Date(now);
-      prayerDate.setHours(hours, minutes, 0, 0);
+      prayerDate.setHours(hours || 0, minutes || 0, 0, 0);
       
       // Apply manual adjustments if configured
       if (prayerTimes.manual_adjustments && prayerTimes.manual_adjustments[prayer.name]) {
@@ -124,12 +124,14 @@ export function PrayerTimesOverlay({
       const current = prayerDates[i];
       const next = prayerDates[i + 1];
 
-      if (now >= current.date && (next ? now < next.date : true)) {
+      if (current && now >= current.date && (next ? now < next.date : true)) {
         currentPrayer = current.name;
-        nextPrayer = next ? next.name : prayerDates[0].name; // Next day's Fajr
+        nextPrayer = next ? next.name : (prayerDates[0]?.name || 'fajr'); // Next day's Fajr
         nextPrayerDate = next ? next.date : (() => {
           // Calculate tomorrow's Fajr
-          const tomorrowFajr = new Date(prayerDates[0].date);
+          const firstPrayer = prayerDates[0];
+          if (!firstPrayer) return new Date(now.getTime() + 24 * 60 * 60 * 1000); // Tomorrow
+          const tomorrowFajr = new Date(firstPrayer.date);
           tomorrowFajr.setDate(tomorrowFajr.getDate() + 1);
           return tomorrowFajr;
         })();
@@ -140,7 +142,7 @@ export function PrayerTimesOverlay({
     // If no current prayer found, we're before Fajr
     if (!currentPrayer) {
       nextPrayer = 'fajr';
-      nextPrayerDate = prayerDates[0].date;
+      nextPrayerDate = prayerDates[0]?.date || new Date(now.getTime() + 60 * 60 * 1000); // Default to 1 hour from now
     }
 
     // Calculate countdown to next prayer
@@ -165,7 +167,20 @@ export function PrayerTimesOverlay({
 
   // Format prayer time with optional adjustments
   const formatPrayerTime = (timeStr: string, prayerName: PrayerName): string => {
-    const [hours, minutes] = timeStr.split(':').map(Number);
+    const timeParts = timeStr.split(':');
+    if (timeParts.length !== 2 || !timeParts[0] || !timeParts[1]) {
+      // Fallback for invalid time format
+      return timeStr;
+    }
+    
+    const hours = parseInt(timeParts[0], 10);
+    const minutes = parseInt(timeParts[1], 10);
+    
+    if (isNaN(hours) || isNaN(minutes)) {
+      // Fallback for invalid numbers
+      return timeStr;
+    }
+    
     let adjustedHours = hours;
     let adjustedMinutes = minutes;
 
@@ -218,7 +233,7 @@ export function PrayerTimesOverlay({
       time: formatPrayerTime(prayerTimes.fajr_time, 'fajr'),
       isCurrent: timeState.currentPrayer === 'fajr',
       isNext: timeState.nextPrayer === 'fajr',
-      countdown: timeState.nextPrayer === 'fajr' && timeState.nextPrayerCountdown ? timeState.nextPrayerCountdown : undefined
+      ...(timeState.nextPrayer === 'fajr' && timeState.nextPrayerCountdown ? { countdown: timeState.nextPrayerCountdown } : {})
     },
     {
       name: 'dhuhr',
@@ -226,7 +241,7 @@ export function PrayerTimesOverlay({
       time: formatPrayerTime(prayerTimes.dhuhr_time, 'dhuhr'),
       isCurrent: timeState.currentPrayer === 'dhuhr',
       isNext: timeState.nextPrayer === 'dhuhr',
-      countdown: timeState.nextPrayer === 'dhuhr' && timeState.nextPrayerCountdown ? timeState.nextPrayerCountdown : undefined
+      ...(timeState.nextPrayer === 'dhuhr' && timeState.nextPrayerCountdown ? { countdown: timeState.nextPrayerCountdown } : {})
     },
     {
       name: 'asr',
@@ -234,7 +249,7 @@ export function PrayerTimesOverlay({
       time: formatPrayerTime(prayerTimes.asr_time, 'asr'),
       isCurrent: timeState.currentPrayer === 'asr',
       isNext: timeState.nextPrayer === 'asr',
-      countdown: timeState.nextPrayer === 'asr' && timeState.nextPrayerCountdown ? timeState.nextPrayerCountdown : undefined
+      ...(timeState.nextPrayer === 'asr' && timeState.nextPrayerCountdown ? { countdown: timeState.nextPrayerCountdown } : {})
     },
     {
       name: 'maghrib',
@@ -242,7 +257,7 @@ export function PrayerTimesOverlay({
       time: formatPrayerTime(prayerTimes.maghrib_time, 'maghrib'),
       isCurrent: timeState.currentPrayer === 'maghrib',
       isNext: timeState.nextPrayer === 'maghrib',
-      countdown: timeState.nextPrayer === 'maghrib' && timeState.nextPrayerCountdown ? timeState.nextPrayerCountdown : undefined
+      ...(timeState.nextPrayer === 'maghrib' && timeState.nextPrayerCountdown ? { countdown: timeState.nextPrayerCountdown } : {})
     },
     {
       name: 'isha',
@@ -250,7 +265,7 @@ export function PrayerTimesOverlay({
       time: formatPrayerTime(prayerTimes.isha_time, 'isha'),
       isCurrent: timeState.currentPrayer === 'isha',
       isNext: timeState.nextPrayer === 'isha',
-      countdown: timeState.nextPrayer === 'isha' && timeState.nextPrayerCountdown ? timeState.nextPrayerCountdown : undefined
+      ...(timeState.nextPrayer === 'isha' && timeState.nextPrayerCountdown ? { countdown: timeState.nextPrayerCountdown } : {})
     }
   ];
 
@@ -288,6 +303,7 @@ export function PrayerTimesOverlay({
         backgroundColor: `rgba(0, 0, 0, ${backgroundOpacity})`
       }}
       data-testid="prayer-times-overlay"
+      data-position={position}
       data-loaded="true"
     >
       <div className={`
@@ -395,7 +411,14 @@ export function CompactPrayerTimesOverlay({
     ];
 
     for (const prayer of prayers) {
-      const [hours, minutes] = prayer.time.split(':').map(Number);
+      const timeParts = prayer.time.split(':');
+      if (timeParts.length !== 2 || !timeParts[0] || !timeParts[1]) continue;
+      
+      const hours = parseInt(timeParts[0], 10);
+      const minutes = parseInt(timeParts[1], 10);
+      
+      if (isNaN(hours) || isNaN(minutes)) continue;
+      
       const prayerDate = new Date(now);
       prayerDate.setHours(hours, minutes, 0, 0);
 

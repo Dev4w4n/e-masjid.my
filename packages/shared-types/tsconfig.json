@@ -1,33 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["ES2022"],
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "allowJs": false,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "exactOptionalPropertyTypes": true,
-    "noImplicitReturns": true,
-    "noImplicitOverride": true,
+    "target": "ES2020",
+    "lib": ["ES2020"],
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
     "outDir": "dist",
     "rootDir": "src",
-    "composite": true,
-    "incremental": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "composite": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"],
-  "references": []
+  "include": ["src/**/*"]
 }

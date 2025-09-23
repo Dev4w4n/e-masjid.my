@@ -198,7 +198,8 @@ export const tvSecurityUtils = {
       } else if (urlObj.pathname === '/watch') {
         videoId = urlObj.searchParams.get('v');
       } else if (urlObj.pathname.startsWith('/embed/')) {
-        videoId = urlObj.pathname.split('/embed/')[1];
+        const parts = urlObj.pathname.split('/embed/');
+        videoId = parts[1] || null;
       }
       
       if (!videoId || !/^[a-zA-Z0-9_-]{11}$/.test(videoId)) {

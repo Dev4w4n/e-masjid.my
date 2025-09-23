@@ -42,8 +42,9 @@ async function testJakimApi() {
     // Test 4: Multiple zones
     console.log('\n🌍 Test 4: Multiple Zones');
     const zones: MalaysianZone[] = ['WLY01', 'SGR01', 'JHR02', 'PNG01'];
+    const today = new Date().toISOString().split('T')[0]!;
     const promises = zones.map(zone => 
-      jakimApi.fetchPrayerTimes(`test-masjid-${zone}`, new Date().toISOString().split('T')[0], zone)
+      jakimApi.fetchPrayerTimes(`test-masjid-${zone}`, today, zone)
     );
     
     const results = await Promise.all(promises);

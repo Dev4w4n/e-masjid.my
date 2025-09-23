@@ -13,9 +13,11 @@ import {
   Database,
   DisplayConfig,
   DisplayConfigResponse,
+} from '@masjid-suite/shared-types';
+import {
   ApiError,
   createApiError 
-} from '@masjid-suite/shared-types';
+} from '../../../../../lib/api-utils';
 
 // Initialize Supabase client
 const supabase = createClient<Database>(
@@ -59,7 +61,7 @@ export async function GET(
       id: display.id,
       masjid_id: display.masjid_id,
       display_name: display.display_name,
-      location_description: display.location_description || undefined,
+      ...(display.location_description && { location_description: display.location_description }),
       
       // Layout and display settings
       orientation: display.orientation,
@@ -90,7 +92,7 @@ export async function GET(
       
       // Status
       is_active: display.is_active,
-      last_heartbeat: display.last_heartbeat || undefined,
+      ...(display.last_heartbeat && { last_heartbeat: display.last_heartbeat }),
       
       // Metadata
       created_at: display.created_at || '',
@@ -110,7 +112,7 @@ export async function GET(
         masjid_name: masjid.name,
         total_displays: totalDisplays || 0,
         config_version: '1.0',
-        last_heartbeat: display.last_heartbeat || undefined,
+        ...(display.last_heartbeat && { last_heartbeat: display.last_heartbeat }),
         status: display.is_active ? 'online' : 'offline'
       },
       links: {
@@ -260,7 +262,7 @@ export async function PUT(
       id: updatedDisplay.id,
       masjid_id: updatedDisplay.masjid_id,
       display_name: updatedDisplay.display_name,
-      location_description: updatedDisplay.location_description || undefined,
+      ...(updatedDisplay.location_description && { location_description: updatedDisplay.location_description }),
       
       orientation: updatedDisplay.orientation,
       resolution: updatedDisplay.resolution,
@@ -286,7 +288,7 @@ export async function PUT(
       
       // Status
       is_active: updatedDisplay.is_active,
-      last_heartbeat: updatedDisplay.last_heartbeat || undefined,
+      ...(updatedDisplay.last_heartbeat && { last_heartbeat: updatedDisplay.last_heartbeat }),
       
       created_at: updatedDisplay.created_at || '',
       updated_at: updatedDisplay.updated_at || ''
@@ -305,7 +307,7 @@ export async function PUT(
         masjid_name: masjid.name,
         total_displays: totalDisplays || 0,
         config_version: '1.0',
-        last_heartbeat: updatedDisplay.last_heartbeat || undefined,
+        ...(updatedDisplay.last_heartbeat && { last_heartbeat: updatedDisplay.last_heartbeat }),
         status: updatedDisplay.is_active ? 'online' : 'offline'
       },
       links: {

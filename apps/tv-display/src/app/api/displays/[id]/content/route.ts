@@ -15,10 +15,12 @@ import {
   DisplayContentResponse,
   ContentType,
   SponsorshipTier,
+} from '@masjid-suite/shared-types';
+import {
   ApiError,
   createApiResponse,
   createApiError 
-} from '@masjid-suite/shared-types';
+} from '../../../../../lib/api-utils';
 
 // Initialize Supabase client
 const supabase = createClient<Database>(
@@ -50,6 +52,11 @@ export async function GET(
     const offset = (page - 1) * limit;
 
     // Parse filters with proper type casting
+    const minAmount = searchParams.get('min_amount');
+    const maxAmount = searchParams.get('max_amount');
+    const dateFrom = searchParams.get('date_from');
+    const dateTo = searchParams.get('date_to');
+    
     const filters: ContentFilters = {
       status: searchParams.get('status')?.split(',').filter(s => 
         ['active', 'pending', 'rejected', 'expired'].includes(s)
@@ -57,10 +64,10 @@ export async function GET(
       type: searchParams.get('type')?.split(',').filter(t =>
         ['image', 'youtube_video', 'text_announcement', 'event_poster'].includes(t)
       ) as Array<'image' | 'youtube_video' | 'text_announcement' | 'event_poster'> || undefined,
-      min_amount: searchParams.get('min_amount') ? parseFloat(searchParams.get('min_amount')!) : undefined,
-      max_amount: searchParams.get('max_amount') ? parseFloat(searchParams.get('max_amount')!) : undefined,
-      date_from: searchParams.get('date_from') || undefined,
-      date_to: searchParams.get('date_to') || undefined
+      ...(minAmount && { min_amount: parseFloat(minAmount) }),
+      ...(maxAmount && { max_amount: parseFloat(maxAmount) }),
+      ...(dateFrom && { date_from: dateFrom }),
+      ...(dateTo && { date_to: dateTo })
     };
 
     // Verify display exists and get display configuration
@@ -79,6 +86,7 @@ export async function GET(
     }
 
     // Build content query with filters
+    // Include content for this specific display OR content for all displays (display_id IS NULL)
     let query = supabase
       .from('display_content')
       .select(`
@@ -90,7 +98,7 @@ export async function GET(
           amount
         )
       `)
-      .eq('display_id', displayId)
+      .or(`display_id.eq.${displayId},display_id.is.null`)
       .order('sponsorship_amount', { ascending: false })
       .order('created_at', { ascending: false });
 
@@ -118,7 +126,7 @@ export async function GET(
     const { count } = await supabase
       .from('display_content')
       .select('*', { count: 'exact', head: true })
-      .eq('display_id', displayId);
+      .or(`display_id.eq.${displayId},display_id.is.null`);
 
     // Get paginated content
     const { data: content, error: contentError } = await query
@@ -138,25 +146,25 @@ export async function GET(
       masjid_id: display.masjid_id,
       display_id: item.display_id || '',
       title: item.title,
-      description: item.description || undefined,
+      ...(item.description && { description: item.description }),
       type: item.type,
       url: item.url,
-      thumbnail_url: item.thumbnail_url || undefined,
+      ...(item.thumbnail_url && { thumbnail_url: item.thumbnail_url }),
       sponsorship_amount: item.sponsorship_amount,
-      sponsorship_tier: item.sponsorship_tier || undefined,
+      ...(item.sponsorship_tier && { sponsorship_tier: item.sponsorship_tier }),
       payment_status: item.payment_status,
-      payment_reference: item.payment_reference || undefined,
+      ...(item.payment_reference && { payment_reference: item.payment_reference }),
       duration: item.duration,
       start_date: item.start_date,
       end_date: item.end_date,
       status: item.status,
       submitted_by: item.submitted_by,
       submitted_at: item.submitted_at || item.created_at || '',
-      approved_by: item.approved_by || undefined,
-      approved_at: item.approved_at || undefined,
-      rejection_reason: item.rejection_reason || undefined,
-      file_size: item.file_size || undefined,
-      file_type: item.file_type || undefined,
+      ...(item.approved_by && { approved_by: item.approved_by }),
+      ...(item.approved_at && { approved_at: item.approved_at }),
+      ...(item.rejection_reason && { rejection_reason: item.rejection_reason }),
+      ...(item.file_size && { file_size: item.file_size }),
+      ...(item.file_type && { file_type: item.file_type }),
       created_at: item.created_at || '',
       updated_at: item.updated_at || ''
     })) || [];
@@ -165,7 +173,7 @@ export async function GET(
     const { data: stats } = await supabase
       .from('display_content')
       .select('status')
-      .eq('display_id', displayId);
+      .or(`display_id.eq.${displayId},display_id.is.null`);
 
     const activeCount = stats?.filter(s => s.status === 'active').length || 0;
     const pendingCount = stats?.filter(s => s.status === 'pending').length || 0;
@@ -205,8 +213,8 @@ export async function GET(
       },
       links: {
         self: new URL(request.url).toString(),
-        next: nextPage ? `${new URL(request.url).origin}${new URL(request.url).pathname}?page=${nextPage}&limit=${limit}` : undefined,
-        prev: prevPage ? `${new URL(request.url).origin}${new URL(request.url).pathname}?page=${prevPage}&limit=${limit}` : undefined
+        ...(nextPage && { next: `${new URL(request.url).origin}${new URL(request.url).pathname}?page=${nextPage}&limit=${limit}` }),
+        ...(prevPage && { prev: `${new URL(request.url).origin}${new URL(request.url).pathname}?page=${prevPage}&limit=${limit}` })
       },
       error: null
     };
@@ -576,15 +584,15 @@ export async function POST(
       masjid_id: createdContent.masjid_id,
       display_id: createdContent.display_id || displayId,
       title: createdContent.title,
-      description: createdContent.description || undefined,
+      ...(createdContent.description && { description: createdContent.description }),
       type: createdContent.type as ContentType,
       url: createdContent.url,
-      thumbnail_url: createdContent.thumbnail_url || undefined,
+      ...(createdContent.thumbnail_url && { thumbnail_url: createdContent.thumbnail_url }),
       
       sponsorship_amount: createdContent.sponsorship_amount,
-      sponsorship_tier: createdContent.sponsorship_tier as SponsorshipTier || undefined,
+      ...(createdContent.sponsorship_tier && { sponsorship_tier: createdContent.sponsorship_tier as SponsorshipTier }),
       payment_status: createdContent.payment_status as any,
-      payment_reference: createdContent.payment_reference || undefined,
+      ...(createdContent.payment_reference && { payment_reference: createdContent.payment_reference }),
       
       duration: createdContent.duration,
       start_date: createdContent.start_date,
@@ -593,12 +601,12 @@ export async function POST(
       status: createdContent.status as any,
       submitted_by: createdContent.submitted_by,
       submitted_at: createdContent.submitted_at || new Date().toISOString(),
-      approved_by: createdContent.approved_by || undefined,
-      approved_at: createdContent.approved_at || undefined,
-      rejection_reason: createdContent.rejection_reason || undefined,
+      ...(createdContent.approved_by && { approved_by: createdContent.approved_by }),
+      ...(createdContent.approved_at && { approved_at: createdContent.approved_at }),
+      ...(createdContent.rejection_reason && { rejection_reason: createdContent.rejection_reason }),
       
-      file_size: createdContent.file_size || undefined,
-      file_type: createdContent.file_type || undefined,
+      ...(createdContent.file_size && { file_size: createdContent.file_size }),
+      ...(createdContent.file_type && { file_type: createdContent.file_type }),
       created_at: createdContent.created_at || new Date().toISOString(),
       updated_at: createdContent.updated_at || new Date().toISOString()
     };

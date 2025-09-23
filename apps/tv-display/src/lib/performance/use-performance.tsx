@@ -27,7 +27,7 @@ interface LazyImageProps {
   onError?: () => void;
 }
 
-interface PerformanceHookReturn {
+export interface PerformanceHookReturn {
   // Component metrics
   renderCount: number;
   renderTime: number;

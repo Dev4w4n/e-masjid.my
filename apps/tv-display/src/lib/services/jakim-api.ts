@@ -338,7 +338,8 @@ export class JakimApiService {
     const now = new Date().toISOString();
     
     // Extract day from target date (YYYY-MM-DD format)
-    const targetDay = parseInt(targetDate.split('-')[2], 10);
+    const dateParts = targetDate.split('-');
+    const targetDay = parseInt(dateParts[2] || '1', 10);
     
     // Find the prayer data for the target day
     const prayerData = response.prayers.find(p => p.day === targetDay);
@@ -383,7 +384,10 @@ export class JakimApiService {
     const end = new Date(endDate);
 
     while (current <= end) {
-      dates.push(current.toISOString().split('T')[0]);
+      const dateString = current.toISOString().split('T')[0];
+      if (dateString) {
+        dates.push(dateString);
+      }
       current.setDate(current.getDate() + 1);
     }
 
@@ -424,7 +428,7 @@ export async function getTodayPrayerTimes(
   masjidId: string,
   zone: MalaysianZone = 'WLY01'
 ): Promise<PrayerTimes> {
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split('T')[0]!;
   return jakimApi.fetchPrayerTimes(masjidId, today, zone);
 }
 
@@ -439,8 +443,8 @@ export async function getMonthlyPrayerTimes(
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
   
-  const startDate = startOfMonth.toISOString().split('T')[0];
-  const endDate = endOfMonth.toISOString().split('T')[0];
+  const startDate = startOfMonth.toISOString().split('T')[0]!;
+  const endDate = endOfMonth.toISOString().split('T')[0]!;
   
   return jakimApi.fetchPrayerTimesRange(masjidId, startDate, endDate, zone);
 }

@@ -149,7 +149,7 @@ class AdvancedCacheManager {
       lastAccessed: Date.now(),
       size: this.calculateSize(processedValue),
       compressed,
-      tags
+      ...(tags ? { tags } : {})
     };
 
     // Check if we need to evict entries
@@ -407,6 +407,8 @@ class AdvancedCacheManager {
     if (this.accessOrder.length === 0) return;
     
     const lruKey = this.accessOrder[0];
+    if (!lruKey) return;
+    
     const entry = this.cache.get(lruKey);
     
     if (entry) {
@@ -515,14 +517,20 @@ class AdvancedCacheManager {
       if (dict[wc] !== undefined) {
         w = wc;
       } else {
-        result.push(dict[w]);
+        const wCode = dict[w];
+        if (wCode !== undefined) {
+          result.push(wCode);
+        }
         dict[wc] = dictSize++;
         w = c;
       }
     }
 
     if (w !== '') {
-      result.push(dict[w]);
+      const wCode = dict[w];
+      if (wCode !== undefined) {
+        result.push(wCode);
+      }
     }
 
     return String.fromCharCode(...result);
@@ -542,15 +550,22 @@ class AdvancedCacheManager {
     }
 
     const codes = compressed.split('').map(c => c.charCodeAt(0));
-    w = String.fromCharCode(codes[0]);
+    const firstCode = codes[0];
+    if (firstCode === undefined) {
+      return '';
+    }
+    
+    w = String.fromCharCode(firstCode);
     result.push(w);
 
     for (let i = 1; i < codes.length; i++) {
       const k = codes[i];
+      if (k === undefined) continue;
+      
       let entry: string;
 
       if (dict[k] !== undefined) {
-        entry = dict[k];
+        entry = dict[k]!;
       } else if (k === dictSize) {
         entry = w + w.charAt(0);
       } else {

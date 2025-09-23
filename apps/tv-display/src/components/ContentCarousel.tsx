@@ -124,7 +124,7 @@ export function ContentCarousel({
       const newIndex = (prev.currentIndex + 1) % prev.content.length;
       const newContent = prev.content[newIndex];
       
-      onContentChange?.(newContent);
+      onContentChange?.(newContent || null);
       
       return {
         ...prev,
@@ -141,7 +141,7 @@ export function ContentCarousel({
       const newIndex = prev.currentIndex === 0 ? prev.content.length - 1 : prev.currentIndex - 1;
       const newContent = prev.content[newIndex];
       
-      onContentChange?.(newContent);
+      onContentChange?.(newContent || null);
       
       return {
         ...prev,
@@ -181,13 +181,17 @@ export function ContentCarousel({
   // Touch event handlers for swipe navigation
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     const touch = e.touches[0];
-    touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+    if (touch) {
+      touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+    }
   }, []);
 
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
     if (!touchStartRef.current) return;
 
     const touch = e.changedTouches[0];
+    if (!touch) return;
+    
     const deltaX = touch.clientX - touchStartRef.current.x;
     const deltaY = touch.clientY - touchStartRef.current.y;
 
@@ -245,7 +249,10 @@ export function ContentCarousel({
   // Loading state
   if (state.isLoading && state.content.length === 0) {
     return (
-      <div className={`flex items-center justify-center h-full bg-gray-900 ${className}`}>
+      <div 
+        className={`flex items-center justify-center h-full bg-gray-900 ${className}`}
+        data-testid="content-carousel-loading"
+      >
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-white mx-auto mb-4"></div>
           <p className="text-white text-xl">Loading content...</p>
@@ -257,7 +264,10 @@ export function ContentCarousel({
   // Error state
   if (state.error && state.content.length === 0) {
     return (
-      <div className={`flex items-center justify-center h-full bg-red-900 ${className}`}>
+      <div 
+        className={`flex items-center justify-center h-full bg-red-900 ${className}`}
+        data-testid="content-carousel-error"
+      >
         <div className="text-center p-8">
           <div className="text-red-300 text-6xl mb-4">⚠️</div>
           <h2 className="text-white text-2xl font-bold mb-2">Content Load Error</h2>
@@ -276,7 +286,10 @@ export function ContentCarousel({
   // No content state
   if (state.content.length === 0) {
     return (
-      <div className={`flex items-center justify-center h-full bg-blue-900 ${className}`}>
+      <div 
+        className={`flex items-center justify-center h-full bg-blue-900 ${className}`}
+        data-testid="content-carousel-empty"
+      >
         <div className="text-center p-8">
           <div className="text-blue-300 text-6xl mb-4">📺</div>
           <h2 className="text-white text-2xl font-bold mb-2">No Active Content</h2>
@@ -288,6 +301,22 @@ export function ContentCarousel({
 
   const currentContent = state.content[state.currentIndex];
   const transitionClasses = getTransitionClasses();
+
+  // If no current content, show empty state
+  if (!currentContent) {
+    return (
+      <div 
+        className={`flex items-center justify-center h-full bg-gray-900 ${className}`}
+        data-testid="content-carousel-no-current"
+      >
+        <div className="text-center p-8">
+          <div className="text-gray-400 text-6xl mb-4">📄</div>
+          <h2 className="text-white text-2xl font-bold mb-2">No Content Available</h2>
+          <p className="text-gray-300 text-lg">No content to display at this time.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -307,7 +336,7 @@ export function ContentCarousel({
       >
         <ContentViewer
           content={currentContent}
-          onError={onError}
+          {...(onError && { onError })}
           className="h-full"
         />
         

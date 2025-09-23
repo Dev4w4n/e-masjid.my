@@ -204,7 +204,7 @@ export const PerformanceOptimizedLayout: React.FC<PerformanceOptimizedLayoutProp
               prayerTimes={{
                 id: `prayer-${Date.now()}`,
                 masjid_id: displayId,
-                prayer_date: new Date().toISOString().split('T')[0],
+                prayer_date: new Date().toISOString().split('T')[0] || '',
                 fajr_time: '05:30',
                 sunrise_time: '07:00', 
                 dhuhr_time: '13:15',

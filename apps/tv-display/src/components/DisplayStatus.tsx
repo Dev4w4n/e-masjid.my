@@ -140,7 +140,10 @@ export function DisplayStatus({
         
         setState(prev => ({
           ...prev,
-          systemInfo: { ...prev.systemInfo, battery: newSystemInfo.battery }
+          systemInfo: { 
+            ...prev.systemInfo, 
+            ...(newSystemInfo.battery && { battery: newSystemInfo.battery })
+          }
         }));
       });
     }

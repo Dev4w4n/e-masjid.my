@@ -5,6 +5,22 @@
  * types for all API endpoints across the application
  */
 
+// Import required types from tv-display.ts
+import type {
+  DisplayContent,
+  PrayerTimes,
+  DisplayConfig,
+  DisplayStatus,
+  Sponsorship,
+  DisplayAnalytics,
+  ContentType,
+  ContentStatus,
+  SponsorshipTier,
+  PrayerTimePosition,
+  DisplayResolution,
+  DisplayOrientation,
+} from "./tv-display";
+
 // ============================================================================
 // Core API Response Types
 // ============================================================================
@@ -642,19 +658,3 @@ export const DEFAULT_CACHE_TTL = 300; // 5 minutes
 
 export const API_VERSION = "v1";
 export const API_BASE_PATH = "/api/v1";
-
-// Import required types from tv-display.ts
-import type {
-  DisplayContent,
-  PrayerTimes,
-  DisplayConfig,
-  DisplayStatus,
-  Sponsorship,
-  DisplayAnalytics,
-  ContentType,
-  ContentStatus,
-  SponsorshipTier,
-  PrayerTimePosition,
-  DisplayResolution,
-  DisplayOrientation,
-} from "./tv-display.js";

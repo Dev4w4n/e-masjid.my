@@ -1,14 +1,19 @@
 {
   "name": "@masjid-suite/tv-display",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
+  "description": "TV display Next.js application for Masjid Suite",
   "scripts": {
-    "build": "next build",
     "dev": "next dev --port 3001",
-    "lint": "next lint",
+    "build": "next build",
     "start": "next start",
+    "preview": "next start",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
     "type-check": "tsc --noEmit",
     "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
     "test:e2e": "playwright test",
     "test:contracts": "playwright test tests/contract",
     "test:integration": "playwright test tests/integration",
@@ -36,7 +41,10 @@
     "@types/node": "^20.8.0",
     "@types/react": "^18.2.33",
     "@types/react-dom": "^18.2.14",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "@vitejs/plugin-react": "^4.1.1",
+    "@vitest/coverage-v8": "^1.1.0",
     "autoprefixer": "^10.4.16",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
     "eslint": "^8.52.0",
@@ -44,9 +52,10 @@
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.5",
     "typescript": "^5.2.2",
-    "vitest": "^0.34.6"
+    "vitest": "^1.1.0"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
   }
 }

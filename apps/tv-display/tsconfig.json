@@ -1,11 +1,8 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "ES2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "ES6"
-    ],
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -22,20 +19,18 @@
         "name": "next"
       }
     ],
+    /* Path mapping for workspace packages */
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@/components/*": [
-        "./src/components/*"
-      ],
-      "@/lib/*": [
-        "./src/lib/*"
-      ],
-      "@/types/*": [
-        "./src/types/*"
-      ]
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/types/*": ["./src/types/*"],
+      "@masjid-suite/auth": ["../../packages/auth/src"],
+      "@masjid-suite/supabase-client": ["../../packages/supabase-client/src"],
+      "@masjid-suite/shared-types": ["../../packages/shared-types/src"],
+      "@masjid-suite/ui-components": ["../../packages/ui-components/src"],
+      "@masjid-suite/ui-theme": ["../../packages/ui-theme/src"]
     }
   },
   "include": [
@@ -46,5 +41,12 @@
   ],
   "exclude": [
     "node_modules"
+  ],
+  "references": [
+    { "path": "../../packages/auth" },
+    { "path": "../../packages/supabase-client" },
+    { "path": "../../packages/shared-types" },
+    { "path": "../../packages/ui-components" },
+    { "path": "../../packages/ui-theme" }
   ]
 }

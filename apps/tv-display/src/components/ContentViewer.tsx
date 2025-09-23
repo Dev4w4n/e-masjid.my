@@ -93,7 +93,7 @@ export function ContentViewer({ content, onError, className = '' }: ContentViewe
     const getYouTubeId = (url: string): string | null => {
       const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
       const match = url.match(regex);
-      return match ? match[1] : null;
+      return match && match[1] ? match[1] : null;
     };
 
     const youtubeId = getYouTubeId(content.url);
@@ -143,10 +143,10 @@ export function ContentViewer({ content, onError, className = '' }: ContentViewe
   };
 
   const renderTextContent = () => {
-    useEffect(() => {
-      // Text content loads immediately
-      handleLoadComplete();
-    }, [handleLoadComplete]);
+    // Text content loads immediately - mark as loaded
+    if (state.isLoading) {
+      setTimeout(() => handleLoadComplete(), 0);
+    }
 
     return (
       <div className="h-full flex items-center justify-center bg-gradient-to-br from-blue-900 to-purple-900 p-8">

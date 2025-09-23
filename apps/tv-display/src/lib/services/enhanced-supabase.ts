@@ -261,7 +261,8 @@ export class EnhancedSupabaseService {
   private getCache<T>(namespace: string): AdvancedCache<T> {
     let cache = this.caches.get(namespace);
     if (!cache) {
-      cache = new AdvancedCache(namespace, CACHE_CONFIGS[namespace] || CACHE_CONFIGS.displays);
+      const cacheConfig = CACHE_CONFIGS[namespace] || CACHE_CONFIGS.displays!;
+      cache = new AdvancedCache(namespace, cacheConfig);
       this.caches.set(namespace, cache);
     }
     return cache;
@@ -644,11 +645,13 @@ export class EnhancedSupabaseService {
       await this.getDisplayContent(displayId, 50, 0, false);
 
       // Prefetch prayer times for today and tomorrow
-      const today = new Date().toISOString().split('T')[0];
-      const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const today = new Date().toISOString().split('T')[0]!;
+      const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]!;
       
-      await this.getPrayerTimes(display.masjid_id, today, false);
-      await this.getPrayerTimes(display.masjid_id, tomorrow, false);
+      if (display.masjid_id) {
+        await this.getPrayerTimes(display.masjid_id!, today, false);
+        await this.getPrayerTimes(display.masjid_id!, tomorrow, false);
+      }
 
       console.log(`[EnhancedSupabase] Successfully prefetched data for display ${displayId}`);
 

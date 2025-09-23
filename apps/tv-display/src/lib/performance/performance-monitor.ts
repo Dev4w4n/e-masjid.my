@@ -351,7 +351,9 @@ class PerformanceMonitor {
           const entries = list.getEntries();
           if (entries.length > 0) {
             const lastEntry = entries[entries.length - 1];
-            this.recordMetric('lcp', lastEntry.startTime, 'ms', 'rendering');
+            if (lastEntry) {
+              this.recordMetric('lcp', lastEntry.startTime, 'ms', 'rendering');
+            }
           }
         });
         lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
