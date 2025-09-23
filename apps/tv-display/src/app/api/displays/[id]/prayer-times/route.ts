@@ -19,17 +19,25 @@ import {
 } from '../../../../../lib/api-utils';
 import { jakimApi, MalaysianZone } from '../../../../../lib/services/jakim-api';
 
-// Initialize Supabase client
-const supabase = createClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Create Supabase client lazily to avoid build-time issues
+function createSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Missing Supabase environment variables');
+  }
+  
+  return createClient<Database>(supabaseUrl, supabaseServiceKey);
+}
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse<PrayerTimesResponse | ApiError>> {
   try {
+    // Create Supabase client
+    const supabase = createSupabaseClient();
     const { id: displayId } = await params;
     const url = new URL(request.url);
     const dateParam: string = url.searchParams.get('date') || new Date().toISOString().split('T')[0] || '';

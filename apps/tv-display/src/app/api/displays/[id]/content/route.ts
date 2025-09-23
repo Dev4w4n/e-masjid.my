@@ -22,11 +22,17 @@ import {
   createApiError 
 } from '../../../../../lib/api-utils';
 
-// Initialize Supabase client
-const supabase = createClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Create Supabase client lazily to avoid build-time issues
+function createSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Missing Supabase environment variables');
+  }
+  
+  return createClient<Database>(supabaseUrl, supabaseServiceKey);
+}
 
 interface ContentFilters {
   status?: Array<'active' | 'pending' | 'rejected' | 'expired'>;
@@ -42,6 +48,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse<DisplayContentResponse | ApiError>> {
   try {
+    // Create Supabase client
+    const supabase = createSupabaseClient();
+    
     // Await params in Next.js 15
     const { id: displayId } = await params;
     const { searchParams } = new URL(request.url);
@@ -282,6 +291,7 @@ function validateContentType(type: string, url: string, mimeType?: string): bool
 }
 
 async function uploadFileToStorage(file: File, contentId: string, masjidId: string): Promise<string> {
+  const supabase = createSupabaseClient();
   const fileExtension = file.name.split('.').pop();
   const fileName = `${contentId}.${fileExtension}`;
   const filePath = `masjids/${masjidId}/content/${fileName}`;
@@ -310,6 +320,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse<{ data: DisplayContent } | ApiError>> {
   try {
+    // Create Supabase client
+    const supabase = createSupabaseClient();
+    
     const { id: displayId } = await params;
     
     // Verify display exists and get masjid information
@@ -643,6 +656,9 @@ export async function HEAD(
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
   try {
+    // Create Supabase client
+    const supabase = createSupabaseClient();
+    
     const { id: displayId } = await params;
     
     // Quick check if display exists and is active

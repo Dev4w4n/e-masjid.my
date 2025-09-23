@@ -237,7 +237,7 @@ export class DatabaseService {
    * Generic query builder for any table
    */
   table<T extends keyof Database["public"]["Tables"]>(tableName: T): any {
-    return this.client.from(tableName);
+    return this.client.from(tableName as any);
   }
 
   /**
@@ -247,7 +247,7 @@ export class DatabaseService {
     functionName: T,
     params?: Database["public"]["Functions"][T]["Args"]
   ): Promise<Database["public"]["Functions"][T]["Returns"]> {
-    const { data, error } = await this.client.rpc(functionName, params);
+    const { data, error } = await this.client.rpc(functionName as any, params);
 
     if (error) {
       throw new Error(`RPC call failed: ${error.message}`);
@@ -292,7 +292,7 @@ export class DatabaseService {
     filter?: any
   ): Promise<number> {
     let query = this.client
-      .from(tableName)
+      .from(tableName as any)
       .select("*", { count: "exact", head: true });
 
     if (filter) {

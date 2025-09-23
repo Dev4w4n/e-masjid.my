@@ -17,11 +17,17 @@ import {
   createApiError 
 } from '../../../../../lib/api-utils';
 
-// Initialize Supabase client
-const supabase = createClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Create Supabase client lazily to avoid build-time issues
+function createSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Missing Supabase environment variables');
+  }
+  
+  return createClient<Database>(supabaseUrl, supabaseServiceKey);
+}
 
 interface HeartbeatRequest {
   // System status
@@ -61,6 +67,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse<{ data: HeartbeatResponse } | ApiError>> {
   try {
+    // Create Supabase client
+    const supabase = createSupabaseClient();
+    
     const { id: displayId } = await params;
     const body: HeartbeatRequest = await request.json();
 
@@ -304,6 +313,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse<{ data: DisplayStatus } | ApiError>> {
   try {
+    // Create Supabase client
+    const supabase = createSupabaseClient();
+    
     const { id: displayId } = await params;
 
     // Get display status
