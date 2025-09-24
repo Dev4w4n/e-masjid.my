@@ -1,0 +1,22 @@
+version: 2
+updates:
+  # Enable version updates for npm in root (excluding legacy)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Enable version updates for npm in apps
+  - package-ecosystem: "npm"
+    directory: "/apps"
+    schedule:
+      interval: "weekly"
+
+  # Enable version updates for npm in packages
+  - package-ecosystem: "npm"
+    directory: "/packages"
+    schedule:
+      interval: "weekly"
+
+  # Note: By not including any configuration for /legacy directory,
+  # Dependabot will not scan it for dependency updates

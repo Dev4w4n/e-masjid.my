@@ -1,0 +1,2 @@
+# Mark legacy code as vendored to exclude from language statistics and dependency scanning
+legacy/** linguist-vendored
