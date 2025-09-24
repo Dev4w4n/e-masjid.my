@@ -1,0 +1,507 @@
+openapi: 3.0.3
+info:
+  title: Content Management API
+  description: API for managing TV display content creation and approval workflow
+  version: 1.0.0
+  contact:
+    name: E-Masjid.My Development Team
+
+servers:
+  - url: https://api.e-masjid.my
+    description: Production server
+  - url: http://localhost:54321
+    description: Local development server (Supabase)
+
+paths:
+  /api/content:
+    post:
+      summary: Create new content for approval
+      description: Submit new content (image or YouTube video) to a specific masjid for admin approval
+      tags:
+        - Content Management
+      security:
+        - supabaseAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateContentRequest"
+            examples:
+              imageContent:
+                summary: Image content submission
+                value:
+                  title: "Eid Celebration Announcement"
+                  description: "Join us for Eid prayers and celebration"
+                  type: "image"
+                  url: "https://storage.supabase.io/images/eid-announcement.jpg"
+                  thumbnail_url: "https://storage.supabase.io/images/eid-announcement-thumb.jpg"
+                  masjid_id: "550e8400-e29b-41d4-a716-446655440000"
+                  duration: 15
+                  start_date: "2025-09-30"
+                  end_date: "2025-10-05"
+              youtubeContent:
+                summary: YouTube video submission
+                value:
+                  title: "Friday Khutbah Highlights"
+                  description: "Key points from this week's Friday sermon"
+                  type: "youtube_video"
+                  url: "https://youtube.com/watch?v=abc123"
+                  thumbnail_url: "https://img.youtube.com/vi/abc123/maxresdefault.jpg"
+                  masjid_id: "550e8400-e29b-41d4-a716-446655440000"
+                  duration: 30
+                  start_date: "2025-09-25"
+                  end_date: "2025-10-02"
+      responses:
+        "201":
+          description: Content created successfully and submitted for approval
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContentResponse"
+        "400":
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Authentication required
+        "403":
+          description: Insufficient permissions for target masjid
+        "413":
+          description: File size too large
+
+    get:
+      summary: Get content list
+      description: Retrieve content filtered by masjid, status, or user
+      tags:
+        - Content Management
+      security:
+        - supabaseAuth: []
+      parameters:
+        - name: masjid_id
+          in: query
+          description: Filter content by masjid ID
+          schema:
+            type: string
+            format: uuid
+        - name: status
+          in: query
+          description: Filter content by approval status
+          schema:
+            $ref: "#/components/schemas/ContentStatus"
+        - name: submitted_by
+          in: query
+          description: Filter content by submitting user (own content only)
+          schema:
+            type: string
+            format: uuid
+        - name: limit
+          in: query
+          description: Maximum number of results
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          description: Offset for pagination
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Content list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ContentResponse"
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+
+  /api/content/{id}/approve:
+    patch:
+      summary: Approve or reject content
+      description: Masjid admins can approve or reject pending content for their masjid
+      tags:
+        - Content Approval
+      security:
+        - supabaseAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Content ID to approve/reject
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApprovalRequest"
+            examples:
+              approve:
+                summary: Approve content
+                value:
+                  decision: "approve"
+                  notes: "Content looks great, approved for display"
+              reject:
+                summary: Reject content
+                value:
+                  decision: "reject"
+                  notes: "Image quality too low, please resubmit with higher resolution"
+      responses:
+        "200":
+          description: Content approval decision processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContentResponse"
+        "400":
+          description: Invalid approval decision or content not eligible
+        "401":
+          description: Authentication required
+        "403":
+          description: Insufficient permissions (not masjid admin or not for your masjid)
+        "404":
+          description: Content not found
+
+  /api/approvals:
+    get:
+      summary: Get pending approvals for admin
+      description: Retrieve all pending content requiring approval for masjids where user is admin
+      tags:
+        - Content Approval
+      security:
+        - supabaseAuth: []
+      parameters:
+        - name: masjid_id
+          in: query
+          description: Filter by specific masjid (optional)
+          schema:
+            type: string
+            format: uuid
+        - name: limit
+          in: query
+          description: Maximum number of results
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        "200":
+          description: Pending approvals retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/PendingApprovalResponse"
+                  total:
+                    type: integer
+
+  /api/display-settings/{masjid_id}:
+    get:
+      summary: Get display settings for masjid
+      description: Retrieve TV display configuration settings for a specific masjid
+      tags:
+        - Display Settings
+      security:
+        - supabaseAuth: []
+      parameters:
+        - name: masjid_id
+          in: path
+          required: true
+          description: Masjid ID to get settings for
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Display settings retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DisplaySettingsResponse"
+        "401":
+          description: Authentication required
+        "403":
+          description: Not authorized to view settings for this masjid
+        "404":
+          description: Masjid not found or no display configured
+
+    patch:
+      summary: Update display settings
+      description: Update TV display configuration settings (masjid admins only)
+      tags:
+        - Display Settings
+      security:
+        - supabaseAuth: []
+      parameters:
+        - name: masjid_id
+          in: path
+          required: true
+          description: Masjid ID to update settings for
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDisplaySettingsRequest"
+            example:
+              carousel_interval: 12
+              auto_refresh_interval: 3
+              content_transition_type: "slide"
+              max_content_items: 15
+              prayer_time_position: "top"
+      responses:
+        "200":
+          description: Display settings updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DisplaySettingsResponse"
+        "400":
+          description: Invalid settings values
+        "401":
+          description: Authentication required
+        "403":
+          description: Not authorized to modify settings for this masjid
+
+components:
+  securitySchemes:
+    supabaseAuth:
+      type: http
+      scheme: bearer
+      description: Supabase JWT token
+
+  schemas:
+    ContentType:
+      type: string
+      enum: [image, youtube_video]
+      description: Type of content being submitted
+
+    ContentStatus:
+      type: string
+      enum: [pending, active, expired, rejected]
+      description: Current approval and lifecycle status of content
+
+    CreateContentRequest:
+      type: object
+      required:
+        - title
+        - type
+        - url
+        - masjid_id
+        - duration
+        - start_date
+        - end_date
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Display title for the content
+        description:
+          type: string
+          maxLength: 1000
+          description: Optional description of the content
+        type:
+          $ref: "#/components/schemas/ContentType"
+        url:
+          type: string
+          format: uri
+          description: File URL (for images) or YouTube URL (for videos)
+        thumbnail_url:
+          type: string
+          format: uri
+          description: Thumbnail image URL for preview
+        masjid_id:
+          type: string
+          format: uuid
+          description: Target masjid for content display
+        duration:
+          type: integer
+          minimum: 5
+          maximum: 300
+          description: Display duration in seconds
+        start_date:
+          type: string
+          format: date
+          description: Date when content should start displaying
+        end_date:
+          type: string
+          format: date
+          description: Date when content should stop displaying
+
+    ApprovalRequest:
+      type: object
+      required:
+        - decision
+      properties:
+        decision:
+          type: string
+          enum: [approve, reject]
+          description: Approval decision
+        notes:
+          type: string
+          maxLength: 500
+          description: Optional notes about the approval decision
+
+    UpdateDisplaySettingsRequest:
+      type: object
+      properties:
+        carousel_interval:
+          type: integer
+          minimum: 5
+          maximum: 60
+          description: Content rotation interval in seconds
+        auto_refresh_interval:
+          type: integer
+          minimum: 1
+          maximum: 60
+          description: Display refresh interval in minutes
+        content_transition_type:
+          type: string
+          enum: [fade, slide, zoom, none]
+          description: Visual transition effect between content
+        max_content_items:
+          type: integer
+          minimum: 1
+          maximum: 50
+          description: Maximum number of content items in rotation
+        prayer_time_position:
+          type: string
+          enum: [top, bottom, left, right, center, hidden]
+          description: Position of prayer times on display
+
+    ContentResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          $ref: "#/components/schemas/ContentType"
+        url:
+          type: string
+          format: uri
+        thumbnail_url:
+          type: string
+          format: uri
+        masjid_id:
+          type: string
+          format: uuid
+        status:
+          $ref: "#/components/schemas/ContentStatus"
+        duration:
+          type: integer
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        submitted_by:
+          type: string
+          format: uuid
+        submitted_at:
+          type: string
+          format: date-time
+        approved_by:
+          type: string
+          format: uuid
+          nullable: true
+        approved_at:
+          type: string
+          format: date-time
+          nullable: true
+        rejection_reason:
+          type: string
+          nullable: true
+        approval_notes:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    PendingApprovalResponse:
+      allOf:
+        - $ref: "#/components/schemas/ContentResponse"
+        - type: object
+          properties:
+            masjid_name:
+              type: string
+              description: Name of the masjid this content is for
+            submitter_name:
+              type: string
+              description: Name of the user who submitted the content
+
+    DisplaySettingsResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        masjid_id:
+          type: string
+          format: uuid
+        display_name:
+          type: string
+        carousel_interval:
+          type: integer
+        auto_refresh_interval:
+          type: integer
+        content_transition_type:
+          type: string
+        max_content_items:
+          type: integer
+        prayer_time_position:
+          type: string
+        is_active:
+          type: boolean
+        updated_at:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        code:
+          type: string
+          description: Error code for programmatic handling
+        details:
+          type: object
+          description: Additional error context
