@@ -195,18 +195,21 @@ export function FormAutocompleteField<T extends FieldValues>({
     <Autocomplete
       {...field}
       options={options}
-      getOptionLabel={(option) =>
+      getOptionLabel={(option: { value: string; label: string } | string) =>
         typeof option === "string" ? option : option.label
       }
       value={options.find((option) => option.value === value) || null}
-      onChange={(_, newValue) => {
+      onChange={(
+        _,
+        newValue: { value: string; label: string } | string | null
+      ) => {
         onChange(
           typeof newValue === "string" ? newValue : newValue?.value || ""
         );
       }}
       freeSolo={freeSolo}
       disabled={disabled}
-      renderInput={(params) => (
+      renderInput={(params: any) => (
         <TextField
           {...(params as any)}
           label={label}
@@ -258,7 +261,7 @@ export function RoleSelect<T extends FieldValues>(props: RoleSelectProps<T>) {
     value: role,
     label: role
       .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" "),
   }));
 

@@ -38,7 +38,7 @@ After setting up the test environment, you can run the tests:
 
 ```bash
 # From the project root directory
-cd apps/profile
+cd app/hub
 npm run test
 ```
 

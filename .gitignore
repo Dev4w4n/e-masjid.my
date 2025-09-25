@@ -121,7 +121,7 @@ playwright-report/
 test-results/
 
 # Generated test data
-apps/profile/tests/test-data-generated.sql
+app/hub/tests/test-data-generated.sql
 
 # Supabase
 supabase/.branches

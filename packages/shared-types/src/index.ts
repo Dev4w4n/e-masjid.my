@@ -4,6 +4,23 @@ export * from "./database";
 export * from "./types";
 export * from "./validation";
 export * from "./address";
+// Specifically export validation functions for direct imports
+export {
+  isValidMalaysianPhone,
+  isValidMalaysianPostcode,
+  isValidEmail,
+  isValidMalaysianState,
+  formatMalaysianPhone,
+  formatPostcode,
+  MALAYSIAN_PHONE_REGEX,
+  MALAYSIAN_POSTCODE_REGEX,
+  EMAIL_REGEX,
+  VALIDATION_MESSAGES,
+  validateProfile,
+  validateAddress,
+  validateMasjid,
+  validateAdminApplication,
+} from "./validation";
 export * from "./tv-display";
 export * from "./mock-data";
 export * from "./e2e-test-helpers";

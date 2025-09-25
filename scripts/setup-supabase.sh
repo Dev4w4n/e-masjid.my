@@ -978,10 +978,10 @@ EOSQL
     # Also create a comprehensive .env.local for development
     create_env_files "development" "admin@e-masjid.my" "SuperAdmin123!" "$SUPER_ADMIN_ID"
     
-    # Create app-specific .env file for profile app (backward compatibility)
-    ENV_FILE="apps/profile/.env"
+    # Create app-specific .env file for hub app (backward compatibility)
+    ENV_FILE="apps/hub/.env"
     cat > "$ENV_FILE" << EOL
-# Test environment variables for profile app
+# Test environment variables for hub app
 SUPABASE_URL=$API_URL
 SUPABASE_ANON_KEY=$ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY
@@ -1083,12 +1083,12 @@ if [ "$SETUP_TYPE" = "test" ]; then
     echo "   • Database reset and migrations applied"
     echo "   • Test auth users created with dynamically generated IDs"
     echo "   • Test data generated and loaded with proper references"
-    echo "   • Environment files created: .env.local, .env.test.local, and apps/profile/.env"
+    echo "   • Environment files created: .env.local, .env.test.local, and app/hub/.env"
     echo ""
     echo -e "${BLUE}📚 Next Steps:${NC}"
-    echo "   1. Run the unit tests with: cd apps/profile && npm run test"
+    echo "   1. Run the unit tests with: cd app/hub && npm run test"
     echo "   2. Check the environment files for credentials and configuration"
-    echo "   3. If needed, review generated SQL in apps/profile/tests/test-data-generated.sql"
+    echo "   3. If needed, review generated SQL in app/hub/tests/test-data-generated.sql"
 else
     echo -e "${GREEN}🎉 Setup completed successfully!${NC}"
     echo ""
