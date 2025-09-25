@@ -412,22 +412,23 @@ create_env_files() {
     local super_admin_id="$4"
     
     if [ "$env_type" = "development" ]; then
-        ENV_FILE=".env.local"
         NODE_ENV="development"
         ENABLE_DEV_TOOLS="true"
         SHOW_LOGGER="true"
     else
-        ENV_FILE=".env.test.local"
         NODE_ENV="test"
         ENABLE_DEV_TOOLS="false"
         SHOW_LOGGER="false"
     fi
     
-    echo -e "${BLUE}Creating $ENV_FILE...${NC}"
+    # Create root template file for reference
+    local ROOT_TEMPLATE=".env.local.template"
+    echo -e "${BLUE}Creating $ROOT_TEMPLATE (reference template)...${NC}"
     
-    cat > "$ENV_FILE" << EOL
-# Environment Variables for Masjid Suite
+    cat > "$ROOT_TEMPLATE" << EOL
+# Environment Variables Template for Masjid Suite
 # Generated automatically by setup script on $(date)
+# Copy this template to create app-specific .env.local files
 
 # ===========================================
 # SUPABASE CONFIGURATION
@@ -436,16 +437,33 @@ SUPABASE_URL=$API_URL
 SUPABASE_ANON_KEY=$ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY
 
-# Browser-accessible Supabase variables (VITE_ prefix required for client-side access)
+# Browser-accessible Supabase variables (VITE_ prefix for hub app)
 VITE_SUPABASE_URL=$API_URL
 VITE_SUPABASE_ANON_KEY=$ANON_KEY
+
+# Next.js client-side variables (NEXT_PUBLIC_ prefix for tv-display app)
+NEXT_PUBLIC_SUPABASE_URL=$API_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY
 
 # ===========================================
 # APPLICATION CONFIGURATION
 # ===========================================
 NODE_ENV=$NODE_ENV
 VITE_APP_URL=http://localhost:3000
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3001
+
+# TV Display specific configuration
+NEXT_PUBLIC_DISPLAY_NAME=Default TV Display
+NEXT_PUBLIC_MASJID_ID=550e8400-e29b-41d4-a716-446655440000
+NEXT_PUBLIC_FULLSCREEN_MODE=false
+NEXT_PUBLIC_KIOSK_MODE=false
+NEXT_PUBLIC_AUTO_REFRESH=true
+NEXT_PUBLIC_REFRESH_INTERVAL=3600000
+NEXT_PUBLIC_PRAYER_LOCATION=JOHOR
+NEXT_PUBLIC_PRAYER_ZONE=JHR01
+NEXT_PUBLIC_PRAYER_UPDATE_INTERVAL=300000
+NEXT_PUBLIC_CONTENT_REFRESH_INTERVAL=60000
+NEXT_PUBLIC_APP_ENV=$NODE_ENV
 
 # ===========================================
 # ADMIN CONFIGURATION
@@ -456,16 +474,18 @@ EOL
 
     # Add admin ID if provided (for test environment)
     if [ -n "$super_admin_id" ]; then
-        cat >> "$ENV_FILE" << EOL
+        cat >> "$ROOT_TEMPLATE" << EOL
 SUPER_ADMIN_ID=$super_admin_id
 EOL
     fi
     
-    cat >> "$ENV_FILE" << EOL
+    cat >> "$ROOT_TEMPLATE" << EOL
 
 # ===========================================
 # DEVELOPMENT FLAGS
 # ===========================================
+VITE_ENABLE_DEV_TOOLS=$ENABLE_DEV_TOOLS
+VITE_SHOW_LOGGER=$SHOW_LOGGER
 NEXT_PUBLIC_ENABLE_DEV_TOOLS=$ENABLE_DEV_TOOLS
 NEXT_PUBLIC_SHOW_LOGGER=$SHOW_LOGGER
 
@@ -483,9 +503,114 @@ NEXT_PUBLIC_SHOW_LOGGER=$SHOW_LOGGER
 # SUPABASE_AUTH_SMS_TWILIO_AUTH_TOKEN=your-twilio-auth-token
 EOL
 
+    # Create Hub App .env.local
+    local HUB_ENV_FILE="apps/hub/.env.local"
+    echo -e "${BLUE}Creating $HUB_ENV_FILE...${NC}"
+    
+    cat > "$HUB_ENV_FILE" << EOL
+# Environment Variables for Hub App (Vite + React)
+# Generated automatically by setup script on $(date)
+
+# ===========================================
+# SUPABASE CONFIGURATION
+# ===========================================
+SUPABASE_URL=$API_URL
+SUPABASE_ANON_KEY=$ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY
+
+# Client-side variables (VITE_ prefix for client-side access)
+VITE_SUPABASE_URL=$API_URL
+VITE_SUPABASE_ANON_KEY=$ANON_KEY
+
+# ===========================================
+# APPLICATION CONFIGURATION
+# ===========================================
+NODE_ENV=$NODE_ENV
+VITE_APP_URL=http://localhost:3000
+
+# ===========================================
+# ADMIN CONFIGURATION
+# ===========================================
+SUPER_ADMIN_EMAIL=$super_admin_email
+SUPER_ADMIN_PASSWORD=$super_admin_password
+EOL
+
+    # Add admin ID if provided
+    if [ -n "$super_admin_id" ]; then
+        cat >> "$HUB_ENV_FILE" << EOL
+SUPER_ADMIN_ID=$super_admin_id
+EOL
+    fi
+
+    cat >> "$HUB_ENV_FILE" << EOL
+
+# ===========================================
+# DEVELOPMENT FLAGS
+# ===========================================
+VITE_ENABLE_DEV_TOOLS=$ENABLE_DEV_TOOLS
+VITE_SHOW_LOGGER=$SHOW_LOGGER
+EOL
+
+    # Create TV Display App .env.local
+    local TV_DISPLAY_ENV_FILE="apps/tv-display/.env.local"
+    echo -e "${BLUE}Creating $TV_DISPLAY_ENV_FILE...${NC}"
+    
+    cat > "$TV_DISPLAY_ENV_FILE" << EOL
+# Environment Variables for TV Display App (Next.js)
+# Generated automatically by setup script on $(date)
+
+# ===========================================
+# SUPABASE CONFIGURATION
+# ===========================================
+SUPABASE_URL=$API_URL
+SUPABASE_ANON_KEY=$ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY
+
+# Next.js client-side variables (NEXT_PUBLIC_ prefix for Next.js client-side access)
+NEXT_PUBLIC_SUPABASE_URL=$API_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY
+
+# ===========================================
+# APPLICATION CONFIGURATION
+# ===========================================
+NODE_ENV=$NODE_ENV
+NEXT_PUBLIC_APP_URL=http://localhost:3001
+
+# TV Display specific configuration
+NEXT_PUBLIC_DISPLAY_NAME=Default TV Display
+NEXT_PUBLIC_MASJID_ID=550e8400-e29b-41d4-a716-446655440000
+NEXT_PUBLIC_FULLSCREEN_MODE=false
+NEXT_PUBLIC_KIOSK_MODE=false
+NEXT_PUBLIC_AUTO_REFRESH=true
+NEXT_PUBLIC_REFRESH_INTERVAL=3600000
+NEXT_PUBLIC_PRAYER_LOCATION=JOHOR
+NEXT_PUBLIC_PRAYER_ZONE=JHR01
+NEXT_PUBLIC_PRAYER_UPDATE_INTERVAL=300000
+NEXT_PUBLIC_CONTENT_REFRESH_INTERVAL=60000
+NEXT_PUBLIC_APP_ENV=$NODE_ENV
+
+# ===========================================
+# DEVELOPMENT FLAGS
+# ===========================================
+NEXT_PUBLIC_ENABLE_DEV_TOOLS=$ENABLE_DEV_TOOLS
+NEXT_PUBLIC_SHOW_LOGGER=$SHOW_LOGGER
+EOL
+
     # Add test-specific variables if this is a test environment
     if [ "$env_type" = "test" ]; then
-        cat >> "$ENV_FILE" << EOL
+        # Add test variables to root template
+        cat >> "$ROOT_TEMPLATE" << EOL
+
+# ===========================================
+# TEST-SPECIFIC CONFIGURATION
+# ===========================================
+TEST_SUPER_ADMIN_EMAIL=$super_admin_email
+TEST_SUPER_ADMIN_PASSWORD=$super_admin_password
+TEST_SUPER_ADMIN_ID=$super_admin_id
+EOL
+
+        # Add test variables to hub app
+        cat >> "$HUB_ENV_FILE" << EOL
 
 # ===========================================
 # TEST-SPECIFIC CONFIGURATION
@@ -497,7 +622,13 @@ EOL
 
         # Add additional test user IDs if provided
         if [ -n "$MASJID_ADMIN_ID" ]; then
-            cat >> "$ENV_FILE" << EOL
+            cat >> "$ROOT_TEMPLATE" << EOL
+TEST_MASJID_ADMIN_EMAIL=masjid.admin@test.com
+TEST_MASJID_ADMIN_PASSWORD=TestPassword123!
+TEST_MASJID_ADMIN_ID=$MASJID_ADMIN_ID
+EOL
+            
+            cat >> "$HUB_ENV_FILE" << EOL
 TEST_MASJID_ADMIN_EMAIL=masjid.admin@test.com
 TEST_MASJID_ADMIN_PASSWORD=TestPassword123!
 TEST_MASJID_ADMIN_ID=$MASJID_ADMIN_ID
@@ -505,15 +636,29 @@ EOL
         fi
         
         if [ -n "$USER1_ID" ]; then
-            cat >> "$ENV_FILE" << EOL
+            cat >> "$ROOT_TEMPLATE" << EOL
+TEST_USER_EMAIL=user1@test.com
+TEST_USER_PASSWORD=TestPassword123!
+TEST_USER_ID=$USER1_ID
+EOL
+
+            cat >> "$HUB_ENV_FILE" << EOL
 TEST_USER_EMAIL=user1@test.com
 TEST_USER_PASSWORD=TestPassword123!
 TEST_USER_ID=$USER1_ID
 EOL
         fi
+        
+        # Create .env.test.local for testing
+        local TEST_ENV_FILE=".env.test.local"
+        cp "$ROOT_TEMPLATE" "$TEST_ENV_FILE"
+        echo -e "${GREEN}✅ $TEST_ENV_FILE created from template${NC}"
     fi
     
-    echo -e "${GREEN}✅ $ENV_FILE created successfully${NC}"
+    echo -e "${GREEN}✅ All environment files created successfully${NC}"
+    echo -e "${BLUE}   • Root template: $ROOT_TEMPLATE${NC}"
+    echo -e "${BLUE}   • Hub app: $HUB_ENV_FILE${NC}"
+    echo -e "${BLUE}   • TV Display app: $TV_DISPLAY_ENV_FILE${NC}"
 }
 
 if [ "$SETUP_TYPE" = "test" ]; then
@@ -975,28 +1120,8 @@ EOSQL
     # Create .env.test.local file with test credentials
     create_env_files "test" "super.admin@test.com" "TestPassword123!" "$SUPER_ADMIN_ID"
     
-    # Also create a comprehensive .env.local for development
+    # Also create a comprehensive development environment
     create_env_files "development" "admin@e-masjid.my" "SuperAdmin123!" "$SUPER_ADMIN_ID"
-    
-    # Create app-specific .env file for hub app (backward compatibility)
-    ENV_FILE="apps/hub/.env"
-    cat > "$ENV_FILE" << EOL
-# Test environment variables for hub app
-SUPABASE_URL=$API_URL
-SUPABASE_ANON_KEY=$ANON_KEY
-SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY
-TEST_SUPER_ADMIN_EMAIL=super.admin@test.com
-TEST_SUPER_ADMIN_PASSWORD=TestPassword123!
-TEST_SUPER_ADMIN_ID=$SUPER_ADMIN_ID
-TEST_MASJID_ADMIN_EMAIL=masjid.admin@test.com
-TEST_MASJID_ADMIN_PASSWORD=TestPassword123!
-TEST_MASJID_ADMIN_ID=$MASJID_ADMIN_ID
-TEST_USER_EMAIL=user1@test.com
-TEST_USER_PASSWORD=TestPassword123!
-TEST_USER_ID=$USER1_ID
-EOL
-    
-    echo -e "${GREEN}✅ All environment files created successfully${NC}"
 
 else
     # Default setup - create super admin user
@@ -1083,12 +1208,22 @@ if [ "$SETUP_TYPE" = "test" ]; then
     echo "   • Database reset and migrations applied"
     echo "   • Test auth users created with dynamically generated IDs"
     echo "   • Test data generated and loaded with proper references"
-    echo "   • Environment files created: .env.local, .env.test.local, and app/hub/.env"
+    echo "   • TV display test data created"
+    echo "   • Environment files created:"
+    echo "     - .env.local.template (reference template)"
+    echo "     - .env.test.local (test configuration)"
+    echo "     - apps/hub/.env.local (Hub app configuration)"
+    echo "     - apps/tv-display/.env.local (TV Display app configuration)"
     echo ""
     echo -e "${BLUE}📚 Next Steps:${NC}"
-    echo "   1. Run the unit tests with: cd app/hub && npm run test"
-    echo "   2. Check the environment files for credentials and configuration"
-    echo "   3. If needed, review generated SQL in app/hub/tests/test-data-generated.sql"
+    echo "   1. Start both applications: pnpm dev"
+    echo "   2. Run the unit tests with: pnpm test"
+    echo "   3. Check the environment files for credentials and configuration"
+    echo "   4. If needed, review generated SQL in apps/hub/tests/test-data-generated.sql"
+    echo ""
+    echo -e "${BLUE}🔗 Application URLs:${NC}"
+    echo "   • Hub App (Vite): http://localhost:3000"
+    echo "   • TV Display App (Next.js): http://localhost:3001"
 else
     echo -e "${GREEN}🎉 Setup completed successfully!${NC}"
     echo ""
@@ -1097,19 +1232,28 @@ else
     echo "   • Super admin user created: admin@e-masjid.my"
     echo "   • Password: SuperAdmin123!"
     echo "   • User role: super_admin"
-    echo "   • Environment files created: .env.local and .env.test.local"
+    echo "   • Environment files created:"
+    echo "     - .env.local.template (reference template)"
+    echo "     - apps/hub/.env.local (Hub app configuration)"
+    echo "     - apps/tv-display/.env.local (TV Display app configuration)"
     echo ""
     echo -e "${BLUE}🔗 Access Points:${NC}"
+    echo "   • Hub App (Vite): http://localhost:3000"
+    echo "   • TV Display App (Next.js): http://localhost:3001"
     echo "   • Supabase Studio: http://localhost:54323"
     echo "   • API URL: http://localhost:54321"
     echo "   • Database: postgresql://postgres:postgres@localhost:54322/postgres"
     echo ""
     echo -e "${BLUE}📚 Next Steps:${NC}"
-    echo "   1. Open Supabase Studio: http://localhost:54323"
-    echo "   2. Test creating additional users via Authentication > Users"
-    echo "   3. Review the SETUP_GUIDE.md for detailed documentation"
-    echo "   4. Start developing your application!"
+    echo "   1. Start both applications: pnpm dev"
+    echo "   2. Open Supabase Studio: http://localhost:54323"
+    echo "   3. Test creating additional users via Authentication > Users"
+    echo "   4. Review the SETUP_GUIDE.md for detailed documentation"
+    echo "   5. Start developing your application!"
 fi
 
 echo ""
-echo -e "${YELLOW}💡 Tip: Run this script with the --test flag to load test data for unit tests${NC}"
+echo -e "${YELLOW}💡 Tips:${NC}"
+echo "   • Run this script with the --test flag to load test data for unit tests"
+echo "   • Both apps now use separate .env.local files for their specific configurations"
+echo "   • The .env.local.template file serves as a reference for all available variables"
