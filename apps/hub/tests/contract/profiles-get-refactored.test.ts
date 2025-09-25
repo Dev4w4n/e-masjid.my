@@ -276,7 +276,7 @@ describe("GET /profiles - Profile Retrieval Contract", () => {
     // Create and authenticate test user using mock API instead of HTTP
     const signUpResponse = await MockProfileAPI.authSignup(
       `profile-test-${Date.now()}@example.com`,
-      testUserCredentials.password
+      testUserCredentials.password,
     );
 
     testUserId = signUpResponse.user.id;
@@ -306,7 +306,7 @@ describe("GET /profiles - Profile Retrieval Contract", () => {
 
       // Validate profile structure
       expect(response.id).toMatch(
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
       );
       expect(response.user_id).toBe(testUserId);
       expect(typeof response.full_name).toBe("string");
@@ -314,10 +314,10 @@ describe("GET /profiles - Profile Retrieval Contract", () => {
       expect(["en", "ms", "zh", "ta"]).toContain(response.preferred_language);
       expect(typeof response.is_complete).toBe("boolean");
       expect(response.created_at).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
       );
       expect(response.updated_at).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
       );
     });
 
@@ -374,7 +374,7 @@ describe("GET /profiles - Profile Retrieval Contract", () => {
       expect(response.error).toBe("unauthorized");
       expect(response.message).toBe("Authorization token required");
       expect(response.timestamp).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
       );
     });
 
@@ -387,7 +387,7 @@ describe("GET /profiles - Profile Retrieval Contract", () => {
       expect(response.error).toBe("invalid_token");
       expect(response.message).toBe("Invalid or expired authentication token");
       expect(response.timestamp).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
       );
     });
 
@@ -400,7 +400,7 @@ describe("GET /profiles - Profile Retrieval Contract", () => {
       expect(response.error).toBe("invalid_token");
       expect(response.message).toBe("Invalid or expired authentication token");
       expect(response.timestamp).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
       );
     });
   });
@@ -420,7 +420,7 @@ describe("GET /profiles - Profile Retrieval Contract", () => {
       expect(response.error).toBe("profile_not_found");
       expect(response.message).toBe("User profile not found");
       expect(response.timestamp).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
       );
     });
   });
@@ -436,7 +436,7 @@ describe("GET /profiles - Profile Retrieval Contract", () => {
       expect(response.error).toBe("method_not_allowed");
       expect(response.message).toBe("Method PUT not allowed on this endpoint");
       expect(response.timestamp).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
       );
     });
 
@@ -449,10 +449,10 @@ describe("GET /profiles - Profile Retrieval Contract", () => {
       expect(response.headers["Allow"]).toBe("GET, POST, OPTIONS");
       expect(response.error).toBe("method_not_allowed");
       expect(response.message).toBe(
-        "Method DELETE not allowed on this endpoint"
+        "Method DELETE not allowed on this endpoint",
       );
       expect(response.timestamp).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
       );
     });
 
@@ -465,10 +465,10 @@ describe("GET /profiles - Profile Retrieval Contract", () => {
       expect(response.headers["Allow"]).toBe("GET, POST, OPTIONS");
       expect(response.error).toBe("method_not_allowed");
       expect(response.message).toBe(
-        "Method PATCH not allowed on this endpoint"
+        "Method PATCH not allowed on this endpoint",
       );
       expect(response.timestamp).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
       );
     });
   });
@@ -481,10 +481,10 @@ describe("GET /profiles - Profile Retrieval Contract", () => {
       expect(response.status).toBe(204);
       expect(response.headers["Access-Control-Allow-Origin"]).toBe("*");
       expect(response.headers["Access-Control-Allow-Methods"]).toBe(
-        "GET, POST, OPTIONS"
+        "GET, POST, OPTIONS",
       );
       expect(response.headers["Access-Control-Allow-Headers"]).toBe(
-        "Content-Type, Authorization, apikey"
+        "Content-Type, Authorization, apikey",
       );
     });
   });

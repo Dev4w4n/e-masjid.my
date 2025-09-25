@@ -1,19 +1,17 @@
 <!--
-Sync Impact Report - Constitution v1.2.0
-Version change: 1.1.0 → 1.2.0 (MINOR: Added comprehensive testing data management and E2E test protocols)
+Sync Impact Report - Constitution v1.3.0
+Version change: 1.2.0 → 1.3.0 (MINOR: Added TypeScript Build Protocol for monorepo clean operations)
 Modified principles:
-- III. Test-First Development: Enhanced with mandatory mock data management and E2E testing protocols
-- IV. Supabase-First Data Strategy: Added test data management requirements and schema sync protocols
+- II. Monorepo Architecture: Enhanced with TypeScript Build Protocol for clean builds
+- Technology Standards: Added Clean Build Protocol requirement
 Added sections:
-- Testing Data Management Protocol: Mock data schema sync requirements for unit tests
-- E2E Testing Protocol: Mandatory Supabase ID retrieval before test execution
-- Enhanced Test Data Standards: Separate mock vs live data strategies
+- TypeScript Build Protocol: Mandatory use of build:clean after clean operations
+- Clean Build Requirements: Systematic build process for TypeScript composite projects
 Removed sections: N/A
 Templates requiring updates:
-- ✅ .specify/templates/plan-template.md (updated constitution gates and testing data management validation)
-- ✅ .specify/templates/spec-template.md (added mock data and ID retrieval strategy requirements)
-- ✅ .specify/templates/tasks-template.md (updated for mock data generation and E2E setup tasks)
-Follow-up TODOs: None - all templates updated for new testing data management requirements
+- .specify/templates/plan-template.md (should validate build protocol compliance)
+- .specify/templates/tasks-template.md (should include clean build tasks)
+Follow-up TODOs: Update build documentation in all packages
 -->
 
 # E-Masjid.My Constitution
@@ -39,7 +37,15 @@ Packages MUST be self-contained with clear boundaries and minimal cross-dependen
 Shared code MUST be extracted into dedicated packages under ./packages directory.
 New applications MUST follow the apps/\* structure and integrate with existing workspace configuration.
 
-**Rationale**: pnpm and Turborepo provide superior performance, disk efficiency, and build caching for large monorepo development.
+**TypeScript Build Protocol**:
+After clean operations (`pnpm clean && pnpm install`), projects MUST use the systematic build process:
+
+- Use `pnpm run build:clean` or `./scripts/build-packages.sh` for clean builds
+- NEVER use `pnpm build` immediately after clean operations
+- TypeScript composite projects require dependency-ordered compilation
+- Declaration files (.d.ts) MUST be generated in correct sequence: shared-types → dependents
+
+**Rationale**: pnpm and Turborepo provide superior performance, disk efficiency, and build caching for large monorepo development. TypeScript composite projects with incremental compilation require proper build sequencing to generate declaration files correctly.
 
 ### III. Test-First Development (NON-NEGOTIABLE)
 
@@ -170,6 +176,7 @@ No direct feature implementation in applications - all logic MUST go through pac
 
 **Package Management**: pnpm exclusively (no npm/yarn commands)
 **Build System**: Turborepo with pnpm workspaces
+**Clean Build Protocol**: Use `pnpm run build:clean` after clean operations, never `pnpm build`
 **Frontend Stack**: React 18+, TypeScript, Vite, Material-UI v6, React Router v6
 **Backend Stack**: Supabase (PostgreSQL, Auth, Storage, Edge Functions)
 **Testing Stack**: Vitest (unit), Playwright (E2E), React Testing Library
@@ -206,4 +213,4 @@ Complexity MUST be justified against business value and community benefit.
 - Quarterly retrospectives evaluate principle effectiveness
 - Annual constitutional review for major updates
 
-**Version**: 1.2.0 | **Ratified**: 2025-09-22 | **Last Amended**: 2025-09-23
+**Version**: 1.3.0 | **Ratified**: 2025-09-22 | **Last Amended**: 2025-09-26

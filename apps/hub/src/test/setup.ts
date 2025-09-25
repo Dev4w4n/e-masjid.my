@@ -35,7 +35,7 @@ beforeAll(() => {
 
 // Utility function to check if backend is available
 export async function isBackendAvailable(
-  url: string = "http://localhost:54321"
+  url: string = "http://localhost:54321",
 ): Promise<boolean> {
   try {
     const response = await fetch(`${url}/rest/v1/`, {

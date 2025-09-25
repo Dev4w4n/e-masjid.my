@@ -242,7 +242,8 @@ describe("POST /masjids - Masjid Creation Contract", () => {
       ) {
         const user = Array.from(mockUsers.values()).find(
           (u) =>
-            u.email === body.email.toLowerCase() && u.password === body.password
+            u.email === body.email.toLowerCase() &&
+            u.password === body.password,
         );
 
         if (!user) {
@@ -305,7 +306,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
 
         // Find user by token
         const user = Array.from(mockUsers.values()).find((u) =>
-          token.includes(u.id)
+          token.includes(u.id),
         );
 
         if (!user) {
@@ -515,7 +516,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(superAdminCredentials),
-      }
+      },
     );
 
     // Sign in as super admin user
@@ -527,7 +528,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(superAdminCredentials),
-      }
+      },
     );
 
     const superAdminData = await superAdminSignIn.json();
@@ -543,7 +544,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(regularUserCredentials),
-      }
+      },
     );
 
     const regularUserData = await regularUserSignUp.json();
@@ -558,7 +559,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(masjidAdminCredentials),
-      }
+      },
     );
 
     const masjidAdminData = await masjidAdminSignUp.json();
@@ -585,18 +586,18 @@ describe("POST /masjids - Masjid Creation Contract", () => {
 
       expect(response.status).toBe(201);
       expect(response.headers.get("content-type")).toContain(
-        "application/json"
+        "application/json",
       );
 
       const masjid: MasjidResponse = await response.json();
 
       // Validate masjid structure
       expect(masjid.id).toMatch(
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
       );
       expect(masjid.name).toBe(validMasjidData.name);
       expect(masjid.registration_number).toBe(
-        validMasjidData.registration_number
+        validMasjidData.registration_number,
       );
       expect(masjid.email).toBe(validMasjidData.email);
       expect(masjid.phone_number).toBe(validMasjidData.phone_number);
@@ -610,10 +611,10 @@ describe("POST /masjids - Masjid Creation Contract", () => {
 
       // Validate address data
       expect(masjid.address.address_line_1).toBe(
-        validMasjidData.address.address_line_1
+        validMasjidData.address.address_line_1,
       );
       expect(masjid.address.address_line_2).toBe(
-        validMasjidData.address.address_line_2
+        validMasjidData.address.address_line_2,
       );
       expect(masjid.address.city).toBe(validMasjidData.address.city);
       expect(masjid.address.state).toBe(validMasjidData.address.state);
@@ -647,7 +648,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
 
       expect(masjid.name).toBe(minimalMasjidData.name);
       expect(masjid.address.address_line_1).toBe(
-        minimalMasjidData.address.address_line_1
+        minimalMasjidData.address.address_line_1,
       );
       expect(masjid.address.city).toBe(minimalMasjidData.address.city);
       expect(masjid.address.state).toBe(minimalMasjidData.address.state);
@@ -901,7 +902,7 @@ describe("POST /masjids - Masjid Creation Contract", () => {
 
       expect(response.status).toBe(403);
       expect(response.headers.get("content-type")).toContain(
-        "application/json"
+        "application/json",
       );
 
       const error: ErrorResponse = await response.json();

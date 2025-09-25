@@ -213,10 +213,15 @@ describe("Content Creation Service", () => {
 
 ```bash
 pnpm dev                    # Start all apps
-pnpm build                  # Build all packages
+pnpm build                  # Build all packages (normal development)
+pnpm run build:clean        # Build after clean operations (IMPORTANT!)
 pnpm test                   # Run all tests
 pnpm lint                   # Lint all packages
 ```
+
+**⚠️ Critical Build Protocol**:
+After `pnpm clean && pnpm install`, ALWAYS use `pnpm run build:clean` instead of `pnpm build`.
+This ensures TypeScript composite projects build in correct dependency order.
 
 **Database**:
 

@@ -1,18 +1,18 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: ''
-labels: ''
-assignees: ''
-
+title: ""
+labels: ""
+assignees: ""
 ---
 
-***Expected result:***
+**_Expected result:_**
+
 1.
 2.
 3.
 
-***Expected delivery time:***
+**_Expected delivery time:_**
 ? weeks
 
-***Comment: "Assign this to me", if you wish to pick this up***
+**_Comment: "Assign this to me", if you wish to pick this up_**

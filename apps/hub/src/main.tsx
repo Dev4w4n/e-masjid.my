@@ -25,5 +25,5 @@ root.render(
         </AuthProvider>
       </MasjidThemeProvider>
     </BrowserRouter>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

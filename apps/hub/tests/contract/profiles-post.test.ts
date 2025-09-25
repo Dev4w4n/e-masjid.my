@@ -365,7 +365,7 @@ describe("POST /profiles - Profile Creation Contract", () => {
 
         // Check if profile already exists for this user
         const existingProfile = Array.from(mockProfiles.values()).find(
-          (p) => p.user_id === user.id
+          (p) => p.user_id === user.id,
         );
         if (existingProfile) {
           return {
@@ -672,40 +672,40 @@ describe("POST /profiles - Profile Creation Contract", () => {
               country: validProfileData.address.country,
             },
           }),
-        }
+        },
       );
 
       expect(response.status).toBe(200);
       expect(response.headers.get("content-type")).toContain(
-        "application/json"
+        "application/json",
       );
 
       const profile: ProfileResponse = await response.json();
 
       // Validate profile structure
       expect(profile.id).toMatch(
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
       );
       expect(profile.user_id).toBe(testUserId);
       expect(profile.full_name).toBe(validProfileData.full_name);
       expect(profile.phone_number).toBe(validProfileData.phone_number);
       expect(profile.preferred_language).toBe(
-        validProfileData.preferred_language
+        validProfileData.preferred_language,
       );
       expect(profile.is_complete).toBe(true);
       expect(profile.created_at).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
       );
       expect(profile.updated_at).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
       );
 
       // Validate address data
       expect(profile.address.address_line_1).toBe(
-        validProfileData.address.address_line_1
+        validProfileData.address.address_line_1,
       );
       expect(profile.address.address_line_2).toBe(
-        validProfileData.address.address_line_2
+        validProfileData.address.address_line_2,
       );
       expect(profile.address.city).toBe(validProfileData.address.city);
       expect(profile.address.state).toBe(validProfileData.address.state);
@@ -726,7 +726,7 @@ describe("POST /profiles - Profile Creation Contract", () => {
             email: "minimal.profile@example.com",
             password: "testpassword123",
           }),
-        }
+        },
       );
 
       const signUpData = await signUpResponse.json();
@@ -760,7 +760,7 @@ describe("POST /profiles - Profile Creation Contract", () => {
       expect(profile.full_name).toBe(minimalProfile.full_name);
       expect(profile.phone_number).toBe(minimalProfile.phone_number);
       expect(profile.preferred_language).toBe(
-        minimalProfile.preferred_language
+        minimalProfile.preferred_language,
       );
       expect(profile.is_complete).toBe(true);
     });
@@ -778,7 +778,7 @@ describe("POST /profiles - Profile Creation Contract", () => {
             email: "defaultlang@example.com",
             password: "testpassword123",
           }),
-        }
+        },
       );
 
       const signUpData = await signUpResponse.json();
@@ -840,7 +840,7 @@ describe("POST /profiles - Profile Creation Contract", () => {
               email: `phone-test-${i}-${Date.now()}@example.com`,
               password: "testpassword123",
             }),
-          }
+          },
         );
 
         const signUpData = await signUpResponse.json();
@@ -891,7 +891,7 @@ describe("POST /profiles - Profile Creation Contract", () => {
               email: `invalid-phone-test-${i}-${Date.now()}@example.com`,
               password: "testpassword123",
             }),
-          }
+          },
         );
 
         const signUpData = await signUpResponse.json();
@@ -937,7 +937,7 @@ describe("POST /profiles - Profile Creation Contract", () => {
               email: `postcode-test-${i}-${Date.now()}@example.com`,
               password: "testpassword123",
             }),
-          }
+          },
         );
 
         const signUpData = await signUpResponse.json();
@@ -990,7 +990,7 @@ describe("POST /profiles - Profile Creation Contract", () => {
               email: `invalid-postcode-test-${i}-${Date.now()}@example.com`,
               password: "testpassword123",
             }),
-          }
+          },
         );
 
         const signUpData = await signUpResponse.json();
@@ -1056,7 +1056,7 @@ describe("POST /profiles - Profile Creation Contract", () => {
               email: `state-test-${i}-${Date.now()}@example.com`,
               password: "testpassword123",
             }),
-          }
+          },
         );
 
         const signUpData = await signUpResponse.json();
@@ -1107,7 +1107,7 @@ describe("POST /profiles - Profile Creation Contract", () => {
               email: `invalid-state-test-${i}-${Date.now()}@example.com`,
               password: "testpassword123",
             }),
-          }
+          },
         );
 
         const signUpData = await signUpResponse.json();
@@ -1178,7 +1178,7 @@ describe("POST /profiles - Profile Creation Contract", () => {
               email: `missing-field-test-${i}-${Date.now()}@example.com`,
               password: "testpassword123",
             }),
-          }
+          },
         );
 
         const signUpData = await signUpResponse.json();
@@ -1241,7 +1241,7 @@ describe("POST /profiles - Profile Creation Contract", () => {
               email: `invalid-length-test-${i}-${Date.now()}@example.com`,
               password: "testpassword123",
             }),
-          }
+          },
         );
 
         const signUpData = await signUpResponse.json();
@@ -1280,7 +1280,7 @@ describe("POST /profiles - Profile Creation Contract", () => {
               email: `invalid-language-test-${i}-${Date.now()}@example.com`,
               password: "testpassword123",
             }),
-          }
+          },
         );
 
         const signUpData = await signUpResponse.json();
@@ -1367,7 +1367,7 @@ describe("POST /profiles - Profile Creation Contract", () => {
             email: "duplicate.profile@example.com",
             password: "testpassword123",
           }),
-        }
+        },
       );
 
       const signUpData = await signUpResponse.json();
@@ -1383,7 +1383,7 @@ describe("POST /profiles - Profile Creation Contract", () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(validProfileData),
-        }
+        },
       );
 
       expect(firstResponse.status).toBe(201);
@@ -1398,7 +1398,7 @@ describe("POST /profiles - Profile Creation Contract", () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(validProfileData),
-        }
+        },
       );
 
       expect(secondResponse.status).toBe(409);
@@ -1460,7 +1460,7 @@ describe("POST /profiles - Profile Creation Contract", () => {
               email: `unicode-name-test-${i}-${Date.now()}@example.com`,
               password: "testpassword123",
             }),
-          }
+          },
         );
 
         const signUpData = await signUpResponse.json();
@@ -1499,7 +1499,7 @@ describe("POST /profiles - Profile Creation Contract", () => {
             email: `unicode-address-test-${Date.now()}@example.com`,
             password: "testpassword123",
           }),
-        }
+        },
       );
 
       const signUpData = await signUpResponse.json();
@@ -1529,10 +1529,10 @@ describe("POST /profiles - Profile Creation Contract", () => {
       expect(response.status).toBe(201);
       const profile: ProfileResponse = await response.json();
       expect(profile.address.address_line_1).toBe(
-        unicodeAddress.address_line_1
+        unicodeAddress.address_line_1,
       );
       expect(profile.address.address_line_2).toBe(
-        unicodeAddress.address_line_2
+        unicodeAddress.address_line_2,
       );
       expect(profile.address.city).toBe(unicodeAddress.city);
     });

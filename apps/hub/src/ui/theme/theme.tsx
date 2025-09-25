@@ -96,7 +96,7 @@ interface MasjidThemeOptions {
 export function createMasjidTheme(
   mode: ThemeMode = "light",
   customColors?: CustomColors,
-  options?: MasjidThemeOptions
+  options?: MasjidThemeOptions,
 ): Theme {
   const isHighContrast = options?.highContrast || false;
 

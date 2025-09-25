@@ -47,14 +47,14 @@ const signUpSchema = z
       .min(6, "Password must be at least 6 characters")
       .regex(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-        "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+        "Password must contain at least one uppercase letter, one lowercase letter, and one number",
       ),
     confirmPassword: z.string().min(1, "Please confirm your password"),
     acceptTerms: z
       .boolean()
       .refine(
         (val) => val === true,
-        "You must accept the terms and conditions"
+        "You must accept the terms and conditions",
       ),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -111,7 +111,7 @@ function SignUp() {
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to create account. Please try again."
+          : "Failed to create account. Please try again.",
       );
     } finally {
       setIsLoading(false);
