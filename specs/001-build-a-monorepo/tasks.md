@@ -40,7 +40,7 @@
 
 ## Path Conventions
 
-- **Monorepo structure**: `apps/profile/`, `packages/*/`, `supabase/`
+- **Monorepo structure**: `app/hub/`, `packages/*/`, `supabase/`
 - All paths relative to repository root
 - Turborepo manages build dependencies across packages
 
@@ -86,23 +86,23 @@
 
 **CRITICAL: These API tests MUST be written and MUST FAIL before ANY app implementation**
 
-- [x] T025 [P] Contract test POST /auth/sign-up in apps/profile/tests/contract/auth-signup.test.ts ✅
-- [x] T026 [P] Contract test POST /auth/sign-in in apps/profile/tests/contract/auth-signin.test.ts ✅
-- [x] T027 [P] Contract test GET /profiles in apps/profile/tests/contract/profiles-get.test.ts ✅
-- [x] T028 [P] Contract test POST /profiles in apps/profile/tests/contract/profiles-post.test.ts ✅
-- [x] T029 [P] Contract test GET /masjids in apps/profile/tests/contract/masjids-get.test.ts ✅
-- [x] T030 [P] Contract test POST /masjids in apps/profile/tests/contract/masjids-post.test.ts ✅
-- [x] T031 [P] Contract test POST /admin-applications in apps/profile/tests/contract/admin-applications-post.test.ts ✅
+- [x] T025 [P] Contract test POST /auth/sign-up in app/hub/tests/contract/auth-signup.test.ts ✅
+- [x] T026 [P] Contract test POST /auth/sign-in in app/hub/tests/contract/auth-signin.test.ts ✅
+- [x] T027 [P] Contract test GET /profiles in app/hub/tests/contract/profiles-get.test.ts ✅
+- [x] T028 [P] Contract test POST /profiles in app/hub/tests/contract/profiles-post.test.ts ✅
+- [x] T029 [P] Contract test GET /masjids in app/hub/tests/contract/masjids-get.test.ts ✅
+- [x] T030 [P] Contract test POST /masjids in app/hub/tests/contract/masjids-post.test.ts ✅
+- [x] T031 [P] Contract test POST /admin-applications in app/hub/tests/contract/admin-applications-post.test.ts ✅
 
 ## Phase 3.6: Profile App Implementation
 
-- [ ] T032 Initialize React Vite app with TypeScript and MUI in apps/profile/ ❌ **MISSING**
-- [ ] T033 Configure Vite build with shared package imports in apps/profile/vite.config.ts ❌ **MISSING**
-- [ ] T034 Implement authentication pages (SignUp, SignIn) in apps/profile/src/pages/auth/ ❌ **MISSING**
-- [ ] T035 Implement profile management pages (ProfileForm, ProfileView) in apps/profile/src/pages/profile/ ❌ **MISSING**
-- [ ] T036 Implement masjid management pages (MasjidList, MasjidForm) in apps/profile/src/pages/masjid/ ❌ **MISSING**
-- [ ] T037 Implement admin application workflow in apps/profile/src/pages/admin/ ❌ **MISSING**
-- [ ] T038 Implement role-based routing and navigation in apps/profile/src/components/Layout/ ❌ **MISSING**
+- [ ] T032 Initialize React Vite app with TypeScript and MUI in app/hub/ ❌ **MISSING**
+- [ ] T033 Configure Vite build with shared package imports in app/hub/vite.config.ts ❌ **MISSING**
+- [ ] T034 Implement authentication pages (SignUp, SignIn) in app/hub/src/pages/auth/ ❌ **MISSING**
+- [ ] T035 Implement profile management pages (ProfileForm, ProfileView) in app/hub/src/pages/profile/ ❌ **MISSING**
+- [ ] T036 Implement masjid management pages (MasjidList, MasjidForm) in app/hub/src/pages/masjid/ ❌ **MISSING**
+- [ ] T037 Implement admin application workflow in app/hub/src/pages/admin/ ❌ **MISSING**
+- [ ] T038 Implement role-based routing and navigation in app/hub/src/components/Layout/ ❌ **MISSING**
 
 ## Phase 3.7: Integration & Polish
 
@@ -160,13 +160,13 @@ Task: "Create reusable components in packages/shared-ui/src/components/"
 
 ```bash
 # All API contract tests can run together:
-Task: "Contract test POST /auth/sign-up in apps/profile/tests/contract/auth-signup.test.ts"
-Task: "Contract test POST /auth/sign-in in apps/profile/tests/contract/auth-signin.test.ts"
-Task: "Contract test GET /profiles in apps/profile/tests/contract/profiles-get.test.ts"
-Task: "Contract test POST /profiles in apps/profile/tests/contract/profiles-post.ts"
-Task: "Contract test GET /masjids in apps/profile/tests/contract/masjids-get.test.ts"
-Task: "Contract test POST /masjids in apps/profile/tests/contract/masjids-post.test.ts"
-Task: "Contract test POST /admin-applications in apps/profile/tests/contract/admin-applications-post.test.ts"
+Task: "Contract test POST /auth/sign-up in app/hub/tests/contract/auth-signup.test.ts"
+Task: "Contract test POST /auth/sign-in in app/hub/tests/contract/auth-signin.test.ts"
+Task: "Contract test GET /profiles in app/hub/tests/contract/profiles-get.test.ts"
+Task: "Contract test POST /profiles in app/hub/tests/contract/profiles-post.ts"
+Task: "Contract test GET /masjids in app/hub/tests/contract/masjids-get.test.ts"
+Task: "Contract test POST /masjids in app/hub/tests/contract/masjids-post.test.ts"
+Task: "Contract test POST /admin-applications in app/hub/tests/contract/admin-applications-post.test.ts"
 ```
 
 ## Key Features Coverage

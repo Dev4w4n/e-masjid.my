@@ -27,4 +27,4 @@ scripts/setup-supabase.sh --test
 
 echo ""
 echo -e "${GREEN}Ready to run tests!${NC}"
-echo -e "${YELLOW}You can now run the tests with: cd apps/profile && npm run test${NC}"
+echo -e "${YELLOW}You can now run the tests with: cd app/hub && npm run test${NC}"
