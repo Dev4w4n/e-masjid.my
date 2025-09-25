@@ -42,6 +42,19 @@ Sebelum memulakan, pastikan perkara berikut telah tersedia:
 
 ## � Persediaan Sistem Kali Pertama
 
+> **📋 Ringkasan Pantas untuk Pengguna Baru**
+>
+> ```bash
+> git clone https://github.com/Dev4w4n/e-masjid.my.git
+> cd e-masjid.my
+> pnpm install
+> ./scripts/setup-supabase.sh   # Sediakan pangkalan data dan persekitaran
+> pnpm run build:clean          # PENTING: Gunakan build:clean untuk kali pertama
+> pnpm dev                      # Mulakan server pembangunan
+> ```
+>
+> Aplikasi akan tersedia di: http://localhost:3000
+
 ### Pemasangan Prasyarat
 
 Sebelum menjalankan aplikasi, pastikan anda telah memasang perkara berikut:
@@ -66,6 +79,15 @@ Sebelum menjalankan aplikasi, pastikan anda telah memasang perkara berikut:
    supabase start
    ```
 
+### Memahami Proses Binaan
+
+Projek ini menggunakan TypeScript composite projects yang memerlukan urutan binaan yang betul:
+
+- **Binaan Bersih** (selepas `pnpm clean` atau klon baru): Gunakan `pnpm run build:clean`
+- **Binaan Biasa** (semasa pembangunan): Gunakan `pnpm build`
+
+Pakej `shared-types` mesti dibina terlebih dahulu sebelum pakej lain boleh mengimport jenisnya.
+
 ## �🚀 Persediaan Pantas
 
 ### 1. Persediaan Repositori
@@ -78,13 +100,17 @@ cd e-masjid.my-agent-1
 # Pasang kebergantungan dengan pnpm
 pnpm install
 
+# PENTING: Bina semua pakej dengan urutan yang betul (untuk persediaan kali pertama)
+pnpm run build:clean
 ```
+
+⚠️ **Nota Penting**: Untuk persediaan kali pertama, sentiasa gunakan `pnpm run build:clean` selepas `pnpm install`. Ini memastikan TypeScript composite projects dibina dengan urutan kebergantungan yang betul.
 
 ### 2. Konfigurasi Persekitaran
 
 ```bash
-# Konfigurasi
-./scripts/setup-env.sh
+# Konfigurasi pangkalan data dan persekitaran
+./scripts/setup-supabase.sh
 ```
 
 ### 3. Mulakan Server Pembangunan
@@ -97,6 +123,8 @@ pnpm dev
 # Atau mulakan aplikasi tertentu
 pnpm dev --filter=@masjid-suite/hub
 ```
+
+**Catatan**: Jika anda menghadapi ralat semasa `pnpm dev`, pastikan langkah bina telah selesai dengan jayanya menggunakan `pnpm run build:clean` terlebih dahulu.
 
 Aplikasi akan tersedia di:
 
@@ -280,8 +308,13 @@ pnpm format
 ### Bina & Deploy
 
 ```bash
-# Bina semua aplikasi
+# Bina semua aplikasi (pembangunan normal)
 pnpm build
+
+# Bina selepas operasi bersih (gunakan ini selepas pnpm clean)
+pnpm run build:clean
+# atau
+./scripts/build-packages.sh
 
 # Bina aplikasi tertentu
 pnpm build --filter=@masjid-suite/hub
@@ -289,6 +322,20 @@ pnpm build --filter=@masjid-suite/hub
 # Pratonton binaan produksi
 pnpm preview
 ```
+
+#### ⚠️ Nota Penting: Bina Selepas Operasi Bersih
+
+Selepas menjalankan `pnpm clean && pnpm install`, **jangan** terus gunakan `pnpm build`. Gunakan `pnpm run build:clean` untuk memastikan pakej dibina dengan urutan yang betul:
+
+```bash
+# ❌ Jangan lakukan ini selepas pnpm clean
+pnpm clean && pnpm install && pnpm build
+
+# ✅ Lakukan ini pula
+pnpm clean && pnpm install && pnpm run build:clean
+```
+
+**Sebab**: TypeScript composite projects memerlukan fail deklarasi (.d.ts) dijana dalam urutan kebergantungan yang betul. Pakej `shared-types` mesti dibina dahulu sebelum pakej lain boleh mengimport jenisnya.
 
 ### Pengurusan Pangkalan Data
 
@@ -327,10 +374,30 @@ supabase start
 # Bersihkan cache binaan
 pnpm clean
 
-# Pasang semula kebergantungan
+# Pasang semula kebergantungan dan bina dengan urutan yang betul
 rm -rf node_modules
 pnpm install
+pnpm run build:clean  # PENTING: Gunakan build:clean selepas operasi bersih
 ```
+
+**Ralat TypeScript "Cannot find module '@masjid-suite/shared-types'"**
+
+Ralat ini berlaku apabila:
+
+- Selepas menjalankan `pnpm clean && pnpm install`
+- Kloning repositori untuk kali pertama
+- Fail deklarasi (.d.ts) belum dijana dengan urutan yang betul
+
+**Penyelesaian**:
+
+```bash
+# Bina pakej dalam urutan kebergantungan
+./scripts/build-packages.sh
+# atau
+pnpm run build:clean
+```
+
+**Mengapa ini berlaku?**: TypeScript composite projects memerlukan pakej `shared-types` dibina dahulu sebelum pakej lain boleh menggunakan jenisnya. Skrip `build:clean` memastikan urutan binaan yang betul.
 
 **Ralat Jenis**
 

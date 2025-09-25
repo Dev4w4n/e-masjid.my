@@ -98,7 +98,9 @@ const masjidSchema = z.object({
         "Labuan",
         "Putrajaya",
       ],
-      { errorMap: () => ({ message: "Please select a valid Malaysian state" }) }
+      {
+        errorMap: () => ({ message: "Please select a valid Malaysian state" }),
+      },
     ),
 
     postcode: z.string().regex(/^\d{5}$/, "Postcode must be 5 digits"),
@@ -869,7 +871,7 @@ function MasjidForm() {
                             onChange(
                               e.target.value
                                 ? parseInt(e.target.value)
-                                : undefined
+                                : undefined,
                             )
                           }
                           error={!!errors.capacity}
@@ -923,7 +925,7 @@ function MasjidForm() {
                                   (zone) =>
                                     !watch("address.state") ||
                                     zone.state === watch("address.state") ||
-                                    zone.state === "Kuala Lumpur" // Always show KL zones
+                                    zone.state === "Kuala Lumpur", // Always show KL zones
                                 )
                                 .map((zone) => (
                                   <MenuItem key={zone.value} value={zone.value}>

@@ -107,13 +107,13 @@ function Layout() {
           path: "/admin/applications",
           roles: ["super_admin"],
           badge: 8, // Mock badge count
-        }
+        },
       );
     }
 
     return items.filter(
       (item) =>
-        !item.roles || item.roles.some((role) => permissions.hasRole(role))
+        !item.roles || item.roles.some((role) => permissions.hasRole(role)),
     );
   };
 

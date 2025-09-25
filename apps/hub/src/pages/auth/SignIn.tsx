@@ -76,7 +76,7 @@ function SignIn() {
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to sign in. Please check your credentials."
+          : "Failed to sign in. Please check your credentials.",
       );
     } finally {
       setIsLoading(false);

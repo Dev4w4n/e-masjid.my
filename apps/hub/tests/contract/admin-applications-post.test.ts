@@ -208,7 +208,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
           }
 
           const user = Array.from(mockUsers.values()).find((u) =>
-            token.includes(u.id)
+            token.includes(u.id),
           );
           if (!user) {
             return {
@@ -250,7 +250,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
           }
 
           const user = Array.from(mockUsers.values()).find((u) =>
-            token.includes(u.id)
+            token.includes(u.id),
           );
           if (!user || user.role !== "super_admin") {
             return {
@@ -334,7 +334,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
 
           // Find user by token
           const user = Array.from(mockUsers.values()).find((u) =>
-            token.includes(u.id)
+            token.includes(u.id),
           );
           if (!user) {
             return {
@@ -406,9 +406,10 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
 
           // Check for duplicate application
           const existingApplication = Array.from(
-            mockApplications.values()
+            mockApplications.values(),
           ).find(
-            (app) => app.user_id === user.id && app.masjid_id === body.masjid_id
+            (app) =>
+              app.user_id === user.id && app.masjid_id === body.masjid_id,
           );
 
           if (existingApplication) {
@@ -507,7 +508,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
 
       if (!userSignUp.ok) {
         throw new Error(
-          `Failed to create user: ${userSignUp.status} ${userSignUp.statusText}`
+          `Failed to create user: ${userSignUp.status} ${userSignUp.statusText}`,
         );
       }
 
@@ -538,7 +539,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(incompleteUserCredentials),
-        }
+        },
       );
 
       const incompleteUserData = await incompleteUserSignUp.json();
@@ -553,7 +554,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(superAdminCredentials),
-        }
+        },
       );
 
       const superAdminData = await superAdminSignUp.json();
@@ -626,31 +627,31 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(applicationData),
-        }
+        },
       );
 
       expect(response.status).toBe(201);
       expect(response.headers.get("content-type")).toContain(
-        "application/json"
+        "application/json",
       );
 
       const application: AdminApplicationResponse = await response.json();
 
       // Validate application structure
       expect(application.id).toMatch(
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
       );
       expect(application.user_id).toBe(userId);
       expect(application.masjid_id).toBe(applicationData.masjid_id);
       expect(application.application_message).toBe(
-        applicationData.application_message
+        applicationData.application_message,
       );
       expect(application.status).toBe("pending"); // Default status
       expect(application.created_at).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
       );
       expect(application.updated_at).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
       );
 
       // Validate user summary
@@ -696,7 +697,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(minimalApplicationData),
-        }
+        },
       );
 
       expect(response.status).toBe(201);
@@ -723,7 +724,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(secondUserCreds),
-        }
+        },
       );
 
       const secondUserData = await secondUserSignUp.json();
@@ -771,7 +772,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(applicationData1),
-        }
+        },
       );
 
       const response2 = await fetch(
@@ -783,7 +784,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(applicationData2),
-        }
+        },
       );
 
       expect(response1.status).toBe(201);
@@ -794,10 +795,10 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
 
       expect(application1.id).not.toBe(application2.id);
       expect(application1.application_message).toBe(
-        applicationData1.application_message
+        applicationData1.application_message,
       );
       expect(application2.application_message).toBe(
-        applicationData2.application_message
+        applicationData2.application_message,
       );
     });
   });
@@ -817,12 +818,12 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(applicationData),
-        }
+        },
       );
 
       expect(response.status).toBe(401);
       expect(response.headers.get("content-type")).toContain(
-        "application/json"
+        "application/json",
       );
 
       const error: ErrorResponse = await response.json();
@@ -846,7 +847,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(applicationData),
-        }
+        },
       );
 
       expect(response.status).toBe(401);
@@ -871,7 +872,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(applicationData),
-        }
+        },
       );
 
       expect(response.status).toBe(400);
@@ -898,7 +899,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(invalidApplicationData),
-        }
+        },
       );
 
       expect(response.status).toBe(400);
@@ -931,7 +932,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
               "Content-Type": "application/json",
             },
             body: JSON.stringify(applicationData),
-          }
+          },
         );
 
         expect(response.status).toBe(400);
@@ -957,7 +958,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(applicationData),
-        }
+        },
       );
 
       expect(response.status).toBe(400);
@@ -983,7 +984,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(applicationData),
-        }
+        },
       );
 
       expect(response.status).toBe(400);
@@ -1003,7 +1004,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: "invalid json content{{",
-        }
+        },
       );
 
       expect(response.status).toBe(400);
@@ -1057,7 +1058,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(applicationData),
-        }
+        },
       );
 
       expect(firstResponse.status).toBe(201);
@@ -1077,7 +1078,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(secondApplicationData),
-        }
+        },
       );
 
       expect(secondResponse.status).toBe(409);
@@ -1104,7 +1105,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "text/plain",
           },
           body: JSON.stringify(applicationData),
-        }
+        },
       );
 
       expect(response.status).toBe(400);
@@ -1124,7 +1125,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             Authorization: `Bearer ${userToken}`,
           },
           body: JSON.stringify(applicationData),
-        }
+        },
       );
 
       expect([400, 415]).toContain(response.status);
@@ -1176,7 +1177,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
               "Content-Type": "application/json",
             },
             body: JSON.stringify(applicationData),
-          }
+          },
         );
 
         expect(response.status).toBe(201);
@@ -1202,7 +1203,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(applicationData),
-        }
+        },
       );
 
       expect(response.status).toBe(201);
@@ -1226,7 +1227,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(applicationDataWithStatus),
-        }
+        },
       );
 
       // Should either ignore the status field or return validation error
@@ -1255,7 +1256,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(applicationData),
-        }
+        },
       );
 
       expect(response.status).toBe(201);
@@ -1285,7 +1286,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(maliciousData),
-        }
+        },
       );
 
       // Should safely handle malicious input
@@ -1295,7 +1296,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
         const application: AdminApplicationResponse = await response.json();
         // Should store the message as text, not execute it
         expect(application.application_message).toBe(
-          maliciousData.application_message
+          maliciousData.application_message,
         );
       }
     });
@@ -1319,7 +1320,7 @@ describe("POST /admin-applications - Admin Application Submission Contract", () 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(applicationData),
-        }
+        },
       );
 
       const endTime = Date.now();

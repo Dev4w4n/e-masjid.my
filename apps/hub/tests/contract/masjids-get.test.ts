@@ -79,7 +79,7 @@ function filterMasjids(search: string): MasjidSummary[] {
     (masjid) =>
       masjid.name.toLowerCase().includes(searchLower) ||
       masjid.city.toLowerCase().includes(searchLower) ||
-      masjid.state.toLowerCase().includes(searchLower)
+      masjid.state.toLowerCase().includes(searchLower),
   );
 }
 
@@ -87,7 +87,7 @@ function filterMasjids(search: string): MasjidSummary[] {
 function createPaginatedResponse(
   filteredMasjids: MasjidSummary[],
   limit: number,
-  offset: number
+  offset: number,
 ): MasjidsListResponse {
   const paginatedData = filteredMasjids.slice(offset, offset + limit);
 
@@ -114,7 +114,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
           createMockResponse({
             access_token: "mock-token-12345",
             user: { id: "mock-user-id" },
-          })
+          }),
         );
       }
 
@@ -125,18 +125,18 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
           const search = searchParams.get("search") || "";
           const limit = Math.min(
             parseInt(searchParams.get("limit") || "20"),
-            100
+            100,
           );
           const offset = Math.max(
             parseInt(searchParams.get("offset") || "0"),
-            0
+            0,
           );
 
           const filteredMasjids = filterMasjids(search);
           const response = createPaginatedResponse(
             filteredMasjids,
             limit,
-            offset
+            offset,
           );
 
           return Promise.resolve(createMockResponse(response));
@@ -150,8 +150,8 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
                   id: `mock-id-${Date.now()}`,
                   status: "created",
                 },
-                201
-              )
+                201,
+              ),
             );
           } else {
             return Promise.resolve(
@@ -160,8 +160,8 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
                   error: "Method Not Allowed",
                   message: `${method} not supported`,
                 },
-                405
-              )
+                405,
+              ),
             );
           }
         } else if (!["OPTIONS"].includes(method)) {
@@ -172,8 +172,8 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
                 error: "Method Not Allowed",
                 message: `${method} not supported`,
               },
-              405
-            )
+              405,
+            ),
           );
         }
       }
@@ -188,7 +188,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
               "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
               "Access-Control-Allow-Headers": "Content-Type, Authorization",
             },
-          })
+          }),
         );
       }
 
@@ -196,8 +196,8 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
       return Promise.resolve(
         createMockResponse(
           { error: "Not Found", message: "Endpoint not found" },
-          404
-        )
+          404,
+        ),
       );
     });
   });
@@ -219,7 +219,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
 
       expect(response.status).toBe(200);
       expect(response.headers.get("content-type")).toContain(
-        "application/json"
+        "application/json",
       );
 
       const data: MasjidsListResponse = await response.json();
@@ -272,7 +272,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
       // Validate each masjid in the list
       data.data.forEach((masjid) => {
         expect(masjid.id).toMatch(
-          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
         );
         expect(typeof masjid.name).toBe("string");
         expect(masjid.name.length).toBeGreaterThan(0);
@@ -320,7 +320,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
         "http://mock-api.test/rest/v1/masjids?search=NonExistentMasjid123",
         {
           method: "GET",
-        }
+        },
       );
 
       expect(response.status).toBe(200);
@@ -354,7 +354,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
         `http://mock-api.test/rest/v1/masjids?limit=${customLimit}`,
         {
           method: "GET",
-        }
+        },
       );
 
       expect(response.status).toBe(200);
@@ -370,7 +370,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
         `http://mock-api.test/rest/v1/masjids?offset=${customOffset}`,
         {
           method: "GET",
-        }
+        },
       );
 
       expect(response.status).toBe(200);
@@ -386,7 +386,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
         `http://mock-api.test/rest/v1/masjids?limit=${customLimit}&offset=${customOffset}`,
         {
           method: "GET",
-        }
+        },
       );
 
       expect(response.status).toBe(200);
@@ -403,7 +403,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
         `http://mock-api.test/rest/v1/masjids?limit=${excessiveLimit}`,
         {
           method: "GET",
-        }
+        },
       );
 
       expect(response.status).toBe(200);
@@ -426,7 +426,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
           `http://mock-api.test/rest/v1/masjids?${param}`,
           {
             method: "GET",
-          }
+          },
         );
 
         // Should either return 400 or use default values
@@ -441,7 +441,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
         "http://mock-api.test/rest/v1/masjids?search=Al-Hidayah",
         {
           method: "GET",
-        }
+        },
       );
 
       expect(response.status).toBe(200);
@@ -458,7 +458,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
         "http://mock-api.test/rest/v1/masjids?search=Kuala Lumpur",
         {
           method: "GET",
-        }
+        },
       );
 
       expect(response.status).toBe(200);
@@ -468,7 +468,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
       data.data.forEach((masjid) => {
         expect(
           masjid.name.toLowerCase().includes("kuala lumpur".toLowerCase()) ||
-            masjid.city.toLowerCase().includes("kuala lumpur".toLowerCase())
+            masjid.city.toLowerCase().includes("kuala lumpur".toLowerCase()),
         ).toBe(true);
       });
     });
@@ -478,7 +478,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
         "http://mock-api.test/rest/v1/masjids?search=Johor",
         {
           method: "GET",
-        }
+        },
       );
 
       expect(response.status).toBe(200);
@@ -489,7 +489,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
         expect(
           masjid.name.toLowerCase().includes("johor".toLowerCase()) ||
             masjid.city.toLowerCase().includes("johor".toLowerCase()) ||
-            masjid.state.toLowerCase().includes("johor".toLowerCase())
+            masjid.state.toLowerCase().includes("johor".toLowerCase()),
         ).toBe(true);
       });
     });
@@ -507,7 +507,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
           `http://mock-api.test/rest/v1/masjids?search=${encodeURIComponent(term)}`,
           {
             method: "GET",
-          }
+          },
         );
 
         expect(response.status).toBe(200);
@@ -526,7 +526,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
         `http://mock-api.test/rest/v1/masjids?search=${encodedTerm}`,
         {
           method: "GET",
-        }
+        },
       );
 
       expect(response.status).toBe(200);
@@ -539,7 +539,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
         "http://mock-api.test/rest/v1/masjids?search=",
         {
           method: "GET",
-        }
+        },
       );
 
       expect(response.status).toBe(200);
@@ -563,7 +563,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
           `http://mock-api.test/rest/v1/masjids?search=${encodeURIComponent(term)}`,
           {
             method: "GET",
-          }
+          },
         );
 
         expect(response.status).toBe(200);
@@ -579,7 +579,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
         "http://mock-api.test/rest/v1/masjids?search=Masjid&limit=5&offset=0",
         {
           method: "GET",
-        }
+        },
       );
 
       expect(response.status).toBe(200);
@@ -593,7 +593,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
       data.data.forEach((masjid) => {
         expect(
           masjid.name.toLowerCase().includes("masjid") ||
-            masjid.city.toLowerCase().includes("masjid")
+            masjid.city.toLowerCase().includes("masjid"),
         ).toBe(true);
       });
     });
@@ -634,7 +634,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
 
       expect(response.status).toBe(200);
       expect(response.headers.get("content-type")).toContain(
-        "application/json"
+        "application/json",
       );
     });
 
@@ -674,7 +674,7 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
         .map(() =>
           fetch("http://mock-api.test/rest/v1/masjids", {
             method: "GET",
-          })
+          }),
         );
 
       const responses = await Promise.all(promises);
@@ -690,14 +690,14 @@ describe("GET /masjids - Public Masjid Listing Contract", () => {
         "http://mock-api.test/rest/v1/masjids?limit=10",
         {
           method: "GET",
-        }
+        },
       );
 
       const response2 = await fetch(
         "http://mock-api.test/rest/v1/masjids?limit=10",
         {
           method: "GET",
-        }
+        },
       );
 
       expect(response1.status).toBe(200);

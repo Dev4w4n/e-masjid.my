@@ -60,7 +60,7 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
   const makeAuthRequest = async (
     endpoint: string,
     body: any,
-    additionalHeaders: Record<string, string> = {}
+    additionalHeaders: Record<string, string> = {},
   ) => {
     return fetch(`${supabaseUrl}${endpoint}`, {
       method: "POST",
@@ -81,7 +81,7 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
     const isAvailable = await isBackendAvailable(supabaseUrl);
     if (!isAvailable) {
       console.warn(
-        "Supabase backend not available, skipping auth contract tests"
+        "Supabase backend not available, skipping auth contract tests",
       );
       return;
     }
@@ -115,12 +115,12 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
             apikey: supabaseKey,
           },
           body: JSON.stringify(requestBody),
-        }
+        },
       );
 
       expect(response.status).toBe(200);
       expect(response.headers.get("content-type")).toContain(
-        "application/json"
+        "application/json",
       );
 
       const data: AuthResponse = await response.json();
@@ -128,15 +128,15 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
       // Validate user object structure
       expect(data.user).toBeDefined();
       expect(data.user.id).toMatch(
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
       );
       expect(data.user.email).toBe(requestBody.email);
       expect(data.user.role).toBe("authenticated");
       expect(data.user.created_at).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
       );
       expect(data.user.last_sign_in_at).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
       );
 
       // Validate session object structure (now part of root response)
@@ -165,7 +165,7 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
             apikey: supabaseKey,
           },
           body: JSON.stringify(requestBody),
-        }
+        },
       );
 
       expect(response.status).toBe(200);
@@ -195,7 +195,7 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
             apikey: supabaseKey,
           },
           body: JSON.stringify(requestBody),
-        }
+        },
       );
 
       expect(response.status).toBe(200);
@@ -220,12 +220,12 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
             apikey: supabaseKey,
           },
           body: JSON.stringify(requestBody),
-        }
+        },
       );
 
       expect(response.status).toBe(400);
       expect(response.headers.get("content-type")).toContain(
-        "application/json"
+        "application/json",
       );
 
       const error: ErrorResponse = await response.json();
@@ -248,7 +248,7 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
             apikey: supabaseKey,
           },
           body: JSON.stringify(requestBody),
-        }
+        },
       );
 
       expect(response.status).toBe(400);
@@ -272,7 +272,7 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
             apikey: supabaseKey,
           },
           body: JSON.stringify(requestBody),
-        }
+        },
       );
 
       expect(response.status).toBe(400);
@@ -297,7 +297,7 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
             apikey: supabaseKey,
           },
           body: JSON.stringify(requestBody),
-        }
+        },
       );
 
       expect(response.status).toBe(400);
@@ -323,13 +323,13 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
               apikey: supabaseKey,
             },
             body: JSON.stringify(requestBody),
-          }
+          },
         );
 
         expect(response.status).toBe(400);
         const error: ErrorResponse = await response.json();
         expect(["invalid_credentials", "validation_failed"]).toContain(
-          error.error_code
+          error.error_code,
         );
         expect(error.msg).toBeDefined();
       }
@@ -345,7 +345,7 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
             apikey: supabaseKey,
           },
           body: "invalid json content{{",
-        }
+        },
       );
 
       expect(response.status).toBe(400);
@@ -368,7 +368,7 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
             apikey: supabaseKey,
           },
           body: JSON.stringify(requestBody),
-        }
+        },
       );
 
       const responseText = await response.text();
@@ -395,7 +395,7 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
             apikey: supabaseKey,
           },
           body: JSON.stringify(maliciousPayload),
-        }
+        },
       );
 
       // Should safely handle and reject malicious input
@@ -417,7 +417,7 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
             email: "nonexistent@example.com",
             password: "wrongpassword",
           }),
-        }
+        },
       );
 
       const endTime = Date.now();
@@ -442,7 +442,7 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
             email: testUser.email,
             password: testUser.password,
           }),
-        }
+        },
       );
 
       // Supabase is lenient with content-type and processes the request anyway
@@ -458,7 +458,7 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
             email: testUser.email,
             password: testUser.password,
           }),
-        }
+        },
       );
 
       // Supabase is lenient with missing content-type header and processes the request anyway
@@ -484,7 +484,7 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
               apikey: supabaseKey,
             },
             body: JSON.stringify(invalidRequest),
-          })
+          }),
         );
 
       const responses = await Promise.all(attempts);
@@ -513,7 +513,7 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
               email: testUser.email,
               password: testUser.password,
             }),
-          })
+          }),
         );
 
       const responses = await Promise.all(promises);
@@ -540,7 +540,7 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
             email: testUser.email,
             password: testUser.password,
           }),
-        }
+        },
       );
 
       expect(response.status).toBe(200);
@@ -561,7 +561,7 @@ describe("POST /auth/v1/token?grant_type=password - User Authentication Contract
             email: testUser.email,
             password: testUser.password,
           }),
-        }
+        },
       );
 
       expect(response.status).toBe(200);

@@ -257,7 +257,7 @@ describe("POST /auth/v1/signup - User Registration Contract", () => {
 
       expect(response.status).toBe(200); // Supabase returns 200, not 201
       expect(response.headers.get("content-type")).toContain(
-        "application/json"
+        "application/json",
       );
 
       const data: AuthResponse = await response.json();
@@ -265,12 +265,12 @@ describe("POST /auth/v1/signup - User Registration Contract", () => {
       // Validate user object structure
       expect(data.user).toBeDefined();
       expect(data.user.id).toMatch(
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
       );
       expect(data.user.email).toBe(requestBody.email);
       expect(data.user.role).toBe("authenticated"); // Supabase default role
       expect(data.user.created_at).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
       );
 
       // Validate session object structure (now part of root response)
@@ -323,7 +323,7 @@ describe("POST /auth/v1/signup - User Registration Contract", () => {
 
       expect(response.status).toBe(400);
       expect(response.headers.get("content-type")).toContain(
-        "application/json"
+        "application/json",
       );
 
       const error: ErrorResponse = await response.json();
@@ -412,12 +412,12 @@ describe("POST /auth/v1/signup - User Registration Contract", () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(requestBody),
-        }
+        },
       );
 
       expect(secondResponse.status).toBe(409);
       expect(secondResponse.headers.get("content-type")).toContain(
-        "application/json"
+        "application/json",
       );
 
       const error: ErrorResponse = await secondResponse.json();
@@ -514,7 +514,7 @@ describe("POST /auth/v1/signup - User Registration Contract", () => {
               email: `rate-test-${index}-${Date.now()}@example.com`,
               password: "validpassword123",
             }),
-          })
+          }),
         );
 
       const responses = await Promise.all(promises);

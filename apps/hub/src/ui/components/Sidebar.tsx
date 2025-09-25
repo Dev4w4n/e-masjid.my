@@ -49,7 +49,7 @@ export function Sidebar({ open, onClose, width = 280 }: SidebarProps) {
     setExpandedItems((prev) =>
       prev.includes(itemText)
         ? prev.filter((item) => item !== itemText)
-        : [...prev, itemText]
+        : [...prev, itemText],
     );
   };
 

@@ -196,7 +196,7 @@ function ProfileView() {
                   <ListItemText
                     primary="Preferred Language"
                     secondary={getLanguageDisplay(
-                      profile.preferred_language || "en"
+                      profile.preferred_language || "en",
                     )}
                   />
                 </ListItem>
@@ -245,7 +245,7 @@ function ProfileView() {
                   <ListItemText
                     primary="Member Since"
                     secondary={new Date(
-                      profile.created_at
+                      profile.created_at,
                     ).toLocaleDateString()}
                   />
                 </ListItem>
@@ -254,7 +254,7 @@ function ProfileView() {
                   <ListItemText
                     primary="Last Updated"
                     secondary={new Date(
-                      profile.updated_at
+                      profile.updated_at,
                     ).toLocaleDateString()}
                   />
                 </ListItem>

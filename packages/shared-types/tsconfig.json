@@ -3,15 +3,18 @@
     "target": "ES2020",
     "lib": ["ES2020"],
     "module": "ESNext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "declaration": true,
+    "declarationMap": true,
     "outDir": "dist",
     "rootDir": "src",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "composite": true
+    "composite": true,
+    "incremental": true,
+    "emitDeclarationOnly": false
   },
   "include": ["src/**/*"]
 }

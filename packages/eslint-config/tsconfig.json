@@ -1,36 +1,19 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": ["ES2022"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
+    "strict": false,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
     "module": "ESNext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "composite": true,
-    "incremental": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "exactOptionalPropertyTypes": true,
-    "noImplicitReturns": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": false,
-    "noUncheckedIndexedAccess": true,
-    "paths": {
-      "@masjid-suite/*": ["./packages/*/src"]
-    }
+    "isolatedModules": false,
+    "noEmit": true
   },
-  "include": [],
-  "exclude": ["node_modules", "dist", "build", ".next"]
+  "include": ["*.js"],
+  "exclude": ["node_modules", "dist", "build"]
 }

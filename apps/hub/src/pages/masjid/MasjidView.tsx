@@ -529,7 +529,7 @@ function MasjidView() {
                   <ListItemText
                     primary="Created"
                     secondary={new Date(masjid.created_at).toLocaleDateString(
-                      "en-MY"
+                      "en-MY",
                     )}
                   />
                 </ListItem>
@@ -541,7 +541,7 @@ function MasjidView() {
                   <ListItemText
                     primary="Last Updated"
                     secondary={new Date(masjid.updated_at).toLocaleDateString(
-                      "en-MY"
+                      "en-MY",
                     )}
                   />
                 </ListItem>
