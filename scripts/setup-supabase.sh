@@ -421,87 +421,8 @@ create_env_files() {
         SHOW_LOGGER="false"
     fi
     
-    # Create root template file for reference
-    local ROOT_TEMPLATE=".env.local.template"
-    echo -e "${BLUE}Creating $ROOT_TEMPLATE (reference template)...${NC}"
-    
-    cat > "$ROOT_TEMPLATE" << EOL
-# Environment Variables Template for Masjid Suite
-# Generated automatically by setup script on $(date)
-# Copy this template to create app-specific .env.local files
-
-# ===========================================
-# SUPABASE CONFIGURATION
-# ===========================================
-SUPABASE_URL=$API_URL
-SUPABASE_ANON_KEY=$ANON_KEY
-SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY
-
-# Browser-accessible Supabase variables (VITE_ prefix for hub app)
-VITE_SUPABASE_URL=$API_URL
-VITE_SUPABASE_ANON_KEY=$ANON_KEY
-
-# Next.js client-side variables (NEXT_PUBLIC_ prefix for tv-display app)
-NEXT_PUBLIC_SUPABASE_URL=$API_URL
-NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY
-
-# ===========================================
-# APPLICATION CONFIGURATION
-# ===========================================
-NODE_ENV=$NODE_ENV
-VITE_APP_URL=http://localhost:3000
-NEXT_PUBLIC_APP_URL=http://localhost:3001
-
-# TV Display specific configuration
-NEXT_PUBLIC_DISPLAY_NAME=Default TV Display
-NEXT_PUBLIC_MASJID_ID=550e8400-e29b-41d4-a716-446655440000
-NEXT_PUBLIC_FULLSCREEN_MODE=false
-NEXT_PUBLIC_KIOSK_MODE=false
-NEXT_PUBLIC_AUTO_REFRESH=true
-NEXT_PUBLIC_REFRESH_INTERVAL=3600000
-NEXT_PUBLIC_PRAYER_LOCATION=JOHOR
-NEXT_PUBLIC_PRAYER_ZONE=JHR01
-NEXT_PUBLIC_PRAYER_UPDATE_INTERVAL=300000
-NEXT_PUBLIC_CONTENT_REFRESH_INTERVAL=60000
-NEXT_PUBLIC_APP_ENV=$NODE_ENV
-
-# ===========================================
-# ADMIN CONFIGURATION
-# ===========================================
-SUPER_ADMIN_EMAIL=$super_admin_email
-SUPER_ADMIN_PASSWORD=$super_admin_password
-EOL
-
-    # Add admin ID if provided (for test environment)
-    if [ -n "$super_admin_id" ]; then
-        cat >> "$ROOT_TEMPLATE" << EOL
-SUPER_ADMIN_ID=$super_admin_id
-EOL
-    fi
-    
-    cat >> "$ROOT_TEMPLATE" << EOL
-
-# ===========================================
-# DEVELOPMENT FLAGS
-# ===========================================
-VITE_ENABLE_DEV_TOOLS=$ENABLE_DEV_TOOLS
-VITE_SHOW_LOGGER=$SHOW_LOGGER
-NEXT_PUBLIC_ENABLE_DEV_TOOLS=$ENABLE_DEV_TOOLS
-NEXT_PUBLIC_SHOW_LOGGER=$SHOW_LOGGER
-
-# ===========================================
-# OPTIONAL: OAUTH PROVIDERS
-# ===========================================
-# Google OAuth (optional)
-# SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID=your-google-client-id
-# SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET=your-google-client-secret
-
-# ===========================================
-# OPTIONAL: SMS PROVIDER
-# ===========================================
-# Twilio for SMS verification (optional)
-# SUPABASE_AUTH_SMS_TWILIO_AUTH_TOKEN=your-twilio-auth-token
-EOL
+    # Skip creating root template file - it should not be auto-generated
+    echo -e "${BLUE}Skipping .env.local.template update (preserving existing file)...${NC}"
 
     # Create Hub App .env.local
     local HUB_ENV_FILE="apps/hub/.env.local"
@@ -598,17 +519,6 @@ EOL
 
     # Add test-specific variables if this is a test environment
     if [ "$env_type" = "test" ]; then
-        # Add test variables to root template
-        cat >> "$ROOT_TEMPLATE" << EOL
-
-# ===========================================
-# TEST-SPECIFIC CONFIGURATION
-# ===========================================
-TEST_SUPER_ADMIN_EMAIL=$super_admin_email
-TEST_SUPER_ADMIN_PASSWORD=$super_admin_password
-TEST_SUPER_ADMIN_ID=$super_admin_id
-EOL
-
         # Add test variables to hub app
         cat >> "$HUB_ENV_FILE" << EOL
 
@@ -622,12 +532,6 @@ EOL
 
         # Add additional test user IDs if provided
         if [ -n "$MASJID_ADMIN_ID" ]; then
-            cat >> "$ROOT_TEMPLATE" << EOL
-TEST_MASJID_ADMIN_EMAIL=masjid.admin@test.com
-TEST_MASJID_ADMIN_PASSWORD=TestPassword123!
-TEST_MASJID_ADMIN_ID=$MASJID_ADMIN_ID
-EOL
-            
             cat >> "$HUB_ENV_FILE" << EOL
 TEST_MASJID_ADMIN_EMAIL=masjid.admin@test.com
 TEST_MASJID_ADMIN_PASSWORD=TestPassword123!
@@ -636,12 +540,6 @@ EOL
         fi
         
         if [ -n "$USER1_ID" ]; then
-            cat >> "$ROOT_TEMPLATE" << EOL
-TEST_USER_EMAIL=user1@test.com
-TEST_USER_PASSWORD=TestPassword123!
-TEST_USER_ID=$USER1_ID
-EOL
-
             cat >> "$HUB_ENV_FILE" << EOL
 TEST_USER_EMAIL=user1@test.com
 TEST_USER_PASSWORD=TestPassword123!
@@ -649,14 +547,13 @@ TEST_USER_ID=$USER1_ID
 EOL
         fi
         
-        # Create .env.test.local for testing
+        # Create .env.test.local for testing by copying the hub config
         local TEST_ENV_FILE=".env.test.local"
-        cp "$ROOT_TEMPLATE" "$TEST_ENV_FILE"
-        echo -e "${GREEN}✅ $TEST_ENV_FILE created from template${NC}"
+        cp "$HUB_ENV_FILE" "$TEST_ENV_FILE"
+        echo -e "${GREEN}✅ $TEST_ENV_FILE created from hub app configuration${NC}"
     fi
     
     echo -e "${GREEN}✅ All environment files created successfully${NC}"
-    echo -e "${BLUE}   • Root template: $ROOT_TEMPLATE${NC}"
     echo -e "${BLUE}   • Hub app: $HUB_ENV_FILE${NC}"
     echo -e "${BLUE}   • TV Display app: $TV_DISPLAY_ENV_FILE${NC}"
 }
@@ -1210,7 +1107,6 @@ if [ "$SETUP_TYPE" = "test" ]; then
     echo "   • Test data generated and loaded with proper references"
     echo "   • TV display test data created"
     echo "   • Environment files created:"
-    echo "     - .env.local.template (reference template)"
     echo "     - .env.test.local (test configuration)"
     echo "     - apps/hub/.env.local (Hub app configuration)"
     echo "     - apps/tv-display/.env.local (TV Display app configuration)"
@@ -1233,7 +1129,6 @@ else
     echo "   • Password: SuperAdmin123!"
     echo "   • User role: super_admin"
     echo "   • Environment files created:"
-    echo "     - .env.local.template (reference template)"
     echo "     - apps/hub/.env.local (Hub app configuration)"
     echo "     - apps/tv-display/.env.local (TV Display app configuration)"
     echo ""
@@ -1256,4 +1151,4 @@ echo ""
 echo -e "${YELLOW}💡 Tips:${NC}"
 echo "   • Run this script with the --test flag to load test data for unit tests"
 echo "   • Both apps now use separate .env.local files for their specific configurations"
-echo "   • The .env.local.template file serves as a reference for all available variables"
+echo "   • The existing .env.local.template file serves as a reference for all available variables"
