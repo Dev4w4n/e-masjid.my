@@ -211,6 +211,7 @@ export function Sidebar({ open, onClose, width = 280 }: SidebarProps) {
         "& .MuiDrawer-paper": {
           width,
           boxSizing: "border-box",
+          bgcolor: "background.paper",
         },
       }}
     >

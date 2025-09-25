@@ -247,7 +247,13 @@ function Layout() {
   );
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box
+      sx={{
+        display: "flex",
+        minHeight: "100vh",
+        bgcolor: "background.default",
+      }}
+    >
       <CssBaseline />
 
       {/* App Bar */}
@@ -441,6 +447,7 @@ function Layout() {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
+              bgcolor: "background.paper",
             },
           }}
         >
@@ -455,6 +462,7 @@ function Layout() {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerOpen ? drawerWidth : 64,
+              bgcolor: "background.paper",
               transition: theme.transitions.create("width", {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.enteringScreen,
@@ -475,6 +483,7 @@ function Layout() {
           flexGrow: 1,
           width: { md: `calc(100% - ${drawerOpen ? drawerWidth : 64}px)` },
           minHeight: "100vh",
+          bgcolor: "background.default",
           transition: theme.transitions.create(["width", "margin"], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,

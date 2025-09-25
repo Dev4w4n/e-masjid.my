@@ -978,10 +978,10 @@ EOSQL
     # Also create a comprehensive .env.local for development
     create_env_files "development" "admin@e-masjid.my" "SuperAdmin123!" "$SUPER_ADMIN_ID"
     
-    # Create app-specific .env file for profile app (backward compatibility)
-    ENV_FILE="apps/profile/.env"
+    # Create app-specific .env file for hub app (backward compatibility)
+    ENV_FILE="apps/hub/.env"
     cat > "$ENV_FILE" << EOL
-# Test environment variables for profile app
+# Test environment variables for hub app
 SUPABASE_URL=$API_URL
 SUPABASE_ANON_KEY=$ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY
