@@ -313,3 +313,34 @@ export interface ValidationError {
 export interface FormErrors {
   [key: string]: string | ValidationError[];
 }
+
+// Content Management Permission Types
+export interface ContentPermissionContext {
+  user_id: string;
+  content_id: string;
+  masjid_id: string;
+  action: "read" | "write" | "approve" | "delete";
+}
+
+export interface PermissionResult {
+  allowed: boolean;
+  reason: string | null;
+}
+
+export interface ApprovalPermissionResult {
+  canApprove: boolean;
+  canReject: boolean;
+  roles: string[];
+}
+
+export interface MasjidAccessResult {
+  hasAccess: boolean;
+  role: string | null;
+  permissions: string[];
+}
+
+export interface UserMasjidRole {
+  masjid_id: string;
+  role: string;
+  permissions: string[];
+}

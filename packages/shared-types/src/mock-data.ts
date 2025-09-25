@@ -739,3 +739,27 @@ export const MockFactories = {
   DisplayContent: DisplayContentMockFactory,
   TestDataGenerator,
 };
+
+/**
+ * Mock validation test cases
+ */
+export const MOCK_VALIDATION_CASES = {
+  youtubeUrls: [
+    {
+      url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      expectedId: "dQw4w9WgXcQ",
+    },
+    {
+      url: "https://youtu.be/dQw4w9WgXcQ",
+      expectedId: "dQw4w9WgXcQ",
+    },
+    {
+      url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      expectedId: "dQw4w9WgXcQ",
+    },
+    {
+      url: "https://www.youtube.com/v/dQw4w9WgXcQ",
+      expectedId: "dQw4w9WgXcQ",
+    },
+  ],
+};

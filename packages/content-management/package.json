@@ -1,0 +1,62 @@
+{
+  "name": "@masjid-suite/content-management",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Content management and approval system for Masjid Suite",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest run --coverage",
+    "test:contract": "vitest --config vitest.contract.config.ts",
+    "test:integration": "vitest --config vitest.integration.config.ts",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@masjid-suite/auth": "workspace:*",
+    "@masjid-suite/shared-types": "workspace:*",
+    "@masjid-suite/supabase-client": "workspace:*",
+    "@masjid-suite/ui-components": "workspace:*",
+    "@masjid-suite/ui-theme": "workspace:*",
+    "@mui/icons-material": "^5.15.0",
+    "@mui/lab": "^5.0.0-alpha.177",
+    "@mui/material": "^5.15.0",
+    "@mui/system": "^5.15.0",
+    "@mui/x-date-pickers": "^7.29.4",
+    "date-fns": "^2.30.0",
+    "react": "^18.2.0",
+    "react-dropzone": "^14.2.0",
+    "react-hook-form": "^7.48.0"
+  },
+  "devDependencies": {
+    "@masjid-suite/eslint-config": "workspace:*",
+    "@testing-library/jest-dom": "^6.1.0",
+    "@testing-library/react": "^14.1.0",
+    "@testing-library/user-event": "^14.5.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "eslint": "^8.57.0",
+    "jsdom": "^23.0.0",
+    "typescript": "^5.2.0",
+    "vitest": "^1.0.0"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.0.0",
+    "@emotion/styled": "^11.0.0",
+    "@mui/material": "^5.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  }
+}

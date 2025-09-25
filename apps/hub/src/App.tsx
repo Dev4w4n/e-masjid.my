@@ -11,6 +11,10 @@ import MasjidForm from "./pages/masjid/MasjidForm";
 import MasjidView from "./pages/masjid/MasjidView";
 import AdminApplications from "./pages/admin/AdminApplications";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import ApprovalDashboardPage from "./pages/admin/ApprovalDashboardPage";
+import DisplaySettingsPage from "./pages/admin/DisplaySettingsPage";
+import ContentCreatePage from "./pages/content/ContentCreatePage";
+import ContentListPage from "./pages/content/ContentListPage";
 import Home from "./pages/Home";
 
 /**
@@ -82,6 +86,44 @@ function App() {
           element={
             user ? (
               <AdminApplications />
+            ) : (
+              <Navigate to="/auth/signin" replace />
+            )
+          }
+        />
+        <Route
+          path="admin/approvals"
+          element={
+            user ? (
+              <ApprovalDashboardPage />
+            ) : (
+              <Navigate to="/auth/signin" replace />
+            )
+          }
+        />
+        <Route
+          path="admin/display-settings"
+          element={
+            user ? (
+              <DisplaySettingsPage />
+            ) : (
+              <Navigate to="/auth/signin" replace />
+            )
+          }
+        />
+
+        {/* Content management routes */}
+        <Route
+          path="content/my-content"
+          element={
+            user ? <ContentListPage /> : <Navigate to="/auth/signin" replace />
+          }
+        />
+        <Route
+          path="content/create"
+          element={
+            user ? (
+              <ContentCreatePage />
             ) : (
               <Navigate to="/auth/signin" replace />
             )

@@ -7,6 +7,7 @@ import { beforeAll } from "vitest";
 import { config as loadEnv } from "dotenv";
 import { resolve } from "path";
 import { existsSync } from "fs";
+import "@testing-library/jest-dom";
 
 // Load env files from the monorepo root so process.env is populated in tests
 // Priority: .env -> .env.local -> .env.test -> .env.test.local (later overrides earlier)

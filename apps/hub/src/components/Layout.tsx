@@ -36,8 +36,10 @@ import {
   AccountCircle,
   ChevronLeft,
   ChevronRight,
+  ContentPaste as ContentIcon,
 } from "@mui/icons-material";
 import { useAuth, usePermissions } from "@masjid-suite/auth";
+import { useApprovalNotifications } from "@masjid-suite/content-management";
 
 const drawerWidth = 240;
 
@@ -59,6 +61,12 @@ function Layout() {
   const location = useLocation();
   const { user, profile, signOut } = useAuth();
   const permissions = usePermissions();
+
+  // Real-time approval notifications for admins
+  const userMasjidIds = ["test-masjid"]; // TODO: Get from user profile/permissions
+  const { pendingCount } = useApprovalNotifications(
+    permissions.isSuperAdmin() ? userMasjidIds : []
+  );
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(!isMobile);
@@ -84,12 +92,20 @@ function Layout() {
 
     // Add user-specific items
     if (user) {
-      items.push({
-        text: "My Profile",
-        icon: <Person />,
-        path: "/profile",
-        roles: ["registered", "masjid_admin", "super_admin"],
-      });
+      items.push(
+        {
+          text: "My Profile",
+          icon: <Person />,
+          path: "/profile",
+          roles: ["registered", "masjid_admin", "super_admin"],
+        },
+        {
+          text: "My Content",
+          icon: <ContentIcon />,
+          path: "/content/my-content",
+          roles: ["registered", "masjid_admin", "super_admin"],
+        }
+      );
     }
 
     // Add admin-specific items
@@ -107,6 +123,19 @@ function Layout() {
           path: "/admin/applications",
           roles: ["super_admin"],
           badge: 8, // Mock badge count
+        },
+        {
+          text: "Content Approvals",
+          icon: <Assignment />,
+          path: "/admin/approvals",
+          roles: ["super_admin"],
+          ...(pendingCount > 0 && { badge: pendingCount }), // Only include badge if > 0
+        },
+        {
+          text: "Display Settings",
+          icon: <Settings />,
+          path: "/admin/display-settings",
+          roles: ["super_admin"],
         }
       );
     }

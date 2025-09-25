@@ -228,7 +228,7 @@ BEGIN
     )
   RETURNING id INTO display_2_id;
 
-  -- Insert test display content
+  -- Insert test display content for content management system
   INSERT INTO display_content (
     id, masjid_id, display_id, title, type, url, duration,
     status, submitted_by, start_date, end_date
@@ -287,6 +287,77 @@ BEGIN
       25.00
     )
   RETURNING id INTO content_3_id;
+
+  -- Insert content management test data
+  -- Pending content awaiting approval
+  INSERT INTO display_content (
+    masjid_id, title, description, type, url, duration,
+    status, submitted_by, start_date, end_date
+  ) VALUES 
+    (
+      test_masjid_id,
+      'Community Event Poster',
+      'Announcement for upcoming community iftar event',
+      'image',
+      'https://example.com/test-images/event-poster.jpg',
+      15,
+      'pending',
+      test_user_id,
+      CURRENT_DATE + INTERVAL '1 day',
+      CURRENT_DATE + INTERVAL '10 days'
+    ),
+    (
+      test_masjid_id,
+      'Islamic Lecture Series',
+      'YouTube video of Islamic lecture by Sheikh Abdullah',
+      'youtube_video',
+      'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      20,
+      'pending',
+      test_user_id,
+      CURRENT_DATE,
+      CURRENT_DATE + INTERVAL '7 days'
+    );
+
+  -- Rejected content for testing resubmission workflow
+  INSERT INTO display_content (
+    masjid_id, title, description, type, url, duration,
+    status, submitted_by, start_date, end_date, rejection_reason,
+    approved_by, approved_at
+  ) VALUES 
+    (
+      test_masjid_id,
+      'Rejected Content Test',
+      'This content was rejected for testing purposes',
+      'image',
+      'https://example.com/test-images/rejected.jpg',
+      10,
+      'rejected',
+      test_user_id,
+      CURRENT_DATE,
+      CURRENT_DATE + INTERVAL '5 days',
+      'Image quality is too low. Please resubmit with higher resolution.',
+      masjid_admin_id,
+      NOW() - INTERVAL '1 day'
+    );
+
+  -- Expired content for testing cleanup
+  INSERT INTO display_content (
+    masjid_id, title, description, type, url, duration,
+    status, submitted_by, start_date, end_date
+  ) VALUES 
+    (
+      test_masjid_id,
+      'Expired Event Notice',
+      'This event has already passed',
+      'text_announcement',
+      'data:text/plain;base64,RXZlbnQgaGFzIGVuZGVk', -- "Event has ended"
+      8,
+      'expired',
+      masjid_admin_id,
+      CURRENT_DATE - INTERVAL '10 days',
+      CURRENT_DATE - INTERVAL '1 day'
+    );
 
   -- Insert test prayer times
   INSERT INTO prayer_times (

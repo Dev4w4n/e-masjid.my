@@ -7,6 +7,32 @@ export * from "./address";
 export * from "./tv-display";
 export * from "./mock-data";
 export * from "./e2e-test-helpers";
+
+// Test fixtures for comprehensive testing (specific exports to avoid conflicts)
+export {
+  ContentManagementFixtures,
+  FIXED_IDS,
+  MOCK_CONTENT_BASE,
+  CREATE_CONTENT_REQUESTS,
+  APPROVAL_REQUESTS,
+  MOCK_APPROVAL_REQUESTS,
+  MOCK_REJECTION_REQUESTS,
+  MOCK_NOTIFICATIONS,
+  MOCK_DISPLAY_SETTINGS,
+  createDisplayContent,
+  createContentRequest,
+  createNotification,
+  createContentList,
+  createPendingApprovals,
+  resetMockData,
+  getMockDataState,
+  type ContentNotification,
+  type ContentManagementCreateRequest,
+  type ApprovalRequest,
+  type RejectionRequest,
+  type DisplaySettings,
+} from "./test-fixtures/content-management";
+
 // Masjid TV Display types (avoid conflict with database Masjid type)
 export type {
   Masjid as TvDisplayMasjid,
