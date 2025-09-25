@@ -58,20 +58,56 @@ const requiredVars = {
 };
 
 // Check root .env.local file
-console.log('📁 Checking root environment file...');
-const rootEnvPath = resolve(__dirname, '../.env.local');
-const rootEnvContent = readEnvFile(rootEnvPath);
+console.log('📁 Checking environment files...');
 
-if (!rootEnvContent) {
-  console.log('❌ Root .env.local file not found');
-  console.log(`   Expected at: ${rootEnvPath}`);
-  console.log('   Please copy .env.example to .env.local and configure values\n');
+// Check for template file
+const rootTemplatePath = resolve(__dirname, '../.env.local.template');
+const rootTemplateContent = readEnvFile(rootTemplatePath);
+
+// Check for app-specific files
+const hubEnvPath = resolve(__dirname, '../apps/hub/.env.local');
+const hubEnvContent = readEnvFile(hubEnvPath);
+
+const tvDisplayEnvPath = resolve(__dirname, '../apps/tv-display/.env.local');
+const tvDisplayEnvContent = readEnvFile(tvDisplayEnvPath);
+
+// Check if at least one valid configuration exists
+if (!rootTemplateContent && !hubEnvContent && !tvDisplayEnvContent) {
+  console.log('❌ No environment files found');
+  console.log(`   Expected one of:`);
+  console.log(`   - ${rootTemplatePath}`);
+  console.log(`   - ${hubEnvPath}`);
+  console.log(`   - ${tvDisplayEnvPath}`);
+  console.log('   Please run the setup script: ./scripts/setup-supabase.sh\n');
   process.exit(1);
-} else {
-  console.log('✅ Root .env.local file found\n');
+} 
+
+// Use hub environment for validation if available, otherwise use template
+let rootVars = {};
+if (hubEnvContent) {
+  rootVars = parseEnvVars(hubEnvContent);
+  console.log('✅ Using Hub app .env.local for validation');
+} else if (rootTemplateContent) {
+  rootVars = parseEnvVars(rootTemplateContent);
+  console.log('✅ Using .env.local.template for validation');
+} else if (tvDisplayEnvContent) {
+  rootVars = parseEnvVars(tvDisplayEnvContent);
+  console.log('✅ Using TV Display app .env.local for validation');
 }
 
-const rootVars = parseEnvVars(rootEnvContent);
+// Report on file status
+console.log('\n📋 Environment file status:');
+console.log(`   Template file: ${rootTemplateContent ? '✅ Found' : '❌ Missing'}`);
+console.log(`   Hub app .env.local: ${hubEnvContent ? '✅ Found' : '❌ Missing'}`);
+console.log(`   TV Display app .env.local: ${tvDisplayEnvContent ? '✅ Found' : '❌ Missing'}`);
+
+if (!hubEnvContent) {
+  console.log('⚠️  Warning: Hub app .env.local not found - Hub app may not work properly');
+}
+
+if (!tvDisplayEnvContent) {
+  console.log('⚠️  Warning: TV Display app .env.local not found - TV Display app may not work properly');
+}
 
 // Validate required variables
 console.log('🔐 Validating required environment variables...');
@@ -191,14 +227,20 @@ console.log('\n📋 Validation Summary:');
 if (hasErrors) {
   console.log('❌ Issues found - please review the errors above');
   console.log('\n💡 Next steps:');
-  console.log('1. Copy .env.example to .env.local if not exists');
-  console.log('2. Fill in missing environment variables');
-  console.log('3. Ensure sensitive variables are not exposed to client');
-  console.log('4. Run this script again to verify fixes');
+  console.log('1. Run the setup script: ./scripts/setup-supabase.sh');
+  console.log('2. Or manually create app-specific .env.local files:');
+  console.log('   - apps/hub/.env.local (for Hub app)');
+  console.log('   - apps/tv-display/.env.local (for TV Display app)');
+  console.log('3. Fill in missing environment variables');
+  console.log('4. Ensure sensitive variables are not exposed to client');
+  console.log('5. Run this script again to verify fixes');
   process.exit(1);
 } else {
   console.log('✅ All environment variables are properly configured!');
   console.log('\n🎉 Your turborepo environment setup is ready for development');
+  console.log('\n📱 Application URLs:');
+  console.log('   • Hub App (Vite): http://localhost:3000');
+  console.log('   • TV Display App (Next.js): http://localhost:3001');
 }
 
 console.log('\n📚 For more information, see ENVIRONMENT_VARIABLES.md');

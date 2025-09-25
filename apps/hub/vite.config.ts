@@ -5,8 +5,8 @@ import { resolve } from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  // Load env files from the monorepo root so .env.local at root is picked up
-  envDir: resolve(__dirname, "../../"),
+  // Load env files from the app directory for app-specific configuration
+  envDir: resolve(__dirname, "./"),
 
   // Development server configuration
   server: {
@@ -67,19 +67,19 @@ export default defineConfig({
       "@masjid-suite/auth": resolve(__dirname, "../../packages/auth/src"),
       "@masjid-suite/supabase-client": resolve(
         __dirname,
-        "../../packages/supabase-client/src",
+        "../../packages/supabase-client/src"
       ),
       "@masjid-suite/shared-types": resolve(
         __dirname,
-        "../../packages/shared-types/src",
+        "../../packages/shared-types/src"
       ),
       "@masjid-suite/ui-components": resolve(
         __dirname,
-        "../../packages/ui-components/src",
+        "../../packages/ui-components/src"
       ),
       "@masjid-suite/ui-theme": resolve(
         __dirname,
-        "../../packages/ui-theme/src",
+        "../../packages/ui-theme/src"
       ),
     },
     // Ensure single copies across the monorepo during dev
