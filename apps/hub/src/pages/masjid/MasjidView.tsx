@@ -12,7 +12,6 @@ import {
   Avatar,
   Alert,
   CircularProgress,
-  Paper,
   List,
   ListItem,
   ListItemIcon,
@@ -30,54 +29,21 @@ import {
   LocationOn,
   Phone,
   Email,
-  Language,
   People,
   Schedule,
-  CheckCircle,
   Info,
   Share,
   Mosque,
   AccessTime,
+  Language,
 } from "@mui/icons-material";
 import { usePermissions } from "@masjid-suite/auth";
+import { masjidService } from "@masjid-suite/supabase-client";
+import { Database } from "@masjid-suite/shared-types";
 
-// Mock data
-const mockMasjid = {
-  id: "01234567-89ab-cdef-0123-456789abcdef",
-  name: "Masjid Jamek Sungai Rambai",
-  registration_number: "MSJ-2024-001",
-  email: "admin@masjidjameksungairambai.org",
-  phone_number: "+60412345678",
-  description:
-    "Community mosque serving the Sungai Rambai area in Bukit Mertajam. Established in 1985, this mosque serves over 300 families and offers daily prayers, Friday sermons, and religious education programs. The mosque is known for its active community outreach programs and traditional Islamic architecture.",
-  website_url: "https://masjidjameksungairambai.org",
-  address: {
-    address_line_1: "Jalan Masjid Jamek",
-    address_line_2: "Sungai Rambai",
-    city: "Bukit Mertajam",
-    state: "Penang",
-    postcode: "14000",
-    country: "MYS",
-  },
-  capacity: 500,
-  facilities: [
-    "Parking",
-    "Air Conditioning",
-    "Wheelchair Access",
-    "Library",
-    "Ablution Facilities",
-  ],
-  prayer_times_source: "jakim",
-  status: "active",
-  created_at: "2024-01-15T10:00:00Z",
-  updated_at: "2024-03-01T15:30:00Z",
-  stats: {
-    total_members: 312,
-    active_programs: 8,
-    monthly_visitors: 1250,
-  },
-};
+type Masjid = Database["public"]["Tables"]["masjids"]["Row"];
 
+// Mock data for prayer times - will be replaced later
 const mockPrayerTimes = {
   date: "2024-03-15",
   times: {
@@ -99,23 +65,35 @@ function MasjidView() {
   const navigate = useNavigate();
   const permissions = usePermissions();
 
-  const [masjid, setMasjid] = useState(mockMasjid);
-  const [prayerTimes, setPrayerTimes] = useState(mockPrayerTimes);
-  const [loading, setLoading] = useState(false);
+  const [masjid, setMasjid] = useState<Masjid | null>(null);
+  const [prayerTimes] = useState(mockPrayerTimes); // Keep mock for now
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   // Load masjid data
   useEffect(() => {
-    if (id) {
-      setLoading(true);
-      // Mock API call - replace with actual implementation
-      setTimeout(() => {
-        setMasjid(mockMasjid);
-        setPrayerTimes(mockPrayerTimes);
-        setLoading(false);
-      }, 1000);
+    if (!id) {
+      setError("No masjid ID provided.");
+      setLoading(false);
+      return;
     }
+
+    const fetchMasjid = async () => {
+      try {
+        setLoading(true);
+        const data = await masjidService.getMasjid(id);
+        setMasjid(data);
+        setError(null);
+      } catch (err: any) {
+        setError(err.message);
+        console.error("Failed to fetch masjid:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMasjid();
   }, [id]);
 
   const getStatusColor = (status: string) => {
@@ -132,6 +110,7 @@ function MasjidView() {
   };
 
   const formatAddress = (address: any) => {
+    if (!address || typeof address !== "object") return "No address provided.";
     const parts = [
       address.address_line_1,
       address.address_line_2,
@@ -143,10 +122,10 @@ function MasjidView() {
   };
 
   const handleDelete = async () => {
+    // This remains a mock for now as delete logic can be complex
     try {
-      // Mock API call - replace with actual implementation
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       console.log("Deleting masjid:", id);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       navigate("/masjids");
     } catch (error) {
       console.error("Failed to delete masjid:", error);
@@ -156,16 +135,15 @@ function MasjidView() {
   };
 
   const handleShare = () => {
-    if (navigator.share) {
+    if (navigator.share && masjid) {
       navigator.share({
         title: masjid.name,
-        text: `Check out ${masjid.name} - ${masjid.description.substring(0, 100)}...`,
+        text: `Check out ${masjid.name} - ${masjid.description?.substring(0, 100)}...`,
         url: window.location.href,
       });
     } else {
-      // Fallback to clipboard
       navigator.clipboard.writeText(window.location.href);
-      // Could show a toast notification here
+      // Consider adding a toast notification for feedback
     }
   };
 
@@ -396,7 +374,7 @@ function MasjidView() {
           </Card>
 
           {/* Facilities */}
-          {masjid.facilities && masjid.facilities.length > 0 && (
+          {/* {masjid.facilities && masjid.facilities.length > 0 && (
             <Card sx={{ mb: 3 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -415,7 +393,7 @@ function MasjidView() {
                 </Box>
               </CardContent>
             </Card>
-          )}
+          )} */}
         </Grid>
 
         {/* Sidebar */}
@@ -469,7 +447,7 @@ function MasjidView() {
           </Card>
 
           {/* Statistics */}
-          {masjid.stats && (
+          {/* {masjid.stats && (
             <Card sx={{ mb: 3 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -512,7 +490,7 @@ function MasjidView() {
                 </Grid>
               </CardContent>
             </Card>
-          )}
+          )} */}
 
           {/* Meta Information */}
           <Card>
@@ -529,7 +507,7 @@ function MasjidView() {
                   <ListItemText
                     primary="Created"
                     secondary={new Date(masjid.created_at).toLocaleDateString(
-                      "en-MY",
+                      "en-MY"
                     )}
                   />
                 </ListItem>
@@ -541,7 +519,7 @@ function MasjidView() {
                   <ListItemText
                     primary="Last Updated"
                     secondary={new Date(masjid.updated_at).toLocaleDateString(
-                      "en-MY",
+                      "en-MY"
                     )}
                   />
                 </ListItem>
@@ -552,7 +530,13 @@ function MasjidView() {
                   </ListItemIcon>
                   <ListItemText
                     primary="Prayer Times"
-                    secondary={`${masjid.prayer_times_source} (${masjid.prayer_times_source === "jakim" ? "JAKIM" : masjid.prayer_times_source === "auto" ? "Auto-detect" : "Manual"})`}
+                    secondary={`${masjid.prayer_times_source ?? "Not Set"} (${
+                      masjid.prayer_times_source === "jakim"
+                        ? "JAKIM"
+                        : masjid.prayer_times_source === "auto"
+                          ? "Auto-detect"
+                          : "Manual"
+                    })`}
                   />
                 </ListItem>
               </List>

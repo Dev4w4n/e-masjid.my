@@ -3,6 +3,7 @@
     "outDir": "./dist",
     "declaration": true,
     "declarationMap": true,
+    "sourceMap": true,
     "module": "ESNext",
     "moduleResolution": "node",
     "target": "ES2022",

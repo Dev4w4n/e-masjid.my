@@ -4,6 +4,7 @@ export * from "./database";
 export * from "./types";
 export * from "./validation";
 export * from "./address";
+export * from "./constants";
 // Specifically export validation functions for direct imports
 export {
   isValidMalaysianPhone,
@@ -24,31 +25,8 @@ export {
 export * from "./tv-display";
 export * from "./mock-data";
 export * from "./e2e-test-helpers";
-// Masjid TV Display types (avoid conflict with database Masjid type)
-export type {
-  Masjid as TvDisplayMasjid,
-  CreateMasjidRequest,
-  UpdateMasjidRequest,
-  MasjidWithRelations,
-  JakimZone,
-  MasjidErrorCode,
-  JAKIM_ZONES,
-  SUPPORTED_TIMEZONES,
-  MASJID_VALIDATION,
-  DEFAULT_TIMEZONE,
-} from "./masjid";
-export {
-  isValidJakimZone,
-  isValidTimezone,
-  getJakimZone,
-  getZonesByState,
-  isMasjid as isTvDisplayMasjid,
-  isCreateMasjidRequest,
-  isUpdateMasjidRequest,
-  createMasjid,
-  formatMasjidDisplayName,
-  getMasjidState,
-} from "./masjid";
+export { masjidSchema } from "./masjid";
+export type { MasjidFormData, MasjidAddress } from "./masjid";
 // ContentItem types (avoid conflicts with api-responses.ts)
 export type {
   ContentItem as TvDisplayContentItem,
