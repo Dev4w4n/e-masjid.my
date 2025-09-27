@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   AppBar,
   Toolbar,
@@ -12,7 +12,7 @@ import {
   Divider,
   ListItemIcon,
   ListItemText,
-} from '@mui/material';
+} from "@mui/material";
 import {
   Menu as MenuIcon,
   AccountCircle,
@@ -23,9 +23,14 @@ import {
   People,
   DarkMode,
   LightMode,
-} from '@mui/icons-material';
-import { useAuth, usePermissions } from '@masjid-suite/auth';
-import { useThemeMode } from '@masjid-suite/ui-theme';
+} from "@mui/icons-material";
+import {
+  useUser,
+  useProfile,
+  useAuthActions,
+  usePermissions,
+} from "@masjid-suite/auth";
+import { useThemeMode } from "@masjid-suite/ui-theme";
 
 interface NavbarProps {
   onMenuClick?: () => void;
@@ -33,10 +38,12 @@ interface NavbarProps {
 }
 
 export function Navbar({ onMenuClick, showMenuButton = true }: NavbarProps) {
-  const { user, profile, signOut } = useAuth();
+  const user = useUser();
+  const profile = useProfile();
+  const { signOut } = useAuthActions();
   const { mode, toggleMode } = useThemeMode();
   const { hasAdminPrivileges } = usePermissions();
-  
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
 
@@ -53,11 +60,11 @@ export function Navbar({ onMenuClick, showMenuButton = true }: NavbarProps) {
       await signOut();
       handleMenuClose();
     } catch (error) {
-      console.error('Sign out failed:', error);
+      console.error("Sign out failed:", error);
     }
   };
 
-  const menuId = 'primary-search-account-menu';
+  const menuId = "primary-search-account-menu";
 
   return (
     <AppBar position="sticky">
@@ -74,12 +81,12 @@ export function Navbar({ onMenuClick, showMenuButton = true }: NavbarProps) {
             <MenuIcon />
           </IconButton>
         )}
-        
+
         <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
           Masjid Suite
         </Typography>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           {/* Theme toggle */}
           <IconButton
             size="large"
@@ -87,7 +94,7 @@ export function Navbar({ onMenuClick, showMenuButton = true }: NavbarProps) {
             onClick={toggleMode}
             aria-label="toggle theme"
           >
-            {mode === 'dark' ? <LightMode /> : <DarkMode />}
+            {mode === "dark" ? <LightMode /> : <DarkMode />}
           </IconButton>
 
           {/* User menu */}
@@ -106,27 +113,29 @@ export function Navbar({ onMenuClick, showMenuButton = true }: NavbarProps) {
                   sx={{ width: 32, height: 32 }}
                   {...(profile?.avatar_url && { src: profile.avatar_url })}
                 >
-                  {profile?.full_name?.charAt(0).toUpperCase() || <AccountCircle />}
+                  {profile?.full_name?.charAt(0).toUpperCase() || (
+                    <AccountCircle />
+                  )}
                 </Avatar>
               </IconButton>
               <Menu
                 anchorEl={anchorEl}
                 anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right',
+                  vertical: "bottom",
+                  horizontal: "right",
                 }}
                 id={menuId}
                 keepMounted
                 transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
+                  vertical: "top",
+                  horizontal: "right",
                 }}
                 open={isMenuOpen}
                 onClose={handleMenuClose}
               >
                 <MenuItem disabled>
                   <ListItemText
-                    primary={profile?.full_name || 'User'}
+                    primary={profile?.full_name || "User"}
                     secondary={user.email}
                   />
                 </MenuItem>

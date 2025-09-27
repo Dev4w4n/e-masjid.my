@@ -1,7 +1,8 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Box, CircularProgress } from "@mui/material";
-import { useAuth } from "@masjid-suite/auth";
+import { useAuthStatus, useUser, WithRole } from "@masjid-suite/auth";
 import Layout from "./components/Layout";
+import PublicRoute from "./components/PublicRoute";
 import SignIn from "./pages/auth/SignIn";
 import SignUp from "./pages/auth/SignUp";
 import Profile from "./pages/profile/Profile";
@@ -11,15 +12,16 @@ import MasjidForm from "./pages/masjid/MasjidForm";
 import MasjidView from "./pages/masjid/MasjidView";
 import AdminApplications from "./pages/admin/AdminApplications";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import CreateContent from "./pages/content/CreateContent";
+import MyContent from "./pages/content/MyContent";
+import ApprovalsDashboard from "./pages/admin/ApprovalsDashboard";
 import Home from "./pages/Home";
 
-/**
- * Main App component with authentication and routing
- */
-function App() {
-  const { user, loading } = useAuth();
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const user = useUser();
+  const status = useAuthStatus();
 
-  if (loading) {
+  if (status === "initializing") {
     return (
       <Box
         display="flex"
@@ -31,13 +33,52 @@ function App() {
       </Box>
     );
   }
-  console.log("App is rendering routes");
+
+  if (!user) {
+    return <Navigate to="/auth/signin" replace />;
+  }
+
+  return <>{children}</>;
+};
+
+/**
+ * Main App component with authentication and routing
+ */
+function App() {
+  const status = useAuthStatus();
+
+  if (status === "initializing") {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Routes>
       {/* Authentication routes (no layout) */}
-      <Route path="/auth/signin" element={<SignIn />} />
-      <Route path="/auth/signup" element={<SignUp />} />
+      <Route
+        path="/auth/signin"
+        element={
+          <PublicRoute>
+            <SignIn />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/auth/signup"
+        element={
+          <PublicRoute>
+            <SignUp />
+          </PublicRoute>
+        }
+      />
 
       {/* Main application routes (with layout) */}
       <Route path="/" element={<Layout />}>
@@ -49,24 +90,34 @@ function App() {
         {/* Protected routes */}
         <Route
           path="profile"
-          element={user ? <Profile /> : <Navigate to="/auth/signin" replace />}
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="profile/view"
           element={
-            user ? <ProfileView /> : <Navigate to="/auth/signin" replace />
+            <ProtectedRoute>
+              <ProfileView />
+            </ProtectedRoute>
           }
         />
         <Route
           path="masjids/new"
           element={
-            user ? <MasjidForm /> : <Navigate to="/auth/signin" replace />
+            <ProtectedRoute>
+              <MasjidForm />
+            </ProtectedRoute>
           }
         />
         <Route
           path="masjids/:id/edit"
           element={
-            user ? <MasjidForm /> : <Navigate to="/auth/signin" replace />
+            <ProtectedRoute>
+              <MasjidForm />
+            </ProtectedRoute>
           }
         />
 
@@ -74,17 +125,49 @@ function App() {
         <Route
           path="admin"
           element={
-            user ? <AdminDashboard /> : <Navigate to="/auth/signin" replace />
+            <ProtectedRoute>
+              <WithRole role={["super_admin", "masjid_admin"]}>
+                <AdminDashboard />
+              </WithRole>
+            </ProtectedRoute>
           }
         />
         <Route
           path="admin/applications"
           element={
-            user ? (
-              <AdminApplications />
-            ) : (
-              <Navigate to="/auth/signin" replace />
-            )
+            <ProtectedRoute>
+              <WithRole role="super_admin">
+                <AdminApplications />
+              </WithRole>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="admin/approvals"
+          element={
+            <ProtectedRoute>
+              <WithRole role={["super_admin", "masjid_admin"]}>
+                <ApprovalsDashboard />
+              </WithRole>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Content Management routes */}
+        <Route
+          path="content/create"
+          element={
+            <ProtectedRoute>
+              <CreateContent />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="content/my-content"
+          element={
+            <ProtectedRoute>
+              <MyContent />
+            </ProtectedRoute>
           }
         />
 

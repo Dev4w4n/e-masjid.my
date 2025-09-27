@@ -22,7 +22,7 @@ import {
   PersonAdd,
   Business,
 } from "@mui/icons-material";
-import { useAuth, usePermissions } from "@masjid-suite/auth";
+import { useProfile, usePermissions } from "@masjid-suite/auth";
 
 interface SidebarProps {
   open: boolean;
@@ -40,7 +40,7 @@ interface NavItem {
 }
 
 export function Sidebar({ open, onClose, width = 280 }: SidebarProps) {
-  const { profile } = useAuth();
+  const profile = useProfile();
   const { isSuperAdmin, isMasjidAdmin, hasAdminPrivileges } = usePermissions();
 
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
@@ -49,7 +49,7 @@ export function Sidebar({ open, onClose, width = 280 }: SidebarProps) {
     setExpandedItems((prev) =>
       prev.includes(itemText)
         ? prev.filter((item) => item !== itemText)
-        : [...prev, itemText],
+        : [...prev, itemText]
     );
   };
 

@@ -135,10 +135,19 @@ export class AuthService {
    * Sign out current user
    */
   async signOut() {
-    const { error } = await this.client.auth.signOut();
+    console.log("SupabaseClient: Starting sign out process");
+    try {
+      const { error } = await this.client.auth.signOut();
 
-    if (error) {
-      throw new Error(`Sign out failed: ${error.message}`);
+      if (error) {
+        console.error("SupabaseClient: Sign out error:", error);
+        throw new Error(`Sign out failed: ${error.message}`);
+      }
+
+      console.log("SupabaseClient: Sign out completed successfully");
+    } catch (err) {
+      console.error("SupabaseClient: Exception during sign out:", err);
+      throw err;
     }
   }
 
@@ -391,6 +400,22 @@ export class ProfileService {
 
     return data;
   }
+
+  /**
+   * Delete profile address
+   */
+  async deleteProfileAddress(addressId: string) {
+    const { error } = await this.db
+      .table("profile_addresses")
+      .delete()
+      .eq("id", addressId);
+
+    if (error) {
+      throw new Error(`Failed to delete profile address: ${error.message}`);
+    }
+
+    return true;
+  }
 }
 
 /**
@@ -548,6 +573,68 @@ export class MasjidService {
     }
 
     return data;
+  }
+
+  /**
+   * Get user's admin masjids
+   */
+  async getUserAdminMasjids(): Promise<string[]> {
+    return await this.db.rpc("get_user_admin_masjids");
+  }
+
+  /**
+   * Get all active masjids for content submission (any registered user can submit to any masjid)
+   */
+  async getAllActiveMasjids(): Promise<any[]> {
+    const { data, error } = await this.db
+      .table("masjids")
+      .select(
+        `
+        id, 
+        name, 
+        address->>'address_line_1' as address_line_1,
+        address->>'address_line_2' as address_line_2, 
+        address->>'postcode' as postcode,
+        address->>'city' as city,
+        address->>'state' as state
+      `
+      )
+      .eq("status", "active")
+      .order("name");
+
+    if (error) {
+      throw new Error(`Failed to get active masjids: ${error.message}`);
+    }
+
+    return data || [];
+  }
+
+  /**
+   * Get masjids by IDs (for populating dropdowns)
+   */
+  async getMasjidsByIds(masjidIds: string[]): Promise<any[]> {
+    if (!masjidIds.length) return [];
+
+    const { data, error } = await this.db
+      .table("masjids")
+      .select(
+        `
+        id, 
+        name, 
+        address->>'address_line_1' as address_line_1,
+        address->>'address_line_2' as address_line_2, 
+        address->>'postcode' as postcode,
+        address->>'city' as city,
+        address->>'state' as state
+      `
+      )
+      .in("id", masjidIds);
+
+    if (error) {
+      throw new Error(`Failed to get masjids by IDs: ${error.message}`);
+    }
+
+    return data || [];
   }
 
   /**

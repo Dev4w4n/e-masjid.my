@@ -33,12 +33,14 @@ import {
   Delete,
   Visibility,
 } from "@mui/icons-material";
-import { useAuth, useProfile } from "@masjid-suite/auth";
+import { useUser, useProfile, useAuthActions } from "@masjid-suite/auth";
 import {
   MALAYSIAN_STATES,
   isValidMalaysianPhone,
   isValidMalaysianPostcode,
+  type MalaysianState,
 } from "@masjid-suite/shared-types";
+import { masjidService, profileService } from "@masjid-suite/supabase-client";
 
 // Validation schema
 const profileSchema = z.object({
@@ -52,7 +54,7 @@ const profileSchema = z.object({
     .optional()
     .refine(
       (val) => !val || isValidMalaysianPhone(val),
-      "Please enter a valid Malaysian phone number",
+      "Please enter a valid Malaysian phone number"
     ),
   preferredLanguage: z.enum(["en", "ms", "zh", "ta"]),
   homeMasjidId: z.string().optional(),
@@ -68,7 +70,7 @@ const addressSchema = z.object({
     .min(1, "Postcode is required")
     .refine(
       (val) => isValidMalaysianPostcode(val),
-      "Please enter a valid Malaysian postcode",
+      "Please enter a valid Malaysian postcode"
     ),
   addressType: z.enum(["home", "work", "other"]),
 });
@@ -76,18 +78,26 @@ const addressSchema = z.object({
 type ProfileFormData = z.infer<typeof profileSchema>;
 type AddressFormData = z.infer<typeof addressSchema>;
 
+// Type for stored addresses (includes ID for deletion)
+type StoredAddressData = AddressFormData & {
+  id: string;
+};
+
 /**
  * Profile editing page component
  */
 function Profile() {
   const navigate = useNavigate();
-  const { user, updateProfile } = useAuth();
-  const { profile, refreshProfile } = useProfile();
+  const user = useUser();
+  const { updateProfile, refreshProfile } = useAuthActions();
+  const profile = useProfile();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [addresses, setAddresses] = useState<AddressFormData[]>([]);
+  const [addresses, setAddresses] = useState<StoredAddressData[]>([]);
   const [showAddAddress, setShowAddAddress] = useState(false);
+  const [masjids, setMasjids] = useState<any[]>([]);
+  const [masjidsLoading, setMasjidsLoading] = useState(true);
 
   const {
     register,
@@ -135,6 +145,50 @@ function Profile() {
     }
   }, [profile, reset]);
 
+  // Load masjids for dropdown
+  useEffect(() => {
+    async function loadMasjids() {
+      try {
+        setMasjidsLoading(true);
+        const data = await masjidService.getAllMasjids();
+        setMasjids(data || []);
+      } catch (err) {
+        console.error("Failed to load masjids:", err);
+        setError("Failed to load masjid options. Please refresh the page.");
+      } finally {
+        setMasjidsLoading(false);
+      }
+    }
+
+    loadMasjids();
+  }, []);
+
+  // Load profile addresses
+  useEffect(() => {
+    async function loadAddresses() {
+      if (profile?.id) {
+        try {
+          const data = await profileService.getProfileAddresses(profile.id);
+          // Convert to form format with IDs
+          const formattedAddresses = data.map((addr: any) => ({
+            id: addr.id,
+            addressLine1: addr.address_line_1,
+            addressLine2: addr.address_line_2 || "",
+            city: addr.city,
+            state: addr.state,
+            postcode: addr.postcode,
+            addressType: addr.address_type,
+          }));
+          setAddresses(formattedAddresses);
+        } catch (err) {
+          console.error("Failed to load addresses:", err);
+        }
+      }
+    }
+
+    loadAddresses();
+  }, [profile?.id]);
+
   const onSubmitProfile = async (data: ProfileFormData) => {
     try {
       setIsLoading(true);
@@ -156,7 +210,7 @@ function Profile() {
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to update profile. Please try again.",
+          : "Failed to update profile. Please try again."
       );
     } finally {
       setIsLoading(false);
@@ -168,11 +222,40 @@ function Profile() {
       setIsLoading(true);
       setError(null);
 
-      // In a real app, this would save to the database
-      setAddresses((prev) => [...prev, data]);
+      if (!profile?.id) {
+        throw new Error("Profile not found");
+      }
+
+      // Save to database
+      await profileService.addProfileAddress({
+        profile_id: profile.id,
+        address_line_1: data.addressLine1,
+        address_line_2: data.addressLine2 || null,
+        city: data.city,
+        state: data.state as MalaysianState,
+        postcode: data.postcode,
+        country: "MYS",
+        address_type: data.addressType,
+        is_primary: addresses.length === 0, // First address is primary
+      });
+
+      // Reload addresses from database
+      const updatedAddresses = await profileService.getProfileAddresses(
+        profile.id
+      );
+      const formattedAddresses = updatedAddresses.map((addr: any) => ({
+        id: addr.id,
+        addressLine1: addr.address_line_1,
+        addressLine2: addr.address_line_2 || "",
+        city: addr.city,
+        state: addr.state,
+        postcode: addr.postcode,
+        addressType: addr.address_type,
+      }));
+      setAddresses(formattedAddresses);
+
       setShowAddAddress(false);
       resetAddress();
-
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
@@ -180,15 +263,41 @@ function Profile() {
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to save address. Please try again.",
+          : "Failed to save address. Please try again."
       );
     } finally {
       setIsLoading(false);
     }
   };
 
-  const removeAddress = (index: number) => {
-    setAddresses((prev) => prev.filter((_, i) => i !== index));
+  const removeAddress = async (index: number) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const addressToDelete = addresses[index];
+      if (!addressToDelete?.id) {
+        throw new Error("Address ID not found");
+      }
+
+      // Delete from database
+      await profileService.deleteProfileAddress(addressToDelete.id);
+
+      // Remove from local state
+      setAddresses((prev) => prev.filter((_, i) => i !== index));
+
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (err) {
+      console.error("Failed to remove address:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to remove address. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -317,20 +426,37 @@ function Profile() {
                       name="homeMasjidId"
                       control={control}
                       render={({ field }) => (
-                        <FormControl fullWidth disabled={isLoading}>
+                        <FormControl
+                          fullWidth
+                          disabled={isLoading || masjidsLoading}
+                        >
                           <InputLabel>Home Masjid (Optional)</InputLabel>
                           <Select {...field} label="Home Masjid (Optional)">
                             <MenuItem value="">None</MenuItem>
-                            <MenuItem value="masjid-1">
-                              Masjid Jamek Sungai Rambai
-                            </MenuItem>
-                            <MenuItem value="masjid-2">
-                              Masjid Al-Hidayah
-                            </MenuItem>
-                            <MenuItem value="masjid-3">
-                              Masjid Ar-Rahman
-                            </MenuItem>
+                            {masjids.map((masjid) => (
+                              <MenuItem key={masjid.id} value={masjid.id}>
+                                {masjid.name} - {masjid.address?.city},{" "}
+                                {masjid.address?.state}
+                              </MenuItem>
+                            ))}
                           </Select>
+                          {masjidsLoading && (
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                mt: 1,
+                              }}
+                            >
+                              <CircularProgress size={20} sx={{ mr: 1 }} />
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                              >
+                                Loading masjids...
+                              </Typography>
+                            </Box>
+                          )}
                         </FormControl>
                       )}
                     />

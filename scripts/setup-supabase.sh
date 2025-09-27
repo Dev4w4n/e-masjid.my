@@ -37,13 +37,35 @@ supabase start
 
 # Get the service role key
 echo -e "${BLUE}Getting service role key...${NC}"
-SERVICE_ROLE_KEY=$(supabase status 2>/dev/null | grep "service_role key:" | cut -d' ' -f3- | tr -d '[:space:]')
-ANON_KEY=$(supabase status 2>/dev/null | grep "anon key:" | awk '{print $3}')
-API_URL=$(supabase status 2>/dev/null | grep "API URL:" | awk '{print $3}')
+
+# Get Supabase status to extract keys
+SUPABASE_STATUS_OUTPUT=$(supabase status 2>/dev/null)
+
+# Extract keys from status output (modern sb_ format)
+SERVICE_ROLE_KEY=$(echo "$SUPABASE_STATUS_OUTPUT" | grep "Secret key:" | awk '{print $3}')
+ANON_KEY=$(echo "$SUPABASE_STATUS_OUTPUT" | grep "Publishable key:" | awk '{print $3}')
+API_URL=$(echo "$SUPABASE_STATUS_OUTPUT" | grep "API URL:" | awk '{print $3}')
+
+# The modern keys are in sb_ format, but we need the underlying JWT tokens
+# Let's extract the actual JWT from the config files
+if [ -f "supabase/.temp/project-ref" ]; then
+    PROJECT_REF=$(cat "supabase/.temp/project-ref" 2>/dev/null || echo "")
+fi
+
+# Try to get JWT keys from config
+JWT_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0"
+JWT_SERVICE_ROLE="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU"
+
+# Use the hardcoded JWT keys for local development
+SERVICE_ROLE_KEY="$JWT_SERVICE_ROLE"
+ANON_KEY="$JWT_ANON"
 
 if [ -z "$SERVICE_ROLE_KEY" ] || [ -z "$ANON_KEY" ] || [ -z "$API_URL" ]; then
     echo -e "${RED}Error: Could not retrieve Supabase configuration. Please ensure Supabase is running.${NC}"
-    echo -e "${YELLOW}Run 'supabase status' to check the current state.${NC}"
+    echo -e "${YELLOW}Debug information:${NC}"
+    echo "SERVICE_ROLE_KEY: '$SERVICE_ROLE_KEY'"
+    echo "ANON_KEY: '$ANON_KEY'"
+    echo "API_URL: '$API_URL'"
     exit 1
 fi
 

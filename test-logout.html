@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logout Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    button {
+      background: #1976d2;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 10px;
+    }
+
+    button:hover {
+      background: #1565c0;
+    }
+
+    .result {
+      background: #f5f5f5;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Logout Functionality Test</h1>
+
+  <h2>Test Steps:</h2>
+  <ol>
+    <li>Go to <a href="http://localhost:3000" target="_blank">http://localhost:3000</a></li>
+    <li>Sign in with valid credentials</li>
+    <li>Navigate to different protected pages (e.g., /profile, /admin)</li>
+    <li>Click the logout button in the user menu</li>
+    <li>Verify you are redirected to the login page</li>
+    <li>Try to access protected pages directly (e.g., /profile)</li>
+    <li>Verify you are redirected to login page on all protected routes</li>
+  </ol>
+
+  <h2>Quick Test Links:</h2>
+  <div>
+    <button onclick="window.open('http://localhost:3000/', '_blank')">Open Home Page</button>
+    <button onclick="window.open('http://localhost:3000/auth/signin', '_blank')">Open Sign In</button>
+    <button onclick="window.open('http://localhost:3000/profile', '_blank')">Test Protected Route</button>
+    <button onclick="window.open('http://localhost:3000/admin', '_blank')">Test Admin Route</button>
+  </div>
+
+  <div class="result">
+    <h3>Expected Behavior:</h3>
+    <ul>
+      <li>✅ Sign out should clear the session token</li>
+      <li>✅ User should be redirected to /auth/signin immediately</li>
+      <li>✅ All protected routes should redirect to login when accessed directly</li>
+      <li>✅ No authentication tokens should remain in browser storage</li>
+      <li>✅ Refreshing any page should not auto-login the user</li>
+    </ul>
+  </div>
+
+  <script>
+    // Check local storage for session tokens
+    function checkLocalStorage() {
+      const keys = Object.keys(localStorage);
+      const authKeys = keys.filter(key =>
+        key.includes('supabase') ||
+        key.includes('auth') ||
+        key.includes('session') ||
+        key.includes('token')
+      );
+
+      console.log('Auth-related localStorage keys:', authKeys);
+      authKeys.forEach(key => {
+        console.log(`${key}:`, localStorage.getItem(key));
+      });
+    }
+
+    // Add a button to check storage
+    const button = document.createElement('button');
+    button.textContent = 'Check Browser Storage';
+    button.onclick = checkLocalStorage;
+    document.body.appendChild(button);
+  </script>
+</body>
+
+</html>
