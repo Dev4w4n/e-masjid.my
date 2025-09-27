@@ -25,6 +25,7 @@ import {
   malaysianStates,
   prayerTimeSources,
   statusOptions,
+  UiJakimZone,
 } from "@masjid-suite/shared-types";
 import { usePermissions } from "@masjid-suite/auth";
 import { masjidService } from "@masjid-suite/supabase-client";
@@ -82,28 +83,36 @@ export const MasjidForm: React.FC = () => {
           setError(null);
           const masjid = await masjidService.getMasjid(id);
           if (masjid) {
-            // Ensure address is an object before resetting
-            const address =
-              typeof masjid.address === "object" && masjid.address
-                ? masjid.address
-                : {
-                    address_line_1: "",
-                    address_line_2: "",
-                    city: "",
-                    postcode: "",
-                    state: "Selangor",
-                    country: "MYS",
-                  };
+            // Parse the address JSON string back to object
+            let address;
+            try {
+              address =
+                typeof masjid.address === "string"
+                  ? JSON.parse(masjid.address)
+                  : masjid.address;
+            } catch {
+              address = {
+                address_line_1: "",
+                address_line_2: "",
+                city: "",
+                postcode: "",
+                state: "Selangor",
+                country: "MYS",
+              };
+            }
 
             reset({
-              ...masjid,
+              name: masjid.name || "",
+              description: masjid.description || "",
+              email: masjid.email || "",
+              phone_number: masjid.phone_number || "",
+              registration_number: masjid.registration_number || "",
+              website_url: masjid.website_url || "",
               address,
-              capacity: masjid.capacity ?? undefined,
-              email: masjid.email ?? undefined,
-              phone_number: masjid.phone_number ?? undefined,
-              registration_number: masjid.registration_number ?? undefined,
-              website_url: masjid.website_url ?? undefined,
-              jakim_zone_code: masjid.jakim_zone_code ?? undefined,
+              capacity: masjid.capacity || 100,
+              prayer_times_source: masjid.prayer_times_source || "jakim",
+              jakim_zone_code: masjid.jakim_zone_code || "WLY01",
+              status: masjid.status || "pending_verification",
             });
           } else {
             setError(`Masjid with ID ${id} not found.`);
@@ -125,17 +134,89 @@ export const MasjidForm: React.FC = () => {
       setIsSubmitting(true);
       setError(null);
 
+      console.log("Form data received:", data);
+      console.log("Address object:", data.address);
+
+      // Transform the data to match database expectations
+      const transformedData = {
+        ...data,
+        // Keep address as object - Supabase will handle JSONB conversion
+        // Convert empty strings to null for optional fields
+        email: data.email || null,
+        phone_number: data.phone_number || null,
+        registration_number: data.registration_number || null,
+        website_url: data.website_url || null,
+        description: data.description || null,
+        jakim_zone_code: data.jakim_zone_code || null,
+      };
+
       if (isEditMode && id) {
-        // The 'created_by' field should not be sent on update
-        const { created_by, ...updateData } = data as any;
+        // Remove fields that shouldn't be updated and might cause RLS issues
+        const {
+          created_by,
+          id: formId,
+          created_at,
+          updated_at,
+          // Handle prayer-related fields separately
+          prayer_times_source,
+          jakim_zone_code,
+          ...updateData
+        } = transformedData as any;
+
+        console.log(
+          "Update data to send (excluding prayer fields):",
+          updateData
+        );
         await masjidService.updateMasjid(id, updateData);
+
+        // Try to update prayer-related fields separately if they have changed
+        if (
+          prayer_times_source !== undefined ||
+          jakim_zone_code !== undefined
+        ) {
+          try {
+            console.log("Updating prayer fields separately...");
+            const prayerUpdates: any = {};
+            if (prayer_times_source !== undefined) {
+              prayerUpdates.prayer_times_source = prayer_times_source;
+            }
+            if (jakim_zone_code !== undefined) {
+              prayerUpdates.jakim_zone_code = jakim_zone_code;
+            }
+
+            await masjidService.updateMasjid(id, prayerUpdates);
+            console.log("Prayer fields updated successfully");
+          } catch (prayerError) {
+            console.warn("Failed to update prayer fields:", prayerError);
+            // Don't fail the entire update - just show a warning
+            const errorMessage =
+              prayerError instanceof Error
+                ? prayerError.message
+                : String(prayerError);
+            if (
+              errorMessage.includes("must be masjid admin") ||
+              errorMessage.includes("403") ||
+              errorMessage.includes("Forbidden")
+            ) {
+              setError(
+                "Masjid information updated successfully! However, prayer settings can only be modified by masjid admins."
+              );
+            } else {
+              setError(
+                "Masjid updated successfully, but prayer settings could not be updated due to permissions."
+              );
+            }
+            // Still navigate to success page since main data was updated
+            setTimeout(() => navigate("/masjids"), 2000); // Give user time to read the message
+            return; // Exit early to show the message
+          }
+        }
       } else {
-        // Let the backend handle 'created_by' via RLS/triggers
-        const { ...createData } = data as any;
-        await masjidService.createMasjid(createData);
+        await masjidService.createMasjid(transformedData as any);
       }
       navigate("/masjids");
     } catch (err) {
+      console.error("Submit error:", err);
       setError(
         err instanceof Error ? err.message : "An unknown error occurred"
       );
@@ -144,9 +225,17 @@ export const MasjidForm: React.FC = () => {
     }
   };
 
-  const filteredJakimZones = jakimZones.filter(
-    (zone) => zone.state === selectedState
-  );
+  const filteredJakimZones = jakimZones.filter((zone: UiJakimZone) => {
+    if (selectedState === "Wilayah Persekutuan") {
+      return [
+        "Wilayah Persekutuan",
+        "Kuala Lumpur",
+        "Putrajaya",
+        "Labuan",
+      ].includes(zone.state);
+    }
+    return zone.state === selectedState;
+  });
 
   // Check permissions
   if (!canManageMasjids()) {
@@ -427,7 +516,7 @@ export const MasjidForm: React.FC = () => {
                       label="Capacity"
                       type="number"
                       fullWidth
-                      onChange={(e) =>
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         field.onChange(
                           e.target.value === ""
                             ? undefined

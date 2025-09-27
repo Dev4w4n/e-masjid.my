@@ -13,18 +13,11 @@ NC='\033[0m' # No Color
 # Move to project root directory (script is already in root)
 cd "$(dirname "$0")"
 
-# Check if we're in the right directory
-if [ ! -f "supabase/config.toml" ]; then
-    echo -e "${RED}Error: supabase/config.toml not found. Please run this script from the project root or scripts directory.${NC}"
-    exit 1
-fi
-
-echo -e "${BLUE}Setting up test environment for unit tests...${NC}"
+echo -e "${BLUE}Reseting dev environment ...${NC}"
 echo ""
 
 # Run the setup-supabase.sh script with the --test flag
-scripts/setup-supabase.sh --test
+pnpm clean && pnpm install && pnpm build:clean && pnpm dev
 
 echo ""
-echo -e "${GREEN}Ready to run tests!${NC}"
-echo -e "${YELLOW}You can now run the tests with: cd app/hub && npm run test${NC}"
+echo -e "${GREEN}Ready!${NC}"
