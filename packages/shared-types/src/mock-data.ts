@@ -78,11 +78,7 @@ const DISPLAY_RESOLUTIONS = [
   "1366x768",
   "2560x1440",
 ] as const;
-const PRAYER_TIME_SOURCES = [
-  "JAKIM_API",
-  "MANUAL_ENTRY",
-  "CACHED_FALLBACK",
-] as const;
+const PRAYER_TIME_SOURCES = ["manual", "jakim", "auto"] as const;
 
 /**
  * Simple mock data utilities
@@ -382,7 +378,7 @@ export class MasjidMockFactory {
   static create(overrides: Partial<Masjid> = {}): Masjid {
     const state = MockUtils.randomElement(MALAYSIAN_STATES);
 
-    return {
+    const baseMasjid: Masjid = {
       id: MockUtils.generateId(),
       name: MockUtils.randomMasjidName(),
       registration_number: MockUtils.randomBoolean()
@@ -405,6 +401,14 @@ export class MasjidMockFactory {
       created_by: MockUtils.generateId(),
       created_at: MockUtils.randomDate(),
       updated_at: MockUtils.randomRecentDate(),
+      capacity: MockUtils.randomNumber(100, 2000),
+      website_url: MockUtils.randomBoolean() ? "https://masjid.my" : null,
+      jakim_zone_code: MockUtils.randomJakimZone(),
+      prayer_times_source: MockUtils.randomElement(PRAYER_TIME_SOURCES),
+    };
+
+    return {
+      ...baseMasjid,
       ...overrides,
     };
   }
@@ -539,7 +543,7 @@ export class DisplayContentMockFactory {
 
     const sponsorshipAmount = MockUtils.randomFloat(0, 500, 2);
 
-    return {
+    const baseContent: DisplayContent = {
       id: MockUtils.generateId(),
       masjid_id: MockUtils.generateId(),
       display_id: MockUtils.randomBoolean() ? MockUtils.generateId() : null,
@@ -584,6 +588,12 @@ export class DisplayContentMockFactory {
       file_type,
       created_at: MockUtils.randomDate(),
       updated_at: MockUtils.randomRecentDate(),
+      approval_notes: null,
+      resubmission_of: null,
+    };
+
+    return {
+      ...baseContent,
       ...overrides,
     };
   }

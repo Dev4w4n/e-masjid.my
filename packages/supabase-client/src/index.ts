@@ -510,14 +510,15 @@ export class MasjidService {
       .table("masjids")
       .update(updates)
       .eq("id", masjidId)
-      .select()
-      .single();
+      .select();
+
+    console.log("Update result:", { data, error });
 
     if (error) {
       throw new Error(`Failed to update masjid: ${error.message}`);
     }
 
-    return data;
+    return data?.[0];
   }
 
   /**
@@ -688,6 +689,10 @@ export const authService = new AuthService(supabase);
 export const databaseService = new DatabaseService(supabase);
 export const profileService = new ProfileService(databaseService);
 export const masjidService = new MasjidService(databaseService);
+
+// JAKIM service for external data
+export { JakimService, jakimService } from "./services/jakim";
+export type { UiJakimZone } from "./services/jakim";
 
 // Re-export types for convenience
 export type { Database } from "@masjid-suite/shared-types";
