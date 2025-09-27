@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Drawer,
   List,
@@ -10,7 +10,7 @@ import {
   Box,
   Collapse,
   Typography,
-} from '@mui/material';
+} from "@mui/material";
 import {
   Dashboard,
   AccountCircle,
@@ -22,8 +22,8 @@ import {
   AdminPanelSettings,
   PersonAdd,
   Business,
-} from '@mui/icons-material';
-import { useAuth, usePermissions } from '@masjid-suite/auth';
+} from "@mui/icons-material";
+import { useProfile, usePermissions } from "@masjid-suite/auth";
 
 interface SidebarProps {
   open: boolean;
@@ -37,88 +37,94 @@ interface NavItem {
   path?: string;
   onClick?: () => void;
   children?: NavItem[];
-  requiredRole?: 'super_admin' | 'masjid_admin' | 'community_member';
+  requiredRole?: "super_admin" | "masjid_admin" | "community_member";
 }
 
 export function Sidebar({ open, onClose, width = 280 }: SidebarProps) {
-  const { profile } = useAuth();
+  const profile = useProfile();
   const { isSuperAdmin, isMasjidAdmin, hasAdminPrivileges } = usePermissions();
-  
+
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
   const handleItemExpand = (itemText: string) => {
-    setExpandedItems(prev => 
-      prev.includes(itemText) 
-        ? prev.filter(item => item !== itemText)
+    setExpandedItems((prev) =>
+      prev.includes(itemText)
+        ? prev.filter((item) => item !== itemText)
         : [...prev, itemText]
     );
   };
 
   const navigationItems: NavItem[] = [
     {
-      text: 'Dashboard',
+      text: "Dashboard",
       icon: <Dashboard />,
-      path: '/dashboard',
+      path: "/dashboard",
     },
     {
-      text: 'Profile',
+      text: "Profile",
       icon: <AccountCircle />,
-      path: '/profile',
+      path: "/profile",
     },
-    ...(hasAdminPrivileges() ? [
-      {
-        text: 'Administration',
-        icon: <AdminPanelSettings />,
-        children: [
-          ...(isSuperAdmin() ? [
-            {
-              text: 'Manage Masjids',
-              icon: <Mosque />,
-              path: '/admin/masjids',
-            },
-            {
-              text: 'Manage Users',
-              icon: <People />,
-              path: '/admin/users',
-            },
-            {
-              text: 'System Settings',
-              icon: <Settings />,
-              path: '/admin/settings',
-            },
-          ] : []),
-          ...(isMasjidAdmin() ? [
-            {
-              text: 'My Masjid',
-              icon: <Business />,
-              path: '/admin/my-masjid',
-            },
-            {
-              text: 'Members',
-              icon: <PersonAdd />,
-              path: '/admin/members',
-            },
-          ] : []),
-        ],
-      },
-    ] : []),
+    ...(hasAdminPrivileges()
+      ? [
+          {
+            text: "Administration",
+            icon: <AdminPanelSettings />,
+            children: [
+              ...(isSuperAdmin()
+                ? [
+                    {
+                      text: "Manage Masjids",
+                      icon: <Mosque />,
+                      path: "/admin/masjids",
+                    },
+                    {
+                      text: "Manage Users",
+                      icon: <People />,
+                      path: "/admin/users",
+                    },
+                    {
+                      text: "System Settings",
+                      icon: <Settings />,
+                      path: "/admin/settings",
+                    },
+                  ]
+                : []),
+              ...(isMasjidAdmin()
+                ? [
+                    {
+                      text: "My Masjid",
+                      icon: <Business />,
+                      path: "/admin/my-masjid",
+                    },
+                    {
+                      text: "Members",
+                      icon: <PersonAdd />,
+                      path: "/admin/members",
+                    },
+                  ]
+                : []),
+            ],
+          },
+        ]
+      : []),
     {
-      text: 'Settings',
+      text: "Settings",
       icon: <Settings />,
-      path: '/settings',
+      path: "/settings",
     },
   ];
 
   const hasPermission = (item: NavItem): boolean => {
     if (!item.requiredRole) return true;
-    
+
     switch (item.requiredRole) {
-      case 'super_admin':
+      case "super_admin":
         return isSuperAdmin();
-      case 'masjid_admin':
+      case "masjid_admin":
         return isMasjidAdmin();
-      case 'community_member':
-        return profile?.role !== 'public' && profile?.role !== undefined;
+      case "community_member":
+        return profile?.role !== "public" && profile?.role !== undefined;
       default:
         return true;
     }
@@ -141,23 +147,21 @@ export function Sidebar({ open, onClose, width = 280 }: SidebarProps) {
                 item.onClick();
               } else if (item.path) {
                 // Navigate to path (would be handled by router)
-                console.log('Navigate to:', item.path);
+                console.log("Navigate to:", item.path);
                 if (onClose) onClose();
               }
             }}
           >
-            <ListItemIcon sx={{ minWidth: 40 }}>
-              {item.icon}
-            </ListItemIcon>
+            <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
             <ListItemText primary={item.text} />
             {hasChildren && (isExpanded ? <ExpandLess /> : <ExpandMore />)}
           </ListItemButton>
         </ListItem>
-        
+
         {hasChildren && (
           <Collapse in={isExpanded} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              {item.children?.map(child => renderNavItem(child, level + 1))}
+              {item.children?.map((child) => renderNavItem(child, level + 1))}
             </List>
           </Collapse>
         )}
@@ -166,9 +170,11 @@ export function Sidebar({ open, onClose, width = 280 }: SidebarProps) {
   };
 
   const drawerContent = (
-    <Box sx={{ width, height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Box
+      sx={{ width, height: "100%", display: "flex", flexDirection: "column" }}
+    >
       {/* Header */}
-      <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
+      <Box sx={{ p: 2, borderBottom: 1, borderColor: "divider" }}>
         <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
           Masjid Suite
         </Typography>
@@ -180,14 +186,12 @@ export function Sidebar({ open, onClose, width = 280 }: SidebarProps) {
       </Box>
 
       {/* Navigation */}
-      <Box sx={{ flex: 1, overflow: 'auto' }}>
-        <List>
-          {navigationItems.map(item => renderNavItem(item))}
-        </List>
+      <Box sx={{ flex: 1, overflow: "auto" }}>
+        <List>{navigationItems.map((item) => renderNavItem(item))}</List>
       </Box>
 
       {/* Footer */}
-      <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
+      <Box sx={{ p: 2, borderTop: 1, borderColor: "divider" }}>
         <Typography variant="caption" color="text.secondary">
           Masjid Suite v1.0.0
         </Typography>
@@ -205,9 +209,9 @@ export function Sidebar({ open, onClose, width = 280 }: SidebarProps) {
         keepMounted: true, // Better open performance on mobile
       }}
       sx={{
-        '& .MuiDrawer-paper': {
+        "& .MuiDrawer-paper": {
           width,
-          boxSizing: 'border-box',
+          boxSizing: "border-box",
         },
       }}
     >

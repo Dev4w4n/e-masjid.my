@@ -41,7 +41,7 @@ import {
   Mosque,
   Refresh,
 } from "@mui/icons-material";
-import { useAuth, usePermissions } from "@masjid-suite/auth";
+import { useProfile, usePermissions } from "@masjid-suite/auth";
 
 // Mock data for admin applications
 const mockApplications = [
@@ -153,7 +153,7 @@ function TabPanel(props: TabPanelProps) {
  * Admin applications management component
  */
 function AdminApplications() {
-  const { profile } = useAuth();
+  const profile = useProfile();
   const permissions = usePermissions();
 
   const [applications, setApplications] = useState(mockApplications);
@@ -163,7 +163,7 @@ function AdminApplications() {
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [reviewComments, setReviewComments] = useState("");
   const [reviewAction, setReviewAction] = useState<"approve" | "reject" | null>(
-    null,
+    null
   );
 
   // Check permissions
@@ -180,13 +180,13 @@ function AdminApplications() {
 
   // Filter applications by status
   const pendingApplications = applications.filter(
-    (app) => app.status === "pending",
+    (app) => app.status === "pending"
   );
   const approvedApplications = applications.filter(
-    (app) => app.status === "approved",
+    (app) => app.status === "approved"
   );
   const rejectedApplications = applications.filter(
-    (app) => app.status === "rejected",
+    (app) => app.status === "rejected"
   );
 
   const getStatusColor = (status: string) => {
@@ -228,8 +228,8 @@ function AdminApplications() {
 
       setApplications((prev) =>
         prev.map((app) =>
-          app.id === selectedApplication.id ? updatedApplication : app,
-        ),
+          app.id === selectedApplication.id ? updatedApplication : app
+        )
       );
 
       setReviewDialogOpen(false);
@@ -320,7 +320,7 @@ function AdminApplications() {
                 <TableCell>
                   <Typography variant="body2">
                     {new Date(application.submitted_at).toLocaleDateString(
-                      "en-MY",
+                      "en-MY"
                     )}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
@@ -329,7 +329,7 @@ function AdminApplications() {
                       {
                         hour: "2-digit",
                         minute: "2-digit",
-                      },
+                      }
                     )}
                   </Typography>
                 </TableCell>
@@ -613,7 +613,7 @@ function AdminApplications() {
                             </Button>
                           </ListItemSecondaryAction>
                         </ListItem>
-                      ),
+                      )
                     )}
                   </List>
                 </Grid>
@@ -640,7 +640,7 @@ function AdminApplications() {
                       >
                         Reviewed by: {selectedApplication.reviewed_by} on{" "}
                         {new Date(
-                          selectedApplication.reviewed_at,
+                          selectedApplication.reviewed_at
                         ).toLocaleDateString("en-MY")}
                       </Typography>
                     </Alert>

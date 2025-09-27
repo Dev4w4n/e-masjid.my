@@ -24,7 +24,12 @@ import {
   DarkMode,
   LightMode,
 } from "@mui/icons-material";
-import { useAuth, usePermissions } from "@masjid-suite/auth";
+import {
+  useUser,
+  useProfile,
+  useAuthActions,
+  usePermissions,
+} from "@masjid-suite/auth";
 import { useThemeMode } from "../theme";
 
 interface NavbarProps {
@@ -33,7 +38,9 @@ interface NavbarProps {
 }
 
 export function Navbar({ onMenuClick, showMenuButton = true }: NavbarProps) {
-  const { user, profile, signOut } = useAuth();
+  const user = useUser();
+  const profile = useProfile();
+  const { signOut } = useAuthActions();
   const { mode, toggleMode } = useThemeMode();
   const { hasAdminPrivileges } = usePermissions();
 

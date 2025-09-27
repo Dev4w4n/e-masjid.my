@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -24,7 +24,7 @@ import {
   Lock,
   Login as LoginIcon,
 } from "@mui/icons-material";
-import { useAuth } from "@masjid-suite/auth";
+import { useAuthActions } from "@masjid-suite/auth";
 
 // Validation schema
 const signInSchema = z.object({
@@ -44,8 +44,7 @@ type SignInFormData = z.infer<typeof signInSchema>;
  * Sign In page component
  */
 function SignIn() {
-  const navigate = useNavigate();
-  const { signIn } = useAuth();
+  const { signIn } = useAuthActions();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -69,14 +68,14 @@ function SignIn() {
 
       await signIn(data.email, data.password);
 
-      // Navigation will be handled by the auth state change
-      navigate("/dashboard");
+      // Successful sign-in will trigger a re-render.
+      // The PublicRoute component will then handle the redirect.
     } catch (err) {
       console.error("Sign in error:", err);
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to sign in. Please check your credentials.",
+          : "Failed to sign in. Please check your credentials."
       );
     } finally {
       setIsLoading(false);

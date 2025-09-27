@@ -19,13 +19,14 @@ import {
   People,
   LocationOn,
 } from "@mui/icons-material";
-import { useAuth, usePermissions } from "@masjid-suite/auth";
+import { useUser, useProfile, usePermissions } from "@masjid-suite/auth";
 
 /**
  * Home/Dashboard page component
  */
 function Home() {
-  const { user, profile } = useAuth();
+  const user = useUser();
+  const profile = useProfile();
   const permissions = usePermissions();
 
   const stats = [

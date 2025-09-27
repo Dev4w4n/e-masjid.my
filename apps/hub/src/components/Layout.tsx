@@ -36,8 +36,17 @@ import {
   AccountCircle,
   ChevronLeft,
   ChevronRight,
+  Add,
+  Approval,
+  ViewList,
 } from "@mui/icons-material";
-import { useAuth, usePermissions } from "@masjid-suite/auth";
+import {
+  useUser,
+  useProfile,
+  useAuthActions,
+  usePermissions,
+  UserRole,
+} from "@masjid-suite/auth";
 
 const drawerWidth = 240;
 
@@ -45,7 +54,7 @@ interface NavigationItem {
   text: string;
   icon: React.ReactElement;
   path: string;
-  roles?: Array<"public" | "registered" | "masjid_admin" | "super_admin">;
+  roles?: UserRole[];
   badge?: number;
 }
 
@@ -57,7 +66,9 @@ function Layout() {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, profile, signOut } = useAuth();
+  const user = useUser();
+  const profile = useProfile();
+  const { signOut } = useAuthActions();
   const permissions = usePermissions();
 
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -84,36 +95,61 @@ function Layout() {
 
     // Add user-specific items
     if (user) {
-      items.push({
-        text: "My Profile",
-        icon: <Person />,
-        path: "/profile",
-        roles: ["registered", "masjid_admin", "super_admin"],
-      });
+      items.push(
+        {
+          text: "My Profile",
+          icon: <Person />,
+          path: "/profile",
+          roles: ["registered", "masjid_admin", "super_admin"],
+        },
+        {
+          text: "Create Content",
+          icon: <Add />,
+          path: "/content/create",
+          roles: ["registered", "masjid_admin", "super_admin"],
+        },
+        {
+          text: "My Content",
+          icon: <ViewList />,
+          path: "/content/my-content",
+          roles: ["registered", "masjid_admin", "super_admin"],
+        }
+      );
     }
 
     // Add admin-specific items
-    if (permissions.isSuperAdmin()) {
+    if (permissions.isSuperAdmin() || permissions.isMasjidAdmin()) {
       items.push(
         {
           text: "Admin Dashboard",
           icon: <Dashboard />,
           path: "/admin",
-          roles: ["super_admin"],
+          roles: ["masjid_admin", "super_admin"],
         },
         {
-          text: "Applications",
-          icon: <Assignment />,
-          path: "/admin/applications",
-          roles: ["super_admin"],
-          badge: 8, // Mock badge count
-        },
+          text: "Content Approvals",
+          icon: <Approval />,
+          path: "/admin/approvals",
+          roles: ["masjid_admin", "super_admin"],
+          badge: 2, // Mock badge count for pending approvals
+        }
       );
+    }
+
+    if (permissions.isSuperAdmin()) {
+      items.push({
+        text: "Applications",
+        icon: <Assignment />,
+        path: "/admin/applications",
+        roles: ["super_admin"],
+        badge: 8, // Mock badge count
+      });
     }
 
     return items.filter(
       (item) =>
-        !item.roles || item.roles.some((role) => permissions.hasRole(role)),
+        !item.roles ||
+        item.roles.some((role: UserRole) => permissions.hasRole(role))
     );
   };
 
@@ -136,9 +172,26 @@ function Layout() {
   };
 
   const handleSignOut = async () => {
-    handleProfileMenuClose();
-    await signOut();
-    navigate("/auth/signin");
+    try {
+      handleProfileMenuClose();
+      console.log("Signing out user...");
+
+      // Set a timeout to ensure UI responds even if signOut hangs
+      const signOutTimeout = setTimeout(() => {
+        console.warn("Sign out taking too long, forcing navigation");
+        navigate("/auth/signin", { replace: true });
+      }, 3000); // 3 second timeout
+
+      await signOut();
+      clearTimeout(signOutTimeout);
+
+      // Always navigate to signin after logout, regardless of current route
+      navigate("/auth/signin", { replace: true });
+    } catch (error) {
+      console.error("Sign out failed:", error);
+      // Still try to navigate to signin even if signOut fails
+      navigate("/auth/signin", { replace: true });
+    }
   };
 
   const isActivePath = (path: string) => {
@@ -297,6 +350,9 @@ function Layout() {
             {location.pathname === "/profile" && "My Profile"}
             {location.pathname === "/admin" && "Admin Dashboard"}
             {location.pathname === "/admin/applications" && "Applications"}
+            {location.pathname === "/admin/approvals" && "Content Approvals"}
+            {location.pathname === "/content/create" && "Create Content"}
+            {location.pathname === "/content/my-content" && "My Content"}
             {location.pathname.startsWith("/masjids/") && "Masjid Details"}
             {location.pathname.startsWith("/auth/") && "Authentication"}
           </Typography>
