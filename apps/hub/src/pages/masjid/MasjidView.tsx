@@ -44,6 +44,8 @@ import { useTodayPrayerTimes, MalaysianZone } from "@masjid-suite/prayer-times";
 import { Database } from "@masjid-suite/shared-types";
 
 type Masjid = Database["public"]["Tables"]["masjids"]["Row"];
+type MasjidAdmin =
+  Database["public"]["Functions"]["get_masjid_admin_list"]["Returns"][number];
 
 /**
  * Masjid detail view component
@@ -57,6 +59,9 @@ function MasjidView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [admins, setAdmins] = useState<MasjidAdmin[]>([]);
+  const [adminsLoading, setAdminsLoading] = useState(true);
+  const [adminsError, setAdminsError] = useState<string | null>(null);
 
   // Use the real prayer times hook with the masjid's zone code
   const {
@@ -91,6 +96,26 @@ function MasjidView() {
     };
 
     fetchMasjid();
+  }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchAdmins = async () => {
+      try {
+        setAdminsLoading(true);
+        const adminData = await masjidService.getMasjidAdmins(id);
+        setAdmins(adminData);
+        setAdminsError(null);
+      } catch (err: any) {
+        setAdminsError(err.message);
+        console.error("Failed to fetch masjid admins:", err);
+      } finally {
+        setAdminsLoading(false);
+      }
+    };
+
+    fetchAdmins();
   }, [id]);
 
   const getStatusColor = (status: string) => {
@@ -367,6 +392,51 @@ function MasjidView() {
                   </ListItem>
                 </Grid>
               </Grid>
+            </CardContent>
+          </Card>
+
+          {/* Admin List */}
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Committee
+              </Typography>
+              {adminsLoading ? (
+                <CircularProgress size={24} />
+              ) : adminsError ? (
+                <Alert severity="error">{adminsError}</Alert>
+              ) : admins.length > 0 ? (
+                <List dense>
+                  {admins.map((admin) => (
+                    <ListItem key={admin.user_id}>
+                      <ListItemIcon>
+                        <Avatar sx={{ width: 32, height: 32 }}>
+                          {admin.full_name.charAt(0)}
+                        </Avatar>
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={admin.full_name}
+                        secondary={
+                          <>
+                            <Typography
+                              component="span"
+                              variant="body2"
+                              color="text.primary"
+                            >
+                              {admin.email}
+                            </Typography>
+                            {admin.phone_number && ` — ${admin.phone_number}`}
+                          </>
+                        }
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  No administrators found for this masjid.
+                </Typography>
+              )}
             </CardContent>
           </Card>
 

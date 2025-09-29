@@ -641,25 +641,14 @@ export class MasjidService {
   /**
    * Get masjid admins
    */
-  async getMasjidAdmins(masjidId: string): Promise<any[]> {
-    const { data, error } = await this.db
-      .table("masjid_admins")
-      .select(
-        `
-        *,
-        profiles (
-          user_id,
-          full_name,
-          email,
-          phone_number
-        )
-      `
-      )
-      .eq("masjid_id", masjidId);
-
-    if (error) {
-      throw new Error(`Failed to get masjid admins: ${error.message}`);
-    }
+  async getMasjidAdmins(
+    masjidId: string
+  ): Promise<
+    Database["public"]["Functions"]["get_masjid_admin_list"]["Returns"]
+  > {
+    const data = await this.db.rpc("get_masjid_admin_list", {
+      target_masjid_id: masjidId,
+    });
 
     return data || [];
   }
