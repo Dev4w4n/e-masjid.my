@@ -9,7 +9,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { 
   Database,
-  PrayerTimes,
   PrayerTimeConfig,
   PrayerTimesResponse,
 } from '@masjid-suite/shared-types';
@@ -17,7 +16,7 @@ import {
   ApiError,
   createApiError 
 } from '../../../../../lib/api-utils';
-import { jakimApi, MalaysianZone } from '../../../../../lib/services/jakim-api';
+import { jakimApi, MalaysianZone, determineZoneCode, PrayerTimes } from '@masjid-suite/prayer-times/server';
 
 // Create Supabase client lazily to avoid build-time issues
 function createSupabaseClient() {
@@ -208,32 +207,4 @@ export async function GET(
       { status: 500 }
     );
   }
-}
-
-// Helper functions
-
-function determineZoneCode(state?: string, location?: string): string {
-  if (!state) return 'WLY01'; // Default to Kuala Lumpur
-  
-  const PRAYER_ZONES: Record<string, string> = {
-    'kuala-lumpur': 'WLY01',
-    'selangor': 'SGR01',
-    'johor': 'JHR02', // Changed to JHR02 which is more common
-    'penang': 'PNG01',
-    'perak': 'PRK02', // Changed to PRK02 which is more common
-    'negeri-sembilan': 'NGS01',
-    'melaka': 'MLK01',
-    'kedah': 'KDH01',
-    'kelantan': 'KTN01',
-    'terengganu': 'TRG01',
-    'pahang': 'PHG02', // Changed to PHG02 which is more common
-    'sabah': 'SBH07', // Changed to SBH07 which is more common (Kota Kinabalu)
-    'sarawak': 'SWK08', // Changed to SWK08 which is more common (Kuching)
-    'federal-territory': 'WLY01',
-    'putrajaya': 'WLY01',
-    'labuan': 'WLY02' // Labuan is actually WLY02
-  };
-  
-  const normalizedState = state.toLowerCase().replace(/\s+/g, '-');
-  return PRAYER_ZONES[normalizedState] || 'WLY01';
 }

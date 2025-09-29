@@ -69,6 +69,9 @@ importers:
       '@masjid-suite/auth':
         specifier: workspace:*
         version: link:../../packages/auth
+      '@masjid-suite/prayer-times':
+        specifier: workspace:*
+        version: link:../../packages/prayer-times
       '@masjid-suite/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
@@ -154,6 +157,9 @@ importers:
 
   apps/tv-display:
     dependencies:
+      '@masjid-suite/prayer-times':
+        specifier: workspace:*
+        version: link:../../packages/prayer-times
       '@masjid-suite/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
@@ -358,6 +364,31 @@ importers:
       eslint-plugin-react-refresh:
         specifier: ^0.4.5
         version: 0.4.20(eslint@8.57.1)
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.2
+
+  packages/prayer-times:
+    dependencies:
+      '@masjid-suite/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
+      react:
+        specifier: '>=18.0.0'
+        version: 18.3.1
+    devDependencies:
+      '@masjid-suite/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@types/node':
+        specifier: ^18.0.0
+        version: 18.19.127
+      '@types/react':
+        specifier: ^18.2.0
+        version: 18.3.24
+      rimraf:
+        specifier: ^5.0.0
+        version: 5.0.10
       typescript:
         specifier: ^5.0.0
         version: 5.9.2
@@ -2605,6 +2636,12 @@ packages:
 
   /@types/json5@0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+
+  /@types/node@18.19.127:
+    resolution: {integrity: sha512-gSjxjrnKXML/yo0BO099uPixMqfpJU0TKYjpfLU7TrtA2WWDki412Np/RSTPRil1saKBhvVVKzVx/p/6p94nVA==}
+    dependencies:
+      undici-types: 5.26.5
+    dev: true
 
   /@types/node@20.19.15:
     resolution: {integrity: sha512-W3bqcbLsRdFDVcmAM5l6oLlcl67vjevn8j1FPZ4nx+K5jNoWCh+FC/btxFoBPnvQlrHHDwfjp1kjIEDfwJ0Mog==}
@@ -5773,6 +5810,13 @@ packages:
     dependencies:
       glob: 7.2.3
 
+  /rimraf@5.0.10:
+    resolution: {integrity: sha512-l0OE8wL34P4nJH/H2ffoaniAokM2qSmrtXHmlpvYr5AVVX8msAyW0l8NVJFDxlSK4u3Uh/f41cQheDVdnYijwQ==}
+    hasBin: true
+    dependencies:
+      glob: 10.4.5
+    dev: true
+
   /rollup@4.50.2:
     resolution: {integrity: sha512-BgLRGy7tNS9H66aIMASq1qSYbAAJV6Z6WR4QYTvj5FgF15rZ/ympT1uixHXwzbZUBDbkvqUI1KR0fH1FhMaQ9w==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
@@ -6471,6 +6515,10 @@ packages:
       has-bigints: 1.1.0
       has-symbols: 1.1.0
       which-boxed-primitive: 1.1.1
+
+  /undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+    dev: true
 
   /undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
