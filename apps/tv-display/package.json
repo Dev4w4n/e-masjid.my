@@ -20,6 +20,7 @@
     "playwright:install": "playwright install"
   },
   "dependencies": {
+    "@masjid-suite/prayer-times": "workspace:*",
     "@masjid-suite/shared-types": "workspace:*",
     "@masjid-suite/supabase-client": "workspace:*",
     "@masjid-suite/ui-components": "workspace:*",

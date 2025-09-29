@@ -1,0 +1,61 @@
+export const Constants = {
+    graphql_public: {
+        Enums: {},
+    },
+    public: {
+        Enums: {
+            address_type: ["home", "work", "other"],
+            admin_assignment_status: ["active", "inactive", "pending", "revoked"],
+            application_status: ["pending", "approved", "rejected", "withdrawn"],
+            content_status: ["pending", "active", "expired", "rejected"],
+            content_type: [
+                "image",
+                "youtube_video",
+                "text_announcement",
+                "event_poster",
+            ],
+            display_orientation: ["landscape", "portrait"],
+            display_resolution: ["1920x1080", "3840x2160", "1366x768", "2560x1440"],
+            language_code: ["en", "ms", "zh", "ta"],
+            malaysian_state: [
+                "Johor",
+                "Kedah",
+                "Kelantan",
+                "Malacca",
+                "Negeri Sembilan",
+                "Pahang",
+                "Penang",
+                "Perak",
+                "Perlis",
+                "Sabah",
+                "Sarawak",
+                "Selangor",
+                "Terengganu",
+                "Kuala Lumpur",
+                "Labuan",
+                "Putrajaya",
+            ],
+            masjid_status: ["active", "inactive", "pending_verification"],
+            payment_method: ["fpx", "credit_card", "bank_transfer", "cash"],
+            payment_status: ["pending", "paid", "failed", "refunded"],
+            prayer_source_enum: ["manual", "jakim", "auto"],
+            prayer_time_position: [
+                "top",
+                "bottom",
+                "left",
+                "right",
+                "center",
+                "hidden",
+            ],
+            prayer_time_source: ["JAKIM_API", "MANUAL_ENTRY", "CACHED_FALLBACK"],
+            sponsorship_tier: ["bronze", "silver", "gold", "platinum"],
+            user_role: ["super_admin", "masjid_admin", "registered", "public"],
+        },
+    },
+    storage: {
+        Enums: {
+            buckettype: ["STANDARD", "ANALYTICS"],
+        },
+    },
+};
+//# sourceMappingURL=database.js.map

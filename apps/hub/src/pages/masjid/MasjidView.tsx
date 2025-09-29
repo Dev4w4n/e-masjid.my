@@ -21,6 +21,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Skeleton,
 } from "@mui/material";
 import {
   ArrowBack,
@@ -39,23 +40,10 @@ import {
 } from "@mui/icons-material";
 import { usePermissions } from "@masjid-suite/auth";
 import { masjidService } from "@masjid-suite/supabase-client";
+import { useTodayPrayerTimes, MalaysianZone } from "@masjid-suite/prayer-times";
 import { Database } from "@masjid-suite/shared-types";
 
 type Masjid = Database["public"]["Tables"]["masjids"]["Row"];
-
-// Mock data for prayer times - will be replaced later
-const mockPrayerTimes = {
-  date: "2024-03-15",
-  times: {
-    fajr: "05:45",
-    syuruk: "07:05",
-    dhuhr: "13:15",
-    asr: "16:30",
-    maghrib: "19:20",
-    isha: "20:35",
-  },
-  source: "JAKIM Malaysia",
-};
 
 /**
  * Masjid detail view component
@@ -66,10 +54,19 @@ function MasjidView() {
   const permissions = usePermissions();
 
   const [masjid, setMasjid] = useState<Masjid | null>(null);
-  const [prayerTimes] = useState(mockPrayerTimes); // Keep mock for now
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  // Use the real prayer times hook with the masjid's zone code
+  const {
+    prayerTimes,
+    loading: prayerTimesLoading,
+    error: prayerTimesError,
+  } = useTodayPrayerTimes(
+    masjid?.id || null,
+    (masjid?.jakim_zone_code as MalaysianZone) || null
+  );
 
   // Load masjid data
   useEffect(() => {
@@ -406,43 +403,143 @@ function MasjidView() {
                 <Typography variant="h6">Prayer Times</Typography>
               </Box>
 
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                display="block"
-                sx={{ mb: 2 }}
-              >
-                {new Date(prayerTimes.date).toLocaleDateString("en-MY", {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </Typography>
-
-              <List dense>
-                {Object.entries(prayerTimes.times).map(([prayer, time]) => (
-                  <ListItem key={prayer} sx={{ py: 0.5 }}>
-                    <ListItemText
-                      primary={prayer.charAt(0).toUpperCase() + prayer.slice(1)}
-                      secondary={time}
-                      primaryTypographyProps={{ variant: "body2" }}
-                      secondaryTypographyProps={{
-                        variant: "body2",
-                        fontWeight: "medium",
-                      }}
+              {prayerTimesLoading && (
+                <Box>
+                  <Skeleton
+                    variant="text"
+                    width="60%"
+                    height={24}
+                    sx={{ mb: 1 }}
+                  />
+                  {[...Array(6)].map((_, index) => (
+                    <Skeleton
+                      key={index}
+                      variant="text"
+                      height={40}
+                      sx={{ mb: 0.5 }}
                     />
-                  </ListItem>
-                ))}
-              </List>
+                  ))}
+                </Box>
+              )}
 
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ mt: 1, display: "block" }}
-              >
-                Source: {prayerTimes.source}
-              </Typography>
+              {prayerTimesError && (
+                <Alert severity="warning" sx={{ mb: 2 }}>
+                  Failed to load prayer times: {prayerTimesError}
+                  {masjid?.jakim_zone_code
+                    ? ` (Zone: ${masjid.jakim_zone_code})`
+                    : " (No zone code configured)"}
+                </Alert>
+              )}
+
+              {prayerTimes && (
+                <>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    display="block"
+                    sx={{ mb: 2 }}
+                  >
+                    {new Date(prayerTimes.prayer_date).toLocaleDateString(
+                      "en-MY",
+                      {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )}
+                  </Typography>
+
+                  <List dense>
+                    <ListItem sx={{ py: 0.5 }}>
+                      <ListItemText
+                        primary="Fajr"
+                        secondary={prayerTimes.fajr_time}
+                        primaryTypographyProps={{ variant: "body2" }}
+                        secondaryTypographyProps={{
+                          variant: "body2",
+                          fontWeight: "medium",
+                        }}
+                      />
+                    </ListItem>
+                    <ListItem sx={{ py: 0.5 }}>
+                      <ListItemText
+                        primary="Sunrise"
+                        secondary={prayerTimes.sunrise_time}
+                        primaryTypographyProps={{ variant: "body2" }}
+                        secondaryTypographyProps={{
+                          variant: "body2",
+                          fontWeight: "medium",
+                        }}
+                      />
+                    </ListItem>
+                    <ListItem sx={{ py: 0.5 }}>
+                      <ListItemText
+                        primary="Dhuhr"
+                        secondary={prayerTimes.dhuhr_time}
+                        primaryTypographyProps={{ variant: "body2" }}
+                        secondaryTypographyProps={{
+                          variant: "body2",
+                          fontWeight: "medium",
+                        }}
+                      />
+                    </ListItem>
+                    <ListItem sx={{ py: 0.5 }}>
+                      <ListItemText
+                        primary="Asr"
+                        secondary={prayerTimes.asr_time}
+                        primaryTypographyProps={{ variant: "body2" }}
+                        secondaryTypographyProps={{
+                          variant: "body2",
+                          fontWeight: "medium",
+                        }}
+                      />
+                    </ListItem>
+                    <ListItem sx={{ py: 0.5 }}>
+                      <ListItemText
+                        primary="Maghrib"
+                        secondary={prayerTimes.maghrib_time}
+                        primaryTypographyProps={{ variant: "body2" }}
+                        secondaryTypographyProps={{
+                          variant: "body2",
+                          fontWeight: "medium",
+                        }}
+                      />
+                    </ListItem>
+                    <ListItem sx={{ py: 0.5 }}>
+                      <ListItemText
+                        primary="Isha"
+                        secondary={prayerTimes.isha_time}
+                        primaryTypographyProps={{ variant: "body2" }}
+                        secondaryTypographyProps={{
+                          variant: "body2",
+                          fontWeight: "medium",
+                        }}
+                      />
+                    </ListItem>
+                  </List>
+
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ mt: 1, display: "block" }}
+                  >
+                    Source: {prayerTimes.source.replace("_", " ")}
+                    {masjid?.jakim_zone_code &&
+                      ` (Zone: ${masjid.jakim_zone_code})`}
+                    <br />
+                    Last updated:{" "}
+                    {new Date(prayerTimes.fetched_at).toLocaleString("en-MY")}
+                  </Typography>
+                </>
+              )}
+
+              {!prayerTimes && !prayerTimesLoading && !prayerTimesError && (
+                <Alert severity="info">
+                  Prayer times will be displayed when a JAKIM zone code is
+                  configured for this masjid.
+                </Alert>
+              )}
             </CardContent>
           </Card>
 
