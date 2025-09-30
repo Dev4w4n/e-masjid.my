@@ -29,6 +29,7 @@
     "@mui/x-date-pickers": "^7.29.4",
     "date-fns": "^2.30.0",
     "formik": "^2.4.6",
+    "notistack": "^3.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.48.0",

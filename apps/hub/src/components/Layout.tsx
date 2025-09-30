@@ -39,6 +39,8 @@ import {
   Add,
   Approval,
   ViewList,
+  Tv,
+  DynamicFeed,
 } from "@mui/icons-material";
 import {
   useUser,
@@ -132,6 +134,18 @@ function Layout() {
           path: "/admin/approvals",
           roles: ["masjid_admin", "super_admin"],
           badge: 2, // Mock badge count for pending approvals
+        },
+        {
+          text: "Display Settings",
+          icon: <Tv />,
+          path: "/admin/display-settings",
+          roles: ["masjid_admin", "super_admin"],
+        },
+        {
+          text: "Content Management",
+          icon: <DynamicFeed />,
+          path: "/admin/content-management",
+          roles: ["masjid_admin", "super_admin"],
         }
       );
     }
@@ -351,6 +365,10 @@ function Layout() {
             {location.pathname === "/admin" && "Admin Dashboard"}
             {location.pathname === "/admin/applications" && "Applications"}
             {location.pathname === "/admin/approvals" && "Content Approvals"}
+            {location.pathname === "/admin/display-settings" &&
+              "Display Settings"}
+            {location.pathname === "/admin/content-management" &&
+              "Content Management"}
             {location.pathname === "/content/create" && "Create Content"}
             {location.pathname === "/content/my-content" && "My Content"}
             {location.pathname.startsWith("/masjids/") && "Masjid Details"}
