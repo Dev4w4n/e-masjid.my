@@ -1,6 +1,7 @@
 // Application-specific types for Masjid Suite Profile Management System
 
 import type { Database } from "./database.js";
+import type { Masjid, MasjidAdmin } from "./masjid.js";
 
 // Re-export database types for convenience
 export type { Database } from "./database.js";
@@ -10,8 +11,6 @@ export type User = Database["public"]["Tables"]["users"]["Row"];
 export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 export type ProfileAddress =
   Database["public"]["Tables"]["profile_addresses"]["Row"];
-export type Masjid = Database["public"]["Tables"]["masjids"]["Row"];
-export type MasjidAdmin = Database["public"]["Tables"]["masjid_admins"]["Row"];
 export type AdminApplication =
   Database["public"]["Tables"]["admin_applications"]["Row"];
 // export type MalaysianPostcode = Database['public']['Tables']['malaysian_postcodes']['Row']; // Removed - not in current schema
@@ -113,41 +112,6 @@ export interface MasjidAdminWithDetails extends MasjidAdmin {
     id: string;
     email: string;
   };
-}
-
-// Address types (JSON structure in masjid.address field)
-export interface MasjidAddress {
-  address_line_1: string;
-  address_line_2?: string;
-  city: string;
-  state: MalaysianState;
-  postcode: string;
-  country: "MYS";
-}
-
-// Form types for frontend
-export interface ProfileFormData {
-  full_name: string;
-  phone_number: string;
-  preferred_language: LanguageCode;
-  home_masjid_id: string | null;
-  address: {
-    address_line_1: string;
-    address_line_2?: string;
-    city: string;
-    state: MalaysianState;
-    postcode: string;
-    address_type: AddressType;
-  };
-}
-
-export interface MasjidFormData {
-  name: string;
-  registration_number?: string;
-  email?: string;
-  phone_number?: string;
-  description?: string;
-  address: MasjidAddress;
 }
 
 export interface AdminApplicationFormData {

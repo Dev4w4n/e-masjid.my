@@ -342,17 +342,19 @@ export const malaysianStates = [
   "Johor",
   "Kedah",
   "Kelantan",
-  "Melaka",
+  "Malacca",
   "Negeri Sembilan",
   "Pahang",
-  "Pulau Pinang",
+  "Penang",
   "Perak",
   "Perlis",
   "Sabah",
   "Sarawak",
   "Selangor",
   "Terengganu",
-  "Wilayah Persekutuan",
+  "Kuala Lumpur",
+  "Labuan",
+  "Putrajaya",
 ] as const;
 
 export const prayerTimeSources = [
