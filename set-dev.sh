@@ -13,11 +13,11 @@ NC='\033[0m' # No Color
 # Move to project root directory (script is already in root)
 cd "$(dirname "$0")"
 
-echo -e "${BLUE}Reseting dev environment ...${NC}"
+echo -e "${BLUE}Setting dev environment ...${NC}"
 echo ""
 
 # Run the setup-supabase.sh script with the --test flag
-pnpm clean && pnpm install && pnpm build:clean && pnpm dev
+pnpm install && pnpm build:clean && pnpm dev
 
 echo ""
 echo -e "${GREEN}Ready!${NC}"

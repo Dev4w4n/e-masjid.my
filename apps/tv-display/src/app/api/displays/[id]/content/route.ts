@@ -22,10 +22,10 @@ import {
   createApiError 
 } from '../../../../../lib/api-utils';
 
-// Create Supabase client lazily to avoid build-time issues
+// Create Supabase client for API routes
 function createSupabaseClient() {
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
   
   if (!supabaseUrl || !supabaseServiceKey) {
     throw new Error('Missing Supabase environment variables');
@@ -95,7 +95,7 @@ export async function GET(
     }
 
     // Build content query with filters
-    // Include content for this specific display OR content for all displays (display_id IS NULL)
+    // Use the new display_content_assignments join table to get content for this display
     let query = supabase
       .from('display_content')
       .select(`
@@ -105,9 +105,12 @@ export async function GET(
           sponsor_message,
           tier,
           amount
+        ),
+        display_content_assignments!inner (
+          display_id
         )
       `)
-      .or(`display_id.eq.${displayId},display_id.is.null`)
+      .eq('display_content_assignments.display_id', displayId)
       .order('sponsorship_amount', { ascending: false })
       .order('created_at', { ascending: false });
 
@@ -134,8 +137,8 @@ export async function GET(
     // Get total count for pagination
     const { count } = await supabase
       .from('display_content')
-      .select('*', { count: 'exact', head: true })
-      .or(`display_id.eq.${displayId},display_id.is.null`);
+      .select('*, display_content_assignments!inner(display_id)', { count: 'exact', head: true })
+      .eq('display_content_assignments.display_id', displayId);
 
     // Get paginated content
     const { data: content, error: contentError } = await query
@@ -150,10 +153,10 @@ export async function GET(
     }
 
     // Transform content to match DisplayContent interface
-    const transformedContent: DisplayContent[] = content?.map(item => ({
+    const transformedContent: DisplayContent[] = content?.map((item: any) => ({
       id: item.id,
       masjid_id: display.masjid_id,
-      display_id: item.display_id || '',
+      display_id: displayId, // Use the displayId from params since content is assigned to this display
       title: item.title,
       ...(item.description && { description: item.description }),
       type: item.type,
@@ -181,11 +184,11 @@ export async function GET(
     // Get content statistics
     const { data: stats } = await supabase
       .from('display_content')
-      .select('status')
-      .or(`display_id.eq.${displayId},display_id.is.null`);
+      .select('status, display_content_assignments!inner(display_id)')
+      .eq('display_content_assignments.display_id', displayId);
 
-    const activeCount = stats?.filter(s => s.status === 'active').length || 0;
-    const pendingCount = stats?.filter(s => s.status === 'pending').length || 0;
+    const activeCount = stats?.filter((s: any) => s.status === 'active').length || 0;
+    const pendingCount = stats?.filter((s: any) => s.status === 'pending').length || 0;
 
     // Get total sponsorship revenue
     const { data: revenueData } = await supabase
@@ -194,7 +197,7 @@ export async function GET(
       .eq('masjid_id', display.masjid_id)
       .eq('payment_status', 'paid');
 
-    const totalRevenue = revenueData?.reduce((sum, item) => sum + item.amount, 0) || 0;
+    const totalRevenue = revenueData?.reduce((sum: number, item: any) => sum + item.amount, 0) || 0;
 
     // Calculate pagination
     const totalPages = Math.ceil((count || 0) / limit);

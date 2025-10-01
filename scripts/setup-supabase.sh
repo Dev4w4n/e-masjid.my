@@ -482,6 +482,7 @@ VITE_SUPABASE_ANON_KEY=$ANON_KEY
 # ===========================================
 NODE_ENV=$NODE_ENV
 VITE_APP_URL=http://localhost:3000
+VITE_TV_DISPLAY_BASE_URL=http://localhost:3001/display
 
 # ===========================================
 # ADMIN CONFIGURATION
