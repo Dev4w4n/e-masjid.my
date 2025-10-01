@@ -4,7 +4,12 @@ import {
   User,
   Session,
 } from "@supabase/supabase-js";
-import type { Database } from "@masjid-suite/shared-types";
+import type {
+  Database,
+  Masjid,
+  MasjidWithAdmins,
+  MasjidAdmin,
+} from "@masjid-suite/shared-types";
 
 // Environment variables for Supabase configuration
 // Simplified and more reliable environment variable access
@@ -431,8 +436,8 @@ export class MasjidService {
   /**
    * Get all masjids
    */
-  async getAllMasjids() {
-    const { data, error } = await this.db
+  async getAllMasjids(): Promise<MasjidWithAdmins[]> {
+    const { data: masjids, error } = await this.db
       .table("masjids")
       .select("*")
       .eq("status", "active")
@@ -442,7 +447,18 @@ export class MasjidService {
       throw new Error(`Failed to get masjids: ${error.message}`);
     }
 
-    return data || [];
+    if (!masjids) {
+      return [];
+    }
+
+    const masjidsWithAdmins = await Promise.all(
+      masjids.map(async (masjid: Masjid) => {
+        const admins = await this.getMasjidAdmins(masjid.id);
+        return { ...masjid, admins: admins || [] };
+      })
+    );
+
+    return masjidsWithAdmins;
   }
 
   /**
@@ -682,6 +698,14 @@ export const masjidService = new MasjidService(databaseService);
 // JAKIM service for external data
 export { JakimService, jakimService } from "./services/jakim";
 export type { UiJakimZone } from "./services/jakim";
+
+// Display service for TV display management
+export {
+  getDisplaysByMasjid,
+  getAssignedContent,
+  assignContent,
+  removeContent,
+} from "./services/display";
 
 // Re-export types for convenience
 export type { Database } from "@masjid-suite/shared-types";

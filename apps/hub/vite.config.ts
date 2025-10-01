@@ -69,10 +69,10 @@ export default defineConfig({
         __dirname,
         "../../packages/supabase-client/src"
       ),
-      "@masjid-suite/shared-types": resolve(
-        __dirname,
-        "../../packages/shared-types/src"
-      ),
+      // "@masjid-suite/shared-types": resolve(
+      //   __dirname,
+      //   "../../packages/shared-types/src/index.ts"
+      // ),
       "@masjid-suite/ui-components": resolve(
         __dirname,
         "../../packages/ui-components/src"

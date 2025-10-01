@@ -26,12 +26,13 @@ import {
   prayerTimeSources,
   statusOptions,
   UiJakimZone,
+  masjidFormSchema,
+  MasjidFormData,
 } from "@masjid-suite/shared-types";
 import { usePermissions } from "@masjid-suite/auth";
 import { masjidService } from "@masjid-suite/supabase-client";
 
 // The Zod schema is now the single source of truth for validation
-import { masjidSchema, MasjidFormData } from "@masjid-suite/shared-types";
 
 export const MasjidForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -49,7 +50,7 @@ export const MasjidForm: React.FC = () => {
     watch,
     formState: { errors },
   } = useForm<MasjidFormData>({
-    resolver: zodResolver(masjidSchema),
+    resolver: zodResolver(masjidFormSchema),
     defaultValues: {
       name: "",
       description: "",
@@ -147,7 +148,9 @@ export const MasjidForm: React.FC = () => {
         registration_number: data.registration_number || null,
         website_url: data.website_url || null,
         description: data.description || null,
-        jakim_zone_code: data.jakim_zone_code || null,
+        jakim_zone_code:
+          data.prayer_times_source === "jakim" ? data.jakim_zone_code : null,
+        capacity: data.capacity || null,
       };
 
       if (isEditMode && id) {
@@ -226,7 +229,11 @@ export const MasjidForm: React.FC = () => {
   };
 
   const filteredJakimZones = jakimZones.filter((zone: UiJakimZone) => {
-    if (selectedState === "Wilayah Persekutuan") {
+    if (
+      selectedState === "Kuala Lumpur" ||
+      selectedState === "Putrajaya" ||
+      selectedState === "Labuan"
+    ) {
       return [
         "Wilayah Persekutuan",
         "Kuala Lumpur",

@@ -20,18 +20,18 @@ export type SponsorshipTier = "bronze" | "silver" | "gold" | "platinum";
 export interface DisplayContent {
   id: string;
   masjid_id: string;
-  display_id: string;
+  display_id: string | null;
   title: string;
-  description?: string;
+  description?: string | null;
   type: ContentType;
   url: string;
-  thumbnail_url?: string;
+  thumbnail_url?: string | null;
 
   // Sponsorship and financial
   sponsorship_amount: number;
-  sponsorship_tier?: SponsorshipTier;
+  sponsorship_tier?: SponsorshipTier | null;
   payment_status: "pending" | "paid" | "failed" | "refunded";
-  payment_reference?: string;
+  payment_reference?: string | null;
 
   // Display settings
   duration: number; // seconds
@@ -42,16 +42,37 @@ export interface DisplayContent {
   status: ContentStatus;
   submitted_by: string; // user_id
   submitted_at: string; // ISO datetime
-  approved_by?: string; // user_id
-  approved_at?: string; // ISO datetime
-  rejection_reason?: string;
+  approved_by?: string | null; // user_id
+  approved_at?: string | null; // ISO datetime
+  rejection_reason?: string | null;
 
   // Metadata
-  file_size?: number; // bytes
-  file_type?: string; // MIME type
+  file_size?: number | null; // bytes
+  file_type?: string | null; // MIME type
   created_at: string;
   updated_at: string;
 }
+
+export type CreateDisplayContent = Omit<
+  DisplayContent,
+  | "id"
+  | "created_at"
+  | "updated_at"
+  | "status"
+  | "submitted_at"
+  | "approved_by"
+  | "approved_at"
+  | "rejection_reason"
+> & {
+  submitted_by: string;
+};
+
+export type UpdateDisplayContent = Partial<
+  Omit<
+    DisplayContent,
+    "id" | "masjid_id" | "created_at" | "updated_at" | "submitted_by"
+  >
+>;
 
 export interface ContentSubmission {
   title: string;
@@ -155,13 +176,13 @@ export interface DisplayConfig {
   id: string;
   masjid_id: string;
   display_name: string;
-  description?: string;
+  description?: string | null;
 
   // Physical display settings
   resolution: DisplayResolution;
   orientation: DisplayOrientation;
   is_touch_enabled: boolean;
-  location_description?: string; // e.g., "Main Hall", "Entrance"
+  location_description?: string | null; // e.g., "Main Hall", "Entrance"
 
   // Content settings
   carousel_interval: number; // seconds between content transitions
@@ -192,11 +213,19 @@ export interface DisplayConfig {
 
   // Status
   is_active: boolean;
-  last_heartbeat?: string; // ISO datetime
+  last_heartbeat?: string | null; // ISO datetime
 
   created_at: string;
   updated_at: string;
 }
+
+export type CreateDisplay = Omit<
+  DisplayConfig,
+  "id" | "created_at" | "updated_at" | "last_heartbeat"
+>;
+export type UpdateDisplay = Partial<
+  Omit<DisplayConfig, "id" | "masjid_id" | "created_at" | "updated_at">
+>;
 
 export interface DisplayStatus {
   id: string;

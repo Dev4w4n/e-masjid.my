@@ -37,8 +37,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Add,
-  Approval,
   ViewList,
+  Tv,
 } from "@mui/icons-material";
 import {
   useUser,
@@ -127,11 +127,10 @@ function Layout() {
           roles: ["masjid_admin", "super_admin"],
         },
         {
-          text: "Content Approvals",
-          icon: <Approval />,
-          path: "/admin/approvals",
+          text: "Display Management",
+          icon: <Tv />,
+          path: "/admin/display-management",
           roles: ["masjid_admin", "super_admin"],
-          badge: 2, // Mock badge count for pending approvals
         }
       );
     }
@@ -350,7 +349,8 @@ function Layout() {
             {location.pathname === "/profile" && "My Profile"}
             {location.pathname === "/admin" && "Admin Dashboard"}
             {location.pathname === "/admin/applications" && "Applications"}
-            {location.pathname === "/admin/approvals" && "Content Approvals"}
+            {location.pathname === "/admin/display-management" &&
+              "Display Management"}
             {location.pathname === "/content/create" && "Create Content"}
             {location.pathname === "/content/my-content" && "My Content"}
             {location.pathname.startsWith("/masjids/") && "Masjid Details"}

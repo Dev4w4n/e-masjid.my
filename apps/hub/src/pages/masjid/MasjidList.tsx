@@ -20,6 +20,11 @@ import {
   InputAdornment,
   Skeleton,
   Alert,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Divider,
 } from "@mui/material";
 import {
   Search,
@@ -31,12 +36,11 @@ import {
   Edit,
   FilterList,
   Mosque,
+  AdminPanelSettings,
 } from "@mui/icons-material";
 import { usePermissions } from "@masjid-suite/auth";
-import { MalaysianState, Database } from "@masjid-suite/shared-types";
+import { MalaysianState, MasjidWithAdmins } from "@masjid-suite/shared-types";
 import { masjidService } from "@masjid-suite/supabase-client";
-
-type Masjid = Database["public"]["Tables"]["masjids"]["Row"];
 
 const malaysianStates: MalaysianState[] = [
   "Johor",
@@ -63,7 +67,7 @@ const malaysianStates: MalaysianState[] = [
 function MasjidList() {
   const navigate = useNavigate();
   const permissions = usePermissions();
-  const [masjids, setMasjids] = useState<Masjid[]>([]);
+  const [masjids, setMasjids] = useState<MasjidWithAdmins[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -390,6 +394,46 @@ function MasjidList() {
                       <Typography variant="body2" color="text.secondary">
                         {masjid.email}
                       </Typography>
+                    </Box>
+                  )}
+
+                  {/* Admins */}
+                  {masjid.admins && masjid.admins.length > 0 && (
+                    <Box sx={{ mt: 2 }}>
+                      <Divider sx={{ mb: 1 }} />
+                      <Typography
+                        variant="subtitle2"
+                        sx={{ display: "flex", alignItems: "center", mb: 1 }}
+                      >
+                        <AdminPanelSettings
+                          color="action"
+                          sx={{ mr: 0.5, fontSize: "1.1rem" }}
+                        />
+                        Administrators
+                      </Typography>
+                      <List dense disablePadding>
+                        {masjid.admins.map((admin) => (
+                          <ListItem key={admin.user_id} disableGutters>
+                            <ListItemAvatar sx={{ minWidth: 32 }}>
+                              <Avatar
+                                sx={{
+                                  width: 24,
+                                  height: 24,
+                                  fontSize: "0.8rem",
+                                }}
+                              >
+                                {admin.full_name?.[0]}
+                              </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText
+                              primary={admin.full_name}
+                              secondary={admin.assignment_status}
+                              primaryTypographyProps={{ variant: "body2" }}
+                              secondaryTypographyProps={{ variant: "caption" }}
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
                     </Box>
                   )}
                 </CardContent>

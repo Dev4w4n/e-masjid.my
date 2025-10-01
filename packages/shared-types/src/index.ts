@@ -25,8 +25,8 @@ export {
 export * from "./tv-display";
 export * from "./mock-data";
 export * from "./e2e-test-helpers";
-export { masjidSchema } from "./masjid";
-export type { MasjidFormData, MasjidAddress } from "./masjid";
+export * from "./types";
+export * from "./masjid";
 // ContentItem types (avoid conflicts with api-responses.ts)
 export type {
   ContentItem as TvDisplayContentItem,

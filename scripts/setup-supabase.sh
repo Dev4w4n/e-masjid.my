@@ -250,15 +250,14 @@ BEGIN
     )
   RETURNING id INTO display_2_id;
 
-  -- Insert test display content
+  -- Insert test display content (without display_id column)
   INSERT INTO display_content (
-    id, masjid_id, display_id, title, type, url, duration,
+    id, masjid_id, title, type, url, duration,
     status, submitted_by, start_date, end_date
   ) VALUES 
     (
       gen_random_uuid(),
       test_masjid_id,
-      NULL, -- Available for all displays
       'Welcome to Our Masjid',
       'text_announcement',
       'data:text/plain;base64,V2VsY29tZSB0byBvdXIgbWFzamlk', -- "Welcome to our masjid" in base64
@@ -271,13 +270,12 @@ BEGIN
   RETURNING id INTO content_1_id;
 
   INSERT INTO display_content (
-    id, masjid_id, display_id, title, type, url, duration,
+    id, masjid_id, title, type, url, duration,
     status, submitted_by, start_date, end_date, sponsorship_amount
   ) VALUES 
     (
       gen_random_uuid(),
       test_masjid_id,
-      NULL,
       'Friday Prayer Announcement',
       'text_announcement',
       'data:text/plain;base64,RnJpZGF5IFByYXllciBBbm5vdW5jZW1lbnQ=', -- "Friday Prayer Announcement"
@@ -291,13 +289,12 @@ BEGIN
   RETURNING id INTO content_2_id;
 
   INSERT INTO display_content (
-    id, masjid_id, display_id, title, type, url, duration,
+    id, masjid_id, title, type, url, duration,
     status, submitted_by, start_date, end_date, sponsorship_amount
   ) VALUES 
     (
       gen_random_uuid(),
       test_masjid_id,
-      display_1_id, -- Only for main hall display
       'Donation Information',
       'text_announcement',
       'data:text/plain;base64,U3VwcG9ydCBPdXIgTWFzamlk', -- "Support Our Masjid"
@@ -309,6 +306,21 @@ BEGIN
       25.00
     )
   RETURNING id INTO content_3_id;
+
+  -- Insert display content assignments using the new many-to-many table
+  -- Assign content_1 to all displays (available for all)
+  INSERT INTO display_content_assignments (display_id, content_id, assigned_by) VALUES 
+    (display_1_id, content_1_id, masjid_admin_id),
+    (display_2_id, content_1_id, masjid_admin_id);
+
+  -- Assign content_2 to all displays
+  INSERT INTO display_content_assignments (display_id, content_id, assigned_by) VALUES 
+    (display_1_id, content_2_id, masjid_admin_id),
+    (display_2_id, content_2_id, masjid_admin_id);
+
+  -- Assign content_3 only to main hall display
+  INSERT INTO display_content_assignments (display_id, content_id, assigned_by) VALUES 
+    (display_1_id, content_3_id, test_user_id);
 
   -- Insert test prayer times
   INSERT INTO prayer_times (
