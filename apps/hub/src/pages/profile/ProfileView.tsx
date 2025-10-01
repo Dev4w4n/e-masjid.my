@@ -169,12 +169,13 @@ function ProfileView() {
                   <ListItemText
                     primary="Email Address"
                     secondary={
-                      <Box
+                      <Typography
+                        component="span"
                         sx={{ display: "flex", alignItems: "center", gap: 1 }}
                       >
                         {user?.email || "Not provided"}
                         <Chip size="small" label="Verified" color="success" />
-                      </Box>
+                      </Typography>
                     }
                   />
                 </ListItem>
@@ -263,11 +264,15 @@ function ProfileView() {
                   <ListItemText
                     primary="Profile Status"
                     secondary={
-                      <Chip
-                        label={profile.is_complete ? "Complete" : "Incomplete"}
-                        color={profile.is_complete ? "success" : "warning"}
-                        size="small"
-                      />
+                      <Typography component="span">
+                        <Chip
+                          label={
+                            profile.is_complete ? "Complete" : "Incomplete"
+                          }
+                          color={profile.is_complete ? "success" : "warning"}
+                          size="small"
+                        />
+                      </Typography>
                     }
                   />
                 </ListItem>

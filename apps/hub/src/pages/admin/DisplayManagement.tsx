@@ -51,6 +51,7 @@ import {
   getAssignedContent,
   assignContent,
   removeContent,
+  createDisplay,
   masjidService,
 } from "@masjid-suite/supabase-client";
 import supabase from "@masjid-suite/supabase-client";
@@ -140,6 +141,11 @@ const DisplayManagement = () => {
     action: "approve",
     notes: "",
   });
+
+  // Create display state
+  const [createDisplayDialog, setCreateDisplayDialog] = useState(false);
+  const [newDisplayName, setNewDisplayName] = useState("");
+  const [createLoading, setCreateLoading] = useState(false);
 
   // Load user's admin masjids
   useEffect(() => {
@@ -488,6 +494,38 @@ const DisplayManagement = () => {
     }
   };
 
+  // Create display handler
+  const handleCreateDisplay = async () => {
+    if (!selectedMasjidId || !newDisplayName.trim()) return;
+
+    try {
+      setCreateLoading(true);
+      const newDisplay = await createDisplay({
+        display_name: newDisplayName.trim(),
+        masjid_id: selectedMasjidId,
+      });
+
+      // Update displays list
+      setDisplays([...displays, newDisplay]);
+
+      // Auto-select the new display
+      setSelectedDisplayId(newDisplay.id);
+
+      // Reset form and close dialog
+      setNewDisplayName("");
+      setCreateDisplayDialog(false);
+
+      enqueueSnackbar("Display created successfully!", { variant: "success" });
+    } catch (err: any) {
+      enqueueSnackbar(`Failed to create display: ${err.message}`, {
+        variant: "error",
+      });
+      console.error(err);
+    } finally {
+      setCreateLoading(false);
+    }
+  };
+
   // Format date for display
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-MY", {
@@ -542,7 +580,7 @@ const DisplayManagement = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={5}>
             <FormControl fullWidth disabled={!selectedMasjidId}>
               <InputLabel>Select Display</InputLabel>
               <Select
@@ -557,6 +595,17 @@ const DisplayManagement = () => {
                 ))}
               </Select>
             </FormControl>
+          </Grid>
+          <Grid item xs={12} md={1}>
+            <Button
+              variant="outlined"
+              fullWidth
+              disabled={!selectedMasjidId}
+              onClick={() => setCreateDisplayDialog(true)}
+              sx={{ height: 56 }}
+            >
+              Create New
+            </Button>
           </Grid>
         </Grid>
       </Paper>
@@ -1205,7 +1254,7 @@ const DisplayManagement = () => {
                         : "Rejection Reason (required)"
                     }
                     value={dialogState.notes}
-                    onChange={(e) =>
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       setDialogState({ ...dialogState, notes: e.target.value })
                     }
                     required={dialogState.action === "reject"}
@@ -1233,6 +1282,52 @@ const DisplayManagement = () => {
           </Dialog>
         </>
       )}
+
+      {/* Create Display Dialog - Available even when no displays exist */}
+      <Dialog
+        open={createDisplayDialog}
+        onClose={() => {
+          setCreateDisplayDialog(false);
+          setNewDisplayName("");
+        }}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Create New TV Display</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Display Name"
+            fullWidth
+            variant="outlined"
+            value={newDisplayName}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setNewDisplayName(e.target.value)
+            }
+            disabled={createLoading}
+            placeholder="e.g., Main Hall Display, Entrance Screen"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setCreateDisplayDialog(false);
+              setNewDisplayName("");
+            }}
+            disabled={createLoading}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleCreateDisplay}
+            disabled={createLoading || !newDisplayName.trim()}
+          >
+            {createLoading ? <CircularProgress size={20} /> : "Create Display"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

@@ -217,22 +217,25 @@ export function DisplayStatus({
   const sendHeartbeat = useCallback(async () => {
     try {
       const heartbeatData = {
-        display_id: displayId,
-        performance_metrics: {
-          content_load_time: state.metrics.loadTime,
-          api_response_time: state.metrics.responseTime,
-          error_count: state.errors.length
-        },
-        system_info: {
-          browser_info: state.systemInfo.userAgent,
-          screen_resolution: state.systemInfo.screenResolution,
-          device_info: JSON.stringify({
-            viewport: state.systemInfo.viewport,
-            deviceMemory: state.systemInfo.deviceMemory,
-            connection: state.systemInfo.connection,
-            battery: state.systemInfo.battery
-          })
-        }
+        // Required fields (API expects these at root level)
+        is_online: true,
+        content_load_time: state.metrics.loadTime,
+        api_response_time: state.metrics.responseTime,
+        error_count_24h: state.errors.length,
+        
+        // Optional system information (also at root level)
+        browser_info: state.systemInfo.userAgent,
+        screen_resolution: state.systemInfo.screenResolution,
+        device_info: JSON.stringify({
+          viewport: state.systemInfo.viewport,
+          deviceMemory: state.systemInfo.deviceMemory,
+          connection: state.systemInfo.connection,
+          battery: state.systemInfo.battery
+        }),
+        
+        // Optional performance metrics
+        memory_usage: state.systemInfo.deviceMemory,
+        network_status: navigator.onLine ? 'online' : 'offline' as 'online' | 'offline' | 'limited'
       };
 
       await fetch(`/api/displays/${displayId}/heartbeat`, {

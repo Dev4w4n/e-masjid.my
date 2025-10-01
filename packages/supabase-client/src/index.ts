@@ -701,6 +701,7 @@ export type { UiJakimZone } from "./services/jakim";
 
 // Display service for TV display management
 export {
+  createDisplay,
   getDisplaysByMasjid,
   getAssignedContent,
   assignContent,

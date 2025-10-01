@@ -1,8 +1,28 @@
 import { supabase } from "..";
-import { DisplayContent } from "@masjid-suite/shared-types";
-import { Tables } from "@masjid-suite/shared-types";
+import {
+  DisplayContent,
+  Tables,
+  TablesInsert,
+} from "@masjid-suite/shared-types";
 
 type TvDisplay = Tables<"tv_displays">;
+type NewTvDisplay = TablesInsert<"tv_displays">;
+
+export const createDisplay = async (
+  newDisplay: NewTvDisplay
+): Promise<TvDisplay> => {
+  const { data, error } = await supabase
+    .from("tv_displays")
+    .insert(newDisplay)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
 
 export const getDisplaysByMasjid = async (
   masjidId: string
