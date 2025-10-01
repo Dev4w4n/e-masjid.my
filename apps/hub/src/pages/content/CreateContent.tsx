@@ -22,11 +22,9 @@ import supabase, { masjidService } from "@masjid-suite/supabase-client";
 interface ContentFormData {
   title: string;
   description: string;
-  type: "image" | "youtube_video";
+  type: "image" | "youtube_video" | "text_announcement";
   url: string;
-  duration: number;
-  start_date: string;
-  end_date: string;
+  textContent: string; // For text announcements
   masjid_id: string;
 }
 
@@ -39,12 +37,6 @@ interface MasjidOption {
   state?: string;
 }
 
-// Format date for input
-const formatDateForInput = (date: Date): string => {
-  const datePart = date.toISOString().split("T")[0];
-  return datePart || "";
-};
-
 /**
  * Simple content creation page
  */
@@ -56,11 +48,7 @@ const CreateContent: React.FC = () => {
     description: "",
     type: "image",
     url: "",
-    duration: 10,
-    start_date: formatDateForInput(new Date()),
-    end_date: formatDateForInput(
-      new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    ),
+    textContent: "",
     masjid_id: "",
   });
 
@@ -158,6 +146,20 @@ const CreateContent: React.FC = () => {
         throw new Error("YouTube URL is required");
       }
 
+      if (
+        formData.type === "text_announcement" &&
+        !formData.textContent.trim()
+      ) {
+        throw new Error("Text content is required for announcements");
+      }
+
+      if (
+        formData.type === "text_announcement" &&
+        formData.textContent.length > 5000
+      ) {
+        throw new Error("Text content must be less than 5000 characters");
+      }
+
       let contentUrl = formData.url;
 
       // Upload file if image type
@@ -180,7 +182,18 @@ const CreateContent: React.FC = () => {
         contentUrl = publicUrl;
       }
 
-      // Insert content to database
+      // For text announcements, store the text content in the url field
+      if (formData.type === "text_announcement") {
+        contentUrl = formData.textContent;
+      }
+
+      // Insert content to database with default values for duration and dates
+      // These will be set by masjid admins during approval
+      const today = new Date().toISOString().split("T")[0]!;
+      const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split("T")[0]!;
+
       const { error: dbError } = await supabase.from("display_content").insert([
         {
           masjid_id: formData.masjid_id,
@@ -188,9 +201,9 @@ const CreateContent: React.FC = () => {
           description: formData.description || null,
           type: formData.type,
           url: contentUrl,
-          duration: formData.duration,
-          start_date: formData.start_date,
-          end_date: formData.end_date,
+          duration: 10, // Default duration, admin will set during approval
+          start_date: today, // Default to today
+          end_date: nextWeek, // Default to 7 days from now
           submitted_by: user!.id,
           status: "pending",
         },
@@ -206,11 +219,7 @@ const CreateContent: React.FC = () => {
         description: "",
         type: "image",
         url: "",
-        duration: 10,
-        start_date: formatDateForInput(new Date()),
-        end_date: formatDateForInput(
-          new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-        ),
+        textContent: "",
         masjid_id: "", // Don't auto-select, let user choose which masjid to submit to
       });
       setSelectedFile(null);
@@ -248,7 +257,7 @@ const CreateContent: React.FC = () => {
       </Typography>
       <Typography variant="body1" color="text.secondary" gutterBottom>
         Submit new content to any masjid for approval. The masjid admin(s) will
-        review your submission.
+        review your submission and set the display duration and schedule.
       </Typography>
 
       <Divider sx={{ my: 3 }} />
@@ -303,20 +312,11 @@ const CreateContent: React.FC = () => {
                   <Select value={formData.type} onChange={handleChange("type")}>
                     <MenuItem value="image">Image</MenuItem>
                     <MenuItem value="youtube_video">YouTube Video</MenuItem>
+                    <MenuItem value="text_announcement">
+                      Text Announcement
+                    </MenuItem>
                   </Select>
                 </FormControl>
-              </Grid>
-
-              {/* Duration */}
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Display Duration (seconds)"
-                  type="number"
-                  inputProps={{ min: 5, max: 300 }}
-                  value={formData.duration}
-                  onChange={handleChange("duration")}
-                />
               </Grid>
 
               {/* Title */}
@@ -388,30 +388,23 @@ const CreateContent: React.FC = () => {
                 </Grid>
               )}
 
-              {/* Date Range */}
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Start Date"
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  value={formData.start_date}
-                  onChange={handleChange("start_date")}
-                  required
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="End Date"
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  value={formData.end_date}
-                  onChange={handleChange("end_date")}
-                  required
-                />
-              </Grid>
+              {/* Text Announcement Content */}
+              {formData.type === "text_announcement" && (
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    multiline
+                    rows={6}
+                    label="Announcement Text"
+                    placeholder="Enter your announcement text here..."
+                    value={formData.textContent}
+                    onChange={handleChange("textContent")}
+                    required
+                    inputProps={{ maxLength: 5000 }}
+                    helperText={`${formData.textContent.length}/5000 characters`}
+                  />
+                </Grid>
+              )}
 
               {/* Error Display */}
               {error && (

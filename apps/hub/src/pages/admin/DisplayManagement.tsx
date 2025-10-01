@@ -43,6 +43,7 @@ import {
   Image as ImageIcon,
   Person,
   CalendarToday,
+  Article,
 } from "@mui/icons-material";
 import { SketchPicker, ColorResult } from "react-color";
 import { useSnackbar } from "notistack";
@@ -74,7 +75,7 @@ interface PendingContent {
   id: string;
   title: string;
   description?: string | null;
-  type: "image" | "youtube_video";
+  type: "image" | "youtube_video" | "text_announcement";
   url: string;
   duration: number;
   start_date: string;
@@ -91,6 +92,9 @@ interface ApprovalDialogState {
   content: PendingContent | null;
   action: "approve" | "reject";
   notes: string;
+  duration: number;
+  start_date: string;
+  end_date: string;
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -140,6 +144,11 @@ const DisplayManagement = () => {
     content: null,
     action: "approve",
     notes: "",
+    duration: 10,
+    start_date: new Date().toISOString().split("T")[0]!,
+    end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split("T")[0]!,
   });
 
   // Create display state
@@ -404,13 +413,16 @@ const DisplayManagement = () => {
 
       const transformedData: PendingContent[] = (data || [])
         .filter(
-          (item) => item.type === "image" || item.type === "youtube_video"
+          (item) =>
+            item.type === "image" ||
+            item.type === "youtube_video" ||
+            item.type === "text_announcement"
         )
         .map((item: any) => ({
           id: item.id,
           title: item.title,
           description: item.description,
-          type: item.type as "image" | "youtube_video",
+          type: item.type as "image" | "youtube_video" | "text_announcement",
           url: item.url,
           duration: item.duration,
           start_date: item.start_date,
@@ -448,6 +460,9 @@ const DisplayManagement = () => {
           .from("display_content")
           .update({
             status: "active",
+            duration: dialogState.duration,
+            start_date: dialogState.start_date,
+            end_date: dialogState.end_date,
             ...updateData,
           })
           .eq("id", dialogState.content.id);
@@ -487,6 +502,11 @@ const DisplayManagement = () => {
         content: null,
         action: "approve",
         notes: "",
+        duration: 10,
+        start_date: new Date().toISOString().split("T")[0]!,
+        end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+          .toISOString()
+          .split("T")[0]!,
       });
     } catch (err: any) {
       console.error("Failed to update content status:", err);
@@ -533,6 +553,27 @@ const DisplayManagement = () => {
       month: "short",
       year: "numeric",
     });
+  };
+
+  // Format date for input field
+  const formatDateForInput = (dateString: string) => {
+    return new Date(dateString).toISOString().split("T")[0]!;
+  };
+
+  // Get default values for approval dialog
+  const getDefaultApprovalValues = (content: PendingContent | null) => {
+    if (!content) {
+      const today = new Date().toISOString().split("T")[0]!;
+      const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split("T")[0]!;
+      return { duration: 10, start_date: today, end_date: nextWeek };
+    }
+    return {
+      duration: content.duration,
+      start_date: formatDateForInput(content.start_date),
+      end_date: formatDateForInput(content.end_date),
+    };
   };
 
   const unassignedContent = availableContent.filter(
@@ -1052,14 +1093,18 @@ const DisplayManagement = () => {
                             icon={
                               content.type === "image" ? (
                                 <ImageIcon />
-                              ) : (
+                              ) : content.type === "youtube_video" ? (
                                 <YouTube />
+                              ) : (
+                                <Article />
                               )
                             }
                             label={
                               content.type === "image"
                                 ? "Image"
-                                : "YouTube Video"
+                                : content.type === "youtube_video"
+                                  ? "YouTube Video"
+                                  : "Text Announcement"
                             }
                             color="primary"
                             size="small"
@@ -1117,7 +1162,7 @@ const DisplayManagement = () => {
                               />
                             )}
                           </Box>
-                        ) : (
+                        ) : content.type === "youtube_video" ? (
                           <Box
                             sx={{
                               width: "100%",
@@ -1131,6 +1176,41 @@ const DisplayManagement = () => {
                             }}
                           >
                             <YouTube sx={{ fontSize: 48, color: "red.500" }} />
+                          </Box>
+                        ) : (
+                          <Box
+                            sx={{
+                              width: "100%",
+                              height: 120,
+                              backgroundColor: "primary.50",
+                              border: "1px solid",
+                              borderColor: "primary.200",
+                              borderRadius: 1,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              mb: 2,
+                              p: 2,
+                            }}
+                          >
+                            {content.url ? (
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: 4,
+                                  WebkitBoxOrient: "vertical",
+                                  overflow: "hidden",
+                                  textAlign: "center",
+                                }}
+                              >
+                                {content.url}
+                              </Typography>
+                            ) : (
+                              <Article
+                                sx={{ fontSize: 48, color: "primary.main" }}
+                              />
+                            )}
                           </Box>
                         )}
 
@@ -1170,7 +1250,15 @@ const DisplayManagement = () => {
                         <Tooltip title="Preview Content">
                           <IconButton
                             size="small"
-                            onClick={() => window.open(content.url, "_blank")}
+                            onClick={() => {
+                              if (content.type === "text_announcement") {
+                                // For text announcements, we could show a dialog or just skip preview
+                                // For now, let's disable preview for text content since there's no URL
+                                return;
+                              }
+                              window.open(content.url, "_blank");
+                            }}
+                            disabled={content.type === "text_announcement"}
                           >
                             <Visibility />
                           </IconButton>
@@ -1182,14 +1270,17 @@ const DisplayManagement = () => {
                             variant="outlined"
                             color="error"
                             startIcon={<Close />}
-                            onClick={() =>
+                            onClick={() => {
+                              const defaults =
+                                getDefaultApprovalValues(content);
                               setDialogState({
                                 open: true,
                                 content,
                                 action: "reject",
                                 notes: "",
-                              })
-                            }
+                                ...defaults,
+                              });
+                            }}
                           >
                             Reject
                           </Button>
@@ -1198,14 +1289,17 @@ const DisplayManagement = () => {
                             variant="contained"
                             color="success"
                             startIcon={<Check />}
-                            onClick={() =>
+                            onClick={() => {
+                              const defaults =
+                                getDefaultApprovalValues(content);
                               setDialogState({
                                 open: true,
                                 content,
                                 action: "approve",
                                 notes: "",
-                              })
-                            }
+                                ...defaults,
+                              });
+                            }}
                           >
                             Approve
                           </Button>
@@ -1244,6 +1338,69 @@ const DisplayManagement = () => {
                     Submitted by: {dialogState.content.submitter_name}
                   </Typography>
 
+                  {/* Display settings for approval */}
+                  {dialogState.action === "approve" && (
+                    <Grid container spacing={2} sx={{ mb: 3 }}>
+                      <Grid item xs={12}>
+                        <Typography
+                          variant="subtitle2"
+                          color="primary"
+                          gutterBottom
+                        >
+                          Display Settings
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          fullWidth
+                          label="Duration (seconds)"
+                          type="number"
+                          inputProps={{ min: 5, max: 300 }}
+                          value={dialogState.duration}
+                          onChange={(e) =>
+                            setDialogState({
+                              ...dialogState,
+                              duration: parseInt(e.target.value) || 10,
+                            })
+                          }
+                          required
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          fullWidth
+                          label="Start Date"
+                          type="date"
+                          InputLabelProps={{ shrink: true }}
+                          value={dialogState.start_date}
+                          onChange={(e) =>
+                            setDialogState({
+                              ...dialogState,
+                              start_date: e.target.value,
+                            })
+                          }
+                          required
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          fullWidth
+                          label="End Date"
+                          type="date"
+                          InputLabelProps={{ shrink: true }}
+                          value={dialogState.end_date}
+                          onChange={(e) =>
+                            setDialogState({
+                              ...dialogState,
+                              end_date: e.target.value,
+                            })
+                          }
+                          required
+                        />
+                      </Grid>
+                    </Grid>
+                  )}
+
                   <TextField
                     fullWidth
                     multiline
@@ -1264,7 +1421,19 @@ const DisplayManagement = () => {
             </DialogContent>
             <DialogActions>
               <Button
-                onClick={() => setDialogState({ ...dialogState, open: false })}
+                onClick={() =>
+                  setDialogState({
+                    open: false,
+                    content: null,
+                    action: "approve",
+                    notes: "",
+                    duration: 10,
+                    start_date: new Date().toISOString().split("T")[0]!,
+                    end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+                      .toISOString()
+                      .split("T")[0]!,
+                  })
+                }
               >
                 Cancel
               </Button>

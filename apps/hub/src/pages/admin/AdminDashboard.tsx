@@ -265,7 +265,7 @@ function AdminDashboard() {
                     Total Users
                   </Typography>
                   {formatPercentageChange(
-                    dashboardData.overview.monthly_growth.users,
+                    dashboardData.overview.monthly_growth.users
                   )}
                 </Box>
                 <Avatar sx={{ bgcolor: "primary.main" }}>
@@ -294,7 +294,7 @@ function AdminDashboard() {
                     Total Masjids
                   </Typography>
                   {formatPercentageChange(
-                    dashboardData.overview.monthly_growth.masjids,
+                    dashboardData.overview.monthly_growth.masjids
                   )}
                 </Box>
                 <Avatar sx={{ bgcolor: "secondary.main" }}>
@@ -323,7 +323,7 @@ function AdminDashboard() {
                     Pending Applications
                   </Typography>
                   {formatPercentageChange(
-                    dashboardData.overview.monthly_growth.applications,
+                    dashboardData.overview.monthly_growth.applications
                   )}
                 </Box>
                 <Avatar sx={{ bgcolor: "warning.main" }}>
@@ -402,6 +402,16 @@ function AdminDashboard() {
                   <Button
                     fullWidth
                     variant="outlined"
+                    startIcon={<CheckCircle />}
+                    onClick={() => navigate("/admin/display-management")}
+                  >
+                    Display Management
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Button
+                    fullWidth
+                    variant="outlined"
                     startIcon={<Analytics />}
                     onClick={() => navigate("/admin/analytics")}
                   >
@@ -429,7 +439,7 @@ function AdminDashboard() {
                     <ListItemText
                       primary={activity.description}
                       secondary={new Date(activity.timestamp).toLocaleString(
-                        "en-MY",
+                        "en-MY"
                       )}
                     />
                   </ListItem>
@@ -502,7 +512,7 @@ function AdminDashboard() {
                         label={dashboardData.system_health.api_status}
                         color={
                           getStatusColor(
-                            dashboardData.system_health.api_status,
+                            dashboardData.system_health.api_status
                           ) as any
                         }
                         size="small"
@@ -518,7 +528,7 @@ function AdminDashboard() {
                         label={dashboardData.system_health.database_status}
                         color={
                           getStatusColor(
-                            dashboardData.system_health.database_status,
+                            dashboardData.system_health.database_status
                           ) as any
                         }
                         size="small"
@@ -534,7 +544,7 @@ function AdminDashboard() {
                         label={dashboardData.system_health.external_services}
                         color={
                           getStatusColor(
-                            dashboardData.system_health.external_services,
+                            dashboardData.system_health.external_services
                           ) as any
                         }
                         size="small"
@@ -557,7 +567,7 @@ function AdminDashboard() {
                   <ListItemText
                     primary="Last Backup"
                     secondary={new Date(
-                      dashboardData.system_health.last_backup,
+                      dashboardData.system_health.last_backup
                     ).toLocaleString("en-MY")}
                   />
                 </ListItem>
