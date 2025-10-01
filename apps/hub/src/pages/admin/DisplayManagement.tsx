@@ -909,7 +909,7 @@ const DisplayManagement = () => {
                 </Grid>
 
                 {/* Sponsorship */}
-                <Grid item xs={12}>
+                <Grid item xs={12} md={6}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -927,6 +927,37 @@ const DisplayManagement = () => {
                         }
                         label="Show Sponsorship Amounts"
                       />
+                    </CardContent>
+                  </Card>
+                </Grid>
+
+                {/* Debug and Development */}
+                <Grid item xs={12} md={6}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Debug & Development
+                      </Typography>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            name="show_debug_info"
+                            checked={displaySettings.show_debug_info || false}
+                            onChange={handleSettingsChange}
+                          />
+                        }
+                        label="Show Debug Information"
+                      />
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        display="block"
+                        sx={{ mt: 1 }}
+                      >
+                        Enable to show debugging views such as Display Status,
+                        Display Info, Configuration Updated notifications, and
+                        Offline Mode indicators on the TV display.
+                      </Typography>
                     </CardContent>
                   </Card>
                 </Grid>

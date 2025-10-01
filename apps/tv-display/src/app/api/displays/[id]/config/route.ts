@@ -95,6 +95,9 @@ export async function GET(
       max_retry_attempts: display.max_retry_attempts,
       retry_backoff_multiplier: display.retry_backoff_multiplier,
       
+      // Debug and development
+      show_debug_info: (display as any).show_debug_info ?? false,
+      
       // Hardware settings
       is_touch_enabled: display.is_touch_enabled,
       
@@ -294,6 +297,9 @@ export async function PUT(
       offline_cache_duration: updatedDisplay.offline_cache_duration,
       max_retry_attempts: updatedDisplay.max_retry_attempts,
       retry_backoff_multiplier: updatedDisplay.retry_backoff_multiplier,
+      
+      // Debug and development
+      show_debug_info: (updatedDisplay as any).show_debug_info ?? false,
       
       is_touch_enabled: updatedDisplay.is_touch_enabled,
       

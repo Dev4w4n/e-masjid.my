@@ -211,6 +211,9 @@ export interface DisplayConfig {
   max_retry_attempts: number;
   retry_backoff_multiplier: number;
 
+  // Debug and development
+  show_debug_info: boolean; // Controls visibility of debugging views (Display Status, Display Info, Configuration Updated, Offline Mode)
+
   // Status
   is_active: boolean;
   last_heartbeat?: string | null; // ISO datetime
@@ -559,6 +562,7 @@ export const DEFAULT_DISPLAY_CONFIG: Partial<DisplayConfig> = {
   prayer_time_color: "#FFFFFF",
   prayer_time_background_opacity: 0.8,
   show_sponsorship_amounts: false,
+  show_debug_info: false,
   sponsorship_tier_colors: {
     bronze: "#CD7F32",
     silver: "#C0C0C0",

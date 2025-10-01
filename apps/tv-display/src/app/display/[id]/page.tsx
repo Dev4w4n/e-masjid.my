@@ -272,17 +272,19 @@ function DisplayPageContent() {
       )}
 
       {/* Display status monitoring */}
-      <DisplayStatus
-        displayId={displayId}
-        showDebugInfo={process.env.NODE_ENV === 'development'}
-        autoRefresh={true}
-        refreshInterval={state.config.heartbeat_interval}
-        className="z-30"
-      />
+      {state.config.show_debug_info && (
+        <DisplayStatus
+          displayId={displayId}
+          showDebugInfo={true}
+          autoRefresh={true}
+          refreshInterval={state.config.heartbeat_interval}
+          className="z-30"
+        />
+      )}
 
       {/* Development info overlay */}
       <ClientOnly fallback={null}>
-        {process.env.NODE_ENV === 'development' && (
+        {state.config.show_debug_info && (
           <div className="fixed bottom-4 left-4 bg-black/80 text-white p-3 rounded-lg text-xs z-40">
             <div className="font-semibold mb-1">Display Info</div>
             <div>ID: {displayId}</div>
@@ -299,7 +301,7 @@ function DisplayPageContent() {
 
       {/* Configuration update notification */}
       <ClientOnly fallback={null}>
-        {state.lastConfigUpdate && Date.now() - state.lastConfigUpdate.getTime() < 5000 && (
+        {state.config.show_debug_info && state.lastConfigUpdate && Date.now() - state.lastConfigUpdate.getTime() < 5000 && (
           <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-out">
             <div className="flex items-center space-x-2">
               <div className="w-4 h-4 bg-green-300 rounded-full animate-pulse"></div>
@@ -316,6 +318,7 @@ function DisplayPageContent() {
 export default function DisplayPage() {
   const params = useParams();
   const displayId = params.id as string;
+  const [showDebugInfo, setShowDebugInfo] = useState(false);
 
   // Validate display ID
   if (!displayId || typeof displayId !== 'string') {
@@ -330,6 +333,31 @@ export default function DisplayPage() {
     );
   }
 
+  // Load debug setting from cache or API
+  useEffect(() => {
+    const loadDebugSetting = async () => {
+      try {
+        // Try to get from localStorage first (cached config)
+        const cachedConfig = localStorage.getItem(`display_${displayId}_config`);
+        if (cachedConfig) {
+          const config = JSON.parse(cachedConfig);
+          setShowDebugInfo(config.data?.show_debug_info || false);
+        } else {
+          // Fetch from API
+          const res = await fetch(`/api/displays/${displayId}/config`);
+          const data = await res.json();
+          setShowDebugInfo(data.data?.show_debug_info || false);
+        }
+      } catch (error) {
+        console.error('Failed to load debug setting:', error);
+        // Default to false on error
+        setShowDebugInfo(false);
+      }
+    };
+
+    loadDebugSetting();
+  }, [displayId]);
+
   return (
     <OfflineHandler
       displayId={displayId}
@@ -337,6 +365,7 @@ export default function DisplayPage() {
       maxRetries={5}
       retryDelay={30} // 30 seconds
       enableFallbackContent={true}
+      showDebugInfo={showDebugInfo}
     >
       <DisplayPageContent />
     </OfflineHandler>
