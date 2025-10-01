@@ -24,28 +24,31 @@ import {
   Skeleton,
 } from "@mui/material";
 import {
-  ArrowBack,
-  Edit,
-  Delete,
-  LocationOn,
-  Phone,
-  Email,
-  People,
-  Schedule,
-  Info,
-  Share,
-  Mosque,
   AccessTime,
+  ArrowBack,
+  Delete,
+  Edit,
+  Email,
+  Info,
   Language,
+  LocationOn,
+  Mosque,
+  People,
+  Phone,
+  Schedule,
+  Share,
 } from "@mui/icons-material";
 import { usePermissions } from "@masjid-suite/auth";
-import { masjidService } from "@masjid-suite/supabase-client";
-import { useTodayPrayerTimes, MalaysianZone } from "@masjid-suite/prayer-times";
+import { MalaysianZone, useTodayPrayerTimes } from "@masjid-suite/prayer-times";
 import { Database } from "@masjid-suite/shared-types";
+import { masjidService } from "@masjid-suite/supabase-client";
+
+import { TvDisplayList } from "./tv-display/TvDisplayList";
 
 type Masjid = Database["public"]["Tables"]["masjids"]["Row"];
 type MasjidAdmin =
   Database["public"]["Functions"]["get_masjid_admin_list"]["Returns"][number];
+
 
 /**
  * Masjid detail view component
@@ -439,6 +442,8 @@ function MasjidView() {
               )}
             </CardContent>
           </Card>
+
+          <TvDisplayList />
 
           {/* Facilities */}
           {/* {masjid.facilities && masjid.facilities.length > 0 && (
