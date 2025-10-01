@@ -49,7 +49,6 @@ type Masjid = Database["public"]["Tables"]["masjids"]["Row"];
 type MasjidAdmin =
   Database["public"]["Functions"]["get_masjid_admin_list"]["Returns"][number];
 
-
 /**
  * Masjid detail view component
  */
