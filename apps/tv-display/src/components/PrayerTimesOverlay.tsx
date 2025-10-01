@@ -20,6 +20,8 @@ interface PrayerTimesOverlayProps {
   fontSize?: 'small' | 'medium' | 'large' | 'extra_large';
   color?: string;
   backgroundOpacity?: number;
+  layout?: 'horizontal' | 'vertical';
+  alignment?: 'left' | 'center' | 'right' | 'top' | 'bottom' | 'space-between' | 'space-around';
   className?: string;
 }
 
@@ -54,6 +56,8 @@ export function PrayerTimesOverlay({
   fontSize = 'large',
   color = '#FFFFFF',
   backgroundOpacity = 0.8,
+  layout = 'horizontal',
+  alignment = 'center',
   className = ''
 }: PrayerTimesOverlayProps) {
   // Initialize with stable values for SSR
@@ -286,11 +290,22 @@ export function PrayerTimesOverlay({
     extra_large: 'text-4xl'
   };
 
-  // Layout classes based on position
-  const isVertical = position === 'left' || position === 'right';
+  // Layout classes based on layout prop (overrides position-based layout)
+  const isVertical = layout === 'vertical';
   const layoutClasses = isVertical 
     ? 'flex-col space-y-2' 
     : 'flex-row space-x-6';
+  
+  // Alignment classes
+  const alignmentClasses = {
+    left: 'justify-start items-start',
+    center: 'justify-center items-center',
+    right: 'justify-end items-end',
+    top: 'justify-start items-start',
+    bottom: 'justify-end items-end',
+    'space-between': 'justify-between items-center',
+    'space-around': 'justify-around items-center'
+  };
 
   return (
     <div 
@@ -307,9 +322,10 @@ export function PrayerTimesOverlay({
       data-loaded="true"
     >
       <div className={`
+        flex
         ${layoutClasses} 
         ${fontSizeClasses[fontSize]}
-        ${isVertical ? 'items-start' : 'items-center'}
+        ${alignmentClasses[alignment]}
       `}>
         {prayerTimesInfo.map((prayer) => (
           <div

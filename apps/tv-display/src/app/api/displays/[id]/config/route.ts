@@ -87,6 +87,8 @@ export async function GET(
       prayer_time_color: display.prayer_time_color || '#FFFFFF',
       prayer_time_font_size: (display.prayer_time_font_size as any) || 'large',
       prayer_time_background_opacity: display.prayer_time_background_opacity || 0.8,
+      prayer_time_layout: (display as any).prayer_time_layout || 'horizontal',
+      prayer_time_alignment: (display as any).prayer_time_alignment || 'center',
       
       // System settings
       auto_refresh_interval: display.auto_refresh_interval,
@@ -291,6 +293,8 @@ export async function PUT(
       prayer_time_color: updatedDisplay.prayer_time_color || '#FFFFFF',
       prayer_time_font_size: (updatedDisplay.prayer_time_font_size as any) || 'large',
       prayer_time_background_opacity: updatedDisplay.prayer_time_background_opacity || 0.8,
+      prayer_time_layout: (updatedDisplay as any).prayer_time_layout || 'horizontal',
+      prayer_time_alignment: (updatedDisplay as any).prayer_time_alignment || 'center',
       
       auto_refresh_interval: updatedDisplay.auto_refresh_interval,
       heartbeat_interval: updatedDisplay.heartbeat_interval,

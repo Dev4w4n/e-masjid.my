@@ -99,6 +99,28 @@ export interface ContentFilters {
 }
 
 // ============================================================================
+// Content Assignment Types
+// ============================================================================
+
+export interface DisplayContentAssignment {
+  id: string;
+  display_id: string;
+  content_id: string;
+  assigned_at: string; // ISO datetime
+  assigned_by: string; // user_id
+  display_order: number; // Order in which content appears (0-indexed)
+}
+
+export type CreateContentAssignment = Omit<
+  DisplayContentAssignment,
+  "id" | "assigned_at"
+>;
+
+export type UpdateContentAssignment = Partial<
+  Omit<DisplayContentAssignment, "id" | "display_id" | "content_id">
+>;
+
+// ============================================================================
 // Prayer Times Types
 // ============================================================================
 
@@ -165,6 +187,15 @@ export type PrayerTimePosition =
   | "right"
   | "center"
   | "hidden";
+export type PrayerTimeLayout = "horizontal" | "vertical";
+export type PrayerTimeAlignment =
+  | "left"
+  | "center"
+  | "right"
+  | "top"
+  | "bottom"
+  | "space-between"
+  | "space-around";
 export type DisplayOrientation = "landscape" | "portrait";
 export type DisplayResolution =
   | "1920x1080"
@@ -195,6 +226,8 @@ export interface DisplayConfig {
   prayer_time_font_size: "small" | "medium" | "large" | "extra_large";
   prayer_time_color: string; // hex color
   prayer_time_background_opacity: number; // 0-1
+  prayer_time_layout: PrayerTimeLayout; // horizontal or vertical arrangement
+  prayer_time_alignment: PrayerTimeAlignment; // alignment within container
 
   // Sponsorship display
   show_sponsorship_amounts: boolean;
@@ -497,6 +530,21 @@ export const PRAYER_TIME_POSITIONS: PrayerTimePosition[] = [
   "hidden",
 ];
 
+export const PRAYER_TIME_LAYOUTS: PrayerTimeLayout[] = [
+  "horizontal",
+  "vertical",
+];
+
+export const PRAYER_TIME_ALIGNMENTS: PrayerTimeAlignment[] = [
+  "left",
+  "center",
+  "right",
+  "top",
+  "bottom",
+  "space-between",
+  "space-around",
+];
+
 export const DEFAULT_SPONSORSHIP_PACKAGES: SponsorshipPackage[] = [
   {
     tier: "bronze",
@@ -561,6 +609,8 @@ export const DEFAULT_DISPLAY_CONFIG: Partial<DisplayConfig> = {
   prayer_time_font_size: "large",
   prayer_time_color: "#FFFFFF",
   prayer_time_background_opacity: 0.8,
+  prayer_time_layout: "horizontal",
+  prayer_time_alignment: "center",
   show_sponsorship_amounts: false,
   show_debug_info: false,
   sponsorship_tier_colors: {

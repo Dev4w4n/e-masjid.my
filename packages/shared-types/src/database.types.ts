@@ -815,9 +815,11 @@ export type Database = {
           max_retry_attempts: number
           offline_cache_duration: number
           orientation: Database["public"]["Enums"]["display_orientation"]
+          prayer_time_alignment: string
           prayer_time_background_opacity: number
           prayer_time_color: string
           prayer_time_font_size: string
+          prayer_time_layout: string
           prayer_time_position: Database["public"]["Enums"]["prayer_time_position"]
           resolution: Database["public"]["Enums"]["display_resolution"]
           retry_backoff_multiplier: number
@@ -844,9 +846,11 @@ export type Database = {
           max_retry_attempts?: number
           offline_cache_duration?: number
           orientation?: Database["public"]["Enums"]["display_orientation"]
+          prayer_time_alignment?: string
           prayer_time_background_opacity?: number
           prayer_time_color?: string
           prayer_time_font_size?: string
+          prayer_time_layout?: string
           prayer_time_position?: Database["public"]["Enums"]["prayer_time_position"]
           resolution?: Database["public"]["Enums"]["display_resolution"]
           retry_backoff_multiplier?: number
@@ -873,9 +877,11 @@ export type Database = {
           max_retry_attempts?: number
           offline_cache_duration?: number
           orientation?: Database["public"]["Enums"]["display_orientation"]
+          prayer_time_alignment?: string
           prayer_time_background_opacity?: number
           prayer_time_color?: string
           prayer_time_font_size?: string
+          prayer_time_layout?: string
           prayer_time_position?: Database["public"]["Enums"]["prayer_time_position"]
           resolution?: Database["public"]["Enums"]["display_resolution"]
           retry_backoff_multiplier?: number

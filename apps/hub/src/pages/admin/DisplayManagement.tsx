@@ -44,7 +44,25 @@ import {
   Person,
   CalendarToday,
   Article,
+  DragIndicator,
 } from "@mui/icons-material";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { SketchPicker, ColorResult } from "react-color";
 import { useSnackbar } from "notistack";
 import {
@@ -52,6 +70,7 @@ import {
   getAssignedContent,
   assignContent,
   removeContent,
+  updateContentOrder,
   createDisplay,
   masjidService,
 } from "@masjid-suite/supabase-client";
@@ -112,6 +131,67 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
+// Sortable item component for drag-and-drop
+interface SortableContentItemProps {
+  content: DisplayContent;
+  onRemove: (contentId: string) => void;
+}
+
+function SortableContentItem({ content, onRemove }: SortableContentItemProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: content.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <ListItem
+      ref={setNodeRef}
+      style={style}
+      sx={{
+        border: "1px solid",
+        borderColor: "divider",
+        borderRadius: 1,
+        mb: 1,
+        bgcolor: "background.paper",
+        cursor: isDragging ? "grabbing" : "grab",
+      }}
+      secondaryAction={
+        <Button
+          variant="outlined"
+          size="small"
+          color="error"
+          onClick={() => onRemove(content.id)}
+        >
+          Remove
+        </Button>
+      }
+    >
+      <IconButton
+        {...attributes}
+        {...listeners}
+        size="small"
+        sx={{ mr: 2, cursor: "grab" }}
+      >
+        <DragIndicator />
+      </IconButton>
+      <ListItemText
+        primary={content.title}
+        secondary={`${content.type} • ${content.duration}s`}
+      />
+    </ListItem>
+  );
+}
+
 const DisplayManagement = () => {
   // Common state
   const [userMasjids, setUserMasjids] = useState<Masjid[]>([]);
@@ -135,6 +215,14 @@ const DisplayManagement = () => {
   );
   const [assignedContent, setAssignedContent] = useState<DisplayContent[]>([]);
   const [contentLoading, setContentLoading] = useState(false);
+
+  // Drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   // Content approval state
   const [pendingContent, setPendingContent] = useState<PendingContent[]>([]);
@@ -377,6 +465,40 @@ const DisplayManagement = () => {
     } catch (err) {
       enqueueSnackbar("Failed to remove content.", { variant: "error" });
       console.error(err);
+    }
+  };
+
+  // Handle drag end to reorder content
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) {
+      return;
+    }
+
+    const oldIndex = assignedContent.findIndex((item) => item.id === active.id);
+    const newIndex = assignedContent.findIndex((item) => item.id === over.id);
+
+    // Reorder the array
+    const reorderedContent = arrayMove(assignedContent, oldIndex, newIndex);
+    setAssignedContent(reorderedContent);
+
+    // Update the order in the database
+    try {
+      const contentOrders = reorderedContent.map((content, index) => ({
+        contentId: content.id,
+        order: index,
+      }));
+
+      await updateContentOrder(selectedDisplayId, contentOrders);
+      enqueueSnackbar("Content order updated successfully!", {
+        variant: "success",
+      });
+    } catch (err) {
+      enqueueSnackbar("Failed to update content order.", { variant: "error" });
+      console.error(err);
+      // Revert the order on error
+      setAssignedContent(assignedContent);
     }
   };
 
@@ -865,6 +987,45 @@ const DisplayManagement = () => {
                           <MenuItem value="extra_large">Extra Large</MenuItem>
                         </Select>
                       </FormControl>
+                      <FormControl fullWidth margin="normal">
+                        <InputLabel>Layout</InputLabel>
+                        <Select
+                          name="prayer_time_layout"
+                          value={
+                            displaySettings.prayer_time_layout || "horizontal"
+                          }
+                          label="Layout"
+                          onChange={handleSelectChange}
+                        >
+                          <MenuItem value="horizontal">
+                            Horizontal (Side by Side)
+                          </MenuItem>
+                          <MenuItem value="vertical">
+                            Vertical (Stacked)
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                      <FormControl fullWidth margin="normal">
+                        <InputLabel>Alignment</InputLabel>
+                        <Select
+                          name="prayer_time_alignment"
+                          value={
+                            displaySettings.prayer_time_alignment || "center"
+                          }
+                          label="Alignment"
+                          onChange={handleSelectChange}
+                        >
+                          <MenuItem value="left">Left</MenuItem>
+                          <MenuItem value="center">Center</MenuItem>
+                          <MenuItem value="right">Right</MenuItem>
+                          <MenuItem value="top">Top</MenuItem>
+                          <MenuItem value="bottom">Bottom</MenuItem>
+                          <MenuItem value="space-between">
+                            Space Between
+                          </MenuItem>
+                          <MenuItem value="space-around">Space Around</MenuItem>
+                        </Select>
+                      </FormControl>
                       <TextField
                         name="prayer_time_background_opacity"
                         label="Background Opacity (0-1)"
@@ -1051,28 +1212,35 @@ const DisplayManagement = () => {
                           No content assigned to this display
                         </Typography>
                       ) : (
-                        <List>
-                          {assignedContent.map((content) => (
-                            <ListItem
-                              key={content.id}
-                              secondaryAction={
-                                <Button
-                                  variant="outlined"
-                                  size="small"
-                                  color="error"
-                                  onClick={() => handleRemove(content.id)}
-                                >
-                                  Remove
-                                </Button>
-                              }
+                        <Box>
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            sx={{ display: "block", mb: 2 }}
+                          >
+                            Drag and drop to reorder content
+                          </Typography>
+                          <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragEnd={handleDragEnd}
+                          >
+                            <SortableContext
+                              items={assignedContent.map((c) => c.id)}
+                              strategy={verticalListSortingStrategy}
                             >
-                              <ListItemText
-                                primary={content.title}
-                                secondary={`${content.type} • ${content.duration}s`}
-                              />
-                            </ListItem>
-                          ))}
-                        </List>
+                              <List>
+                                {assignedContent.map((content) => (
+                                  <SortableContentItem
+                                    key={content.id}
+                                    content={content}
+                                    onRemove={handleRemove}
+                                  />
+                                ))}
+                              </List>
+                            </SortableContext>
+                          </DndContext>
+                        </Box>
                       )}
                     </CardContent>
                   </Card>

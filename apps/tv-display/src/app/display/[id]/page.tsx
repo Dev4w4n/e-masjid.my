@@ -267,6 +267,8 @@ function DisplayPageContent() {
           fontSize={state.config.prayer_time_font_size as 'small' | 'medium' | 'large' | 'extra_large'}
           color={state.config.prayer_time_color}
           backgroundOpacity={state.config.prayer_time_background_opacity}
+          layout={state.config.prayer_time_layout}
+          alignment={state.config.prayer_time_alignment}
           className="z-20"
         />
       )}

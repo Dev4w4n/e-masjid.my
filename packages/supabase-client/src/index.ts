@@ -706,6 +706,7 @@ export {
   getAssignedContent,
   assignContent,
   removeContent,
+  updateContentOrder,
 } from "./services/display";
 
 // Re-export types for convenience
