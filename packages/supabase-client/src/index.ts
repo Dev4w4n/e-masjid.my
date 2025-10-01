@@ -699,6 +699,14 @@ export const masjidService = new MasjidService(databaseService);
 export { JakimService, jakimService } from "./services/jakim";
 export type { UiJakimZone } from "./services/jakim";
 
+// Display service for TV display management
+export {
+  getDisplaysByMasjid,
+  getAssignedContent,
+  assignContent,
+  removeContent,
+} from "./services/display";
+
 // Re-export types for convenience
 export type { Database } from "@masjid-suite/shared-types";
 export type { SupabaseClient, User, Session } from "@supabase/supabase-js";

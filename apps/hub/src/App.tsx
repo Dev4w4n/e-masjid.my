@@ -14,9 +14,7 @@ import AdminApplications from "./pages/admin/AdminApplications";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import CreateContent from "./pages/content/CreateContent";
 import MyContent from "./pages/content/MyContent";
-import ApprovalsDashboard from "./pages/admin/ApprovalsDashboard";
-import DisplaySettings from "./pages/admin/DisplaySettings";
-import ContentManagement from "./pages/admin/ContentManagement";
+import DisplayManagement from "./pages/admin/DisplayManagement";
 import Home from "./pages/Home";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -145,31 +143,11 @@ function App() {
           }
         />
         <Route
-          path="admin/approvals"
+          path="admin/display-management"
           element={
             <ProtectedRoute>
               <WithRole role={["super_admin", "masjid_admin"]}>
-                <ApprovalsDashboard />
-              </WithRole>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="admin/display-settings"
-          element={
-            <ProtectedRoute>
-              <WithRole role={["super_admin", "masjid_admin"]}>
-                <DisplaySettings />
-              </WithRole>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="admin/content-management"
-          element={
-            <ProtectedRoute>
-              <WithRole role={["super_admin", "masjid_admin"]}>
-                <ContentManagement />
+                <DisplayManagement />
               </WithRole>
             </ProtectedRoute>
           }
