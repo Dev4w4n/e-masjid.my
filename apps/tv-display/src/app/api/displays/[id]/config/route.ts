@@ -82,11 +82,17 @@ export async function GET(
       show_sponsorship_amounts: display.show_sponsorship_amounts,
       sponsorship_tier_colors: display.sponsorship_tier_colors as any || {},
       
+      // Image display settings
+      image_display_mode: (display as any).image_display_mode || 'contain',
+      image_background_color: (display as any).image_background_color || '#000000',
+      
       // Prayer time settings
       prayer_time_position: display.prayer_time_position,
       prayer_time_color: display.prayer_time_color || '#FFFFFF',
       prayer_time_font_size: (display.prayer_time_font_size as any) || 'large',
       prayer_time_background_opacity: display.prayer_time_background_opacity || 0.8,
+      prayer_time_layout: (display as any).prayer_time_layout || 'horizontal',
+      prayer_time_alignment: (display as any).prayer_time_alignment || 'center',
       
       // System settings
       auto_refresh_interval: display.auto_refresh_interval,
@@ -94,6 +100,9 @@ export async function GET(
       offline_cache_duration: display.offline_cache_duration,
       max_retry_attempts: display.max_retry_attempts,
       retry_backoff_multiplier: display.retry_backoff_multiplier,
+      
+      // Debug and development
+      show_debug_info: (display as any).show_debug_info ?? false,
       
       // Hardware settings
       is_touch_enabled: display.is_touch_enabled,
@@ -284,16 +293,25 @@ export async function PUT(
       show_sponsorship_amounts: updatedDisplay.show_sponsorship_amounts,
       sponsorship_tier_colors: updatedDisplay.sponsorship_tier_colors as any || {},
       
+      // Image display settings
+      image_display_mode: (updatedDisplay as any).image_display_mode || 'contain',
+      image_background_color: (updatedDisplay as any).image_background_color || '#000000',
+      
       prayer_time_position: updatedDisplay.prayer_time_position,
       prayer_time_color: updatedDisplay.prayer_time_color || '#FFFFFF',
       prayer_time_font_size: (updatedDisplay.prayer_time_font_size as any) || 'large',
       prayer_time_background_opacity: updatedDisplay.prayer_time_background_opacity || 0.8,
+      prayer_time_layout: (updatedDisplay as any).prayer_time_layout || 'horizontal',
+      prayer_time_alignment: (updatedDisplay as any).prayer_time_alignment || 'center',
       
       auto_refresh_interval: updatedDisplay.auto_refresh_interval,
       heartbeat_interval: updatedDisplay.heartbeat_interval,
       offline_cache_duration: updatedDisplay.offline_cache_duration,
       max_retry_attempts: updatedDisplay.max_retry_attempts,
       retry_backoff_multiplier: updatedDisplay.retry_backoff_multiplier,
+      
+      // Debug and development
+      show_debug_info: (updatedDisplay as any).show_debug_info ?? false,
       
       is_touch_enabled: updatedDisplay.is_touch_enabled,
       

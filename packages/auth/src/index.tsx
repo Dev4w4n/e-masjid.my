@@ -164,4 +164,5 @@ export function WithRole({ role, children, fallback = null }: WithRoleProps) {
   return <>{fallback}</>;
 }
 
-export * from "./types";
+// Explicitly export types
+export type { ProfileWithRole, UserRole } from "./types";

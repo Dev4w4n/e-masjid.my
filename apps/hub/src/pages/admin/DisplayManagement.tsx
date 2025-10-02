@@ -43,7 +43,29 @@ import {
   Image as ImageIcon,
   Person,
   CalendarToday,
+  Article,
+  DragIndicator,
+  Settings,
+  Timer,
+  Animation,
 } from "@mui/icons-material";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { SketchPicker, ColorResult } from "react-color";
 import { useSnackbar } from "notistack";
 import {
@@ -51,9 +73,15 @@ import {
   getAssignedContent,
   assignContent,
   removeContent,
+  updateContentOrder,
+  updateContentSettings,
   createDisplay,
   masjidService,
 } from "@masjid-suite/supabase-client";
+import {
+  ContentSettingsDialog,
+  ContentSettings,
+} from "../../components/ContentSettingsDialog";
 import supabase from "@masjid-suite/supabase-client";
 import { getContentForAdmin } from "../../services/contentService";
 import { updateDisplay } from "../../services/displayService";
@@ -74,7 +102,7 @@ interface PendingContent {
   id: string;
   title: string;
   description?: string | null;
-  type: "image" | "youtube_video";
+  type: "image" | "youtube_video" | "text_announcement";
   url: string;
   duration: number;
   start_date: string;
@@ -91,6 +119,9 @@ interface ApprovalDialogState {
   content: PendingContent | null;
   action: "approve" | "reject";
   notes: string;
+  duration: number;
+  start_date: string;
+  end_date: string;
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -105,6 +136,118 @@ function TabPanel(props: TabPanelProps) {
     >
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </Box>
+  );
+}
+
+// Sortable item component for drag-and-drop
+interface SortableContentItemProps {
+  content: DisplayContent & {
+    carousel_duration?: number;
+    transition_type?: "fade" | "slide" | "zoom" | "none";
+    image_display_mode?: "contain" | "cover" | "fill" | "none";
+  };
+  onRemove: (contentId: string) => void;
+  onEditSettings: (content: SortableContentItemProps["content"]) => void;
+}
+
+function SortableContentItem({
+  content,
+  onRemove,
+  onEditSettings,
+}: SortableContentItemProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: content.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  const isImageContent =
+    content.type === "image" || content.type === "event_poster";
+
+  return (
+    <ListItem
+      ref={setNodeRef}
+      style={style}
+      sx={{
+        border: "1px solid",
+        borderColor: "divider",
+        borderRadius: 1,
+        mb: 1,
+        bgcolor: "background.paper",
+        cursor: isDragging ? "grabbing" : "grab",
+      }}
+      secondaryAction={
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Tooltip title="Edit Settings">
+            <IconButton
+              size="small"
+              onClick={() => onEditSettings(content)}
+              sx={{ color: "primary.main" }}
+            >
+              <Settings fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Button
+            variant="outlined"
+            size="small"
+            color="error"
+            onClick={() => onRemove(content.id)}
+          >
+            Remove
+          </Button>
+        </Box>
+      }
+    >
+      <IconButton
+        {...attributes}
+        {...listeners}
+        size="small"
+        sx={{ mr: 2, cursor: "grab" }}
+      >
+        <DragIndicator />
+      </IconButton>
+      <ListItemText
+        primary={content.title}
+        secondary={
+          <Box component="span">
+            <Typography variant="body2" component="span" display="block">
+              {content.type} • {content.duration}s
+            </Typography>
+            <Box sx={{ mt: 0.5, display: "flex", gap: 0.5, flexWrap: "wrap" }}>
+              <Chip
+                size="small"
+                label={`${content.carousel_duration || 10}s`}
+                icon={<Timer />}
+                sx={{ height: 20 }}
+              />
+              <Chip
+                size="small"
+                label={content.transition_type || "fade"}
+                icon={<Animation />}
+                sx={{ height: 20 }}
+              />
+              {isImageContent && (
+                <Chip
+                  size="small"
+                  label={content.image_display_mode || "contain"}
+                  icon={<ImageIcon />}
+                  sx={{ height: 20 }}
+                />
+              )}
+            </Box>
+          </Box>
+        }
+      />
+    </ListItem>
   );
 }
 
@@ -124,6 +267,7 @@ const DisplayManagement = () => {
   const [displaySettings, setDisplaySettings] = useState<any>(null);
   const [saving, setSaving] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [showImageBgColorPicker, setShowImageBgColorPicker] = useState(false);
 
   // Content assignment state
   const [availableContent, setAvailableContent] = useState<DisplayContent[]>(
@@ -131,6 +275,29 @@ const DisplayManagement = () => {
   );
   const [assignedContent, setAssignedContent] = useState<DisplayContent[]>([]);
   const [contentLoading, setContentLoading] = useState(false);
+
+  // Content settings dialog state
+  const [assignDialogOpen, setAssignDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [contentToAssign, setContentToAssign] = useState<{
+    id: string;
+    type: string;
+    title: string;
+  } | null>(null);
+  const [contentToEdit, setContentToEdit] = useState<{
+    id: string;
+    type: string;
+    title: string;
+    currentSettings: ContentSettings;
+  } | null>(null);
+
+  // Drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   // Content approval state
   const [pendingContent, setPendingContent] = useState<PendingContent[]>([]);
@@ -140,6 +307,11 @@ const DisplayManagement = () => {
     content: null,
     action: "approve",
     notes: "",
+    duration: 10,
+    start_date: new Date().toISOString().split("T")[0]!,
+    end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split("T")[0]!,
   });
 
   // Create display state
@@ -314,7 +486,7 @@ const DisplayManagement = () => {
     });
   };
 
-  const handleSaveSettings = async () => {
+  const handleSaveDisplaySettings = async () => {
     if (!displaySettings) return;
     setSaving(true);
     try {
@@ -342,19 +514,84 @@ const DisplayManagement = () => {
   };
 
   // Content assignment handlers
-  const handleAssign = async (contentId: string) => {
+  const loadAssignedContent = async () => {
     if (!selectedDisplayId) return;
 
     try {
-      await assignContent(selectedDisplayId, contentId);
-      const contentToAssign = availableContent.find((c) => c.id === contentId);
-      if (contentToAssign) {
-        setAssignedContent([...assignedContent, contentToAssign]);
-      }
+      setContentLoading(true);
+      const data = await getAssignedContent(selectedDisplayId);
+      setAssignedContent(data);
+    } catch (err) {
+      console.error("Failed to reload assigned content:", err);
+    } finally {
+      setContentLoading(false);
+    }
+  };
+
+  const handleOpenAssignDialog = (content: DisplayContent) => {
+    setContentToAssign({
+      id: content.id,
+      type: content.type,
+      title: content.title,
+    });
+    setAssignDialogOpen(true);
+  };
+
+  const handleAssignWithSettings = async (settings: ContentSettings) => {
+    if (!selectedDisplayId || !contentToAssign) return;
+
+    try {
+      await assignContent(selectedDisplayId, contentToAssign.id, settings);
+
+      // Reload assigned content to get the new settings
+      await loadAssignedContent();
+
+      setAssignDialogOpen(false);
+      setContentToAssign(null);
       enqueueSnackbar("Content assigned successfully!", { variant: "success" });
     } catch (err) {
       enqueueSnackbar("Failed to assign content.", { variant: "error" });
       console.error(err);
+      throw err; // Re-throw to show error in dialog
+    }
+  };
+
+  const handleOpenEditDialog = (
+    content: SortableContentItemProps["content"]
+  ) => {
+    setContentToEdit({
+      id: content.id,
+      type: content.type,
+      title: content.title,
+      currentSettings: {
+        carousel_duration: content.carousel_duration || 10,
+        transition_type: content.transition_type || "fade",
+        image_display_mode: content.image_display_mode || "contain",
+      },
+    });
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveContentSettings = async (settings: ContentSettings) => {
+    if (!selectedDisplayId || !contentToEdit) return;
+
+    try {
+      await updateContentSettings(
+        selectedDisplayId,
+        contentToEdit.id,
+        settings
+      );
+
+      // Reload assigned content to show updated settings
+      await loadAssignedContent();
+
+      setEditDialogOpen(false);
+      setContentToEdit(null);
+      enqueueSnackbar("Settings updated successfully!", { variant: "success" });
+    } catch (err) {
+      enqueueSnackbar("Failed to update settings.", { variant: "error" });
+      console.error(err);
+      throw err; // Re-throw to show error in dialog
     }
   };
 
@@ -368,6 +605,40 @@ const DisplayManagement = () => {
     } catch (err) {
       enqueueSnackbar("Failed to remove content.", { variant: "error" });
       console.error(err);
+    }
+  };
+
+  // Handle drag end to reorder content
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) {
+      return;
+    }
+
+    const oldIndex = assignedContent.findIndex((item) => item.id === active.id);
+    const newIndex = assignedContent.findIndex((item) => item.id === over.id);
+
+    // Reorder the array
+    const reorderedContent = arrayMove(assignedContent, oldIndex, newIndex);
+    setAssignedContent(reorderedContent);
+
+    // Update the order in the database
+    try {
+      const contentOrders = reorderedContent.map((content, index) => ({
+        contentId: content.id,
+        order: index,
+      }));
+
+      await updateContentOrder(selectedDisplayId, contentOrders);
+      enqueueSnackbar("Content order updated successfully!", {
+        variant: "success",
+      });
+    } catch (err) {
+      enqueueSnackbar("Failed to update content order.", { variant: "error" });
+      console.error(err);
+      // Revert the order on error
+      setAssignedContent(assignedContent);
     }
   };
 
@@ -404,13 +675,16 @@ const DisplayManagement = () => {
 
       const transformedData: PendingContent[] = (data || [])
         .filter(
-          (item) => item.type === "image" || item.type === "youtube_video"
+          (item) =>
+            item.type === "image" ||
+            item.type === "youtube_video" ||
+            item.type === "text_announcement"
         )
         .map((item: any) => ({
           id: item.id,
           title: item.title,
           description: item.description,
-          type: item.type as "image" | "youtube_video",
+          type: item.type as "image" | "youtube_video" | "text_announcement",
           url: item.url,
           duration: item.duration,
           start_date: item.start_date,
@@ -448,6 +722,9 @@ const DisplayManagement = () => {
           .from("display_content")
           .update({
             status: "active",
+            duration: dialogState.duration,
+            start_date: dialogState.start_date,
+            end_date: dialogState.end_date,
             ...updateData,
           })
           .eq("id", dialogState.content.id);
@@ -487,6 +764,11 @@ const DisplayManagement = () => {
         content: null,
         action: "approve",
         notes: "",
+        duration: 10,
+        start_date: new Date().toISOString().split("T")[0]!,
+        end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+          .toISOString()
+          .split("T")[0]!,
       });
     } catch (err: any) {
       console.error("Failed to update content status:", err);
@@ -533,6 +815,27 @@ const DisplayManagement = () => {
       month: "short",
       year: "numeric",
     });
+  };
+
+  // Format date for input field
+  const formatDateForInput = (dateString: string) => {
+    return new Date(dateString).toISOString().split("T")[0]!;
+  };
+
+  // Get default values for approval dialog
+  const getDefaultApprovalValues = (content: PendingContent | null) => {
+    if (!content) {
+      const today = new Date().toISOString().split("T")[0]!;
+      const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split("T")[0]!;
+      return { duration: 10, start_date: today, end_date: nextWeek };
+    }
+    return {
+      duration: content.duration,
+      start_date: formatDateForInput(content.start_date),
+      end_date: formatDateForInput(content.end_date),
+    };
   };
 
   const unassignedContent = availableContent.filter(
@@ -824,6 +1127,45 @@ const DisplayManagement = () => {
                           <MenuItem value="extra_large">Extra Large</MenuItem>
                         </Select>
                       </FormControl>
+                      <FormControl fullWidth margin="normal">
+                        <InputLabel>Layout</InputLabel>
+                        <Select
+                          name="prayer_time_layout"
+                          value={
+                            displaySettings.prayer_time_layout || "horizontal"
+                          }
+                          label="Layout"
+                          onChange={handleSelectChange}
+                        >
+                          <MenuItem value="horizontal">
+                            Horizontal (Side by Side)
+                          </MenuItem>
+                          <MenuItem value="vertical">
+                            Vertical (Stacked)
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                      <FormControl fullWidth margin="normal">
+                        <InputLabel>Alignment</InputLabel>
+                        <Select
+                          name="prayer_time_alignment"
+                          value={
+                            displaySettings.prayer_time_alignment || "center"
+                          }
+                          label="Alignment"
+                          onChange={handleSelectChange}
+                        >
+                          <MenuItem value="left">Left</MenuItem>
+                          <MenuItem value="center">Center</MenuItem>
+                          <MenuItem value="right">Right</MenuItem>
+                          <MenuItem value="top">Top</MenuItem>
+                          <MenuItem value="bottom">Bottom</MenuItem>
+                          <MenuItem value="space-between">
+                            Space Between
+                          </MenuItem>
+                          <MenuItem value="space-around">Space Around</MenuItem>
+                        </Select>
+                      </FormControl>
                       <TextField
                         name="prayer_time_background_opacity"
                         label="Background Opacity (0-1)"
@@ -867,8 +1209,100 @@ const DisplayManagement = () => {
                   </Card>
                 </Grid>
 
+                {/* Image Display Settings */}
+                <Grid item xs={12} md={6}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Image Display
+                      </Typography>
+                      <FormControl fullWidth margin="normal">
+                        <InputLabel>Display Mode</InputLabel>
+                        <Select
+                          name="image_display_mode"
+                          value={
+                            displaySettings.image_display_mode || "contain"
+                          }
+                          label="Display Mode"
+                          onChange={handleSelectChange}
+                        >
+                          <MenuItem value="contain">
+                            Fit (Maintain Aspect Ratio)
+                          </MenuItem>
+                          <MenuItem value="cover">Fill (May Crop)</MenuItem>
+                          <MenuItem value="fill">Stretch to Fill</MenuItem>
+                          <MenuItem value="none">Original Size</MenuItem>
+                        </Select>
+                      </FormControl>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        display="block"
+                        sx={{ mb: 2 }}
+                      >
+                        {displaySettings.image_display_mode === "contain" &&
+                          "Images will fit within the screen while maintaining aspect ratio (recommended)"}
+                        {displaySettings.image_display_mode === "cover" &&
+                          "Images will fill the entire screen and may be cropped"}
+                        {displaySettings.image_display_mode === "fill" &&
+                          "Images will stretch to fill the screen (may distort)"}
+                        {displaySettings.image_display_mode === "none" &&
+                          "Images will display at their original size"}
+                      </Typography>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", mt: 2 }}
+                      >
+                        <Typography>Background Color:</Typography>
+                        <Chip
+                          label={
+                            displaySettings.image_background_color || "#000000"
+                          }
+                          onClick={() =>
+                            setShowImageBgColorPicker(!showImageBgColorPicker)
+                          }
+                          style={{
+                            backgroundColor:
+                              displaySettings.image_background_color ||
+                              "#000000",
+                            color: "#FFFFFF",
+                            marginLeft: "10px",
+                            cursor: "pointer",
+                          }}
+                        />
+                      </Box>
+                      {showImageBgColorPicker && (
+                        <Box sx={{ mt: 2 }}>
+                          <SketchPicker
+                            color={
+                              displaySettings.image_background_color ||
+                              "#000000"
+                            }
+                            onChangeComplete={(color) => {
+                              handleSelectChange({
+                                target: {
+                                  name: "image_background_color",
+                                  value: color.hex,
+                                },
+                              } as any);
+                              setShowImageBgColorPicker(false);
+                            }}
+                          />
+                        </Box>
+                      )}
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        display="block"
+                        sx={{ mt: 1 }}
+                      >
+                        Background color for letterboxed/pillarboxed images
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+
                 {/* Sponsorship */}
-                <Grid item xs={12}>
+                <Grid item xs={12} md={6}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -889,6 +1323,37 @@ const DisplayManagement = () => {
                     </CardContent>
                   </Card>
                 </Grid>
+
+                {/* Debug and Development */}
+                <Grid item xs={12} md={6}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Debug & Development
+                      </Typography>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            name="show_debug_info"
+                            checked={displaySettings.show_debug_info || false}
+                            onChange={handleSettingsChange}
+                          />
+                        }
+                        label="Show Debug Information"
+                      />
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        display="block"
+                        sx={{ mt: 1 }}
+                      >
+                        Enable to show debugging views such as Display Status,
+                        Display Info, Configuration Updated notifications, and
+                        Offline Mode indicators on the TV display.
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
               </Grid>
             )}
 
@@ -896,7 +1361,7 @@ const DisplayManagement = () => {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handleSaveSettings}
+                onClick={handleSaveDisplaySettings}
                 disabled={saving || !displaySettings}
               >
                 {saving ? <CircularProgress size={24} /> : "Save Settings"}
@@ -943,7 +1408,9 @@ const DisplayManagement = () => {
                                 <Button
                                   variant="outlined"
                                   size="small"
-                                  onClick={() => handleAssign(content.id)}
+                                  onClick={() =>
+                                    handleOpenAssignDialog(content)
+                                  }
                                 >
                                   Assign
                                 </Button>
@@ -979,28 +1446,36 @@ const DisplayManagement = () => {
                           No content assigned to this display
                         </Typography>
                       ) : (
-                        <List>
-                          {assignedContent.map((content) => (
-                            <ListItem
-                              key={content.id}
-                              secondaryAction={
-                                <Button
-                                  variant="outlined"
-                                  size="small"
-                                  color="error"
-                                  onClick={() => handleRemove(content.id)}
-                                >
-                                  Remove
-                                </Button>
-                              }
+                        <Box>
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            sx={{ display: "block", mb: 2 }}
+                          >
+                            Drag and drop to reorder content
+                          </Typography>
+                          <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragEnd={handleDragEnd}
+                          >
+                            <SortableContext
+                              items={assignedContent.map((c) => c.id)}
+                              strategy={verticalListSortingStrategy}
                             >
-                              <ListItemText
-                                primary={content.title}
-                                secondary={`${content.type} • ${content.duration}s`}
-                              />
-                            </ListItem>
-                          ))}
-                        </List>
+                              <List>
+                                {assignedContent.map((content) => (
+                                  <SortableContentItem
+                                    key={content.id}
+                                    content={content}
+                                    onRemove={handleRemove}
+                                    onEditSettings={handleOpenEditDialog}
+                                  />
+                                ))}
+                              </List>
+                            </SortableContext>
+                          </DndContext>
+                        </Box>
                       )}
                     </CardContent>
                   </Card>
@@ -1052,14 +1527,18 @@ const DisplayManagement = () => {
                             icon={
                               content.type === "image" ? (
                                 <ImageIcon />
-                              ) : (
+                              ) : content.type === "youtube_video" ? (
                                 <YouTube />
+                              ) : (
+                                <Article />
                               )
                             }
                             label={
                               content.type === "image"
                                 ? "Image"
-                                : "YouTube Video"
+                                : content.type === "youtube_video"
+                                  ? "YouTube Video"
+                                  : "Text Announcement"
                             }
                             color="primary"
                             size="small"
@@ -1117,7 +1596,7 @@ const DisplayManagement = () => {
                               />
                             )}
                           </Box>
-                        ) : (
+                        ) : content.type === "youtube_video" ? (
                           <Box
                             sx={{
                               width: "100%",
@@ -1131,6 +1610,41 @@ const DisplayManagement = () => {
                             }}
                           >
                             <YouTube sx={{ fontSize: 48, color: "red.500" }} />
+                          </Box>
+                        ) : (
+                          <Box
+                            sx={{
+                              width: "100%",
+                              height: 120,
+                              backgroundColor: "primary.50",
+                              border: "1px solid",
+                              borderColor: "primary.200",
+                              borderRadius: 1,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              mb: 2,
+                              p: 2,
+                            }}
+                          >
+                            {content.url ? (
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: 4,
+                                  WebkitBoxOrient: "vertical",
+                                  overflow: "hidden",
+                                  textAlign: "center",
+                                }}
+                              >
+                                {content.url}
+                              </Typography>
+                            ) : (
+                              <Article
+                                sx={{ fontSize: 48, color: "primary.main" }}
+                              />
+                            )}
                           </Box>
                         )}
 
@@ -1170,7 +1684,15 @@ const DisplayManagement = () => {
                         <Tooltip title="Preview Content">
                           <IconButton
                             size="small"
-                            onClick={() => window.open(content.url, "_blank")}
+                            onClick={() => {
+                              if (content.type === "text_announcement") {
+                                // For text announcements, we could show a dialog or just skip preview
+                                // For now, let's disable preview for text content since there's no URL
+                                return;
+                              }
+                              window.open(content.url, "_blank");
+                            }}
+                            disabled={content.type === "text_announcement"}
                           >
                             <Visibility />
                           </IconButton>
@@ -1182,14 +1704,17 @@ const DisplayManagement = () => {
                             variant="outlined"
                             color="error"
                             startIcon={<Close />}
-                            onClick={() =>
+                            onClick={() => {
+                              const defaults =
+                                getDefaultApprovalValues(content);
                               setDialogState({
                                 open: true,
                                 content,
                                 action: "reject",
                                 notes: "",
-                              })
-                            }
+                                ...defaults,
+                              });
+                            }}
                           >
                             Reject
                           </Button>
@@ -1198,14 +1723,17 @@ const DisplayManagement = () => {
                             variant="contained"
                             color="success"
                             startIcon={<Check />}
-                            onClick={() =>
+                            onClick={() => {
+                              const defaults =
+                                getDefaultApprovalValues(content);
                               setDialogState({
                                 open: true,
                                 content,
                                 action: "approve",
                                 notes: "",
-                              })
-                            }
+                                ...defaults,
+                              });
+                            }}
                           >
                             Approve
                           </Button>
@@ -1244,6 +1772,69 @@ const DisplayManagement = () => {
                     Submitted by: {dialogState.content.submitter_name}
                   </Typography>
 
+                  {/* Display settings for approval */}
+                  {dialogState.action === "approve" && (
+                    <Grid container spacing={2} sx={{ mb: 3 }}>
+                      <Grid item xs={12}>
+                        <Typography
+                          variant="subtitle2"
+                          color="primary"
+                          gutterBottom
+                        >
+                          Display Settings
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          fullWidth
+                          label="Duration (seconds)"
+                          type="number"
+                          inputProps={{ min: 5, max: 300 }}
+                          value={dialogState.duration}
+                          onChange={(e) =>
+                            setDialogState({
+                              ...dialogState,
+                              duration: parseInt(e.target.value) || 10,
+                            })
+                          }
+                          required
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          fullWidth
+                          label="Start Date"
+                          type="date"
+                          InputLabelProps={{ shrink: true }}
+                          value={dialogState.start_date}
+                          onChange={(e) =>
+                            setDialogState({
+                              ...dialogState,
+                              start_date: e.target.value,
+                            })
+                          }
+                          required
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          fullWidth
+                          label="End Date"
+                          type="date"
+                          InputLabelProps={{ shrink: true }}
+                          value={dialogState.end_date}
+                          onChange={(e) =>
+                            setDialogState({
+                              ...dialogState,
+                              end_date: e.target.value,
+                            })
+                          }
+                          required
+                        />
+                      </Grid>
+                    </Grid>
+                  )}
+
                   <TextField
                     fullWidth
                     multiline
@@ -1264,7 +1855,19 @@ const DisplayManagement = () => {
             </DialogContent>
             <DialogActions>
               <Button
-                onClick={() => setDialogState({ ...dialogState, open: false })}
+                onClick={() =>
+                  setDialogState({
+                    open: false,
+                    content: null,
+                    action: "approve",
+                    notes: "",
+                    duration: 10,
+                    start_date: new Date().toISOString().split("T")[0]!,
+                    end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+                      .toISOString()
+                      .split("T")[0]!,
+                  })
+                }
               >
                 Cancel
               </Button>
@@ -1328,6 +1931,37 @@ const DisplayManagement = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Content Settings Dialog - For Assigning */}
+      {contentToAssign && (
+        <ContentSettingsDialog
+          open={assignDialogOpen}
+          onClose={() => {
+            setAssignDialogOpen(false);
+            setContentToAssign(null);
+          }}
+          onSave={handleAssignWithSettings}
+          contentType={contentToAssign.type as any}
+          contentTitle={contentToAssign.title}
+          mode="assign"
+        />
+      )}
+
+      {/* Content Settings Dialog - For Editing */}
+      {contentToEdit && (
+        <ContentSettingsDialog
+          open={editDialogOpen}
+          onClose={() => {
+            setEditDialogOpen(false);
+            setContentToEdit(null);
+          }}
+          onSave={handleSaveContentSettings}
+          contentType={contentToEdit.type as any}
+          contentTitle={contentToEdit.title}
+          initialSettings={contentToEdit.currentSettings}
+          mode="edit"
+        />
+      )}
     </Container>
   );
 };

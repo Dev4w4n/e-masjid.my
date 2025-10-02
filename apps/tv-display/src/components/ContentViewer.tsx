@@ -19,6 +19,9 @@ interface ContentViewerProps {
   content: DisplayContentWithSponsor;
   onError?: (error: Error) => void;
   className?: string;
+  imageDisplayMode?: 'contain' | 'cover' | 'fill' | 'none';
+  imageBackgroundColor?: string;
+  showDebugInfo?: boolean;
 }
 
 interface ViewerState {
@@ -28,7 +31,14 @@ interface ViewerState {
   videoError: boolean;
 }
 
-export function ContentViewer({ content, onError, className = '' }: ContentViewerProps) {
+export function ContentViewer({ 
+  content, 
+  onError, 
+  className = '',
+  imageDisplayMode = 'contain',
+  imageBackgroundColor = '#000000',
+  showDebugInfo = false
+}: ContentViewerProps) {
   const [state, setState] = useState<ViewerState>({
     isLoading: true,
     error: null,
@@ -38,13 +48,24 @@ export function ContentViewer({ content, onError, className = '' }: ContentViewe
 
   // Reset state when content changes
   useEffect(() => {
-    setState({
-      isLoading: true,
-      error: null,
-      imageError: false,
-      videoError: false
-    });
-  }, [content.id]);
+    // Only reset loading state for non-text content
+    // Text content loads immediately
+    if (content.type === 'text_announcement') {
+      setState({
+        isLoading: false,
+        error: null,
+        imageError: false,
+        videoError: false
+      });
+    } else {
+      setState({
+        isLoading: true,
+        error: null,
+        imageError: false,
+        videoError: false
+      });
+    }
+  }, [content.id, content.type]);
 
   const handleError = useCallback((error: Error | string) => {
     const errorObj = error instanceof Error ? error : new Error(error);
@@ -57,8 +78,19 @@ export function ContentViewer({ content, onError, className = '' }: ContentViewe
   }, []);
 
   const renderImageContent = () => {
+    // Map display mode to CSS object-fit property
+    const objectFitClass = {
+      'contain': 'object-contain',
+      'cover': 'object-cover',
+      'fill': 'object-fill',
+      'none': 'object-none'
+    }[imageDisplayMode];
+
     return (
-      <div className="relative h-full flex items-center justify-center bg-gray-900">
+      <div 
+        className="relative w-full h-full" 
+        style={{ backgroundColor: imageBackgroundColor }}
+      >
         {state.isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
             <div className="animate-pulse text-white">Loading image...</div>
@@ -67,13 +99,25 @@ export function ContentViewer({ content, onError, className = '' }: ContentViewe
         <img
           src={content.url}
           alt={content.title}
-          className={`max-h-full max-w-full object-contain transition-opacity duration-500 ${
+          className={`w-full h-full ${objectFitClass} transition-opacity duration-500 ${
             state.isLoading ? 'opacity-0' : 'opacity-100'
           }`}
-          onLoad={handleLoadComplete}
+          onLoad={(e) => {
+            // Check if image is already cached and loaded
+            const img = e.currentTarget;
+            if (img.complete && img.naturalHeight !== 0) {
+              handleLoadComplete();
+            }
+          }}
           onError={() => {
             setState(prev => ({ ...prev, imageError: true }));
             handleError(`Failed to load image: ${content.title}`);
+          }}
+          // Handle cached images - check if already complete
+          ref={(img) => {
+            if (img && img.complete && img.naturalHeight !== 0) {
+              handleLoadComplete();
+            }
           }}
         />
         {state.imageError && (
@@ -165,37 +209,58 @@ export function ContentViewer({ content, onError, className = '' }: ContentViewe
   };
 
   const renderEventPoster = () => {
+    // Map display mode to CSS object-fit property
+    const objectFitClass = {
+      'contain': 'object-contain',
+      'cover': 'object-cover',
+      'fill': 'object-fill',
+      'none': 'object-none'
+    }[imageDisplayMode];
+
     return (
-      <div className="relative h-full flex items-center justify-center bg-gray-900">
+      <div 
+        className="relative w-full h-full" 
+        style={{ backgroundColor: imageBackgroundColor }}
+      >
         {state.isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
             <div className="animate-pulse text-white">Loading poster...</div>
           </div>
         )}
-        <div className="relative max-h-full max-w-full">
-          <img
-            src={content.url}
-            alt={content.title}
-            className={`max-h-full max-w-full object-contain transition-opacity duration-500 ${
-              state.isLoading ? 'opacity-0' : 'opacity-100'
-            }`}
-            onLoad={handleLoadComplete}
-            onError={() => {
-              setState(prev => ({ ...prev, imageError: true }));
-              handleError(`Failed to load poster: ${content.title}`);
-            }}
-          />
-          {/* Event poster overlay with title */}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-            <h2 className="text-white text-2xl md:text-3xl font-bold">
-              {content.title}
-            </h2>
-            {content.description && (
-              <p className="text-white/90 text-lg mt-2">
-                {content.description}
-              </p>
-            )}
-          </div>
+        <img
+          src={content.url}
+          alt={content.title}
+          className={`w-full h-full ${objectFitClass} transition-opacity duration-500 ${
+            state.isLoading ? 'opacity-0' : 'opacity-100'
+          }`}
+          onLoad={(e) => {
+            // Check if image is already cached and loaded
+            const img = e.currentTarget;
+            if (img.complete && img.naturalHeight !== 0) {
+              handleLoadComplete();
+            }
+          }}
+          onError={() => {
+            setState(prev => ({ ...prev, imageError: true }));
+            handleError(`Failed to load poster: ${content.title}`);
+          }}
+          // Handle cached images - check if already complete
+          ref={(img) => {
+            if (img && img.complete && img.naturalHeight !== 0) {
+              handleLoadComplete();
+            }
+          }}
+        />
+        {/* Event poster overlay with title */}
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 pointer-events-none">
+          <h2 className="text-white text-2xl md:text-3xl font-bold">
+            {content.title}
+          </h2>
+          {content.description && (
+            <p className="text-white/90 text-lg mt-2">
+              {content.description}
+            </p>
+          )}
         </div>
         {state.imageError && (
           <div className="absolute inset-0 flex items-center justify-center bg-red-900">
@@ -254,8 +319,8 @@ export function ContentViewer({ content, onError, className = '' }: ContentViewe
     <div className={`relative h-full ${className}`}>
       {renderContent()}
       
-      {/* Content metadata overlay (development only) */}
-      {process.env.NODE_ENV === 'development' && (
+      {/* Content metadata overlay */}
+      {showDebugInfo && (
         <div className="absolute top-2 left-2 bg-black/70 text-white p-2 rounded text-xs max-w-xs">
           <div className="font-semibold">{content.title}</div>
           <div>Type: {content.type}</div>

@@ -22,11 +22,9 @@ import supabase, { masjidService } from "@masjid-suite/supabase-client";
 interface ContentFormData {
   title: string;
   description: string;
-  type: "image" | "youtube_video";
+  type: "image" | "youtube_video" | "text_announcement";
   url: string;
-  duration: number;
-  start_date: string;
-  end_date: string;
+  textContent: string; // For text announcements
   masjid_id: string;
 }
 
@@ -39,12 +37,6 @@ interface MasjidOption {
   state?: string;
 }
 
-// Format date for input
-const formatDateForInput = (date: Date): string => {
-  const datePart = date.toISOString().split("T")[0];
-  return datePart || "";
-};
-
 /**
  * Simple content creation page
  */
@@ -56,16 +48,14 @@ const CreateContent: React.FC = () => {
     description: "",
     type: "image",
     url: "",
-    duration: 10,
-    start_date: formatDateForInput(new Date()),
-    end_date: formatDateForInput(
-      new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    ),
+    textContent: "",
     masjid_id: "",
   });
 
   const [availableMasjids, setAvailableMasjids] = useState<MasjidOption[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingMasjids, setLoadingMasjids] = useState(true);
   const [success, setSuccess] = useState(false);
@@ -132,6 +122,20 @@ const CreateContent: React.FC = () => {
 
     setSelectedFile(file);
     setError("");
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Clear image selection
+  const handleClearImage = () => {
+    setSelectedFile(null);
+    setImagePreview("");
+    setError("");
   };
 
   // Submit form
@@ -158,29 +162,66 @@ const CreateContent: React.FC = () => {
         throw new Error("YouTube URL is required");
       }
 
+      if (
+        formData.type === "text_announcement" &&
+        !formData.textContent.trim()
+      ) {
+        throw new Error("Text content is required for announcements");
+      }
+
+      if (
+        formData.type === "text_announcement" &&
+        formData.textContent.length > 5000
+      ) {
+        throw new Error("Text content must be less than 5000 characters");
+      }
+
       let contentUrl = formData.url;
 
       // Upload file if image type
       if (formData.type === "image" && selectedFile) {
-        const fileExt = selectedFile.name.split(".").pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-        const filePath = `content-images/${formData.masjid_id}/${fileName}`;
+        setUploading(true);
 
-        const { error: uploadError } = await supabase.storage
-          .from("content-images")
-          .upload(filePath, selectedFile);
+        try {
+          const fileExt = selectedFile.name.split(".").pop();
+          const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+          const filePath = `content-images/${formData.masjid_id}/${fileName}`;
 
-        if (uploadError) throw uploadError;
+          const { error: uploadError } = await supabase.storage
+            .from("content-images")
+            .upload(filePath, selectedFile, {
+              cacheControl: "3600",
+              upsert: false,
+            });
 
-        // Get public URL
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from("content-images").getPublicUrl(filePath);
+          if (uploadError) {
+            console.error("Upload error:", uploadError);
+            throw new Error(`Failed to upload image: ${uploadError.message}`);
+          }
 
-        contentUrl = publicUrl;
+          // Get public URL
+          const {
+            data: { publicUrl },
+          } = supabase.storage.from("content-images").getPublicUrl(filePath);
+
+          contentUrl = publicUrl;
+        } finally {
+          setUploading(false);
+        }
       }
 
-      // Insert content to database
+      // For text announcements, store the text content in the url field
+      if (formData.type === "text_announcement") {
+        contentUrl = formData.textContent;
+      }
+
+      // Insert content to database with default values for duration and dates
+      // These will be set by masjid admins during approval
+      const today = new Date().toISOString().split("T")[0]!;
+      const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split("T")[0]!;
+
       const { error: dbError } = await supabase.from("display_content").insert([
         {
           masjid_id: formData.masjid_id,
@@ -188,9 +229,9 @@ const CreateContent: React.FC = () => {
           description: formData.description || null,
           type: formData.type,
           url: contentUrl,
-          duration: formData.duration,
-          start_date: formData.start_date,
-          end_date: formData.end_date,
+          duration: 10, // Default duration, admin will set during approval
+          start_date: today, // Default to today
+          end_date: nextWeek, // Default to 7 days from now
           submitted_by: user!.id,
           status: "pending",
         },
@@ -206,14 +247,12 @@ const CreateContent: React.FC = () => {
         description: "",
         type: "image",
         url: "",
-        duration: 10,
-        start_date: formatDateForInput(new Date()),
-        end_date: formatDateForInput(
-          new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-        ),
+        textContent: "",
         masjid_id: "", // Don't auto-select, let user choose which masjid to submit to
       });
       setSelectedFile(null);
+      setImagePreview("");
+      setUploading(false);
     } catch (err: any) {
       console.error("Content submission error:", err);
       setError(err.message || "Failed to submit content. Please try again.");
@@ -248,7 +287,7 @@ const CreateContent: React.FC = () => {
       </Typography>
       <Typography variant="body1" color="text.secondary" gutterBottom>
         Submit new content to any masjid for approval. The masjid admin(s) will
-        review your submission.
+        review your submission and set the display duration and schedule.
       </Typography>
 
       <Divider sx={{ my: 3 }} />
@@ -303,20 +342,11 @@ const CreateContent: React.FC = () => {
                   <Select value={formData.type} onChange={handleChange("type")}>
                     <MenuItem value="image">Image</MenuItem>
                     <MenuItem value="youtube_video">YouTube Video</MenuItem>
+                    <MenuItem value="text_announcement">
+                      Text Announcement
+                    </MenuItem>
                   </Select>
                 </FormControl>
-              </Grid>
-
-              {/* Duration */}
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Display Duration (seconds)"
-                  type="number"
-                  inputProps={{ min: 5, max: 300 }}
-                  value={formData.duration}
-                  onChange={handleChange("duration")}
-                />
               </Grid>
 
               {/* Title */}
@@ -348,28 +378,93 @@ const CreateContent: React.FC = () => {
                   <Typography variant="h6" gutterBottom>
                     Upload Image
                   </Typography>
-                  <input
-                    accept="image/*"
-                    style={{ display: "none" }}
-                    id="image-upload"
-                    type="file"
-                    onChange={handleFileSelect}
-                  />
-                  <label htmlFor="image-upload">
-                    <Button
-                      variant="outlined"
-                      component="span"
-                      startIcon={<CloudUpload />}
-                      sx={{ mb: 1 }}
-                    >
-                      Choose Image
-                    </Button>
-                  </label>
-                  {selectedFile && (
-                    <Typography variant="body2" sx={{ mt: 1 }}>
-                      Selected: {selectedFile.name} (
-                      {Math.round(selectedFile.size / 1024)} KB)
-                    </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    gutterBottom
+                  >
+                    Supported formats: JPG, PNG, GIF, WebP (Max 10MB)
+                  </Typography>
+
+                  {!selectedFile ? (
+                    <>
+                      <input
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        id="image-upload"
+                        type="file"
+                        onChange={handleFileSelect}
+                      />
+                      <label htmlFor="image-upload">
+                        <Button
+                          variant="outlined"
+                          component="span"
+                          startIcon={<CloudUpload />}
+                          size="large"
+                          sx={{ mt: 1 }}
+                        >
+                          Choose Image
+                        </Button>
+                      </label>
+                    </>
+                  ) : (
+                    <Box sx={{ mt: 2 }}>
+                      {/* Image Preview */}
+                      {imagePreview && (
+                        <Box
+                          sx={{
+                            mb: 2,
+                            border: "1px solid",
+                            borderColor: "divider",
+                            borderRadius: 1,
+                            p: 2,
+                            bgcolor: "background.default",
+                          }}
+                        >
+                          <img
+                            src={imagePreview}
+                            alt="Preview"
+                            style={{
+                              maxWidth: "100%",
+                              maxHeight: "400px",
+                              display: "block",
+                              margin: "0 auto",
+                              borderRadius: "4px",
+                            }}
+                          />
+                        </Box>
+                      )}
+
+                      {/* File Info */}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          p: 2,
+                          bgcolor: "action.hover",
+                          borderRadius: 1,
+                        }}
+                      >
+                        <Box>
+                          <Typography variant="body2" fontWeight="medium">
+                            {selectedFile.name}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {(selectedFile.size / 1024).toFixed(2)} KB •{" "}
+                            {selectedFile.type}
+                          </Typography>
+                        </Box>
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          color="error"
+                          onClick={handleClearImage}
+                        >
+                          Remove
+                        </Button>
+                      </Box>
+                    </Box>
                   )}
                 </Grid>
               )}
@@ -388,30 +483,23 @@ const CreateContent: React.FC = () => {
                 </Grid>
               )}
 
-              {/* Date Range */}
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Start Date"
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  value={formData.start_date}
-                  onChange={handleChange("start_date")}
-                  required
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="End Date"
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  value={formData.end_date}
-                  onChange={handleChange("end_date")}
-                  required
-                />
-              </Grid>
+              {/* Text Announcement Content */}
+              {formData.type === "text_announcement" && (
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    multiline
+                    rows={6}
+                    label="Announcement Text"
+                    placeholder="Enter your announcement text here..."
+                    value={formData.textContent}
+                    onChange={handleChange("textContent")}
+                    required
+                    inputProps={{ maxLength: 5000 }}
+                    helperText={`${formData.textContent.length}/5000 characters`}
+                  />
+                </Grid>
+              )}
 
               {/* Error Display */}
               {error && (
@@ -426,11 +514,17 @@ const CreateContent: React.FC = () => {
                   <Button
                     type="submit"
                     variant="contained"
-                    startIcon={<Send />}
-                    disabled={loading}
+                    startIcon={
+                      loading ? <CircularProgress size={20} /> : <Send />
+                    }
+                    disabled={loading || uploading}
                     sx={{ minWidth: 150 }}
                   >
-                    {loading ? "Submitting..." : "Submit for Approval"}
+                    {uploading
+                      ? "Uploading Image..."
+                      : loading
+                        ? "Submitting..."
+                        : "Submit for Approval"}
                   </Button>
                 </Box>
               </Grid>

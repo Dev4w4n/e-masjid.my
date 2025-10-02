@@ -68,6 +68,7 @@ interface OfflineHandlerProps {
   maxRetries?: number;
   retryDelay?: number; // seconds
   enableFallbackContent?: boolean;
+  showDebugInfo?: boolean; // Controls visibility of offline mode indicators
 }
 
 export function OfflineHandler({
@@ -76,7 +77,8 @@ export function OfflineHandler({
   maxCacheAge = 24,
   maxRetries = 5,
   retryDelay = 30,
-  enableFallbackContent = true
+  enableFallbackContent = true,
+  showDebugInfo = false
 }: OfflineHandlerProps) {
   const [state, setState] = useState<OfflineState>({
     networkStatus: {
@@ -449,7 +451,7 @@ export function OfflineHandler({
       {children}
       
       {/* Offline status indicator */}
-      {!state.networkStatus.isOnline && (
+      {showDebugInfo && !state.networkStatus.isOnline && (
         <div className="fixed top-4 left-4 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg z-50">
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 bg-red-300 rounded-full animate-pulse"></div>
@@ -462,7 +464,7 @@ export function OfflineHandler({
       )}
 
       {/* Fallback mode indicator */}
-      {state.fallbackMode && state.networkStatus.isOnline && (
+      {showDebugInfo && state.fallbackMode && state.networkStatus.isOnline && (
         <div className="fixed top-4 left-4 bg-yellow-600 text-white px-4 py-2 rounded-lg shadow-lg z-50">
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 bg-yellow-300 rounded-full animate-pulse"></div>
@@ -475,7 +477,7 @@ export function OfflineHandler({
       )}
 
       {/* Sync in progress indicator */}
-      {state.syncInProgress && (
+      {showDebugInfo && state.syncInProgress && (
         <div className="fixed top-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg z-50">
           <div className="flex items-center space-x-2">
             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>

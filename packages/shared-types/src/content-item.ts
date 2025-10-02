@@ -12,7 +12,7 @@
 /**
  * Content type enumeration
  */
-export type ContentType = "youtube_video" | "image";
+export type ContentType = "youtube_video" | "image" | "text_announcement";
 
 /**
  * Content status enumeration
@@ -172,7 +172,11 @@ export const CONTENT_VALIDATION = {
   },
   type: {
     required: true,
-    allowedValues: ["youtube_video", "image"] as ContentType[],
+    allowedValues: [
+      "youtube_video",
+      "image",
+      "text_announcement",
+    ] as ContentType[],
   },
   url: {
     minLength: 1,
@@ -323,6 +327,9 @@ export function isValidContentUrl(url: string, type: ContentType): boolean {
       return isValidYouTubeUrl(url);
     case "image":
       return isValidImageUrl(url);
+    case "text_announcement":
+      // For text announcements, we store the text content in the url field
+      return url.length > 0 && url.length <= 5000; // Max 5000 characters
     default:
       return false;
   }
@@ -391,6 +398,8 @@ export function getContentTypeDisplayName(type: ContentType): string {
       return "Video YouTube";
     case "image":
       return "Imej";
+    case "text_announcement":
+      return "Pengumuman Teks";
     default:
       return type;
   }
@@ -447,7 +456,7 @@ export function isContentItem(obj: any): obj is ContentItem {
     typeof obj.id === "string" &&
     typeof obj.title === "string" &&
     typeof obj.type === "string" &&
-    ["youtube_video", "image"].includes(obj.type) &&
+    ["youtube_video", "image", "text_announcement"].includes(obj.type) &&
     typeof obj.url === "string" &&
     typeof obj.thumbnail_url === "string" &&
     typeof obj.sponsorship_amount === "number" &&
@@ -468,7 +477,7 @@ export function isCreateContentRequest(obj: any): obj is CreateContentRequest {
     obj !== null &&
     typeof obj.title === "string" &&
     typeof obj.type === "string" &&
-    ["youtube_video", "image"].includes(obj.type) &&
+    ["youtube_video", "image", "text_announcement"].includes(obj.type) &&
     typeof obj.url === "string" &&
     typeof obj.thumbnail_url === "string" &&
     typeof obj.sponsorship_amount === "number" &&
@@ -484,7 +493,8 @@ export function isUpdateContentRequest(obj: any): obj is UpdateContentRequest {
     typeof obj === "object" &&
     obj !== null &&
     (obj.title === undefined || typeof obj.title === "string") &&
-    (obj.type === undefined || ["youtube_video", "image"].includes(obj.type)) &&
+    (obj.type === undefined ||
+      ["youtube_video", "image", "text_announcement"].includes(obj.type)) &&
     (obj.url === undefined || typeof obj.url === "string") &&
     (obj.thumbnail_url === undefined ||
       typeof obj.thumbnail_url === "string") &&
@@ -506,6 +516,7 @@ export function isUpdateContentRequest(obj: any): obj is UpdateContentRequest {
 export const CONTENT_TYPES: readonly ContentType[] = [
   "youtube_video",
   "image",
+  "text_announcement",
 ] as const;
 
 /**
@@ -523,6 +534,7 @@ export const CONTENT_STATUSES: readonly ContentStatus[] = [
 export const DEFAULT_CONTENT_DURATION: Record<ContentType, number> = {
   youtube_video: 30,
   image: 10,
+  text_announcement: 15,
 } as const;
 
 /**
@@ -531,6 +543,7 @@ export const DEFAULT_CONTENT_DURATION: Record<ContentType, number> = {
 export const MIN_SPONSORSHIP_AMOUNT: Record<ContentType, number> = {
   youtube_video: 50.0,
   image: 20.0,
+  text_announcement: 10.0,
 } as const;
 
 /**
@@ -539,6 +552,7 @@ export const MIN_SPONSORSHIP_AMOUNT: Record<ContentType, number> = {
 export const MAX_FILE_SIZE: Record<ContentType, number> = {
   youtube_video: 0, // No file upload for YouTube videos
   image: 10 * 1024 * 1024, // 10MB for images
+  text_announcement: 0, // No file upload for text announcements
 } as const;
 
 /**

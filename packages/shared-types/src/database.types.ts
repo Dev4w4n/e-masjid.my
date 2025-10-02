@@ -155,7 +155,6 @@ export type Database = {
           approved_by: string | null
           created_at: string | null
           description: string | null
-          display_id: string | null
           duration: number
           end_date: string
           file_size: number | null
@@ -186,7 +185,6 @@ export type Database = {
           approved_by?: string | null
           created_at?: string | null
           description?: string | null
-          display_id?: string | null
           duration?: number
           end_date?: string
           file_size?: number | null
@@ -217,7 +215,6 @@ export type Database = {
           approved_by?: string | null
           created_at?: string | null
           description?: string | null
-          display_id?: string | null
           duration?: number
           end_date?: string
           file_size?: number | null
@@ -251,13 +248,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "display_content_display_id_fkey"
-            columns: ["display_id"]
-            isOneToOne: false
-            referencedRelation: "tv_displays"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "display_content_masjid_id_fkey"
             columns: ["masjid_id"]
             isOneToOne: false
@@ -276,6 +266,52 @@ export type Database = {
             columns: ["submitted_by"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      display_content_assignments: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string
+          content_id: string
+          display_id: string
+          id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by: string
+          content_id: string
+          display_id: string
+          id?: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string
+          content_id?: string
+          display_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "display_content_assignments_assigned_by_fkey"
+            columns: ["assigned_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "display_content_assignments_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "display_content"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "display_content_assignments_display_id_fkey"
+            columns: ["display_id"]
+            isOneToOne: false
+            referencedRelation: "tv_displays"
             referencedColumns: ["id"]
           },
         ]
@@ -404,6 +440,7 @@ export type Database = {
       masjids: {
         Row: {
           address: Json
+          capacity: number | null
           created_at: string
           created_by: string
           description: string | null
@@ -412,12 +449,17 @@ export type Database = {
           jakim_zone_code: string | null
           name: string
           phone_number: string | null
+          prayer_times_source:
+            | Database["public"]["Enums"]["prayer_source_enum"]
+            | null
           registration_number: string | null
           status: Database["public"]["Enums"]["masjid_status"]
           updated_at: string
+          website_url: string | null
         }
         Insert: {
           address: Json
+          capacity?: number | null
           created_at?: string
           created_by: string
           description?: string | null
@@ -426,12 +468,17 @@ export type Database = {
           jakim_zone_code?: string | null
           name: string
           phone_number?: string | null
+          prayer_times_source?:
+            | Database["public"]["Enums"]["prayer_source_enum"]
+            | null
           registration_number?: string | null
           status?: Database["public"]["Enums"]["masjid_status"]
           updated_at?: string
+          website_url?: string | null
         }
         Update: {
           address?: Json
+          capacity?: number | null
           created_at?: string
           created_by?: string
           description?: string | null
@@ -440,9 +487,13 @@ export type Database = {
           jakim_zone_code?: string | null
           name?: string
           phone_number?: string | null
+          prayer_times_source?:
+            | Database["public"]["Enums"]["prayer_source_enum"]
+            | null
           registration_number?: string | null
           status?: Database["public"]["Enums"]["masjid_status"]
           updated_at?: string
+          website_url?: string | null
         }
         Relationships: [
           {
@@ -764,12 +815,15 @@ export type Database = {
           max_retry_attempts: number
           offline_cache_duration: number
           orientation: Database["public"]["Enums"]["display_orientation"]
+          prayer_time_alignment: string
           prayer_time_background_opacity: number
           prayer_time_color: string
           prayer_time_font_size: string
+          prayer_time_layout: string
           prayer_time_position: Database["public"]["Enums"]["prayer_time_position"]
           resolution: Database["public"]["Enums"]["display_resolution"]
           retry_backoff_multiplier: number
+          show_debug_info: boolean
           show_sponsorship_amounts: boolean
           sponsorship_tier_colors: Json
           updated_at: string | null
@@ -792,12 +846,15 @@ export type Database = {
           max_retry_attempts?: number
           offline_cache_duration?: number
           orientation?: Database["public"]["Enums"]["display_orientation"]
+          prayer_time_alignment?: string
           prayer_time_background_opacity?: number
           prayer_time_color?: string
           prayer_time_font_size?: string
+          prayer_time_layout?: string
           prayer_time_position?: Database["public"]["Enums"]["prayer_time_position"]
           resolution?: Database["public"]["Enums"]["display_resolution"]
           retry_backoff_multiplier?: number
+          show_debug_info?: boolean
           show_sponsorship_amounts?: boolean
           sponsorship_tier_colors?: Json
           updated_at?: string | null
@@ -820,12 +877,15 @@ export type Database = {
           max_retry_attempts?: number
           offline_cache_duration?: number
           orientation?: Database["public"]["Enums"]["display_orientation"]
+          prayer_time_alignment?: string
           prayer_time_background_opacity?: number
           prayer_time_color?: string
           prayer_time_font_size?: string
+          prayer_time_layout?: string
           prayer_time_position?: Database["public"]["Enums"]["prayer_time_position"]
           resolution?: Database["public"]["Enums"]["display_resolution"]
           retry_backoff_multiplier?: number
+          show_debug_info?: boolean
           show_sponsorship_amounts?: boolean
           sponsorship_tier_colors?: Json
           updated_at?: string | null
@@ -891,7 +951,6 @@ export type Database = {
           approved_by: string | null
           created_at: string | null
           description: string | null
-          display_id: string | null
           duration: number
           end_date: string
           file_size: number | null
@@ -1067,7 +1126,6 @@ export type Database = {
           approved_by: string | null
           created_at: string | null
           description: string | null
-          display_id: string | null
           duration: number
           end_date: string
           file_size: number | null
@@ -1135,6 +1193,7 @@ export type Database = {
       masjid_status: "active" | "inactive" | "pending_verification"
       payment_method: "fpx" | "credit_card" | "bank_transfer" | "cash"
       payment_status: "pending" | "paid" | "failed" | "refunded"
+      prayer_source_enum: "manual" | "jakim" | "auto"
       prayer_time_position:
         | "top"
         | "bottom"
@@ -1515,6 +1574,10 @@ export type Database = {
         Args: { bucketid: string; metadata: Json; name: string; owner: string }
         Returns: undefined
       }
+      delete_leaf_prefixes: {
+        Args: { bucket_ids: string[]; names: string[] }
+        Returns: undefined
+      }
       delete_prefix: {
         Args: { _bucket_id: string; _name: string }
         Returns: boolean
@@ -1580,6 +1643,10 @@ export type Database = {
           name: string
           updated_at: string
         }[]
+      }
+      lock_top_prefixes: {
+        Args: { bucket_ids: string[]; names: string[] }
+        Returns: undefined
       }
       operation: {
         Args: Record<PropertyKey, never>
@@ -1651,12 +1718,16 @@ export type Database = {
           levels?: number
           limits?: number
           prefix: string
+          sort_column?: string
+          sort_column_after?: string
+          sort_order?: string
           start_after?: string
         }
         Returns: {
           created_at: string
           id: string
           key: string
+          last_accessed_at: string
           metadata: Json
           name: string
           updated_at: string
@@ -1829,6 +1900,7 @@ export const Constants = {
       masjid_status: ["active", "inactive", "pending_verification"],
       payment_method: ["fpx", "credit_card", "bank_transfer", "cash"],
       payment_status: ["pending", "paid", "failed", "refunded"],
+      prayer_source_enum: ["manual", "jakim", "auto"],
       prayer_time_position: [
         "top",
         "bottom",

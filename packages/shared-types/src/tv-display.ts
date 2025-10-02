@@ -51,6 +51,13 @@ export interface DisplayContent {
   file_type?: string | null; // MIME type
   created_at: string;
   updated_at: string;
+
+  // Per-content carousel settings (from display_content_assignments)
+  // These override display-level defaults when present
+  carousel_duration?: number; // seconds (5-300)
+  transition_type?: "fade" | "slide" | "zoom" | "none";
+  image_display_mode?: "contain" | "cover" | "fill" | "none";
+  display_order?: number; // Display order in carousel (0-indexed)
 }
 
 export type CreateDisplayContent = Omit<
@@ -97,6 +104,33 @@ export interface ContentFilters {
     end: string;
   };
 }
+
+// ============================================================================
+// Content Assignment Types
+// ============================================================================
+
+export interface DisplayContentAssignment {
+  id: string;
+  display_id: string;
+  content_id: string;
+  assigned_at: string; // ISO datetime
+  assigned_by: string; // user_id
+  display_order: number; // Order in which content appears (0-indexed)
+
+  // Content-specific display settings (override display defaults)
+  carousel_duration: number; // seconds (5-300)
+  transition_type: "fade" | "slide" | "zoom" | "none";
+  image_display_mode: "contain" | "cover" | "fill" | "none";
+}
+
+export type CreateContentAssignment = Omit<
+  DisplayContentAssignment,
+  "id" | "assigned_at"
+>;
+
+export type UpdateContentAssignment = Partial<
+  Omit<DisplayContentAssignment, "id" | "display_id" | "content_id">
+>;
 
 // ============================================================================
 // Prayer Times Types
@@ -165,6 +199,20 @@ export type PrayerTimePosition =
   | "right"
   | "center"
   | "hidden";
+export type PrayerTimeLayout = "horizontal" | "vertical";
+export type PrayerTimeAlignment =
+  | "left"
+  | "center"
+  | "right"
+  | "top"
+  | "bottom"
+  | "space-between"
+  | "space-around";
+export type ImageDisplayMode =
+  | "contain" // Fit image within container, maintain aspect ratio (letterbox/pillarbox)
+  | "cover" // Fill container, maintain aspect ratio (may crop)
+  | "fill" // Stretch to fill container, may distort aspect ratio
+  | "none"; // Display at original size
 export type DisplayOrientation = "landscape" | "portrait";
 export type DisplayResolution =
   | "1920x1080"
@@ -195,6 +243,12 @@ export interface DisplayConfig {
   prayer_time_font_size: "small" | "medium" | "large" | "extra_large";
   prayer_time_color: string; // hex color
   prayer_time_background_opacity: number; // 0-1
+  prayer_time_layout: PrayerTimeLayout; // horizontal or vertical arrangement
+  prayer_time_alignment: PrayerTimeAlignment; // alignment within container
+
+  // Image display settings
+  image_display_mode: ImageDisplayMode; // How images should be displayed
+  image_background_color: string; // Background color for letterboxed images (hex)
 
   // Sponsorship display
   show_sponsorship_amounts: boolean;
@@ -210,6 +264,9 @@ export interface DisplayConfig {
   heartbeat_interval: number; // seconds
   max_retry_attempts: number;
   retry_backoff_multiplier: number;
+
+  // Debug and development
+  show_debug_info: boolean; // Controls visibility of debugging views (Display Status, Display Info, Configuration Updated, Offline Mode)
 
   // Status
   is_active: boolean;
@@ -494,6 +551,21 @@ export const PRAYER_TIME_POSITIONS: PrayerTimePosition[] = [
   "hidden",
 ];
 
+export const PRAYER_TIME_LAYOUTS: PrayerTimeLayout[] = [
+  "horizontal",
+  "vertical",
+];
+
+export const PRAYER_TIME_ALIGNMENTS: PrayerTimeAlignment[] = [
+  "left",
+  "center",
+  "right",
+  "top",
+  "bottom",
+  "space-between",
+  "space-around",
+];
+
 export const DEFAULT_SPONSORSHIP_PACKAGES: SponsorshipPackage[] = [
   {
     tier: "bronze",
@@ -558,7 +630,12 @@ export const DEFAULT_DISPLAY_CONFIG: Partial<DisplayConfig> = {
   prayer_time_font_size: "large",
   prayer_time_color: "#FFFFFF",
   prayer_time_background_opacity: 0.8,
+  prayer_time_layout: "horizontal",
+  prayer_time_alignment: "center",
+  image_display_mode: "contain",
+  image_background_color: "#000000",
   show_sponsorship_amounts: false,
+  show_debug_info: false,
   sponsorship_tier_colors: {
     bronze: "#CD7F32",
     silver: "#C0C0C0",
