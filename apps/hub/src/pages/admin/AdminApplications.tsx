@@ -320,12 +320,12 @@ function AdminApplications() {
                 <TableCell>
                   <Typography variant="body2">
                     {new Date(application.submitted_at).toLocaleDateString(
-                      "en-MY"
+                      "ms-MY"
                     )}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
                     {new Date(application.submitted_at).toLocaleTimeString(
-                      "en-MY",
+                      "ms-MY",
                       {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -641,7 +641,7 @@ function AdminApplications() {
                         Reviewed by: {selectedApplication.reviewed_by} on{" "}
                         {new Date(
                           selectedApplication.reviewed_at
-                        ).toLocaleDateString("en-MY")}
+                        ).toLocaleDateString("ms-MY")}
                       </Typography>
                     </Alert>
                   </Grid>

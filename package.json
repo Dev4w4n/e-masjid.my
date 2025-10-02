@@ -17,7 +17,7 @@
   "scripts": {
     "build": "turbo build",
     "build:clean": "./scripts/build-packages.sh",
-    "dev": "turbo dev",
+    "dev": "turbo dev --concurrency 15",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
     "type-check": "turbo type-check",

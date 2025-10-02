@@ -245,18 +245,18 @@ function ProfileView() {
                 <ListItem sx={{ px: 0, py: 1 }}>
                   <ListItemText
                     primary="Member Since"
-                    secondary={new Date(
-                      profile.created_at
-                    ).toLocaleDateString()}
+                    secondary={new Date(profile.created_at).toLocaleDateString(
+                      "ms-MY"
+                    )}
                   />
                 </ListItem>
 
                 <ListItem sx={{ px: 0, py: 1 }}>
                   <ListItemText
                     primary="Last Updated"
-                    secondary={new Date(
-                      profile.updated_at
-                    ).toLocaleDateString()}
+                    secondary={new Date(profile.updated_at).toLocaleDateString(
+                      "ms-MY"
+                    )}
                   />
                 </ListItem>
 

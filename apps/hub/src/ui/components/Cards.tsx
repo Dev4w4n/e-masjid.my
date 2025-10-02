@@ -95,7 +95,8 @@ export function ProfileCard({
 
         {profile.created_at && (
           <Typography variant="caption" color="text.secondary">
-            Member since {new Date(profile.created_at).toLocaleDateString()}
+            Member since{" "}
+            {new Date(profile.created_at).toLocaleDateString("ms-MY")}
           </Typography>
         )}
       </CardContent>
@@ -345,7 +346,8 @@ export function AdminAssignmentCard({
         )}
 
         <Typography variant="caption" color="text.secondary">
-          Approved on {new Date(assignment.approved_at).toLocaleDateString()}
+          Approved on{" "}
+          {new Date(assignment.approved_at).toLocaleDateString("ms-MY")}
         </Typography>
       </CardContent>
 

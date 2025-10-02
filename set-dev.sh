@@ -17,6 +17,7 @@ echo -e "${BLUE}Setting dev environment ...${NC}"
 echo ""
 
 # Run the setup-supabase.sh script with the --test flag
+# Set concurrency to 15 to handle all persistent dev tasks (10 packages + overhead)
 pnpm install && pnpm build:clean && pnpm dev
 
 echo ""

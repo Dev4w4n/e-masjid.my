@@ -514,7 +514,7 @@ function MasjidView() {
                     sx={{ mb: 2 }}
                   >
                     {new Date(prayerTimes.prayer_date).toLocaleDateString(
-                      "en-MY",
+                      "ms-MY",
                       {
                         weekday: "long",
                         year: "numeric",
@@ -603,7 +603,7 @@ function MasjidView() {
                       ` (Zone: ${masjid.jakim_zone_code})`}
                     <br />
                     Last updated:{" "}
-                    {new Date(prayerTimes.fetched_at).toLocaleString("en-MY")}
+                    {new Date(prayerTimes.fetched_at).toLocaleString("ms-MY")}
                   </Typography>
                 </>
               )}
@@ -678,7 +678,7 @@ function MasjidView() {
                   <ListItemText
                     primary="Created"
                     secondary={new Date(masjid.created_at).toLocaleDateString(
-                      "en-MY"
+                      "ms-MY"
                     )}
                   />
                 </ListItem>
@@ -690,7 +690,7 @@ function MasjidView() {
                   <ListItemText
                     primary="Last Updated"
                     secondary={new Date(masjid.updated_at).toLocaleDateString(
-                      "en-MY"
+                      "ms-MY"
                     )}
                   />
                 </ListItem>

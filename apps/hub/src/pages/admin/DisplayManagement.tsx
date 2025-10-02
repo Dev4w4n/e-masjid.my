@@ -810,7 +810,7 @@ const DisplayManagement = () => {
 
   // Format date for display
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-MY", {
+    return new Date(dateString).toLocaleDateString("ms-MY", {
       day: "numeric",
       month: "short",
       year: "numeric",

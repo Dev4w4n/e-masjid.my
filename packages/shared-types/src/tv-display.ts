@@ -265,6 +265,9 @@ export interface DisplayConfig {
   max_retry_attempts: number;
   retry_backoff_multiplier: number;
 
+  // Localization
+  language?: "en" | "ms"; // Display language: English or Bahasa Malaysia (default: ms)
+
   // Debug and development
   show_debug_info: boolean; // Controls visibility of debugging views (Display Status, Display Info, Configuration Updated, Offline Mode)
 

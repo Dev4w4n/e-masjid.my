@@ -41,6 +41,7 @@ import {
 import { useUser } from "@masjid-suite/auth";
 import supabase from "@masjid-suite/supabase-client";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "@masjid-suite/i18n";
 
 // Content interface for user's submissions
 interface UserContent {
@@ -82,6 +83,7 @@ interface ResubmitDialogState {
 const MyContent: React.FC = () => {
   const user = useUser();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [content, setContent] = useState<UserContent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -179,7 +181,7 @@ const MyContent: React.FC = () => {
 
   // Format date for display
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-MY", {
+    return new Date(dateString).toLocaleDateString("ms-MY", {
       day: "numeric",
       month: "short",
       year: "numeric",
@@ -294,10 +296,10 @@ const MyContent: React.FC = () => {
       >
         <Box>
           <Typography variant="h4" gutterBottom>
-            My Content
+            {t("myContent.title")}
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            Manage your submitted content and track approval status
+            {t("myContent.subtitle")}
           </Typography>
         </Box>
         <Button
@@ -305,7 +307,7 @@ const MyContent: React.FC = () => {
           onClick={() => navigate("/content/create")}
           sx={{ height: "fit-content" }}
         >
-          Create New Content
+          {t("myContent.create_new")}
         </Button>
       </Box>
 
@@ -321,22 +323,26 @@ const MyContent: React.FC = () => {
         }}
       >
         <FormControl sx={{ minWidth: 150 }}>
-          <InputLabel>Filter by Status</InputLabel>
+          <InputLabel>{t("myContent.filter_status")}</InputLabel>
           <Select
             value={statusFilter}
-            label="Filter by Status"
+            label={t("myContent.filter_status")}
             onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
             startAdornment={<FilterList sx={{ mr: 1 }} />}
           >
-            <MenuItem value="all">All Status</MenuItem>
-            <MenuItem value="pending">Pending</MenuItem>
-            <MenuItem value="active">Active</MenuItem>
-            <MenuItem value="rejected">Rejected</MenuItem>
-            <MenuItem value="expired">Expired</MenuItem>
+            <MenuItem value="all">{t("myContent.all_status")}</MenuItem>
+            <MenuItem value="pending">{t("myContent.status_pending")}</MenuItem>
+            <MenuItem value="active">
+              {t("myContent.status_active_label")}
+            </MenuItem>
+            <MenuItem value="rejected">
+              {t("myContent.status_rejected_label")}
+            </MenuItem>
+            <MenuItem value="expired">{t("myContent.status_expired")}</MenuItem>
           </Select>
         </FormControl>
 
-        <Tooltip title="Refresh Content">
+        <Tooltip title={t("myContent.refresh")}>
           <IconButton onClick={loadUserContent}>
             <Refresh />
           </IconButton>
@@ -353,13 +359,13 @@ const MyContent: React.FC = () => {
         <Paper sx={{ p: 4, textAlign: "center" }}>
           <Typography variant="h6" color="text.secondary">
             {statusFilter === "all"
-              ? "No content submitted yet"
-              : `No ${statusFilter} content found`}
+              ? t("myContent.no_content")
+              : t("myContent.no_filtered_content", { status: statusFilter })}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
             {statusFilter === "all"
-              ? "Start by creating your first content submission."
-              : `Try changing the filter to see content with other statuses.`}
+              ? t("myContent.no_content_desc")
+              : t("myContent.no_filtered_desc")}
           </Typography>
           {statusFilter === "all" && (
             <Button
@@ -367,7 +373,7 @@ const MyContent: React.FC = () => {
               onClick={() => navigate("/content/create")}
               sx={{ mt: 2 }}
             >
-              Create Content
+              {t("myContent.create_content")}
             </Button>
           )}
         </Paper>
@@ -406,7 +412,11 @@ const MyContent: React.FC = () => {
                         icon={
                           item.type === "image" ? <ImageIcon /> : <YouTube />
                         }
-                        label={item.type === "image" ? "Image" : "YouTube"}
+                        label={
+                          item.type === "image"
+                            ? t("myContent.type_image")
+                            : t("myContent.type_youtube")
+                        }
                         size="small"
                         variant="outlined"
                       />
@@ -440,7 +450,9 @@ const MyContent: React.FC = () => {
                       >
                         <Schedule fontSize="small" color="action" />
                         <Typography variant="caption">
-                          {item.duration}s duration
+                          {t("myContent.duration_label", {
+                            duration: item.duration,
+                          })}
                         </Typography>
                       </Box>
                       <Box
@@ -448,15 +460,21 @@ const MyContent: React.FC = () => {
                       >
                         <CalendarToday fontSize="small" color="action" />
                         <Typography variant="caption">
-                          {formatDate(item.start_date)} -{" "}
-                          {formatDate(item.end_date)}
+                          {t("myContent.date_range", {
+                            start: formatDate(item.start_date),
+                            end: formatDate(item.end_date),
+                          })}
                         </Typography>
                       </Box>
                       <Typography variant="caption" color="text.secondary">
-                        Submitted to: {item.masjid_name}
+                        {t("myContent.submitted_to", {
+                          masjid: item.masjid_name || "-",
+                        })}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        Submitted: {formatDate(item.submitted_at)}
+                        {t("myContent.submitted_on", {
+                          date: formatDate(item.submitted_at),
+                        })}
                       </Typography>
                     </Stack>
 
@@ -464,8 +482,7 @@ const MyContent: React.FC = () => {
                     {item.status === "rejected" && (
                       <Alert severity="error" sx={{ mt: 2, mb: 1 }}>
                         <Typography variant="body2">
-                          <strong>Status:</strong> This content was rejected.
-                          You can resubmit with modifications.
+                          {t("myContent.status_rejected")}
                         </Typography>
                       </Alert>
                     )}
@@ -473,15 +490,14 @@ const MyContent: React.FC = () => {
                     {item.status === "active" && (
                       <Alert severity="success" sx={{ mt: 2, mb: 1 }}>
                         <Typography variant="body2">
-                          <strong>Status:</strong> This content has been
-                          approved and is active.
+                          {t("myContent.status_active")}
                         </Typography>
                       </Alert>
                     )}
                   </CardContent>
 
                   <CardActions sx={{ justifyContent: "space-between", p: 2 }}>
-                    <Tooltip title="Preview Content">
+                    <Tooltip title={t("myContent.preview_content")}>
                       <IconButton
                         size="small"
                         onClick={() => window.open(item.url, "_blank")}
@@ -498,7 +514,7 @@ const MyContent: React.FC = () => {
                           startIcon={<Edit />}
                           onClick={() => handleResubmit(item)}
                         >
-                          Resubmit
+                          {t("myContent.resubmit")}
                         </Button>
                       )}
                       {(item.status === "pending" ||
@@ -510,7 +526,7 @@ const MyContent: React.FC = () => {
                           startIcon={<Delete />}
                           onClick={() => handleDelete(item.id)}
                         >
-                          Delete
+                          {t("myContent.delete")}
                         </Button>
                       )}
                     </Box>
@@ -529,17 +545,16 @@ const MyContent: React.FC = () => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>Resubmit Content</DialogTitle>
+        <DialogTitle>{t("myContent.resubmit_title")}</DialogTitle>
         <DialogContent>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Make any necessary changes before resubmitting your content for
-            approval.
+            {t("myContent.resubmit_desc")}
           </Typography>
 
           <Stack spacing={3}>
             <TextField
               fullWidth
-              label="Title"
+              label={t("myContent.title_field")}
               value={resubmitDialog.title}
               onChange={(e) =>
                 setResubmitDialog({ ...resubmitDialog, title: e.target.value })
@@ -550,7 +565,7 @@ const MyContent: React.FC = () => {
               fullWidth
               multiline
               rows={3}
-              label="Description (optional)"
+              label={t("myContent.description_field")}
               value={resubmitDialog.description}
               onChange={(e) =>
                 setResubmitDialog({
@@ -563,7 +578,7 @@ const MyContent: React.FC = () => {
             <TextField
               fullWidth
               type="number"
-              label="Duration (seconds)"
+              label={t("myContent.duration_field")}
               inputProps={{ min: 5, max: 300 }}
               value={resubmitDialog.duration}
               onChange={(e) =>
@@ -578,7 +593,7 @@ const MyContent: React.FC = () => {
               <TextField
                 fullWidth
                 type="date"
-                label="Start Date"
+                label={t("myContent.start_date")}
                 InputLabelProps={{ shrink: true }}
                 value={resubmitDialog.start_date}
                 onChange={(e) =>
@@ -591,7 +606,7 @@ const MyContent: React.FC = () => {
               <TextField
                 fullWidth
                 type="date"
-                label="End Date"
+                label={t("myContent.end_date")}
                 InputLabelProps={{ shrink: true }}
                 value={resubmitDialog.end_date}
                 onChange={(e) =>
@@ -610,14 +625,14 @@ const MyContent: React.FC = () => {
               setResubmitDialog({ ...resubmitDialog, open: false })
             }
           >
-            Cancel
+            {t("myContent.cancel")}
           </Button>
           <Button
             variant="contained"
             onClick={handleResubmitSubmit}
             disabled={!resubmitDialog.title.trim()}
           >
-            Resubmit for Approval
+            {t("myContent.resubmit_approval")}
           </Button>
         </DialogActions>
       </Dialog>
