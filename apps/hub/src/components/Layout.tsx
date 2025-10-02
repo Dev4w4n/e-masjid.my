@@ -47,6 +47,7 @@ import {
   usePermissions,
   UserRole,
 } from "@masjid-suite/auth";
+import { useTranslation } from "@masjid-suite/i18n";
 
 const drawerWidth = 240;
 
@@ -70,6 +71,7 @@ function Layout() {
   const profile = useProfile();
   const { signOut } = useAuthActions();
   const permissions = usePermissions();
+  const { t } = useTranslation();
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(!isMobile);
@@ -80,13 +82,13 @@ function Layout() {
   const getNavigationItems = (): NavigationItem[] => {
     const items: NavigationItem[] = [
       {
-        text: "Home",
+        text: t('nav.home'),
         icon: <Home />,
         path: "/",
         roles: ["public", "registered", "masjid_admin", "super_admin"],
       },
       {
-        text: "Masjids",
+        text: t('nav.masjids'),
         icon: <Mosque />,
         path: "/masjids",
         roles: ["public", "registered", "masjid_admin", "super_admin"],
@@ -97,19 +99,19 @@ function Layout() {
     if (user) {
       items.push(
         {
-          text: "My Profile",
+          text: t('nav.my_profile'),
           icon: <Person />,
           path: "/profile",
           roles: ["registered", "masjid_admin", "super_admin"],
         },
         {
-          text: "Create Content",
+          text: t('nav.create_content'),
           icon: <Add />,
           path: "/content/create",
           roles: ["registered", "masjid_admin", "super_admin"],
         },
         {
-          text: "My Content",
+          text: t('nav.my_content'),
           icon: <ViewList />,
           path: "/content/my-content",
           roles: ["registered", "masjid_admin", "super_admin"],
@@ -121,13 +123,13 @@ function Layout() {
     if (permissions.isSuperAdmin() || permissions.isMasjidAdmin()) {
       items.push(
         {
-          text: "Admin Dashboard",
+          text: t('nav.admin_dashboard'),
           icon: <Dashboard />,
           path: "/admin",
           roles: ["masjid_admin", "super_admin"],
         },
         {
-          text: "Display Management",
+          text: t('nav.manage_displays'),
           icon: <Tv />,
           path: "/admin/display-management",
           roles: ["masjid_admin", "super_admin"],
@@ -137,7 +139,7 @@ function Layout() {
 
     if (permissions.isSuperAdmin()) {
       items.push({
-        text: "Applications",
+        text: t('nav.manage_applications'),
         icon: <Assignment />,
         path: "/admin/applications",
         roles: ["super_admin"],
@@ -361,7 +363,7 @@ function Layout() {
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {/* Notifications */}
             {user && (
-              <Tooltip title="Notifications">
+              <Tooltip title={t('nav.notifications')}>
                 <IconButton color="inherit">
                   <Badge badgeContent={3} color="error">
                     <Notifications />
@@ -373,7 +375,7 @@ function Layout() {
             {/* User Profile */}
             {user ? (
               <>
-                <Tooltip title="Account settings">
+                <Tooltip title={t('nav.settings')}>
                   <IconButton
                     onClick={handleProfileMenuOpen}
                     size="small"
@@ -409,7 +411,7 @@ function Layout() {
                     <ListItemIcon>
                       <AccountCircle fontSize="small" />
                     </ListItemIcon>
-                    My Profile
+                    {t('nav.my_profile')}
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
@@ -420,7 +422,7 @@ function Layout() {
                     <ListItemIcon>
                       <Settings fontSize="small" />
                     </ListItemIcon>
-                    Settings
+                    {t('nav.settings')}
                   </MenuItem>
                   {permissions.isSuperAdmin() && (
                     <MenuItem
@@ -432,7 +434,7 @@ function Layout() {
                       <ListItemIcon>
                         <AdminPanelSettings fontSize="small" />
                       </ListItemIcon>
-                      Admin Dashboard
+                      {t('nav.admin_dashboard')}
                     </MenuItem>
                   )}
                   <Divider />
@@ -440,7 +442,7 @@ function Layout() {
                     <ListItemIcon>
                       <Logout fontSize="small" />
                     </ListItemIcon>
-                    Sign Out
+                    {t('nav.logout')}
                   </MenuItem>
                 </Menu>
               </>
@@ -457,7 +459,7 @@ function Layout() {
                       textDecoration: "underline",
                     }}
                   >
-                    Sign In
+                    {t('auth.login')}
                   </Typography>
                 </Link>
                 <Typography color="inherit">|</Typography>
@@ -472,7 +474,7 @@ function Layout() {
                       textDecoration: "underline",
                     }}
                   >
-                    Sign Up
+                    {t('auth.register')}
                   </Typography>
                 </Link>
               </Box>

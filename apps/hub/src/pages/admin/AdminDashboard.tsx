@@ -439,7 +439,7 @@ function AdminDashboard() {
                     <ListItemText
                       primary={activity.description}
                       secondary={new Date(activity.timestamp).toLocaleString(
-                        "en-MY"
+                        "ms-MY"
                       )}
                     />
                   </ListItem>
@@ -482,7 +482,7 @@ function AdminDashboard() {
                           />
                         </Box>
                       }
-                      secondary={`Due: ${new Date(task.due_date).toLocaleDateString("en-MY")}`}
+                      secondary={`Due: ${new Date(task.due_date).toLocaleDateString("ms-MY")}`}
                     />
                   </ListItem>
                 ))}
@@ -568,7 +568,7 @@ function AdminDashboard() {
                     primary="Last Backup"
                     secondary={new Date(
                       dashboardData.system_health.last_backup
-                    ).toLocaleString("en-MY")}
+                    ).toLocaleString("ms-MY")}
                   />
                 </ListItem>
               </List>

@@ -270,6 +270,7 @@ function DisplayPageContent() {
           backgroundOpacity={state.config.prayer_time_background_opacity}
           layout={state.config.prayer_time_layout}
           alignment={state.config.prayer_time_alignment}
+          locale={(state.config.language || 'ms') as 'en' | 'ms'}
           className="z-20"
         />
       )}

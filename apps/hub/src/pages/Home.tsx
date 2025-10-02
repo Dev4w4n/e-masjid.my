@@ -20,6 +20,7 @@ import {
   LocationOn,
 } from "@mui/icons-material";
 import { useUser, useProfile, usePermissions } from "@masjid-suite/auth";
+import { useTranslation } from "@masjid-suite/i18n";
 
 /**
  * Home/Dashboard page component
@@ -28,24 +29,25 @@ function Home() {
   const user = useUser();
   const profile = useProfile();
   const permissions = usePermissions();
+  const { t } = useTranslation();
 
   const stats = [
-    { label: "Total Masjids", value: "3", icon: <Mosque /> },
-    { label: "Registered Users", value: "24", icon: <People /> },
-    { label: "Admin Applications", value: "2", icon: <AdminPanelSettings /> },
+    { label: t('masjid.total'), value: "3", icon: <Mosque /> },
+    { label: t('admin.registered_users'), value: "24", icon: <People /> },
+    { label: t('admin.admin_applications'), value: "2", icon: <AdminPanelSettings /> },
   ];
 
   const quickActions = [
     {
-      title: "My Profile",
-      description: "View and edit your personal information",
+      title: t('profile.my_profile'),
+      description: t('home.view_edit_info'),
       icon: <Person />,
       link: "/profile",
       color: "primary" as const,
     },
     {
-      title: "Browse Masjids",
-      description: "Discover masjids in your area",
+      title: t('masjid.browse'),
+      description: t('home.discover_masjids'),
       icon: <LocationOn />,
       link: "/masjids",
       color: "secondary" as const,
@@ -55,8 +57,8 @@ function Home() {
   // Add admin-specific actions
   if (permissions.hasAdminPrivileges()) {
     quickActions.push({
-      title: "Admin Dashboard",
-      description: "Manage applications and users",
+      title: t('admin.admin_dashboard'),
+      description: t('home.manage_apps_users'),
       icon: <AdminPanelSettings />,
       link: "/admin/dashboard",
       color: "secondary" as const,
@@ -66,8 +68,8 @@ function Home() {
   // Add super admin actions
   if (permissions.isSuperAdmin()) {
     quickActions.push({
-      title: "Create Masjid",
-      description: "Add a new masjid to the system",
+      title: t('masjid.create'),
+      description: t('home.add_new_masjid'),
       icon: <Mosque />,
       link: "/masjids/new",
       color: "primary" as const,
@@ -79,11 +81,11 @@ function Home() {
       {/* Welcome Section */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Welcome back,{" "}
+          {t('common.welcome')},{" "}
           {profile?.full_name || user?.email?.split("@")[0] || "User"}!
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Manage your Islamic community profile and connect with local masjids.
+          {t('home.subtitle')}
         </Typography>
       </Box>
 
@@ -133,7 +135,7 @@ function Home() {
           sx={{ display: "flex", alignItems: "center", gap: 1 }}
         >
           <Dashboard color="primary" />
-          Quick Actions
+          {t('home.quick_actions')}
         </Typography>
 
         <Grid container spacing={3}>
@@ -181,7 +183,7 @@ function Home() {
                     color={action.color}
                     fullWidth
                   >
-                    Go to {action.title}
+                    {action.title}
                   </Button>
                 </CardContent>
               </Card>
@@ -206,16 +208,14 @@ function Home() {
               </Avatar>
               <Box sx={{ flex: 1 }}>
                 <Typography variant="h6" gutterBottom>
-                  Complete Your Profile
+                  {t('home.complete_profile')}
                 </Typography>
                 <Typography
                   variant="body2"
                   color="text.secondary"
                   sx={{ mb: 2 }}
                 >
-                  Finish setting up your profile to get the most out of Masjid
-                  Suite. Add your phone number, address, and select your home
-                  masjid.
+                  {t('home.complete_profile_desc')}
                 </Typography>
                 <Button
                   component={Link}
@@ -224,7 +224,7 @@ function Home() {
                   color="warning"
                   startIcon={<Person />}
                 >
-                  Complete Profile
+                  {t('home.complete_profile')}
                 </Button>
               </Box>
             </Box>
@@ -235,7 +235,7 @@ function Home() {
       {/* Recent Activity */}
       <Box sx={{ mt: 4 }}>
         <Typography variant="h5" component="h2" gutterBottom>
-          Recent Activity
+          {t('home.recent_activity')}
         </Typography>
         <Card>
           <CardContent>
@@ -244,7 +244,7 @@ function Home() {
               color="text.secondary"
               sx={{ textAlign: "center", py: 4 }}
             >
-              No recent activity to display.
+              {t('home.no_activity')}
             </Typography>
           </CardContent>
         </Card>

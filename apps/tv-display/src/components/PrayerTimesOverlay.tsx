@@ -9,6 +9,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { PrayerTimes, PrayerTimeConfig } from '@masjid-suite/shared-types';
+import { getPrayerName, type SupportedLocale } from '@masjid-suite/i18n';
 import ClientOnly from './ClientOnly';
 
 type PrayerName = 'fajr' | 'sunrise' | 'dhuhr' | 'asr' | 'maghrib' | 'isha';
@@ -23,6 +24,7 @@ interface PrayerTimesOverlayProps {
   layout?: 'horizontal' | 'vertical';
   alignment?: 'left' | 'center' | 'right' | 'top' | 'bottom' | 'space-between' | 'space-around';
   className?: string;
+  locale?: SupportedLocale;
 }
 
 interface PrayerTimeInfo {
@@ -58,7 +60,8 @@ export function PrayerTimesOverlay({
   backgroundOpacity = 0.8,
   layout = 'horizontal',
   alignment = 'center',
-  className = ''
+  className = '',
+  locale = 'ms'
 }: PrayerTimesOverlayProps) {
   // Initialize with stable values for SSR
   const [timeState, setTimeState] = useState<CurrentTimeState>({
@@ -216,17 +219,9 @@ export function PrayerTimesOverlay({
     return `${displayHours}:${displayMinutes}`;
   };
 
-  // Get prayer display names
+  // Get prayer display names in the current locale
   const getPrayerDisplayName = (prayerName: PrayerName): string => {
-    const names: Record<PrayerName, string> = {
-      fajr: 'Fajr',
-      sunrise: 'Sunrise',
-      dhuhr: 'Dhuhr',
-      asr: 'Asr',
-      maghrib: 'Maghrib',
-      isha: 'Isha'
-    };
-    return names[prayerName];
+    return getPrayerName(prayerName, locale);
   };
 
   // Prepare prayer times info
@@ -408,8 +403,9 @@ export function PrayerTimesOverlay({
 export function CompactPrayerTimesOverlay({
   prayerTimes,
   config,
-  className = ''
-}: Pick<PrayerTimesOverlayProps, 'prayerTimes' | 'config' | 'className'>) {
+  className = '',
+  locale = 'ms'
+}: Pick<PrayerTimesOverlayProps, 'prayerTimes' | 'config' | 'className' | 'locale'>) {
   // Initialize with stable values for SSR
   const [timeState, setTimeState] = useState<CurrentTimeState>({
     currentTime: new Date(0), // Use epoch time for SSR stability
@@ -434,11 +430,11 @@ export function CompactPrayerTimesOverlay({
   const getNextPrayerInfo = () => {
     const now = new Date();
     const prayers = [
-      { name: 'Fajr', time: prayerTimes.fajr_time },
-      { name: 'Dhuhr', time: prayerTimes.dhuhr_time },
-      { name: 'Asr', time: prayerTimes.asr_time },
-      { name: 'Maghrib', time: prayerTimes.maghrib_time },
-      { name: 'Isha', time: prayerTimes.isha_time }
+      { name: getPrayerName('fajr', locale), time: prayerTimes.fajr_time },
+      { name: getPrayerName('dhuhr', locale), time: prayerTimes.dhuhr_time },
+      { name: getPrayerName('asr', locale), time: prayerTimes.asr_time },
+      { name: getPrayerName('maghrib', locale), time: prayerTimes.maghrib_time },
+      { name: getPrayerName('isha', locale), time: prayerTimes.isha_time }
     ];
 
     for (const prayer of prayers) {
@@ -459,10 +455,11 @@ export function CompactPrayerTimesOverlay({
     }
 
     // If no prayer found today, return tomorrow's Fajr
-    return { name: 'Fajr', time: prayerTimes.fajr_time };
+    return { name: getPrayerName('fajr', locale), time: prayerTimes.fajr_time };
   };
 
   const nextPrayer = getNextPrayerInfo();
+  const nextLabel = locale === 'ms' ? 'Seterusnya' : 'Next';
 
   return (
     <div className={`
@@ -470,7 +467,7 @@ export function CompactPrayerTimesOverlay({
       text-sm font-medium flex items-center space-x-2
       ${className}
     `}>
-      <span className="text-green-300">Next:</span>
+      <span className="text-green-300">{nextLabel}:</span>
       <span>{nextPrayer.name}</span>
       <span className="font-mono">{nextPrayer.time}</span>
     </div>

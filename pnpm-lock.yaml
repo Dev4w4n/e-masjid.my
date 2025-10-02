@@ -84,6 +84,9 @@ importers:
       '@masjid-suite/auth':
         specifier: workspace:*
         version: link:../../packages/auth
+      '@masjid-suite/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
       '@masjid-suite/prayer-times':
         specifier: workspace:*
         version: link:../../packages/prayer-times
@@ -178,6 +181,9 @@ importers:
 
   apps/tv-display:
     dependencies:
+      '@masjid-suite/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
       '@masjid-suite/prayer-times':
         specifier: workspace:*
         version: link:../../packages/prayer-times
@@ -387,6 +393,25 @@ importers:
         version: 0.4.20(eslint@8.57.1)
       typescript:
         specifier: ^5.0.0
+        version: 5.9.2
+
+  packages/i18n:
+    dependencies:
+      '@masjid-suite/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
+      react:
+        specifier: ^18.0.0 || ^19.0.0
+        version: 18.3.1
+    devDependencies:
+      '@masjid-suite/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@types/react':
+        specifier: ^18.2.0
+        version: 18.3.24
+      typescript:
+        specifier: ^5.2.0
         version: 5.9.2
 
   packages/prayer-times:

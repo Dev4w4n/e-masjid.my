@@ -39,6 +39,7 @@ import {
   AdminPanelSettings,
 } from "@mui/icons-material";
 import { usePermissions } from "@masjid-suite/auth";
+import { useTranslation } from "@masjid-suite/i18n";
 import { MalaysianState, MasjidWithAdmins } from "@masjid-suite/shared-types";
 import { masjidService } from "@masjid-suite/supabase-client";
 
@@ -67,6 +68,7 @@ const malaysianStates: MalaysianState[] = [
 function MasjidList() {
   const navigate = useNavigate();
   const permissions = usePermissions();
+  const { t } = useTranslation();
   const [masjids, setMasjids] = useState<MasjidWithAdmins[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -146,10 +148,10 @@ function MasjidList() {
       >
         <Box>
           <Typography variant="h4" component="h1" gutterBottom>
-            Masjids
+            {t('masjidList.title')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Discover and connect with masjids in Malaysia.
+            {t('masjidList.subtitle')}
           </Typography>
         </Box>
 
@@ -159,7 +161,7 @@ function MasjidList() {
             startIcon={<Add />}
             onClick={() => navigate("/masjids/new")}
           >
-            Add Masjid
+            {t('masjidList.add_masjid')}
           </Button>
         )}
       </Box>
@@ -179,8 +181,8 @@ function MasjidList() {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Search masjids"
-                placeholder="Search by name, description, or city"
+                label={t('masjidList.search_label')}
+                placeholder={t('masjidList.search_placeholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 InputProps={{
@@ -196,13 +198,13 @@ function MasjidList() {
             {/* State Filter */}
             <Grid item xs={12} md={4}>
               <FormControl fullWidth>
-                <InputLabel>Filter by State</InputLabel>
+                <InputLabel>{t('masjidList.filter_state')}</InputLabel>
                 <Select
                   value={selectedState}
-                  label="Filter by State"
+                  label={t('masjidList.filter_state')}
                   onChange={(e) => setSelectedState(e.target.value)}
                 >
-                  <MenuItem value="">All States</MenuItem>
+                  <MenuItem value="">{t('masjidList.all_states')}</MenuItem>
                   {malaysianStates.map((state) => (
                     <MenuItem key={state} value={state}>
                       {state}
@@ -220,7 +222,7 @@ function MasjidList() {
                 startIcon={<FilterList />}
                 onClick={() => setShowFilters(!showFilters)}
               >
-                Filters
+                {t('common.filters')}
               </Button>
             </Grid>
           </Grid>
@@ -235,7 +237,7 @@ function MasjidList() {
             }}
           >
             <Typography variant="body2" color="text.secondary">
-              Showing {filteredMasjids.length} of {masjids.length} masjids
+              {t('masjidList.showing_count', { filtered: filteredMasjids.length, total: masjids.length })}
             </Typography>
             {(searchTerm || selectedState) && (
               <Button
@@ -245,7 +247,7 @@ function MasjidList() {
                   setSelectedState("");
                 }}
               >
-                Clear Filters
+                {t('masjidList.clear_filters')}
               </Button>
             )}
           </Box>
@@ -288,12 +290,12 @@ function MasjidList() {
               <Mosque sx={{ fontSize: "2rem", color: "grey.400" }} />
             </Avatar>
             <Typography variant="h6" gutterBottom>
-              No Masjids Found
+              {t('masjidList.no_masjids')}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
               {searchTerm || selectedState
-                ? "Try adjusting your search criteria."
-                : "No masjids have been added yet."}
+                ? t('masjidList.no_results_desc')
+                : t('masjidList.no_masjids_desc')}
             </Typography>
             {permissions.canManageMasjids() && (
               <Button
@@ -301,7 +303,7 @@ function MasjidList() {
                 startIcon={<Add />}
                 onClick={() => navigate("/masjids/new")}
               >
-                Add First Masjid
+                {t('masjidList.add_first')}
               </Button>
             )}
           </CardContent>
@@ -362,7 +364,7 @@ function MasjidList() {
                   >
                     {masjid.description && masjid.description.length > 120
                       ? `${masjid.description.substring(0, 120)}...`
-                      : masjid.description || "No description available."}
+                      : masjid.description || t('masjidList.no_description')}
                   </Typography>
 
                   {/* Address */}
@@ -409,7 +411,7 @@ function MasjidList() {
                           color="action"
                           sx={{ mr: 0.5, fontSize: "1.1rem" }}
                         />
-                        Administrators
+                        {t('masjidList.administrators')}
                       </Typography>
                       <List dense disablePadding>
                         {masjid.admins.map((admin) => (
@@ -445,7 +447,7 @@ function MasjidList() {
                     startIcon={<Visibility />}
                     size="small"
                   >
-                    View Details
+                    {t('masjidList.view_details')}
                   </Button>
 
                   {permissions.canManageMasjids() && (

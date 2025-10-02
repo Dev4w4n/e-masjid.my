@@ -247,7 +247,7 @@ function ProfileView() {
                     primary="Member Since"
                     secondary={new Date(
                       profile.created_at
-                    ).toLocaleDateString()}
+                    ).toLocaleDateString("ms-MY")}
                   />
                 </ListItem>
 
@@ -256,7 +256,7 @@ function ProfileView() {
                     primary="Last Updated"
                     secondary={new Date(
                       profile.updated_at
-                    ).toLocaleDateString()}
+                    ).toLocaleDateString("ms-MY")}
                   />
                 </ListItem>
 

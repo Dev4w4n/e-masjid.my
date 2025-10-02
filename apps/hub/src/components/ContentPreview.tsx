@@ -310,7 +310,7 @@ const ContentPreview: React.FC<ContentPreviewProps> = ({
                 color="text.secondary"
                 sx={{ mt: 1, display: "block" }}
               >
-                Submitted: {new Date(content.submitted_at).toLocaleDateString()}
+                Submitted: {new Date(content.submitted_at).toLocaleDateString("ms-MY")}
               </Typography>
             )}
           </Box>
