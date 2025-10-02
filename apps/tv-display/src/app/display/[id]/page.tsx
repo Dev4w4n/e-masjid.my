@@ -256,6 +256,7 @@ function DisplayPageContent() {
         }}
         onError={(error) => handleError(error, 'ContentCarousel')}
         className="h-full w-full"
+        showDebugInfo={state.config.show_debug_info}
       />
 
       {/* Prayer times overlay */}

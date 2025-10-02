@@ -96,6 +96,7 @@ export async function GET(
 
     // Build content query with filters
     // Use the new display_content_assignments join table to get content for this display
+    // Include per-content settings: carousel_duration, transition_type, image_display_mode, sort_order
     let query = supabase
       .from('display_content')
       .select(`
@@ -107,7 +108,11 @@ export async function GET(
           amount
         ),
         display_content_assignments!inner (
-          display_id
+          display_id,
+          carousel_duration,
+          transition_type,
+          image_display_mode,
+          display_order
         )
       `)
       .eq('display_content_assignments.display_id', displayId)
@@ -153,33 +158,63 @@ export async function GET(
     }
 
     // Transform content to match DisplayContent interface
-    const transformedContent: DisplayContent[] = content?.map((item: any) => ({
-      id: item.id,
-      masjid_id: display.masjid_id,
-      display_id: displayId, // Use the displayId from params since content is assigned to this display
-      title: item.title,
-      ...(item.description && { description: item.description }),
-      type: item.type,
-      url: item.url,
-      ...(item.thumbnail_url && { thumbnail_url: item.thumbnail_url }),
-      sponsorship_amount: item.sponsorship_amount,
-      ...(item.sponsorship_tier && { sponsorship_tier: item.sponsorship_tier }),
-      payment_status: item.payment_status,
-      ...(item.payment_reference && { payment_reference: item.payment_reference }),
-      duration: item.duration,
-      start_date: item.start_date,
-      end_date: item.end_date,
-      status: item.status,
-      submitted_by: item.submitted_by,
-      submitted_at: item.submitted_at || item.created_at || '',
-      ...(item.approved_by && { approved_by: item.approved_by }),
-      ...(item.approved_at && { approved_at: item.approved_at }),
-      ...(item.rejection_reason && { rejection_reason: item.rejection_reason }),
-      ...(item.file_size && { file_size: item.file_size }),
-      ...(item.file_type && { file_type: item.file_type }),
-      created_at: item.created_at || '',
-      updated_at: item.updated_at || ''
-    })) || [];
+    // Include per-content settings from display_content_assignments
+    const transformedContent: DisplayContent[] = (content?.map((item: any) => {
+      // Extract assignment settings (array with single element from join)
+      const assignment = Array.isArray(item.display_content_assignments) 
+        ? item.display_content_assignments[0] 
+        : item.display_content_assignments;
+      
+      return {
+        id: item.id,
+        masjid_id: display.masjid_id,
+        display_id: displayId, // Use the displayId from params since content is assigned to this display
+        title: item.title,
+        ...(item.description && { description: item.description }),
+        type: item.type,
+        url: item.url,
+        ...(item.thumbnail_url && { thumbnail_url: item.thumbnail_url }),
+        sponsorship_amount: item.sponsorship_amount,
+        ...(item.sponsorship_tier && { sponsorship_tier: item.sponsorship_tier }),
+        payment_status: item.payment_status,
+        ...(item.payment_reference && { payment_reference: item.payment_reference }),
+        duration: item.duration,
+        start_date: item.start_date,
+        end_date: item.end_date,
+        status: item.status,
+        submitted_by: item.submitted_by,
+        submitted_at: item.submitted_at || item.created_at || '',
+        ...(item.approved_by && { approved_by: item.approved_by }),
+        ...(item.approved_at && { approved_at: item.approved_at }),
+        ...(item.rejection_reason && { rejection_reason: item.rejection_reason }),
+        ...(item.file_size && { file_size: item.file_size }),
+        ...(item.file_type && { file_type: item.file_type }),
+        created_at: item.created_at || '',
+        updated_at: item.updated_at || '',
+        // Add per-content carousel settings from assignments
+        ...(assignment && {
+          carousel_duration: assignment.carousel_duration,
+          transition_type: assignment.transition_type,
+          image_display_mode: assignment.image_display_mode,
+          display_order: assignment.display_order
+        })
+      };
+    }) || [])
+    // Sort by display_order (ascending), then by sponsorship_amount (descending), then by created_at (descending)
+    .sort((a, b) => {
+      // Primary sort: display_order (lower numbers first)
+      if (a.display_order !== undefined && b.display_order !== undefined) {
+        if (a.display_order !== b.display_order) {
+          return a.display_order - b.display_order;
+        }
+      }
+      // Secondary sort: sponsorship_amount (higher amounts first)
+      if (a.sponsorship_amount !== b.sponsorship_amount) {
+        return b.sponsorship_amount - a.sponsorship_amount;
+      }
+      // Tertiary sort: created_at (newer first)
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
 
     // Get content statistics
     const { data: stats } = await supabase

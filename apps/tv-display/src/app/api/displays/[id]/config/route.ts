@@ -82,6 +82,10 @@ export async function GET(
       show_sponsorship_amounts: display.show_sponsorship_amounts,
       sponsorship_tier_colors: display.sponsorship_tier_colors as any || {},
       
+      // Image display settings
+      image_display_mode: (display as any).image_display_mode || 'contain',
+      image_background_color: (display as any).image_background_color || '#000000',
+      
       // Prayer time settings
       prayer_time_position: display.prayer_time_position,
       prayer_time_color: display.prayer_time_color || '#FFFFFF',
@@ -288,6 +292,10 @@ export async function PUT(
       max_content_items: updatedDisplay.max_content_items,
       show_sponsorship_amounts: updatedDisplay.show_sponsorship_amounts,
       sponsorship_tier_colors: updatedDisplay.sponsorship_tier_colors as any || {},
+      
+      // Image display settings
+      image_display_mode: (updatedDisplay as any).image_display_mode || 'contain',
+      image_background_color: (updatedDisplay as any).image_background_color || '#000000',
       
       prayer_time_position: updatedDisplay.prayer_time_position,
       prayer_time_color: updatedDisplay.prayer_time_color || '#FFFFFF',

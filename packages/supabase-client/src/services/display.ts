@@ -41,12 +41,23 @@ export const getDisplaysByMasjid = async (
 
 export const getAssignedContent = async (
   displayId: string
-): Promise<DisplayContent[]> => {
+): Promise<
+  Array<
+    DisplayContent & {
+      carousel_duration: number;
+      transition_type: "fade" | "slide" | "zoom" | "none";
+      image_display_mode: "contain" | "cover" | "fill" | "none";
+    }
+  >
+> => {
   const { data, error } = await (supabase as any)
     .from("display_content_assignments")
     .select(
       `
       display_order,
+      carousel_duration,
+      transition_type,
+      image_display_mode,
       display_content:content_id(*)
     `
     )
@@ -57,10 +68,23 @@ export const getAssignedContent = async (
     throw new Error(error.message);
   }
 
-  return data.map((item: any) => item.display_content);
+  return data.map((item: any) => ({
+    ...item.display_content,
+    carousel_duration: item.carousel_duration,
+    transition_type: item.transition_type,
+    image_display_mode: item.image_display_mode,
+  }));
 };
 
-export const assignContent = async (displayId: string, contentId: string) => {
+export const assignContent = async (
+  displayId: string,
+  contentId: string,
+  settings?: {
+    carousel_duration?: number;
+    transition_type?: "fade" | "slide" | "zoom" | "none";
+    image_display_mode?: "contain" | "cover" | "fill" | "none";
+  }
+) => {
   // Get the current max display_order for this display
   const { data: maxOrderData } = await (supabase as any)
     .from("display_content_assignments")
@@ -80,6 +104,9 @@ export const assignContent = async (displayId: string, contentId: string) => {
         content_id: contentId,
         assigned_by: (await supabase.auth.getUser()).data.user?.id,
         display_order: nextOrder,
+        carousel_duration: settings?.carousel_duration || 10,
+        transition_type: settings?.transition_type || "fade",
+        image_display_mode: settings?.image_display_mode || "contain",
       },
     ]);
 
@@ -125,6 +152,28 @@ export const updateContentOrder = async (
     throw new Error(
       `Failed to update content order: ${errors[0].error.message}`
     );
+  }
+
+  return true;
+};
+
+export const updateContentSettings = async (
+  displayId: string,
+  contentId: string,
+  settings: {
+    carousel_duration?: number;
+    transition_type?: "fade" | "slide" | "zoom" | "none";
+    image_display_mode?: "contain" | "cover" | "fill" | "none";
+  }
+) => {
+  const { error } = await (supabase as any)
+    .from("display_content_assignments")
+    .update(settings)
+    .eq("display_id", displayId)
+    .eq("content_id", contentId);
+
+  if (error) {
+    throw new Error(error.message);
   }
 
   return true;

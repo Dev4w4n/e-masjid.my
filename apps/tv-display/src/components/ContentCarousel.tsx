@@ -30,7 +30,10 @@ interface ContentCarouselProps {
       gold: string;
       platinum: string;
     };
+    imageDisplayMode?: 'contain' | 'cover' | 'fill' | 'none';
+    imageBackgroundColor?: string;
   };
+  showDebugInfo?: boolean;
   onContentChange?: (content: DisplayContent | null) => void;
   onError?: (error: Error) => void;
   className?: string;
@@ -47,6 +50,7 @@ interface ContentState {
 export function ContentCarousel({
   displayId,
   config,
+  showDebugInfo = false,
   onContentChange,
   onError,
   className = ''
@@ -150,13 +154,21 @@ export function ContentCarousel({
     });
   }, [onContentChange]);
 
-  // Set up automatic content rotation
+  // Set up automatic content rotation with per-content duration
   useEffect(() => {
-    if (state.content.length <= 1 || config.carouselInterval <= 0) {
+    if (state.content.length <= 1) {
       return;
     }
 
-    intervalRef.current = setInterval(nextContent, config.carouselInterval * 1000);
+    const currentContent = state.content[state.currentIndex];
+    // Use per-content carousel_duration if available, otherwise fall back to display-level default
+    const duration = currentContent?.carousel_duration || config.carouselInterval;
+
+    if (duration <= 0) {
+      return;
+    }
+
+    intervalRef.current = setInterval(nextContent, duration * 1000);
 
     return () => {
       if (intervalRef.current) {
@@ -164,7 +176,7 @@ export function ContentCarousel({
         intervalRef.current = null;
       }
     };
-  }, [nextContent, config.carouselInterval, state.content.length]);
+  }, [nextContent, config.carouselInterval, state.content.length, state.currentIndex, state.content]);
 
   // Fetch content on mount and periodically refresh
   useEffect(() => {
@@ -230,9 +242,12 @@ export function ContentCarousel({
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [nextContent, previousContent]);
 
-  // Get transition classes based on config
-  const getTransitionClasses = () => {
-    switch (config.contentTransitionType) {
+  // Get transition classes based on per-content or display-level config
+  const getTransitionClasses = (content: DisplayContentWithSponsor) => {
+    // Use per-content transition_type if available, otherwise use display-level default
+    const transitionType = content.transition_type || config.contentTransitionType;
+    
+    switch (transitionType) {
       case 'fade':
         return 'transition-opacity duration-1000 ease-in-out';
       case 'slide':
@@ -300,8 +315,7 @@ export function ContentCarousel({
   }
 
   const currentContent = state.content[state.currentIndex];
-  const transitionClasses = getTransitionClasses();
-
+  
   // If no current content, show empty state
   if (!currentContent) {
     return (
@@ -327,28 +341,66 @@ export function ContentCarousel({
       data-testid="content-carousel"
       data-loaded={state.content.length > 0 ? 'true' : 'false'}
     >
-      {/* Main content display */}
-      <div 
-        className={`relative h-full ${transitionClasses}`}
-        data-testid={`content-item-${state.currentIndex}`}
-        data-content-type={currentContent.type}
-        data-active="true"
-      >
-        <ContentViewer
-          content={currentContent}
-          {...(onError && { onError })}
-          className="h-full"
-        />
+      {/* Render all content items with transitions */}
+      {state.content.map((content, index) => {
+        const isActive = index === state.currentIndex;
+        const transitionType = content.transition_type || config.contentTransitionType;
         
-        {/* Sponsorship overlay */}
-        {currentContent.sponsorship_tier && (
-          <SponsorshipOverlay
-            content={currentContent}
-            showAmount={config.showSponsorshipAmounts}
-            className="absolute bottom-4 right-4"
-          />
-        )}
-      </div>
+        // Determine transition classes based on type and active state
+        let transitionClasses = '';
+        let visibilityClasses = '';
+        
+        switch (transitionType) {
+          case 'fade':
+            transitionClasses = 'transition-opacity duration-1000 ease-in-out';
+            visibilityClasses = isActive ? 'opacity-100' : 'opacity-0';
+            break;
+          case 'slide':
+            transitionClasses = 'transition-transform duration-700 ease-in-out';
+            visibilityClasses = isActive ? 'translate-x-0' : 'translate-x-full';
+            break;
+          case 'zoom':
+            transitionClasses = 'transition-all duration-800 ease-in-out';
+            visibilityClasses = isActive ? 'scale-100 opacity-100' : 'scale-90 opacity-0';
+            break;
+          case 'none':
+            transitionClasses = '';
+            visibilityClasses = isActive ? '' : 'hidden';
+            break;
+          default:
+            transitionClasses = 'transition-opacity duration-1000 ease-in-out';
+            visibilityClasses = isActive ? 'opacity-100' : 'opacity-0';
+        }
+
+        return (
+          <div
+            key={content.id}
+            className={`absolute inset-0 h-full ${transitionClasses} ${visibilityClasses}`}
+            data-testid={`content-item-${index}`}
+            data-content-type={content.type}
+            data-active={isActive ? 'true' : 'false'}
+            style={{ pointerEvents: isActive ? 'auto' : 'none' }}
+          >
+            <ContentViewer
+              content={content}
+              {...(onError && { onError })}
+              className="h-full"
+              imageDisplayMode={content.image_display_mode || config.imageDisplayMode || 'contain'}
+              imageBackgroundColor={config.imageBackgroundColor || '#000000'}
+              showDebugInfo={showDebugInfo}
+            />
+            
+            {/* Sponsorship overlay */}
+            {isActive && content.sponsorship_tier && (
+              <SponsorshipOverlay
+                content={content}
+                showAmount={config.showSponsorshipAmounts}
+                className="absolute bottom-4 right-4"
+              />
+            )}
+          </div>
+        );
+      })}
 
       {/* Navigation indicators */}
       {state.content.length > 1 && (
@@ -368,8 +420,8 @@ export function ContentCarousel({
         </div>
       )}
 
-      {/* Content info overlay (for debugging/development) */}
-      {process.env.NODE_ENV === 'development' && (
+      {/* Content info overlay (controlled by display config) */}
+      {showDebugInfo && (
         <div className="absolute top-4 left-4 bg-black/70 text-white p-2 rounded text-sm">
           <div>Content: {state.currentIndex + 1} of {state.content.length}</div>
           <div>Title: {currentContent.title}</div>

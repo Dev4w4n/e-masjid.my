@@ -54,6 +54,8 @@ const CreateContent: React.FC = () => {
 
   const [availableMasjids, setAvailableMasjids] = useState<MasjidOption[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingMasjids, setLoadingMasjids] = useState(true);
   const [success, setSuccess] = useState(false);
@@ -120,6 +122,20 @@ const CreateContent: React.FC = () => {
 
     setSelectedFile(file);
     setError("");
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Clear image selection
+  const handleClearImage = () => {
+    setSelectedFile(null);
+    setImagePreview("");
+    setError("");
   };
 
   // Submit form
@@ -164,22 +180,34 @@ const CreateContent: React.FC = () => {
 
       // Upload file if image type
       if (formData.type === "image" && selectedFile) {
-        const fileExt = selectedFile.name.split(".").pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-        const filePath = `content-images/${formData.masjid_id}/${fileName}`;
+        setUploading(true);
 
-        const { error: uploadError } = await supabase.storage
-          .from("content-images")
-          .upload(filePath, selectedFile);
+        try {
+          const fileExt = selectedFile.name.split(".").pop();
+          const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+          const filePath = `content-images/${formData.masjid_id}/${fileName}`;
 
-        if (uploadError) throw uploadError;
+          const { error: uploadError } = await supabase.storage
+            .from("content-images")
+            .upload(filePath, selectedFile, {
+              cacheControl: "3600",
+              upsert: false,
+            });
 
-        // Get public URL
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from("content-images").getPublicUrl(filePath);
+          if (uploadError) {
+            console.error("Upload error:", uploadError);
+            throw new Error(`Failed to upload image: ${uploadError.message}`);
+          }
 
-        contentUrl = publicUrl;
+          // Get public URL
+          const {
+            data: { publicUrl },
+          } = supabase.storage.from("content-images").getPublicUrl(filePath);
+
+          contentUrl = publicUrl;
+        } finally {
+          setUploading(false);
+        }
       }
 
       // For text announcements, store the text content in the url field
@@ -223,6 +251,8 @@ const CreateContent: React.FC = () => {
         masjid_id: "", // Don't auto-select, let user choose which masjid to submit to
       });
       setSelectedFile(null);
+      setImagePreview("");
+      setUploading(false);
     } catch (err: any) {
       console.error("Content submission error:", err);
       setError(err.message || "Failed to submit content. Please try again.");
@@ -348,28 +378,93 @@ const CreateContent: React.FC = () => {
                   <Typography variant="h6" gutterBottom>
                     Upload Image
                   </Typography>
-                  <input
-                    accept="image/*"
-                    style={{ display: "none" }}
-                    id="image-upload"
-                    type="file"
-                    onChange={handleFileSelect}
-                  />
-                  <label htmlFor="image-upload">
-                    <Button
-                      variant="outlined"
-                      component="span"
-                      startIcon={<CloudUpload />}
-                      sx={{ mb: 1 }}
-                    >
-                      Choose Image
-                    </Button>
-                  </label>
-                  {selectedFile && (
-                    <Typography variant="body2" sx={{ mt: 1 }}>
-                      Selected: {selectedFile.name} (
-                      {Math.round(selectedFile.size / 1024)} KB)
-                    </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    gutterBottom
+                  >
+                    Supported formats: JPG, PNG, GIF, WebP (Max 10MB)
+                  </Typography>
+
+                  {!selectedFile ? (
+                    <>
+                      <input
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        id="image-upload"
+                        type="file"
+                        onChange={handleFileSelect}
+                      />
+                      <label htmlFor="image-upload">
+                        <Button
+                          variant="outlined"
+                          component="span"
+                          startIcon={<CloudUpload />}
+                          size="large"
+                          sx={{ mt: 1 }}
+                        >
+                          Choose Image
+                        </Button>
+                      </label>
+                    </>
+                  ) : (
+                    <Box sx={{ mt: 2 }}>
+                      {/* Image Preview */}
+                      {imagePreview && (
+                        <Box
+                          sx={{
+                            mb: 2,
+                            border: "1px solid",
+                            borderColor: "divider",
+                            borderRadius: 1,
+                            p: 2,
+                            bgcolor: "background.default",
+                          }}
+                        >
+                          <img
+                            src={imagePreview}
+                            alt="Preview"
+                            style={{
+                              maxWidth: "100%",
+                              maxHeight: "400px",
+                              display: "block",
+                              margin: "0 auto",
+                              borderRadius: "4px",
+                            }}
+                          />
+                        </Box>
+                      )}
+
+                      {/* File Info */}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          p: 2,
+                          bgcolor: "action.hover",
+                          borderRadius: 1,
+                        }}
+                      >
+                        <Box>
+                          <Typography variant="body2" fontWeight="medium">
+                            {selectedFile.name}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {(selectedFile.size / 1024).toFixed(2)} KB •{" "}
+                            {selectedFile.type}
+                          </Typography>
+                        </Box>
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          color="error"
+                          onClick={handleClearImage}
+                        >
+                          Remove
+                        </Button>
+                      </Box>
+                    </Box>
                   )}
                 </Grid>
               )}
@@ -419,11 +514,17 @@ const CreateContent: React.FC = () => {
                   <Button
                     type="submit"
                     variant="contained"
-                    startIcon={<Send />}
-                    disabled={loading}
+                    startIcon={
+                      loading ? <CircularProgress size={20} /> : <Send />
+                    }
+                    disabled={loading || uploading}
                     sx={{ minWidth: 150 }}
                   >
-                    {loading ? "Submitting..." : "Submit for Approval"}
+                    {uploading
+                      ? "Uploading Image..."
+                      : loading
+                        ? "Submitting..."
+                        : "Submit for Approval"}
                   </Button>
                 </Box>
               </Grid>

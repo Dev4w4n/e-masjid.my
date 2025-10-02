@@ -45,6 +45,9 @@ import {
   CalendarToday,
   Article,
   DragIndicator,
+  Settings,
+  Timer,
+  Animation,
 } from "@mui/icons-material";
 import {
   DndContext,
@@ -71,9 +74,14 @@ import {
   assignContent,
   removeContent,
   updateContentOrder,
+  updateContentSettings,
   createDisplay,
   masjidService,
 } from "@masjid-suite/supabase-client";
+import {
+  ContentSettingsDialog,
+  ContentSettings,
+} from "../../components/ContentSettingsDialog";
 import supabase from "@masjid-suite/supabase-client";
 import { getContentForAdmin } from "../../services/contentService";
 import { updateDisplay } from "../../services/displayService";
@@ -133,11 +141,20 @@ function TabPanel(props: TabPanelProps) {
 
 // Sortable item component for drag-and-drop
 interface SortableContentItemProps {
-  content: DisplayContent;
+  content: DisplayContent & {
+    carousel_duration?: number;
+    transition_type?: "fade" | "slide" | "zoom" | "none";
+    image_display_mode?: "contain" | "cover" | "fill" | "none";
+  };
   onRemove: (contentId: string) => void;
+  onEditSettings: (content: SortableContentItemProps["content"]) => void;
 }
 
-function SortableContentItem({ content, onRemove }: SortableContentItemProps) {
+function SortableContentItem({
+  content,
+  onRemove,
+  onEditSettings,
+}: SortableContentItemProps) {
   const {
     attributes,
     listeners,
@@ -153,6 +170,9 @@ function SortableContentItem({ content, onRemove }: SortableContentItemProps) {
     opacity: isDragging ? 0.5 : 1,
   };
 
+  const isImageContent =
+    content.type === "image" || content.type === "event_poster";
+
   return (
     <ListItem
       ref={setNodeRef}
@@ -166,14 +186,25 @@ function SortableContentItem({ content, onRemove }: SortableContentItemProps) {
         cursor: isDragging ? "grabbing" : "grab",
       }}
       secondaryAction={
-        <Button
-          variant="outlined"
-          size="small"
-          color="error"
-          onClick={() => onRemove(content.id)}
-        >
-          Remove
-        </Button>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Tooltip title="Edit Settings">
+            <IconButton
+              size="small"
+              onClick={() => onEditSettings(content)}
+              sx={{ color: "primary.main" }}
+            >
+              <Settings fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Button
+            variant="outlined"
+            size="small"
+            color="error"
+            onClick={() => onRemove(content.id)}
+          >
+            Remove
+          </Button>
+        </Box>
       }
     >
       <IconButton
@@ -186,7 +217,35 @@ function SortableContentItem({ content, onRemove }: SortableContentItemProps) {
       </IconButton>
       <ListItemText
         primary={content.title}
-        secondary={`${content.type} • ${content.duration}s`}
+        secondary={
+          <Box component="span">
+            <Typography variant="body2" component="span" display="block">
+              {content.type} • {content.duration}s
+            </Typography>
+            <Box sx={{ mt: 0.5, display: "flex", gap: 0.5, flexWrap: "wrap" }}>
+              <Chip
+                size="small"
+                label={`${content.carousel_duration || 10}s`}
+                icon={<Timer />}
+                sx={{ height: 20 }}
+              />
+              <Chip
+                size="small"
+                label={content.transition_type || "fade"}
+                icon={<Animation />}
+                sx={{ height: 20 }}
+              />
+              {isImageContent && (
+                <Chip
+                  size="small"
+                  label={content.image_display_mode || "contain"}
+                  icon={<ImageIcon />}
+                  sx={{ height: 20 }}
+                />
+              )}
+            </Box>
+          </Box>
+        }
       />
     </ListItem>
   );
@@ -208,6 +267,7 @@ const DisplayManagement = () => {
   const [displaySettings, setDisplaySettings] = useState<any>(null);
   const [saving, setSaving] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [showImageBgColorPicker, setShowImageBgColorPicker] = useState(false);
 
   // Content assignment state
   const [availableContent, setAvailableContent] = useState<DisplayContent[]>(
@@ -215,6 +275,21 @@ const DisplayManagement = () => {
   );
   const [assignedContent, setAssignedContent] = useState<DisplayContent[]>([]);
   const [contentLoading, setContentLoading] = useState(false);
+
+  // Content settings dialog state
+  const [assignDialogOpen, setAssignDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [contentToAssign, setContentToAssign] = useState<{
+    id: string;
+    type: string;
+    title: string;
+  } | null>(null);
+  const [contentToEdit, setContentToEdit] = useState<{
+    id: string;
+    type: string;
+    title: string;
+    currentSettings: ContentSettings;
+  } | null>(null);
 
   // Drag and drop sensors
   const sensors = useSensors(
@@ -411,7 +486,7 @@ const DisplayManagement = () => {
     });
   };
 
-  const handleSaveSettings = async () => {
+  const handleSaveDisplaySettings = async () => {
     if (!displaySettings) return;
     setSaving(true);
     try {
@@ -439,19 +514,84 @@ const DisplayManagement = () => {
   };
 
   // Content assignment handlers
-  const handleAssign = async (contentId: string) => {
+  const loadAssignedContent = async () => {
     if (!selectedDisplayId) return;
 
     try {
-      await assignContent(selectedDisplayId, contentId);
-      const contentToAssign = availableContent.find((c) => c.id === contentId);
-      if (contentToAssign) {
-        setAssignedContent([...assignedContent, contentToAssign]);
-      }
+      setContentLoading(true);
+      const data = await getAssignedContent(selectedDisplayId);
+      setAssignedContent(data);
+    } catch (err) {
+      console.error("Failed to reload assigned content:", err);
+    } finally {
+      setContentLoading(false);
+    }
+  };
+
+  const handleOpenAssignDialog = (content: DisplayContent) => {
+    setContentToAssign({
+      id: content.id,
+      type: content.type,
+      title: content.title,
+    });
+    setAssignDialogOpen(true);
+  };
+
+  const handleAssignWithSettings = async (settings: ContentSettings) => {
+    if (!selectedDisplayId || !contentToAssign) return;
+
+    try {
+      await assignContent(selectedDisplayId, contentToAssign.id, settings);
+
+      // Reload assigned content to get the new settings
+      await loadAssignedContent();
+
+      setAssignDialogOpen(false);
+      setContentToAssign(null);
       enqueueSnackbar("Content assigned successfully!", { variant: "success" });
     } catch (err) {
       enqueueSnackbar("Failed to assign content.", { variant: "error" });
       console.error(err);
+      throw err; // Re-throw to show error in dialog
+    }
+  };
+
+  const handleOpenEditDialog = (
+    content: SortableContentItemProps["content"]
+  ) => {
+    setContentToEdit({
+      id: content.id,
+      type: content.type,
+      title: content.title,
+      currentSettings: {
+        carousel_duration: content.carousel_duration || 10,
+        transition_type: content.transition_type || "fade",
+        image_display_mode: content.image_display_mode || "contain",
+      },
+    });
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveContentSettings = async (settings: ContentSettings) => {
+    if (!selectedDisplayId || !contentToEdit) return;
+
+    try {
+      await updateContentSettings(
+        selectedDisplayId,
+        contentToEdit.id,
+        settings
+      );
+
+      // Reload assigned content to show updated settings
+      await loadAssignedContent();
+
+      setEditDialogOpen(false);
+      setContentToEdit(null);
+      enqueueSnackbar("Settings updated successfully!", { variant: "success" });
+    } catch (err) {
+      enqueueSnackbar("Failed to update settings.", { variant: "error" });
+      console.error(err);
+      throw err; // Re-throw to show error in dialog
     }
   };
 
@@ -1069,6 +1209,98 @@ const DisplayManagement = () => {
                   </Card>
                 </Grid>
 
+                {/* Image Display Settings */}
+                <Grid item xs={12} md={6}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Image Display
+                      </Typography>
+                      <FormControl fullWidth margin="normal">
+                        <InputLabel>Display Mode</InputLabel>
+                        <Select
+                          name="image_display_mode"
+                          value={
+                            displaySettings.image_display_mode || "contain"
+                          }
+                          label="Display Mode"
+                          onChange={handleSelectChange}
+                        >
+                          <MenuItem value="contain">
+                            Fit (Maintain Aspect Ratio)
+                          </MenuItem>
+                          <MenuItem value="cover">Fill (May Crop)</MenuItem>
+                          <MenuItem value="fill">Stretch to Fill</MenuItem>
+                          <MenuItem value="none">Original Size</MenuItem>
+                        </Select>
+                      </FormControl>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        display="block"
+                        sx={{ mb: 2 }}
+                      >
+                        {displaySettings.image_display_mode === "contain" &&
+                          "Images will fit within the screen while maintaining aspect ratio (recommended)"}
+                        {displaySettings.image_display_mode === "cover" &&
+                          "Images will fill the entire screen and may be cropped"}
+                        {displaySettings.image_display_mode === "fill" &&
+                          "Images will stretch to fill the screen (may distort)"}
+                        {displaySettings.image_display_mode === "none" &&
+                          "Images will display at their original size"}
+                      </Typography>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", mt: 2 }}
+                      >
+                        <Typography>Background Color:</Typography>
+                        <Chip
+                          label={
+                            displaySettings.image_background_color || "#000000"
+                          }
+                          onClick={() =>
+                            setShowImageBgColorPicker(!showImageBgColorPicker)
+                          }
+                          style={{
+                            backgroundColor:
+                              displaySettings.image_background_color ||
+                              "#000000",
+                            color: "#FFFFFF",
+                            marginLeft: "10px",
+                            cursor: "pointer",
+                          }}
+                        />
+                      </Box>
+                      {showImageBgColorPicker && (
+                        <Box sx={{ mt: 2 }}>
+                          <SketchPicker
+                            color={
+                              displaySettings.image_background_color ||
+                              "#000000"
+                            }
+                            onChangeComplete={(color) => {
+                              handleSelectChange({
+                                target: {
+                                  name: "image_background_color",
+                                  value: color.hex,
+                                },
+                              } as any);
+                              setShowImageBgColorPicker(false);
+                            }}
+                          />
+                        </Box>
+                      )}
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        display="block"
+                        sx={{ mt: 1 }}
+                      >
+                        Background color for letterboxed/pillarboxed images
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+
                 {/* Sponsorship */}
                 <Grid item xs={12} md={6}>
                   <Card>
@@ -1129,7 +1361,7 @@ const DisplayManagement = () => {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handleSaveSettings}
+                onClick={handleSaveDisplaySettings}
                 disabled={saving || !displaySettings}
               >
                 {saving ? <CircularProgress size={24} /> : "Save Settings"}
@@ -1176,7 +1408,9 @@ const DisplayManagement = () => {
                                 <Button
                                   variant="outlined"
                                   size="small"
-                                  onClick={() => handleAssign(content.id)}
+                                  onClick={() =>
+                                    handleOpenAssignDialog(content)
+                                  }
                                 >
                                   Assign
                                 </Button>
@@ -1235,6 +1469,7 @@ const DisplayManagement = () => {
                                     key={content.id}
                                     content={content}
                                     onRemove={handleRemove}
+                                    onEditSettings={handleOpenEditDialog}
                                   />
                                 ))}
                               </List>
@@ -1696,6 +1931,37 @@ const DisplayManagement = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Content Settings Dialog - For Assigning */}
+      {contentToAssign && (
+        <ContentSettingsDialog
+          open={assignDialogOpen}
+          onClose={() => {
+            setAssignDialogOpen(false);
+            setContentToAssign(null);
+          }}
+          onSave={handleAssignWithSettings}
+          contentType={contentToAssign.type as any}
+          contentTitle={contentToAssign.title}
+          mode="assign"
+        />
+      )}
+
+      {/* Content Settings Dialog - For Editing */}
+      {contentToEdit && (
+        <ContentSettingsDialog
+          open={editDialogOpen}
+          onClose={() => {
+            setEditDialogOpen(false);
+            setContentToEdit(null);
+          }}
+          onSave={handleSaveContentSettings}
+          contentType={contentToEdit.type as any}
+          contentTitle={contentToEdit.title}
+          initialSettings={contentToEdit.currentSettings}
+          mode="edit"
+        />
+      )}
     </Container>
   );
 };
