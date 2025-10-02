@@ -1,14 +1,14 @@
 /**
  * @masjid-suite/i18n
- * 
+ *
  * Internationalization package for E-Masjid.My
  * Provides translations for Bahasa Malaysia (primary) and English (fallback)
  */
 
-export { en } from './locales/en';
-export { ms } from './locales/ms';
+export { en } from "./locales/en";
+export { ms } from "./locales/ms";
 
-export type { TranslationKeys } from './locales/en';
+export type { TranslationKeys } from "./locales/en";
 
 export type {
   SupportedLocale,
@@ -16,7 +16,7 @@ export type {
   TranslationKey,
   I18nConfig,
   TranslateOptions,
-} from './types';
+} from "./types";
 
 export {
   translate,
@@ -28,6 +28,6 @@ export {
   formatDate,
   formatTime,
   formatDateTime,
-} from './i18n';
+} from "./i18n";
 
-export { useTranslation, useUserLocale } from './hooks';
+export { useTranslation, useUserLocale } from "./hooks";

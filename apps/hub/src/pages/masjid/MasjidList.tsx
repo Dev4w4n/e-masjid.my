@@ -148,10 +148,10 @@ function MasjidList() {
       >
         <Box>
           <Typography variant="h4" component="h1" gutterBottom>
-            {t('masjidList.title')}
+            {t("masjidList.title")}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {t('masjidList.subtitle')}
+            {t("masjidList.subtitle")}
           </Typography>
         </Box>
 
@@ -161,7 +161,7 @@ function MasjidList() {
             startIcon={<Add />}
             onClick={() => navigate("/masjids/new")}
           >
-            {t('masjidList.add_masjid')}
+            {t("masjidList.add_masjid")}
           </Button>
         )}
       </Box>
@@ -181,8 +181,8 @@ function MasjidList() {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label={t('masjidList.search_label')}
-                placeholder={t('masjidList.search_placeholder')}
+                label={t("masjidList.search_label")}
+                placeholder={t("masjidList.search_placeholder")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 InputProps={{
@@ -198,13 +198,13 @@ function MasjidList() {
             {/* State Filter */}
             <Grid item xs={12} md={4}>
               <FormControl fullWidth>
-                <InputLabel>{t('masjidList.filter_state')}</InputLabel>
+                <InputLabel>{t("masjidList.filter_state")}</InputLabel>
                 <Select
                   value={selectedState}
-                  label={t('masjidList.filter_state')}
+                  label={t("masjidList.filter_state")}
                   onChange={(e) => setSelectedState(e.target.value)}
                 >
-                  <MenuItem value="">{t('masjidList.all_states')}</MenuItem>
+                  <MenuItem value="">{t("masjidList.all_states")}</MenuItem>
                   {malaysianStates.map((state) => (
                     <MenuItem key={state} value={state}>
                       {state}
@@ -222,7 +222,7 @@ function MasjidList() {
                 startIcon={<FilterList />}
                 onClick={() => setShowFilters(!showFilters)}
               >
-                {t('common.filters')}
+                {t("common.filters")}
               </Button>
             </Grid>
           </Grid>
@@ -237,7 +237,10 @@ function MasjidList() {
             }}
           >
             <Typography variant="body2" color="text.secondary">
-              {t('masjidList.showing_count', { filtered: filteredMasjids.length, total: masjids.length })}
+              {t("masjidList.showing_count", {
+                filtered: filteredMasjids.length,
+                total: masjids.length,
+              })}
             </Typography>
             {(searchTerm || selectedState) && (
               <Button
@@ -247,7 +250,7 @@ function MasjidList() {
                   setSelectedState("");
                 }}
               >
-                {t('masjidList.clear_filters')}
+                {t("masjidList.clear_filters")}
               </Button>
             )}
           </Box>
@@ -290,12 +293,12 @@ function MasjidList() {
               <Mosque sx={{ fontSize: "2rem", color: "grey.400" }} />
             </Avatar>
             <Typography variant="h6" gutterBottom>
-              {t('masjidList.no_masjids')}
+              {t("masjidList.no_masjids")}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
               {searchTerm || selectedState
-                ? t('masjidList.no_results_desc')
-                : t('masjidList.no_masjids_desc')}
+                ? t("masjidList.no_results_desc")
+                : t("masjidList.no_masjids_desc")}
             </Typography>
             {permissions.canManageMasjids() && (
               <Button
@@ -303,7 +306,7 @@ function MasjidList() {
                 startIcon={<Add />}
                 onClick={() => navigate("/masjids/new")}
               >
-                {t('masjidList.add_first')}
+                {t("masjidList.add_first")}
               </Button>
             )}
           </CardContent>
@@ -364,7 +367,7 @@ function MasjidList() {
                   >
                     {masjid.description && masjid.description.length > 120
                       ? `${masjid.description.substring(0, 120)}...`
-                      : masjid.description || t('masjidList.no_description')}
+                      : masjid.description || t("masjidList.no_description")}
                   </Typography>
 
                   {/* Address */}
@@ -411,7 +414,7 @@ function MasjidList() {
                           color="action"
                           sx={{ mr: 0.5, fontSize: "1.1rem" }}
                         />
-                        {t('masjidList.administrators')}
+                        {t("masjidList.administrators")}
                       </Typography>
                       <List dense disablePadding>
                         {masjid.admins.map((admin) => (
@@ -447,7 +450,7 @@ function MasjidList() {
                     startIcon={<Visibility />}
                     size="small"
                   >
-                    {t('masjidList.view_details')}
+                    {t("masjidList.view_details")}
                   </Button>
 
                   {permissions.canManageMasjids() && (

@@ -2,9 +2,9 @@
  * Type definitions for i18n package
  */
 
-import type { TranslationKeys } from './locales/en';
+import type { TranslationKeys } from "./locales/en";
 
-export type SupportedLocale = 'en' | 'ms';
+export type SupportedLocale = "en" | "ms";
 
 export type TranslationNamespace = keyof TranslationKeys;
 

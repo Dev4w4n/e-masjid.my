@@ -32,22 +32,26 @@ function Home() {
   const { t } = useTranslation();
 
   const stats = [
-    { label: t('masjid.total'), value: "3", icon: <Mosque /> },
-    { label: t('admin.registered_users'), value: "24", icon: <People /> },
-    { label: t('admin.admin_applications'), value: "2", icon: <AdminPanelSettings /> },
+    { label: t("masjid.total"), value: "3", icon: <Mosque /> },
+    { label: t("admin.registered_users"), value: "24", icon: <People /> },
+    {
+      label: t("admin.admin_applications"),
+      value: "2",
+      icon: <AdminPanelSettings />,
+    },
   ];
 
   const quickActions = [
     {
-      title: t('profile.my_profile'),
-      description: t('home.view_edit_info'),
+      title: t("profile.my_profile"),
+      description: t("home.view_edit_info"),
       icon: <Person />,
       link: "/profile",
       color: "primary" as const,
     },
     {
-      title: t('masjid.browse'),
-      description: t('home.discover_masjids'),
+      title: t("masjid.browse"),
+      description: t("home.discover_masjids"),
       icon: <LocationOn />,
       link: "/masjids",
       color: "secondary" as const,
@@ -57,8 +61,8 @@ function Home() {
   // Add admin-specific actions
   if (permissions.hasAdminPrivileges()) {
     quickActions.push({
-      title: t('admin.admin_dashboard'),
-      description: t('home.manage_apps_users'),
+      title: t("admin.admin_dashboard"),
+      description: t("home.manage_apps_users"),
       icon: <AdminPanelSettings />,
       link: "/admin/dashboard",
       color: "secondary" as const,
@@ -68,8 +72,8 @@ function Home() {
   // Add super admin actions
   if (permissions.isSuperAdmin()) {
     quickActions.push({
-      title: t('masjid.create'),
-      description: t('home.add_new_masjid'),
+      title: t("masjid.create"),
+      description: t("home.add_new_masjid"),
       icon: <Mosque />,
       link: "/masjids/new",
       color: "primary" as const,
@@ -81,11 +85,11 @@ function Home() {
       {/* Welcome Section */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          {t('common.welcome')},{" "}
+          {t("common.welcome")},{" "}
           {profile?.full_name || user?.email?.split("@")[0] || "User"}!
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          {t('home.subtitle')}
+          {t("home.subtitle")}
         </Typography>
       </Box>
 
@@ -135,7 +139,7 @@ function Home() {
           sx={{ display: "flex", alignItems: "center", gap: 1 }}
         >
           <Dashboard color="primary" />
-          {t('home.quick_actions')}
+          {t("home.quick_actions")}
         </Typography>
 
         <Grid container spacing={3}>
@@ -208,14 +212,14 @@ function Home() {
               </Avatar>
               <Box sx={{ flex: 1 }}>
                 <Typography variant="h6" gutterBottom>
-                  {t('home.complete_profile')}
+                  {t("home.complete_profile")}
                 </Typography>
                 <Typography
                   variant="body2"
                   color="text.secondary"
                   sx={{ mb: 2 }}
                 >
-                  {t('home.complete_profile_desc')}
+                  {t("home.complete_profile_desc")}
                 </Typography>
                 <Button
                   component={Link}
@@ -224,7 +228,7 @@ function Home() {
                   color="warning"
                   startIcon={<Person />}
                 >
-                  {t('home.complete_profile')}
+                  {t("home.complete_profile")}
                 </Button>
               </Box>
             </Box>
@@ -235,7 +239,7 @@ function Home() {
       {/* Recent Activity */}
       <Box sx={{ mt: 4 }}>
         <Typography variant="h5" component="h2" gutterBottom>
-          {t('home.recent_activity')}
+          {t("home.recent_activity")}
         </Typography>
         <Card>
           <CardContent>
@@ -244,7 +248,7 @@ function Home() {
               color="text.secondary"
               sx={{ textAlign: "center", py: 4 }}
             >
-              {t('home.no_activity')}
+              {t("home.no_activity")}
             </Typography>
           </CardContent>
         </Card>

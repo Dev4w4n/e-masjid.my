@@ -2,7 +2,7 @@
  * React hook for i18n in Hub app
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 import {
   translate,
   getTranslator,
@@ -10,20 +10,20 @@ import {
   type SupportedLocale,
   type TranslationKey,
   type TranslateOptions,
-} from '@masjid-suite/i18n';
+} from "@masjid-suite/i18n";
 
 /**
  * Get user's preferred language from profile or localStorage
  */
 function getUserLocale(): SupportedLocale {
   // Try localStorage first
-  const stored = localStorage.getItem('preferred_locale');
+  const stored = localStorage.getItem("preferred_locale");
   if (stored && isSupportedLocale(stored)) {
     return stored;
   }
-  
+
   // Default to Bahasa Malaysia
-  return 'ms';
+  return "ms";
 }
 
 /**
@@ -31,19 +31,19 @@ function getUserLocale(): SupportedLocale {
  */
 export function useTranslation() {
   const [locale, setLocaleState] = useState<SupportedLocale>(getUserLocale);
-  
+
   const setLocale = useCallback((newLocale: SupportedLocale) => {
     setLocaleState(newLocale);
-    localStorage.setItem('preferred_locale', newLocale);
+    localStorage.setItem("preferred_locale", newLocale);
   }, []);
-  
+
   const t = useCallback(
     (key: TranslationKey, options?: TranslateOptions) => {
       return translate(key, locale, options);
     },
     [locale]
   );
-  
+
   return {
     t,
     locale,
@@ -61,21 +61,21 @@ export function useUserLocale(userPreferredLanguage?: string | null) {
     }
     return getUserLocale();
   });
-  
+
   useEffect(() => {
     if (userPreferredLanguage && isSupportedLocale(userPreferredLanguage)) {
       setLocale(userPreferredLanguage);
-      localStorage.setItem('preferred_locale', userPreferredLanguage);
+      localStorage.setItem("preferred_locale", userPreferredLanguage);
     }
   }, [userPreferredLanguage]);
-  
+
   const t = useCallback(
     (key: TranslationKey, options?: TranslateOptions) => {
       return translate(key, locale, options);
     },
     [locale]
   );
-  
+
   return {
     t,
     locale,

@@ -82,13 +82,13 @@ function Layout() {
   const getNavigationItems = (): NavigationItem[] => {
     const items: NavigationItem[] = [
       {
-        text: t('nav.home'),
+        text: t("nav.home"),
         icon: <Home />,
         path: "/",
         roles: ["public", "registered", "masjid_admin", "super_admin"],
       },
       {
-        text: t('nav.masjids'),
+        text: t("nav.masjids"),
         icon: <Mosque />,
         path: "/masjids",
         roles: ["public", "registered", "masjid_admin", "super_admin"],
@@ -99,19 +99,19 @@ function Layout() {
     if (user) {
       items.push(
         {
-          text: t('nav.my_profile'),
+          text: t("nav.my_profile"),
           icon: <Person />,
           path: "/profile",
           roles: ["registered", "masjid_admin", "super_admin"],
         },
         {
-          text: t('nav.create_content'),
+          text: t("nav.create_content"),
           icon: <Add />,
           path: "/content/create",
           roles: ["registered", "masjid_admin", "super_admin"],
         },
         {
-          text: t('nav.my_content'),
+          text: t("nav.my_content"),
           icon: <ViewList />,
           path: "/content/my-content",
           roles: ["registered", "masjid_admin", "super_admin"],
@@ -123,13 +123,13 @@ function Layout() {
     if (permissions.isSuperAdmin() || permissions.isMasjidAdmin()) {
       items.push(
         {
-          text: t('nav.admin_dashboard'),
+          text: t("nav.admin_dashboard"),
           icon: <Dashboard />,
           path: "/admin",
           roles: ["masjid_admin", "super_admin"],
         },
         {
-          text: t('nav.manage_displays'),
+          text: t("nav.manage_displays"),
           icon: <Tv />,
           path: "/admin/display-management",
           roles: ["masjid_admin", "super_admin"],
@@ -139,7 +139,7 @@ function Layout() {
 
     if (permissions.isSuperAdmin()) {
       items.push({
-        text: t('nav.manage_applications'),
+        text: t("nav.manage_applications"),
         icon: <Assignment />,
         path: "/admin/applications",
         roles: ["super_admin"],
@@ -363,7 +363,7 @@ function Layout() {
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {/* Notifications */}
             {user && (
-              <Tooltip title={t('nav.notifications')}>
+              <Tooltip title={t("nav.notifications")}>
                 <IconButton color="inherit">
                   <Badge badgeContent={3} color="error">
                     <Notifications />
@@ -375,7 +375,7 @@ function Layout() {
             {/* User Profile */}
             {user ? (
               <>
-                <Tooltip title={t('nav.settings')}>
+                <Tooltip title={t("nav.settings")}>
                   <IconButton
                     onClick={handleProfileMenuOpen}
                     size="small"
@@ -411,7 +411,7 @@ function Layout() {
                     <ListItemIcon>
                       <AccountCircle fontSize="small" />
                     </ListItemIcon>
-                    {t('nav.my_profile')}
+                    {t("nav.my_profile")}
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
@@ -422,7 +422,7 @@ function Layout() {
                     <ListItemIcon>
                       <Settings fontSize="small" />
                     </ListItemIcon>
-                    {t('nav.settings')}
+                    {t("nav.settings")}
                   </MenuItem>
                   {permissions.isSuperAdmin() && (
                     <MenuItem
@@ -434,7 +434,7 @@ function Layout() {
                       <ListItemIcon>
                         <AdminPanelSettings fontSize="small" />
                       </ListItemIcon>
-                      {t('nav.admin_dashboard')}
+                      {t("nav.admin_dashboard")}
                     </MenuItem>
                   )}
                   <Divider />
@@ -442,7 +442,7 @@ function Layout() {
                     <ListItemIcon>
                       <Logout fontSize="small" />
                     </ListItemIcon>
-                    {t('nav.logout')}
+                    {t("nav.logout")}
                   </MenuItem>
                 </Menu>
               </>
@@ -459,7 +459,7 @@ function Layout() {
                       textDecoration: "underline",
                     }}
                   >
-                    {t('auth.login')}
+                    {t("auth.login")}
                   </Typography>
                 </Link>
                 <Typography color="inherit">|</Typography>
@@ -474,7 +474,7 @@ function Layout() {
                       textDecoration: "underline",
                     }}
                   >
-                    {t('auth.register')}
+                    {t("auth.register")}
                   </Typography>
                 </Link>
               </Box>
