@@ -288,10 +288,11 @@ export class UserMockFactory {
  */
 export class ProfileMockFactory {
   static create(overrides: Partial<Profile> = {}): Profile {
-    const hasHomeMasjid = overrides.home_masjid_id !== undefined 
-      ? overrides.home_masjid_id !== null 
-      : MockUtils.randomBoolean();
-    
+    const hasHomeMasjid =
+      overrides.home_masjid_id !== undefined
+        ? overrides.home_masjid_id !== null
+        : MockUtils.randomBoolean();
+
     return {
       id: MockUtils.generateId(),
       user_id: MockUtils.generateId(),
@@ -299,7 +300,10 @@ export class ProfileMockFactory {
       phone_number: MockUtils.randomBoolean() ? MockUtils.randomPhone() : null,
       preferred_language: MockUtils.randomElement(LANGUAGE_CODES),
       home_masjid_id: hasHomeMasjid ? MockUtils.generateId() : null,
-      home_masjid_approved_at: hasHomeMasjid && MockUtils.randomBoolean() ? MockUtils.randomDate() : null,
+      home_masjid_approved_at:
+        hasHomeMasjid && MockUtils.randomBoolean()
+          ? MockUtils.randomDate()
+          : null,
       is_complete: MockUtils.randomBoolean(),
       created_at: MockUtils.randomDate(),
       updated_at: MockUtils.randomRecentDate(),
@@ -490,7 +494,9 @@ export class TvDisplayMockFactory {
       },
       image_background_color: MockUtils.randomBoolean() ? "#000000" : null,
       image_display_mode: MockUtils.randomElement(["fill", "fit", "stretch"]),
-      language: MockUtils.randomBoolean() ? MockUtils.randomElement(["en", "ms"]) : null,
+      language: MockUtils.randomBoolean()
+        ? MockUtils.randomElement(["en", "ms"])
+        : null,
       prayer_time_alignment: "center",
       prayer_time_layout: "horizontal",
       show_debug_info: false,

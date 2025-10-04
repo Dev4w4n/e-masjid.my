@@ -19,7 +19,9 @@ export const STATE_MAPPING: Record<string, CurrentMalaysianState> = {
 };
 
 // Normalize state name to current names (converts old names to new names)
-export function normalizeStateName(state: string): CurrentMalaysianState | null {
+export function normalizeStateName(
+  state: string
+): CurrentMalaysianState | null {
   // Check mapping first (this handles old names like "Penang" -> "Pulau Pinang")
   if (STATE_MAPPING[state]) {
     return STATE_MAPPING[state];
@@ -107,7 +109,7 @@ export function formatAddressMultiLine(
 export function getStateAbbreviation(state: MalaysianState): string {
   // Normalize to current state name first
   const normalized = normalizeStateName(state);
-  
+
   const abbreviations: Record<CurrentMalaysianState, string> = {
     Johor: "JHR",
     Kedah: "KDH",
@@ -161,7 +163,7 @@ export const POSTCODE_TO_STATE: Record<string, CurrentMalaysianState> = {
   "12": "Pulau Pinang",
   "13": "Pulau Pinang",
   "14": "Pulau Pinang",
-  
+
   // Melaka
   "75": "Melaka",
   "76": "Melaka",
@@ -295,7 +297,7 @@ export function isValidCityForState(
   // Normalize state to current name
   const normalizedState = normalizeStateName(state);
   if (!normalizedState) return true;
-  
+
   const cities = STATE_CITIES[normalizedState];
   if (!cities) return true; // Allow if we don't have city data
 
@@ -313,7 +315,7 @@ export function profileAddressToMasjidAddress(
   if (!normalizedState) {
     throw new Error(`Invalid state: ${address.state}`);
   }
-  
+
   const result: MasjidAddress = {
     address_line_1: address.address_line_1,
     city: address.city,

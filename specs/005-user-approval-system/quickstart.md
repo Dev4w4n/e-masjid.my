@@ -1,6 +1,7 @@
 # Quickstart Guide: User Approval System
 
 ## Overview
+
 This system implements approval workflow for public users selecting their home masjid. Once approved by masjid admins, users are promoted to 'registered' role and their home masjid selection becomes permanent.
 
 ## Architecture
@@ -21,11 +22,12 @@ This system implements approval workflow for public users selecting their home m
 
 ##
 
- Implementation Steps
+Implementation Steps
 
 ### Phase 1: Database Setup ✅
 
 **Run Migrations**:
+
 ```bash
 # Reset database (will run all migrations)
 cd supabase
@@ -33,6 +35,7 @@ supabase db reset
 ```
 
 **Verify Tables**:
+
 ```sql
 -- Check user_approvals table
 SELECT * FROM user_approvals LIMIT 1;
@@ -43,6 +46,7 @@ SELECT * FROM user_approvals LIMIT 1;
 ```
 
 **Generate TypeScript Types**:
+
 ```bash
 supabase gen types typescript --local > packages/shared-types/src/database.types.ts
 ```
@@ -60,7 +64,7 @@ pnpm run build:clean
 
 ```bash
 # Using psql or Supabase UI
-INSERT INTO auth.users (id, email) VALUES 
+INSERT INTO auth.users (id, email) VALUES
   ('...uuid...', 'ahmad@example.com');
 
 -- User should be created with role='public' automatically
@@ -69,12 +73,12 @@ INSERT INTO auth.users (id, email) VALUES
 #### 3.2. Select Home Masjid
 
 ```typescript
-import { profileService } from '@masjid-suite/supabase-client';
+import { profileService } from "@masjid-suite/supabase-client";
 
 // Update profile with home masjid
 await profileService.upsertProfile({
-  user_id: 'ahmad-user-id',
-  home_masjid_id: 'masjid-id',
+  user_id: "ahmad-user-id",
+  home_masjid_id: "masjid-id",
 });
 
 // Approval record created automatically via trigger!
@@ -83,10 +87,10 @@ await profileService.upsertProfile({
 #### 3.3. Check Pending Approvals (as Masjid Admin)
 
 ```typescript
-import { UserApprovalService } from '@masjid-suite/user-approval';
+import { UserApprovalService } from "@masjid-suite/user-approval";
 
 // Get pending approvals for your masjid
-const pending = await UserApprovalService.getPendingApprovals('masjid-id');
+const pending = await UserApprovalService.getPendingApprovals("masjid-id");
 
 console.log(pending);
 // [
@@ -107,9 +111,9 @@ console.log(pending);
 ```typescript
 // As masjid admin
 const success = await UserApprovalService.approveUser({
-  approval_id: 'approval-id',
-  approver_id: 'admin-user-id',
-  notes: 'Approved - active member of community'
+  approval_id: "approval-id",
+  approver_id: "admin-user-id",
+  notes: "Approved - active member of community",
 });
 
 // User role changes to 'registered' automatically
@@ -121,8 +125,8 @@ const success = await UserApprovalService.approveUser({
 ```typescript
 // Try to change home masjid
 await profileService.upsertProfile({
-  user_id: 'ahmad-user-id',
-  home_masjid_id: 'different-masjid-id', // ❌ Should fail!
+  user_id: "ahmad-user-id",
+  home_masjid_id: "different-masjid-id", // ❌ Should fail!
 });
 
 // Error: "Cannot change home masjid after approval. Home masjid was approved on..."
@@ -144,7 +148,7 @@ import { useProfile } from '@masjid-suite/auth';
 export default function UserApprovals() {
   const profile = useProfile();
   const [pending, setPending] = React.useState([]);
-  
+
   React.useEffect(() => {
     // Get user's admin masjids
     const loadApprovals = async () => {
@@ -152,20 +156,20 @@ export default function UserApprovals() {
       const data = await UserApprovalService.getPendingApprovals(masjidId);
       setPending(data);
     };
-    
+
     loadApprovals();
   }, []);
-  
+
   const handleApprove = async (approvalId: string) => {
     await UserApprovalService.approveUser({
       approval_id: approvalId,
       approver_id: profile!.user_id,
       notes: 'Approved'
     });
-    
+
     // Refresh list
   };
-  
+
   return (
     // UI for approval list
   );
@@ -190,8 +194,8 @@ React.useEffect(() => {
 <Select
   disabled={lockStatus?.is_locked} // Disable if locked
   helperText={
-    lockStatus?.is_locked 
-      ? `Home masjid approved on ${new Date(lockStatus.approved_at).toLocaleDateString()}` 
+    lockStatus?.is_locked
+      ? `Home masjid approved on ${new Date(lockStatus.approved_at).toLocaleDateString()}`
       : 'Select your home masjid'
   }
 >
@@ -222,6 +226,7 @@ import UserApprovals from './pages/admin/UserApprovals';
 ## Testing Checklist
 
 ### Unit Tests
+
 - [ ] UserApprovalService.getPendingApprovals() returns correct data
 - [ ] UserApprovalService.approveUser() changes role
 - [ ] UserApprovalService.rejectUser() clears home masjid
@@ -229,6 +234,7 @@ import UserApprovals from './pages/admin/UserApprovals';
 - [ ] Rejection requires notes (min 5 chars)
 
 ### Integration Tests
+
 - [ ] Trigger creates approval when home_masjid_id set
 - [ ] Approval updates user role to 'registered'
 - [ ] Home masjid becomes immutable after approval
@@ -236,19 +242,18 @@ import UserApprovals from './pages/admin/UserApprovals';
 - [ ] RLS policies enforce masjid-specific access
 
 ### E2E Tests
+
 1. **Public User Flow**:
    - [ ] Sign up as public user
    - [ ] Complete profile
    - [ ] Select home masjid
    - [ ] See "pending approval" status
-   
 2. **Admin Approval Flow**:
    - [ ] Sign in as masjid admin
    - [ ] Navigate to user approvals
    - [ ] See pending user in list
    - [ ] Approve user
    - [ ] Verify user role changed
-   
 3. **Home Masjid Lock**:
    - [ ] As approved user, try to edit profile
    - [ ] Home masjid field is disabled
@@ -272,7 +277,7 @@ SELECT * FROM get_pending_user_approvals('masjid-id');
 -- Approve user
 SELECT approve_user_registration('approval-id', 'admin-id', 'optional notes');
 
--- Reject user  
+-- Reject user
 SELECT reject_user_registration('approval-id', 'admin-id', 'required notes');
 
 -- Get approval history
@@ -309,32 +314,42 @@ const unsubscribe = UserApprovalService.subscribeToApprovals(masjidId, (payload)
 ## Troubleshooting
 
 ### "Cannot find table 'user_approvals'"
+
 Run migrations:
+
 ```bash
 supabase db reset
 ```
 
 ### "Property 'home_masjid_approved_at' does not exist"
+
 Regenerate types:
+
 ```bash
 supabase gen types typescript --local > packages/shared-types/src/database.types.ts
 pnpm run build:clean
 ```
 
 ### "Only public users can request approval"
+
 Check user role:
+
 ```sql
 SELECT id, email, role FROM users WHERE email = 'user@example.com';
 ```
 
 ### "Only masjid admins can approve"
+
 Verify admin assignment:
+
 ```sql
 SELECT * FROM masjid_admins WHERE user_id = 'admin-id' AND masjid_id = 'masjid-id';
 ```
 
 ### RLS blocking access
+
 Check policies:
+
 ```sql
 SELECT * FROM pg_policies WHERE tablename = 'user_approvals';
 ```

@@ -1,19 +1,23 @@
 # User Approval System - Feature Complete ✅
 
 ## Overview
+
 The User Approval System for E-Masjid.My is now fully implemented and ready for use. Public users can select their home masjid, which creates a pending approval. Masjid admins can review and approve/reject these requests. Once approved, the user's role is upgraded to "registered" and their home masjid selection becomes permanent (locked).
 
 ## What's Been Built
 
 ### 1. Database Schema ✅
-**Files**: 
+
+**Files**:
+
 - `supabase/migrations/019_create_user_approvals.sql`
 - `supabase/migrations/020_add_user_approvals_rls.sql`
 
 **Components**:
+
 - **user_approvals table**: Tracks approval requests (pending/approved/rejected)
 - **profiles.home_masjid_approved_at**: Timestamp for when home masjid was approved
-- **Automatic triggers**: 
+- **Automatic triggers**:
   - Creates approval when public user selects home masjid
   - Updates user role to 'registered' on approval
   - Locks home masjid after approval (immutable)
@@ -25,27 +29,29 @@ The User Approval System for E-Masjid.My is now fully implemented and ready for 
 - **RLS policies**: Masjid-specific access control
 
 ### 2. Service Package ✅
+
 **Location**: `packages/user-approval/`
 
 **Features**:
+
 ```typescript
-import { UserApprovalService } from '@masjid-suite/user-approval';
+import { UserApprovalService } from "@masjid-suite/user-approval";
 
 // Get pending approvals for a masjid
 const approvals = await UserApprovalService.getPendingApprovals(masjidId);
 
 // Approve a user
 await UserApprovalService.approveUser({
-  approval_id: 'uuid',
-  approver_id: 'admin-uuid',
-  notes: 'Optional notes'
+  approval_id: "uuid",
+  approver_id: "admin-uuid",
+  notes: "Optional notes",
 });
 
 // Reject a user (notes required)
 await UserApprovalService.rejectUser({
-  approval_id: 'uuid',
-  rejector_id: 'admin-uuid',
-  notes: 'Reason for rejection'
+  approval_id: "uuid",
+  rejector_id: "admin-uuid",
+  notes: "Reason for rejection",
 });
 
 // Check if user's home masjid is locked
@@ -55,16 +61,18 @@ const status = await UserApprovalService.getHomeMasjidLockStatus(userId);
 // Subscribe to real-time updates
 const subscription = UserApprovalService.subscribeToApprovals(
   masjidId,
-  (payload) => console.log('Approval updated:', payload)
+  (payload) => console.log("Approval updated:", payload)
 );
 ```
 
 ### 3. Admin UI ✅
+
 **Location**: `apps/hub/src/pages/admin/UserApprovals.tsx`  
 **Route**: `/admin/user-approvals`  
 **Access**: Masjid Admin + Super Admin roles only
 
 **Features**:
+
 - 📊 Statistics cards showing pending/approved/rejected counts
 - 📋 Tabbed interface (Pending, Approved, Rejected, All)
 - 👤 User details display (name, email, phone)
@@ -76,6 +84,7 @@ const subscription = UserApprovalService.subscribeToApprovals(
 - ⏱️ Formatted timestamps (Malaysian locale)
 
 **Screenshots** (conceptual):
+
 ```
 ┌─────────────────────────────────────────────────┐
 │ User Approvals                        [Refresh] │
@@ -94,19 +103,22 @@ const subscription = UserApprovalService.subscribeToApprovals(
 ```
 
 ### 4. Profile UI ✅
+
 **Location**: `apps/hub/src/pages/profile/Profile.tsx`  
 **Route**: `/profile`
 
 **Features**:
+
 - 🔓 **Before Approval**: User can select home masjid from dropdown
 - ⏳ **Pending State**: Yellow alert shows "Approval Pending" message
-- 🔒 **After Approval**: 
+- 🔒 **After Approval**:
   - Blue alert shows "Home Masjid Locked" with approval date
   - Dropdown disabled with lock icon
   - Helper text explains permanence
   - Cannot be changed anymore
 
 **UI States**:
+
 ```typescript
 // Pending Approval (Yellow Alert)
 ┌─────────────────────────────────────────┐
@@ -192,13 +204,14 @@ graph TD
    - Cannot change selection anymore
 
 **Alternative: Admin Rejects** ❌
-   - Clicks reject button
-   - MUST provide reason (min 5 chars)
-   - Confirms action
-   - Function `reject_user_registration()` executes:
-     - Sets `profiles.home_masjid_id` → NULL
-     - Updates `user_approvals.status` → 'rejected'
-   - User can select a different masjid (creates new approval)
+
+- Clicks reject button
+- MUST provide reason (min 5 chars)
+- Confirms action
+- Function `reject_user_registration()` executes:
+  - Sets `profiles.home_masjid_id` → NULL
+  - Updates `user_approvals.status` → 'rejected'
+- User can select a different masjid (creates new approval)
 
 ## Technical Details
 
@@ -212,7 +225,7 @@ graph TD
 
 2. **process_approved_user()**
    - **When**: `user_approvals.status` changes to 'approved'
-   - **Action**: 
+   - **Action**:
      - Updates user role to 'registered'
      - Sets home_masjid_approved_at timestamp
    - **Result**: User is promoted
@@ -241,11 +254,15 @@ CREATE POLICY "view_user_approvals" ON user_approvals
 // Auto-reloads approval list when changes occur
 supabase
   .channel("user-approvals")
-  .on("postgres_changes", {
-    event: "*",
-    schema: "public",
-    table: "user_approvals"
-  }, () => loadApprovals())
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "user_approvals",
+    },
+    () => loadApprovals()
+  )
   .subscribe();
 ```
 
@@ -254,6 +271,7 @@ supabase
 ### Manual Testing
 
 #### ✅ Happy Path: Approval Flow
+
 ```bash
 # 1. Create public user account
 # 2. Go to /profile
@@ -272,7 +290,7 @@ supabase
 
 # 10. Logout, login as original user
 # 11. Go to /profile
-# Expected: 
+# Expected:
 #   - See "Home Masjid Locked" alert with approval date
 #   - Dropdown disabled with lock icon
 #   - Cannot change selection
@@ -283,6 +301,7 @@ UPDATE profiles SET home_masjid_id = 'different-uuid' WHERE user_id = 'user-uuid
 ```
 
 #### ✅ Rejection Flow
+
 ```bash
 # 1-6: Same as above
 
@@ -293,13 +312,14 @@ UPDATE profiles SET home_masjid_id = 'different-uuid' WHERE user_id = 'user-uuid
 
 # 10. Logout, login as original user
 # 11. Go to /profile
-# Expected: 
+# Expected:
 #   - No pending alert
 #   - Home masjid cleared
 #   - Can select again (creates new approval)
 ```
 
 #### ✅ Real-Time Updates
+
 ```bash
 # 1. Admin opens /admin/user-approvals in Browser A
 # 2. Public user selects home masjid in Browser B
@@ -313,7 +333,7 @@ UPDATE profiles SET home_masjid_id = 'different-uuid' WHERE user_id = 'user-uuid
 
 ```sql
 -- Test approval creation
-INSERT INTO profiles (user_id, home_masjid_id) 
+INSERT INTO profiles (user_id, home_masjid_id)
 VALUES ('public-user-uuid', 'masjid-uuid');
 
 SELECT * FROM user_approvals WHERE user_id = 'public-user-uuid';
@@ -329,8 +349,8 @@ SELECT home_masjid_approved_at FROM profiles WHERE user_id = 'public-user-uuid';
 -- Expected: Recent timestamp
 
 -- Test lock
-UPDATE profiles 
-SET home_masjid_id = 'different-masjid-uuid' 
+UPDATE profiles
+SET home_masjid_id = 'different-masjid-uuid'
 WHERE user_id = 'public-user-uuid';
 -- Expected: ERROR - Cannot change home masjid after approval
 
@@ -344,9 +364,11 @@ SELECT home_masjid_id FROM profiles WHERE user_id = 'public-user-uuid';
 ## Configuration
 
 ### Environment Variables
+
 No additional environment variables required. Uses existing Supabase configuration.
 
 ### Database Migrations
+
 ```bash
 # Migrations already applied during implementation
 # 019_create_user_approvals.sql
@@ -359,6 +381,7 @@ supabase db reset
 ```
 
 ### Package Dependencies
+
 ```json
 {
   "@masjid-suite/user-approval": "workspace:*"

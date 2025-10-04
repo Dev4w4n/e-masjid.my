@@ -357,7 +357,8 @@ function Layout() {
             {location.pathname === "/profile" && "My Profile"}
             {location.pathname === "/admin" && "Admin Dashboard"}
             {location.pathname === "/admin/applications" && "Applications"}
-            {location.pathname === "/admin/user-approvals" && t("nav.user_approvals")}
+            {location.pathname === "/admin/user-approvals" &&
+              t("nav.user_approvals")}
             {location.pathname === "/admin/display-management" &&
               "Display Management"}
             {location.pathname === "/content/create" && "Create Content"}

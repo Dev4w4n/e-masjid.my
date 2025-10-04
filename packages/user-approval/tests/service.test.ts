@@ -200,9 +200,8 @@ describe("UserApprovalService", () => {
         }),
       });
 
-      const result = await UserApprovalService.getHomeMasjidLockStatus(
-        "test-user-id"
-      );
+      const result =
+        await UserApprovalService.getHomeMasjidLockStatus("test-user-id");
 
       expect(result).toHaveProperty("is_locked");
       expect(result).toHaveProperty("approved_at");

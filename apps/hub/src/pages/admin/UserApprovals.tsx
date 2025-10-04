@@ -58,14 +58,18 @@ interface UserApprovalWithDetails {
   reviewed_at: string | null;
   reviewed_by: string | null;
   review_notes: string | null;
-  user?: {
-    email?: string;
-    full_name?: string;
-    phone_number?: string | null;
-  } | undefined;
-  masjid?: {
-    name?: string;
-  } | undefined;
+  user?:
+    | {
+        email?: string;
+        full_name?: string;
+        phone_number?: string | null;
+      }
+    | undefined;
+  masjid?:
+    | {
+        name?: string;
+      }
+    | undefined;
   address?: {
     address_line_1: string;
     address_line_2?: string | null;
@@ -122,7 +126,8 @@ function UserApprovals() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // Check permissions
-  const isMasjidAdmin = permissions.isMasjidAdmin() || permissions.isSuperAdmin();
+  const isMasjidAdmin =
+    permissions.isMasjidAdmin() || permissions.isSuperAdmin();
 
   // Load approvals using database query with RLS
   const loadApprovals = async () => {
@@ -172,7 +177,10 @@ function UserApprovals() {
         );
 
         if (error) {
-          console.error(`Failed to load approvals for masjid ${masjid.name}:`, error);
+          console.error(
+            `Failed to load approvals for masjid ${masjid.name}:`,
+            error
+          );
           return [];
         }
 
@@ -200,10 +208,13 @@ function UserApprovals() {
           .eq("is_primary", true);
 
         if (!addressesError && addressesData) {
-          addressesMap = addressesData.reduce((acc, addr: any) => {
-            acc[addr.profiles.user_id] = addr;
-            return acc;
-          }, {} as Record<string, any>);
+          addressesMap = addressesData.reduce(
+            (acc, addr: any) => {
+              acc[addr.profiles.user_id] = addr;
+              return acc;
+            },
+            {} as Record<string, any>
+          );
         }
       }
 
@@ -293,8 +304,12 @@ function UserApprovals() {
 
   // Filter approvals by status
   const pendingApprovals = approvals.filter((app) => app.status === "pending");
-  const approvedApprovals = approvals.filter((app) => app.status === "approved");
-  const rejectedApprovals = approvals.filter((app) => app.status === "rejected");
+  const approvedApprovals = approvals.filter(
+    (app) => app.status === "approved"
+  );
+  const rejectedApprovals = approvals.filter(
+    (app) => app.status === "rejected"
+  );
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -309,7 +324,10 @@ function UserApprovals() {
     }
   };
 
-  const handleReview = (approval: UserApprovalWithDetails, action: "approve" | "reject") => {
+  const handleReview = (
+    approval: UserApprovalWithDetails,
+    action: "approve" | "reject"
+  ) => {
     setSelectedApproval(approval);
     setReviewAction(action);
     setReviewNotes("");
@@ -338,7 +356,7 @@ function UserApprovals() {
         if (reviewNotes.trim()) {
           approveParams.notes = reviewNotes.trim();
         }
-        
+
         await UserApprovalService.approveUser(approveParams);
         setSuccessMessage(
           `User ${selectedApproval.user?.full_name || "Unknown"} has been approved and promoted to registered user.`
@@ -806,7 +824,9 @@ function UserApprovals() {
             <>
               <Typography paragraph>
                 You are about to {reviewAction}{" "}
-                <strong>{selectedApproval.user?.full_name || "this user"}</strong>
+                <strong>
+                  {selectedApproval.user?.full_name || "this user"}
+                </strong>
                 's request to join{" "}
                 <strong>{selectedApproval.masjid?.name || "the masjid"}</strong>
                 .
@@ -859,7 +879,10 @@ function UserApprovals() {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setReviewDialogOpen(false)} disabled={actionLoading}>
+          <Button
+            onClick={() => setReviewDialogOpen(false)}
+            disabled={actionLoading}
+          >
             Cancel
           </Button>
           <Button

@@ -18,7 +18,6 @@ export class UserApprovalService {
   static async getPendingApprovals(
     masjidId: string
   ): Promise<UserApprovalWithDetails[]> {
-
     const { data, error } = await supabase.rpc("get_pending_user_approvals", {
       target_masjid_id: masjidId,
     });
@@ -36,7 +35,6 @@ export class UserApprovalService {
   static async getApprovalsHistory(
     masjidId: string
   ): Promise<UserApprovalHistory[]> {
-
     const { data, error } = await supabase.rpc("get_user_approvals_history", {
       target_masjid_id: masjidId,
     });
@@ -54,7 +52,6 @@ export class UserApprovalService {
   static async getUserApprovalStatus(
     userId: string
   ): Promise<UserApproval | null> {
-
     const { data, error } = await supabase
       .from("user_approvals")
       .select("*")
@@ -72,20 +69,20 @@ export class UserApprovalService {
   /**
    * Approve a user registration request
    */
-  static async approveUser(
-    request: ApproveUserRequest
-  ): Promise<boolean> {
-
+  static async approveUser(request: ApproveUserRequest): Promise<boolean> {
     const params: any = {
       approval_id: request.approval_id,
       approver_id: request.approver_id,
     };
-    
+
     if (request.notes) {
       params.approval_notes = request.notes;
     }
 
-    const { data, error } = await supabase.rpc("approve_user_registration", params);
+    const { data, error } = await supabase.rpc(
+      "approve_user_registration",
+      params
+    );
 
     if (error) {
       throw new Error(`Failed to approve user: ${error.message}`);
@@ -97,10 +94,7 @@ export class UserApprovalService {
   /**
    * Reject a user registration request
    */
-  static async rejectUser(
-    request: RejectUserRequest
-  ): Promise<boolean> {
-
+  static async rejectUser(request: RejectUserRequest): Promise<boolean> {
     // Validate rejection notes
     if (!request.notes || request.notes.trim().length < 5) {
       throw new Error("Rejection notes are required (minimum 5 characters)");
@@ -125,7 +119,6 @@ export class UserApprovalService {
   static async getHomeMasjidLockStatus(
     userId: string
   ): Promise<HomeMasjidLockStatus> {
-
     const { data, error } = await supabase
       .from("profiles")
       .select("home_masjid_id, home_masjid_approved_at")
@@ -147,7 +140,6 @@ export class UserApprovalService {
    * Get pending approval count for a masjid
    */
   static async getPendingCount(masjidId: string): Promise<number> {
-
     const { count, error } = await supabase
       .from("user_approvals")
       .select("*", { count: "exact", head: true })
@@ -168,7 +160,6 @@ export class UserApprovalService {
     masjidId: string,
     callback: (payload: any) => void
   ) {
-
     const channel = supabase
       .channel(`user-approvals-${masjidId}`)
       .on(

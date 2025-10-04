@@ -3,6 +3,7 @@
 ## ✅ Completed
 
 ### 1. Database Schema
+
 - **Migration 019**: Created `user_approvals` table
 - **Migration 020**: Added RLS policies for user approvals
 - **Profile Extension**: Added `home_masjid_approved_at` column to profiles table
@@ -15,6 +16,7 @@
   - `prevent_home_masjid_change()` - Trigger to lock home masjid after approval
 
 ### 2. Package Structure
+
 - Created `packages/user-approval/` package
 - Package configuration (package.json, tsconfig.json, eslint.config.js)
 - Type definitions in `src/types.ts`
@@ -22,6 +24,7 @@
 - Main exports in `src/index.ts`
 
 ### 3. Documentation
+
 - **Specification**: `specs/005-user-approval-system/spec.md`
 - **Quickstart Guide**: `specs/005-user-approval-system/quickstart.md`
 - Comprehensive documentation with examples and testing scenarios
@@ -29,12 +32,14 @@
 ## ✅ Phase 1: Backend & Build - COMPLETE
 
 ### 1. TypeScript Compilation Issues - FIXED ✅
+
 - Fixed `user-approval` package tsconfig to override `noEmit: false`
 - Fixed mock data factory for new schema fields
 - Fixed optional parameter handling in service layer
 - Removed obsolete `display_id` field references
 
 ### 2. Build System - WORKING ✅
+
 ```bash
 pnpm run build  # All 11 packages build successfully
 ```
@@ -42,6 +47,7 @@ pnpm run build  # All 11 packages build successfully
 ### 3. Hub App UI Components - COMPLETE ✅
 
 #### A. User Approvals Page (`apps/hub/src/pages/admin/UserApprovals.tsx`) ✅
+
 - ✅ List pending user approvals with Material-UI table
 - ✅ Show user details (name, email, phone)
 - ✅ Show masjid information
@@ -54,6 +60,7 @@ pnpm run build  # All 11 packages build successfully
 - ✅ Success/error messaging
 
 #### B. Route Added (`apps/hub/src/App.tsx`) ✅
+
 ```typescript
 <Route
   path="/admin/user-approvals"
@@ -70,9 +77,11 @@ pnpm run build  # All 11 packages build successfully
 ## ✅ Phase 2: Profile UI - COMPLETE
 
 ### 1. Profile Page Updated - COMPLETE ✅
+
 **File**: `apps/hub/src/pages/profile/Profile.tsx`
 
 **Implemented Features**:
+
 - ✅ Load home masjid lock status using UserApprovalService
 - ✅ Disable home masjid dropdown when locked
 - ✅ Show lock icon in the select field
@@ -82,6 +91,7 @@ pnpm run build  # All 11 packages build successfully
 - ✅ Helper text explaining the locked state
 
 **UI Alerts**:
+
 ```typescript
 // Lock Status Alert (Info - Blue)
 {homeMasjidLockStatus?.is_locked && (
@@ -103,12 +113,14 @@ pnpm run build  # All 11 packages build successfully
 ### 1. Testing - NOT STARTED (~2 hours)
 
 #### Unit Tests (packages/user-approval/)
+
 - [ ] Service methods work correctly
 - [ ] Validation rules are enforced
 - [ ] Error handling
 - [ ] RPC function calls return correct data
 
 #### Contract Tests (apps/hub/tests/contract/)
+
 - [ ] `get_pending_user_approvals()` RPC function
 - [ ] `approve_user_registration()` updates role correctly
 - [ ] `reject_user_registration()` clears home masjid
@@ -116,6 +128,7 @@ pnpm run build  # All 11 packages build successfully
 - [ ] RLS policies filter correctly by masjid
 
 #### E2E Tests (tests/e2e/)
+
 - [ ] Public user selects home masjid → approval created
 - [ ] Admin sees pending approval in list
 - [ ] Admin approves → user role changes + home masjid locked
@@ -124,6 +137,7 @@ pnpm run build  # All 11 packages build successfully
 - [ ] Real-time subscription updates approval list
 
 ### 2. Navigation Updates - OPTIONAL (~15 minutes)
+
 - [ ] Add "User Approvals" link to Admin Dashboard
 - [ ] Show pending approval count badge
 - [ ] Add to navigation menu for masjid admins
@@ -131,6 +145,7 @@ pnpm run build  # All 11 packages build successfully
 ### 5. Seed Data (Optional)
 
 Add test data in `scripts/setup-supabase.sh`:
+
 ```bash
 # Create public user with home masjid (triggers approval)
 # Insert some pending approvals for testing
@@ -139,11 +154,13 @@ Add test data in `scripts/setup-supabase.sh`:
 ## Quick Start (After Fixing)
 
 ### 1. Fix Mock Data
+
 Edit `packages/shared-types/src/mock-data.ts`:
+
 ```typescript
 // Line ~490 - Remove undefined issue
-image_background_color: MockUtils.randomBoolean() 
-  ? MockUtils.randomColor() 
+image_background_color: MockUtils.randomBoolean()
+  ? MockUtils.randomColor()
   : null,
 
 // Line ~555 - Remove display_id
@@ -151,6 +168,7 @@ image_background_color: MockUtils.randomBoolean()
 ```
 
 ### 2. Build & Test
+
 ```bash
 # Build packages
 pnpm run build:clean
@@ -164,23 +182,25 @@ SELECT * FROM user_approvals;
 ```
 
 ### 3. Use the Service
+
 ```typescript
-import { UserApprovalService } from '@masjid-suite/user-approval';
+import { UserApprovalService } from "@masjid-suite/user-approval";
 
 // Get pending approvals
 const approvals = await UserApprovalService.getPendingApprovals(masjidId);
 
 // Approve user
 await UserApprovalService.approveUser({
-  approval_id: 'approval-id',
-  approver_id: 'admin-id',
-  notes: 'Approved'
+  approval_id: "approval-id",
+  approver_id: "admin-id",
+  notes: "Approved",
 });
 ```
 
 ## Database Schema Summary
 
 ### user_approvals Table
+
 ```sql
 - id (UUID, PK)
 - user_id (UUID, FK -> users.id)
@@ -194,6 +214,7 @@ await UserApprovalService.approveUser({
 ```
 
 ### profiles Table (Extended)
+
 ```sql
 + home_masjid_approved_at (timestamp, nullable)
 ```
@@ -257,6 +278,7 @@ UPDATE profiles SET home_masjid_id = 'different-masjid' WHERE user_id = 'user-id
 ## Deliverables Summary
 
 ### ✅ Completed (Ready to Use)
+
 1. **Database Layer** - Full approval workflow with triggers and RLS
 2. **Service Package** - @masjid-suite/user-approval with all CRUD operations
 3. **Admin Interface** - /admin/user-approvals page with real-time updates
@@ -265,9 +287,11 @@ UPDATE profiles SET home_masjid_id = 'different-masjid' WHERE user_id = 'user-id
 6. **Build System** - All packages compile successfully
 
 ### 🚧 In Progress
+
 1. **Testing** - Unit, contract, and E2E tests (not started)
 
 ### 📋 Future Enhancements
+
 1. Email notifications on approval/rejection
 2. Bulk approval operations
 3. Analytics dashboard for approval metrics

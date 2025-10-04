@@ -43,7 +43,10 @@ import {
   type MalaysianState,
 } from "@masjid-suite/shared-types";
 import { masjidService, profileService } from "@masjid-suite/supabase-client";
-import { UserApprovalService, type HomeMasjidLockStatus } from "@masjid-suite/user-approval";
+import {
+  UserApprovalService,
+  type HomeMasjidLockStatus,
+} from "@masjid-suite/user-approval";
 
 // Validation schema
 const profileSchema = z.object({
@@ -101,7 +104,8 @@ function Profile() {
   const [showAddAddress, setShowAddAddress] = useState(false);
   const [masjids, setMasjids] = useState<any[]>([]);
   const [masjidsLoading, setMasjidsLoading] = useState(true);
-  const [homeMasjidLockStatus, setHomeMasjidLockStatus] = useState<HomeMasjidLockStatus | null>(null);
+  const [homeMasjidLockStatus, setHomeMasjidLockStatus] =
+    useState<HomeMasjidLockStatus | null>(null);
   const [lockStatusLoading, setLockStatusLoading] = useState(true);
 
   const {
@@ -174,7 +178,9 @@ function Profile() {
       if (profile?.user_id) {
         try {
           setLockStatusLoading(true);
-          const status = await UserApprovalService.getHomeMasjidLockStatus(profile.user_id);
+          const status = await UserApprovalService.getHomeMasjidLockStatus(
+            profile.user_id
+          );
           setHomeMasjidLockStatus(status);
         } catch (err) {
           console.error("Failed to load home masjid lock status:", err);
