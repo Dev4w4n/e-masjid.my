@@ -12,6 +12,7 @@ import MasjidForm from "./pages/masjid/MasjidForm";
 import MasjidView from "./pages/masjid/MasjidView";
 import AdminApplications from "./pages/admin/AdminApplications";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import UserApprovals from "./pages/admin/UserApprovals";
 import CreateContent from "./pages/content/CreateContent";
 import MyContent from "./pages/content/MyContent";
 import DisplayManagement from "./pages/admin/DisplayManagement";
@@ -138,6 +139,16 @@ function App() {
             <ProtectedRoute>
               <WithRole role="super_admin">
                 <AdminApplications />
+              </WithRole>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="admin/user-approvals"
+          element={
+            <ProtectedRoute>
+              <WithRole role={["super_admin", "masjid_admin"]}>
+                <UserApprovals />
               </WithRole>
             </ProtectedRoute>
           }

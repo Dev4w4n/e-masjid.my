@@ -26,19 +26,19 @@ const MALAYSIAN_STATES = [
   "Johor",
   "Kedah",
   "Kelantan",
-  "Malacca",
+  "Kuala Lumpur",
+  "Labuan",
+  "Melaka",
   "Negeri Sembilan",
   "Pahang",
-  "Penang",
+  "Pulau Pinang",
   "Perak",
   "Perlis",
+  "Putrajaya",
   "Sabah",
   "Sarawak",
   "Selangor",
   "Terengganu",
-  "Kuala Lumpur",
-  "Labuan",
-  "Putrajaya",
 ] as const;
 
 const LANGUAGE_CODES = ["en", "ms", "zh", "ta"] as const;
@@ -288,13 +288,18 @@ export class UserMockFactory {
  */
 export class ProfileMockFactory {
   static create(overrides: Partial<Profile> = {}): Profile {
+    const hasHomeMasjid = overrides.home_masjid_id !== undefined 
+      ? overrides.home_masjid_id !== null 
+      : MockUtils.randomBoolean();
+    
     return {
       id: MockUtils.generateId(),
       user_id: MockUtils.generateId(),
       full_name: MockUtils.randomName(),
       phone_number: MockUtils.randomBoolean() ? MockUtils.randomPhone() : null,
       preferred_language: MockUtils.randomElement(LANGUAGE_CODES),
-      home_masjid_id: MockUtils.randomBoolean() ? MockUtils.generateId() : null,
+      home_masjid_id: hasHomeMasjid ? MockUtils.generateId() : null,
+      home_masjid_approved_at: hasHomeMasjid && MockUtils.randomBoolean() ? MockUtils.randomDate() : null,
       is_complete: MockUtils.randomBoolean(),
       created_at: MockUtils.randomDate(),
       updated_at: MockUtils.randomRecentDate(),
@@ -483,6 +488,12 @@ export class TvDisplayMockFactory {
         gold: "#FFD700",
         platinum: "#E5E4E2",
       },
+      image_background_color: MockUtils.randomBoolean() ? "#000000" : null,
+      image_display_mode: MockUtils.randomElement(["fill", "fit", "stretch"]),
+      language: MockUtils.randomBoolean() ? MockUtils.randomElement(["en", "ms"]) : null,
+      prayer_time_alignment: "center",
+      prayer_time_layout: "horizontal",
+      show_debug_info: false,
       offline_cache_duration: MockUtils.randomNumber(12, 72),
       heartbeat_interval: MockUtils.randomNumber(15, 60),
       max_retry_attempts: MockUtils.randomNumber(3, 10),
@@ -546,7 +557,7 @@ export class DisplayContentMockFactory {
     const baseContent: DisplayContent = {
       id: MockUtils.generateId(),
       masjid_id: MockUtils.generateId(),
-      display_id: MockUtils.randomBoolean() ? MockUtils.generateId() : null,
+      // display_id field removed - content assignments handled separately
       title: `Content ${MockUtils.randomNumber(1, 100)}`,
       description: MockUtils.randomBoolean()
         ? "Sample content description"

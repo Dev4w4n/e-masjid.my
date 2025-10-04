@@ -129,6 +129,12 @@ function Layout() {
           roles: ["masjid_admin", "super_admin"],
         },
         {
+          text: t("nav.user_approvals"),
+          icon: <Assignment />,
+          path: "/admin/user-approvals",
+          roles: ["masjid_admin", "super_admin"],
+        },
+        {
           text: t("nav.manage_displays"),
           icon: <Tv />,
           path: "/admin/display-management",
@@ -351,6 +357,7 @@ function Layout() {
             {location.pathname === "/profile" && "My Profile"}
             {location.pathname === "/admin" && "Admin Dashboard"}
             {location.pathname === "/admin/applications" && "Applications"}
+            {location.pathname === "/admin/user-approvals" && t("nav.user_approvals")}
             {location.pathname === "/admin/display-management" &&
               "Display Management"}
             {location.pathname === "/content/create" && "Create Content"}
