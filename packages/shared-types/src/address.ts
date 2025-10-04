@@ -2,31 +2,37 @@
 
 import type { MalaysianState, ProfileAddress } from "./types.js";
 import type { MasjidAddress } from "./masjid.js";
+import { malaysianStates } from "./constants.js";
 
-// State mapping for different formats
-export const STATE_MAPPING: Record<string, MalaysianState> = {
+// Type for new state names only (without deprecated names)
+type CurrentMalaysianState = (typeof malaysianStates)[number];
+
+// State mapping for different formats (maps old/alternate names to current names)
+export const STATE_MAPPING: Record<string, CurrentMalaysianState> = {
   "WP Kuala Lumpur": "Kuala Lumpur",
   "WP Labuan": "Labuan",
   "WP Putrajaya": "Putrajaya",
-  "Pulau Pinang": "Penang",
-  Melaka: "Malacca",
+  Penang: "Pulau Pinang",
+  Malacca: "Melaka",
   N9: "Negeri Sembilan",
   "Negeri 9": "Negeri Sembilan",
 };
 
-// Normalize state name to match enum
-export function normalizeStateName(state: string): MalaysianState | null {
-  // Direct match
-  if (Object.values(STATE_MAPPING).includes(state as MalaysianState)) {
-    return state as MalaysianState;
-  }
-
-  // Check mapping
+// Normalize state name to current names (converts old names to new names)
+export function normalizeStateName(
+  state: string
+): CurrentMalaysianState | null {
+  // Check mapping first (this handles old names like "Penang" -> "Pulau Pinang")
   if (STATE_MAPPING[state]) {
     return STATE_MAPPING[state];
   }
 
-  // Case-insensitive search
+  // Direct match with current states
+  if ((malaysianStates as readonly string[]).includes(state)) {
+    return state as CurrentMalaysianState;
+  }
+
+  // Case-insensitive search in mappings
   const normalized = state.toLowerCase();
   for (const [key, value] of Object.entries(STATE_MAPPING)) {
     if (key.toLowerCase() === normalized) {
@@ -34,27 +40,8 @@ export function normalizeStateName(state: string): MalaysianState | null {
     }
   }
 
-  // Check against valid states (case-insensitive)
-  const validStates: MalaysianState[] = [
-    "Johor",
-    "Kedah",
-    "Kelantan",
-    "Malacca",
-    "Negeri Sembilan",
-    "Pahang",
-    "Penang",
-    "Perak",
-    "Perlis",
-    "Sabah",
-    "Sarawak",
-    "Selangor",
-    "Terengganu",
-    "Kuala Lumpur",
-    "Labuan",
-    "Putrajaya",
-  ];
-
-  for (const validState of validStates) {
+  // Check against current valid states (case-insensitive)
+  for (const validState of malaysianStates) {
     if (validState.toLowerCase() === normalized) {
       return validState;
     }
@@ -120,14 +107,17 @@ export function formatAddressMultiLine(
 
 // Get state abbreviation for display
 export function getStateAbbreviation(state: MalaysianState): string {
-  const abbreviations: Record<MalaysianState, string> = {
+  // Normalize to current state name first
+  const normalized = normalizeStateName(state);
+
+  const abbreviations: Record<CurrentMalaysianState, string> = {
     Johor: "JHR",
     Kedah: "KDH",
     Kelantan: "KTN",
-    Malacca: "MLK",
+    Melaka: "MLK",
     "Negeri Sembilan": "NS",
     Pahang: "PHG",
-    Penang: "PNG",
+    "Pulau Pinang": "PNG",
     Perak: "PRK",
     Perlis: "PLS",
     Sabah: "SBH",
@@ -139,11 +129,11 @@ export function getStateAbbreviation(state: MalaysianState): string {
     Putrajaya: "PJY",
   };
 
-  return abbreviations[state] || state;
+  return normalized ? abbreviations[normalized] || normalized : state;
 }
 
 // Postal code to state mapping (major cities only)
-export const POSTCODE_TO_STATE: Record<string, MalaysianState> = {
+export const POSTCODE_TO_STATE: Record<string, CurrentMalaysianState> = {
   // Kuala Lumpur
   "50": "Kuala Lumpur",
   "51": "Kuala Lumpur",
@@ -167,12 +157,18 @@ export const POSTCODE_TO_STATE: Record<string, MalaysianState> = {
   "47": "Selangor",
   "48": "Selangor",
 
-  // Penang
-  "10": "Penang",
-  "11": "Penang",
-  "12": "Penang",
-  "13": "Penang",
-  "14": "Penang",
+  // Pulau Pinang
+  "10": "Pulau Pinang",
+  "11": "Pulau Pinang",
+  "12": "Pulau Pinang",
+  "13": "Pulau Pinang",
+  "14": "Pulau Pinang",
+
+  // Melaka
+  "75": "Melaka",
+  "76": "Melaka",
+  "77": "Melaka",
+  "78": "Melaka",
 
   // Johor
   "79": "Johor",
@@ -202,7 +198,7 @@ export const POSTCODE_TO_STATE: Record<string, MalaysianState> = {
 // Guess state from postal code
 export function guessStateFromPostcode(
   postcode: string
-): MalaysianState | null {
+): CurrentMalaysianState | null {
   if (postcode.length !== 5) {
     return null;
   }
@@ -227,7 +223,7 @@ export function isPostcodeValidForState(
 }
 
 // Get major cities for each state
-export const STATE_CITIES: Record<MalaysianState, string[]> = {
+export const STATE_CITIES: Record<CurrentMalaysianState, string[]> = {
   Johor: [
     "Johor Bahru",
     "Muar",
@@ -245,7 +241,7 @@ export const STATE_CITIES: Record<MalaysianState, string[]> = {
     "Machang",
     "Gua Musang",
   ],
-  Malacca: ["Malacca City", "Ayer Keroh", "Jasin", "Masjid Tanah"],
+  Melaka: ["Malacca City", "Ayer Keroh", "Jasin", "Masjid Tanah"],
   "Negeri Sembilan": [
     "Seremban",
     "Port Dickson",
@@ -254,7 +250,7 @@ export const STATE_CITIES: Record<MalaysianState, string[]> = {
     "Kuala Pilah",
   ],
   Pahang: ["Kuantan", "Temerloh", "Bentong", "Raub", "Pekan", "Jerantut"],
-  Penang: [
+  "Pulau Pinang": [
     "George Town",
     "Butterworth",
     "Bukit Mertajam",
@@ -298,11 +294,15 @@ export function isValidCityForState(
   city: string,
   state: MalaysianState
 ): boolean {
-  const cities = STATE_CITIES[state];
+  // Normalize state to current name
+  const normalizedState = normalizeStateName(state);
+  if (!normalizedState) return true;
+
+  const cities = STATE_CITIES[normalizedState];
   if (!cities) return true; // Allow if we don't have city data
 
   const normalizedCity = city.toLowerCase();
-  return cities.some((validCity) =>
+  return cities.some((validCity: string) =>
     validCity.toLowerCase().includes(normalizedCity)
   );
 }
@@ -311,10 +311,15 @@ export function isValidCityForState(
 export function profileAddressToMasjidAddress(
   address: ProfileAddress
 ): MasjidAddress {
+  const normalizedState = normalizeStateName(address.state);
+  if (!normalizedState) {
+    throw new Error(`Invalid state: ${address.state}`);
+  }
+
   const result: MasjidAddress = {
     address_line_1: address.address_line_1,
     city: address.city,
-    state: address.state,
+    state: normalizedState,
     postcode: address.postcode,
     country: "MYS" as const,
   };

@@ -96,6 +96,9 @@ importers:
       '@masjid-suite/supabase-client':
         specifier: workspace:*
         version: link:../../packages/supabase-client
+      '@masjid-suite/user-approval':
+        specifier: workspace:*
+        version: link:../../packages/user-approval
       '@mui/icons-material':
         specifier: ^6.5.0
         version: 6.5.0(@mui/material@6.5.0)(@types/react@18.3.24)(react@18.3.1)
@@ -567,6 +570,28 @@ importers:
         version: 5.9.2
       vitest:
         specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.15)(jsdom@27.0.0)
+
+  packages/user-approval:
+    dependencies:
+      '@masjid-suite/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
+      '@masjid-suite/supabase-client':
+        specifier: workspace:*
+        version: link:../supabase-client
+    devDependencies:
+      '@masjid-suite/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@types/node':
+        specifier: ^20.11.5
+        version: 20.19.15
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.2
+      vitest:
+        specifier: ^1.2.1
         version: 1.6.1(@types/node@20.19.15)(jsdom@27.0.0)
 
 packages:

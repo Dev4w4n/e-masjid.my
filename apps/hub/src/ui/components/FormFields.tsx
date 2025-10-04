@@ -25,10 +25,10 @@ const MALAYSIAN_STATES: MalaysianState[] = [
   "Kelantan",
   "Kuala Lumpur",
   "Labuan",
-  "Malacca",
+  "Melaka",
   "Negeri Sembilan",
   "Pahang",
-  "Penang",
+  "Pulau Pinang",
   "Perak",
   "Perlis",
   "Putrajaya",
@@ -201,10 +201,10 @@ export function FormAutocompleteField<T extends FieldValues>({
       value={options.find((option) => option.value === value) || null}
       onChange={(
         _,
-        newValue: { value: string; label: string } | string | null,
+        newValue: { value: string; label: string } | string | null
       ) => {
         onChange(
-          typeof newValue === "string" ? newValue : newValue?.value || "",
+          typeof newValue === "string" ? newValue : newValue?.value || ""
         );
       }}
       freeSolo={freeSolo}
@@ -242,7 +242,7 @@ interface AddressTypeSelectProps<T extends FieldValues>
   extends BaseFormFieldProps<T> {}
 
 export function AddressTypeSelect<T extends FieldValues>(
-  props: AddressTypeSelectProps<T>,
+  props: AddressTypeSelectProps<T>
 ) {
   const addressTypeOptions = ADDRESS_TYPES.map((type) => ({
     value: type,
@@ -292,7 +292,7 @@ interface PostcodeFieldProps<T extends FieldValues>
   extends BaseFormFieldProps<T> {}
 
 export function PostcodeField<T extends FieldValues>(
-  props: PostcodeFieldProps<T>,
+  props: PostcodeFieldProps<T>
 ) {
   return (
     <FormTextField

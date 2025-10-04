@@ -32,6 +32,8 @@ import {
   Add,
   Delete,
   Visibility,
+  Lock,
+  HourglassEmpty,
 } from "@mui/icons-material";
 import { useUser, useProfile, useAuthActions } from "@masjid-suite/auth";
 import {
@@ -41,6 +43,10 @@ import {
   type MalaysianState,
 } from "@masjid-suite/shared-types";
 import { masjidService, profileService } from "@masjid-suite/supabase-client";
+import {
+  UserApprovalService,
+  type HomeMasjidLockStatus,
+} from "@masjid-suite/user-approval";
 
 // Validation schema
 const profileSchema = z.object({
@@ -98,6 +104,9 @@ function Profile() {
   const [showAddAddress, setShowAddAddress] = useState(false);
   const [masjids, setMasjids] = useState<any[]>([]);
   const [masjidsLoading, setMasjidsLoading] = useState(true);
+  const [homeMasjidLockStatus, setHomeMasjidLockStatus] =
+    useState<HomeMasjidLockStatus | null>(null);
+  const [lockStatusLoading, setLockStatusLoading] = useState(true);
 
   const {
     register,
@@ -162,6 +171,27 @@ function Profile() {
 
     loadMasjids();
   }, []);
+
+  // Load home masjid lock status
+  useEffect(() => {
+    async function loadLockStatus() {
+      if (profile?.user_id) {
+        try {
+          setLockStatusLoading(true);
+          const status = await UserApprovalService.getHomeMasjidLockStatus(
+            profile.user_id
+          );
+          setHomeMasjidLockStatus(status);
+        } catch (err) {
+          console.error("Failed to load home masjid lock status:", err);
+        } finally {
+          setLockStatusLoading(false);
+        }
+      }
+    }
+
+    loadLockStatus();
+  }, [profile?.user_id]);
 
   // Load profile addresses
   useEffect(() => {
@@ -422,16 +452,77 @@ function Profile() {
 
                   {/* Home Masjid */}
                   <Grid item xs={12}>
+                    {/* Lock Status Alert */}
+                    {homeMasjidLockStatus?.is_locked && (
+                      <Alert severity="info" icon={<Lock />} sx={{ mb: 2 }}>
+                        <Typography variant="body2" fontWeight="medium">
+                          Home Masjid Locked
+                        </Typography>
+                        <Typography variant="caption">
+                          Your home masjid was approved on{" "}
+                          {new Date(
+                            homeMasjidLockStatus.approved_at!
+                          ).toLocaleDateString("ms-MY", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                          . You cannot change it anymore.
+                        </Typography>
+                      </Alert>
+                    )}
+
+                    {/* Pending Approval Alert */}
+                    {!homeMasjidLockStatus?.is_locked &&
+                      homeMasjidLockStatus?.home_masjid_id &&
+                      !lockStatusLoading && (
+                        <Alert
+                          severity="warning"
+                          icon={<HourglassEmpty />}
+                          sx={{ mb: 2 }}
+                        >
+                          <Typography variant="body2" fontWeight="medium">
+                            Approval Pending
+                          </Typography>
+                          <Typography variant="caption">
+                            Your home masjid selection is waiting for admin
+                            approval. You will be notified once reviewed.
+                          </Typography>
+                        </Alert>
+                      )}
+
                     <Controller
                       name="homeMasjidId"
                       control={control}
                       render={({ field }) => (
                         <FormControl
                           fullWidth
-                          disabled={isLoading || masjidsLoading}
+                          disabled={
+                            isLoading ||
+                            masjidsLoading ||
+                            homeMasjidLockStatus?.is_locked ||
+                            false
+                          }
                         >
-                          <InputLabel>Home Masjid (Optional)</InputLabel>
-                          <Select {...field} label="Home Masjid (Optional)">
+                          <InputLabel>
+                            Home Masjid (Optional)
+                            {homeMasjidLockStatus?.is_locked && " - Locked"}
+                          </InputLabel>
+                          <Select
+                            {...field}
+                            label={
+                              homeMasjidLockStatus?.is_locked
+                                ? "Home Masjid (Optional) - Locked"
+                                : "Home Masjid (Optional)"
+                            }
+                            startAdornment={
+                              homeMasjidLockStatus?.is_locked ? (
+                                <InputAdornment position="start">
+                                  <Lock color="action" fontSize="small" />
+                                </InputAdornment>
+                              ) : null
+                            }
+                          >
                             <MenuItem value="">None</MenuItem>
                             {masjids.map((masjid) => (
                               <MenuItem key={masjid.id} value={masjid.id}>
@@ -456,6 +547,16 @@ function Profile() {
                                 Loading masjids...
                               </Typography>
                             </Box>
+                          )}
+                          {homeMasjidLockStatus?.is_locked && (
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              sx={{ mt: 1, display: "block" }}
+                            >
+                              This field is locked after approval and cannot be
+                              changed.
+                            </Typography>
                           )}
                         </FormControl>
                       )}

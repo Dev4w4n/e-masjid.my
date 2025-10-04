@@ -182,6 +182,7 @@ export const ms: TranslationKeys = {
     manage_applications: "Urus Permohonan",
     manage_displays: "Urus Paparan",
     manage_content: "Urus Kandungan",
+    user_approvals: "Kelulusan Pengguna",
     settings: "Tetapan",
     notifications: "Pemberitahuan",
     logout: "Log Keluar",

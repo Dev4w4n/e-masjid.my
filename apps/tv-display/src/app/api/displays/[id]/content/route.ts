@@ -633,7 +633,6 @@ export async function POST(
     const responseContent: DisplayContent = {
       id: createdContent.id,
       masjid_id: createdContent.masjid_id,
-      display_id: createdContent.display_id || displayId,
       title: createdContent.title,
       ...(createdContent.description && { description: createdContent.description }),
       type: createdContent.type as ContentType,

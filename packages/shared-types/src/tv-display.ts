@@ -20,7 +20,6 @@ export type SponsorshipTier = "bronze" | "silver" | "gold" | "platinum";
 export interface DisplayContent {
   id: string;
   masjid_id: string;
-  display_id: string | null;
   title: string;
   description?: string | null;
   type: ContentType;

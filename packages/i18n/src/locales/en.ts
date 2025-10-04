@@ -172,6 +172,7 @@ export const en = {
     manage_applications: "Manage Applications",
     manage_displays: "Manage Displays",
     manage_content: "Manage Content",
+    user_approvals: "User Approvals",
     settings: "Settings",
     notifications: "Notifications",
     logout: "Logout",
