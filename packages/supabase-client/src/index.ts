@@ -538,6 +538,22 @@ export class MasjidService {
   }
 
   /**
+   * Delete masjid
+   */
+  async deleteMasjid(masjidId: string) {
+    const { error } = await this.db
+      .table("masjids")
+      .delete()
+      .eq("id", masjidId);
+
+    if (error) {
+      throw new Error(`Failed to delete masjid: ${error.message}`);
+    }
+
+    return { success: true };
+  }
+
+  /**
    * Update masjid JAKIM zone code
    */
   async updateMasjidZoneCode(masjidId: string, zoneCode: string) {

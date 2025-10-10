@@ -146,16 +146,25 @@ function MasjidView() {
   };
 
   const handleDelete = async () => {
-    // This remains a mock for now as delete logic can be complex
-    try {
-      console.log("Deleting masjid:", id);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      navigate("/masjids");
-    } catch (error) {
-      console.error("Failed to delete masjid:", error);
-      setError("Failed to delete masjid. Please try again.");
+    if (!id) {
+      setError("No masjid ID provided for deletion.");
+      setDeleteDialogOpen(false);
+      return;
     }
-    setDeleteDialogOpen(false);
+
+    try {
+      setDeleteDialogOpen(false);
+      setLoading(true);
+
+      await masjidService.deleteMasjid(id);
+
+      // Success - navigate back to masjids list
+      navigate("/masjids");
+    } catch (error: any) {
+      console.error("Failed to delete masjid:", error);
+      setError(error.message || "Failed to delete masjid. Please try again.");
+      setLoading(false);
+    }
   };
 
   const handleShare = () => {

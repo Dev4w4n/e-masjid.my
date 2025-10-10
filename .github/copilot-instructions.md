@@ -241,17 +241,21 @@ pnpm test:contract         # API contract tests
 
 ## Recent Changes (Last 3 Features)
 
-1. **003-we-need-to**: Content Management & Approval System (CURRENT)
+1. **Super Admin Permissions & Masjid Delete** (CURRENT - Oct 4, 2025)
+   - Added comprehensive RLS policies for super_admin role (Migration 023)
+   - Fixed super_admin permissions: JAKIM zone updates, TV displays, user approvals
+   - Implemented masjid delete functionality with proper API call
+   - Added `deleteMasjid` method to MasjidService with cascade deletion
+
+2. **005-user-approval-system**: User Registration Approval System
+   - Public user registration requires masjid admin approval
+   - Real-time approval notifications
+   - Home masjid lock mechanism after approval
+
+3. **003-we-need-to**: Content Management & Approval System
    - Added content creation and approval workflow
    - Extended hub app with admin dashboard
    - Real-time notifications for approvals
-
-2. **002-create-a-new**: [Previous feature context]
-
-3. **001-build-a-monorepo**: Initial monorepo setup
-   - Established Turborepo + pnpm architecture
-   - Created base packages and applications
-   - Set up Supabase integration
 
 ## Key Constraints
 
