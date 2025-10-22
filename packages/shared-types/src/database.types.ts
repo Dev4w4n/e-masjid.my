@@ -163,6 +163,9 @@ export type Database = {
           masjid_id: string;
           payment_reference: string | null;
           payment_status: Database["public"]["Enums"]["payment_status"];
+          qr_code_enabled: boolean;
+          qr_code_position: string | null;
+          qr_code_url: string | null;
           rejection_reason: string | null;
           resubmission_of: string | null;
           sponsorship_amount: number;
@@ -193,6 +196,9 @@ export type Database = {
           masjid_id: string;
           payment_reference?: string | null;
           payment_status?: Database["public"]["Enums"]["payment_status"];
+          qr_code_enabled?: boolean;
+          qr_code_position?: string | null;
+          qr_code_url?: string | null;
           rejection_reason?: string | null;
           resubmission_of?: string | null;
           sponsorship_amount?: number;
@@ -223,6 +229,9 @@ export type Database = {
           masjid_id?: string;
           payment_reference?: string | null;
           payment_status?: Database["public"]["Enums"]["payment_status"];
+          qr_code_enabled?: boolean;
+          qr_code_position?: string | null;
+          qr_code_url?: string | null;
           rejection_reason?: string | null;
           resubmission_of?: string | null;
           sponsorship_amount?: number;

@@ -531,25 +531,50 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY
 # ===========================================
 NODE_ENV=$NODE_ENV
 NEXT_PUBLIC_APP_URL=http://localhost:3001
-
-# TV Display specific configuration
-NEXT_PUBLIC_DISPLAY_NAME=Default TV Display
-NEXT_PUBLIC_MASJID_ID=550e8400-e29b-41d4-a716-446655440000
-NEXT_PUBLIC_FULLSCREEN_MODE=false
-NEXT_PUBLIC_KIOSK_MODE=false
-NEXT_PUBLIC_AUTO_REFRESH=true
-NEXT_PUBLIC_REFRESH_INTERVAL=3600000
-NEXT_PUBLIC_PRAYER_LOCATION=JOHOR
-NEXT_PUBLIC_PRAYER_ZONE=JHR01
-NEXT_PUBLIC_PRAYER_UPDATE_INTERVAL=300000
-NEXT_PUBLIC_CONTENT_REFRESH_INTERVAL=60000
 NEXT_PUBLIC_APP_ENV=$NODE_ENV
+
+# Note: TV Display gets all configuration from the database via display_id
+# Configuration like masjid_id, prayer times, display settings, etc. are
+# fetched dynamically from /api/displays/[id]/config endpoint.
+# This ensures each TV display can have unique settings without env vars.
 
 # ===========================================
 # DEVELOPMENT FLAGS
 # ===========================================
 NEXT_PUBLIC_ENABLE_DEV_TOOLS=$ENABLE_DEV_TOOLS
 NEXT_PUBLIC_SHOW_LOGGER=$SHOW_LOGGER
+EOL
+
+    # Create Public App .env.local
+    local PUBLIC_ENV_FILE="apps/public/.env.local"
+    echo -e "${BLUE}Creating $PUBLIC_ENV_FILE...${NC}"
+    
+    cat > "$PUBLIC_ENV_FILE" << EOL
+# Environment Variables for Public SEO App (Next.js)
+# Generated automatically by setup script on $(date)
+
+# ===========================================
+# SUPABASE CONFIGURATION (Read-only)
+# ===========================================
+NEXT_PUBLIC_SUPABASE_URL=$API_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY
+
+# ===========================================
+# SITE CONFIGURATION
+# ===========================================
+NEXT_PUBLIC_BASE_URL=http://localhost:3002
+NEXT_PUBLIC_HUB_URL=http://localhost:3000
+
+# ===========================================
+# SEO CONFIGURATION
+# ===========================================
+NEXT_PUBLIC_SITE_NAME=E-Masjid.My
+NEXT_PUBLIC_SITE_DESCRIPTION=Platform digital untuk komuniti masjid di Malaysia
+
+# ===========================================
+# DEVELOPMENT FLAGS
+# ===========================================
+NODE_ENV=$NODE_ENV
 EOL
 
     # Add test-specific variables if this is a test environment
@@ -591,6 +616,7 @@ EOL
     echo -e "${GREEN}✅ All environment files created successfully${NC}"
     echo -e "${BLUE}   • Hub app: $HUB_ENV_FILE${NC}"
     echo -e "${BLUE}   • TV Display app: $TV_DISPLAY_ENV_FILE${NC}"
+    echo -e "${BLUE}   • Public app: $PUBLIC_ENV_FILE${NC}"
 }
 
 if [ "$SETUP_TYPE" = "test" ]; then

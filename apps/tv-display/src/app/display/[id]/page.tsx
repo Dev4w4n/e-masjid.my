@@ -47,15 +47,6 @@ function DisplayPageContent() {
     loadDisplayData();
   }, [displayId]);
 
-  // Auto-refresh configuration periodically
-  useEffect(() => {
-    const interval = setInterval(() => {
-      loadDisplayData(true); // Silent refresh
-    }, 5 * 60 * 1000); // Every 5 minutes
-
-    return () => clearInterval(interval);
-  }, [displayId]);
-
   // Load display configuration and data
   const loadDisplayData = useCallback(async (silentRefresh = false) => {
     if (!silentRefresh) {
@@ -163,6 +154,54 @@ function DisplayPageContent() {
       }));
     }
   }, [displayId, offlineState.networkStatus.isOnline, offlineActions, state.config, state.prayerTimes, state.prayerTimeConfig]);
+
+  // Real-time subscriptions for immediate updates
+  useEffect(() => {
+    // Import the EnhancedSupabaseService dynamically
+    import('../../../lib/services/enhanced-supabase').then(({ EnhancedSupabaseService }) => {
+      const supabaseService = new EnhancedSupabaseService();
+      
+      console.log('[DisplayPage] Setting up real-time subscriptions for display:', displayId);
+      
+      // Subscribe to display configuration changes
+      const unsubscribeDisplay = supabaseService.subscribeToDisplayChanges(
+        displayId,
+        (payload) => {
+          console.log('[DisplayPage] Display config updated via real-time:', payload);
+          // Reload display data when configuration changes
+          loadDisplayData(true); // Silent refresh
+        }
+      );
+      
+      // Subscribe to content changes (assignments to this display)
+      const unsubscribeContent = supabaseService.subscribeToContentChanges(
+        displayId,
+        (payload) => {
+          console.log('[DisplayPage] Content updated via real-time:', payload);
+          // Trigger content refresh by reloading display data
+          loadDisplayData(true); // Silent refresh
+        }
+      );
+      
+      // Cleanup subscriptions on unmount
+      return () => {
+        console.log('[DisplayPage] Cleaning up real-time subscriptions');
+        unsubscribeDisplay();
+        unsubscribeContent();
+      };
+    }).catch(error => {
+      console.error('[DisplayPage] Failed to setup real-time subscriptions:', error);
+    });
+  }, [displayId, loadDisplayData]);
+
+  // Auto-refresh configuration periodically as fallback
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadDisplayData(true); // Silent refresh
+    }, 5 * 60 * 1000); // Every 5 minutes as fallback
+
+    return () => clearInterval(interval);
+  }, [displayId, loadDisplayData]);
 
   // Handle configuration updates
   const handleConfigUpdate = useCallback((newConfig: DisplayConfig) => {

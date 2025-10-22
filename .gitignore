@@ -1,7 +1,7 @@
 # Root .gitignore for Masjid Suite monorepo
 
 # Legacy apps
-legacy/e-masjid.my-2.0
+legacy/
 
 # Dependencies
 node_modules/
@@ -78,7 +78,6 @@ dist/
 
 # Gatsby files
 .cache/
-public/
 
 # Storybook build outputs
 .out

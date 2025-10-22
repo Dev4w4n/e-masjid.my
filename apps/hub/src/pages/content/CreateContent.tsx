@@ -13,10 +13,22 @@ import {
   Grid,
   Divider,
   CircularProgress,
+  Tabs,
+  Tab,
+  Switch,
+  FormControlLabel,
+  Collapse,
 } from "@mui/material";
-import { CloudUpload, Send } from "@mui/icons-material";
+import {
+  CloudUpload,
+  Send,
+  Image as ImageIcon,
+  TextFields,
+  QrCode2,
+} from "@mui/icons-material";
 import { useUser } from "@masjid-suite/auth";
 import supabase, { masjidService } from "@masjid-suite/supabase-client";
+import { TextOverlayEditor } from "../../components/content/TextOverlayEditor";
 
 // Simple form state interface
 interface ContentFormData {
@@ -26,7 +38,12 @@ interface ContentFormData {
   url: string;
   textContent: string; // For text announcements
   masjid_id: string;
+  qr_code_enabled: boolean;
+  qr_code_url: string;
+  qr_code_position: "top-left" | "top-right" | "bottom-left" | "bottom-right";
 }
+
+type ImageCreationMode = "upload" | "text-overlay";
 
 // Masjid option for dropdown
 interface MasjidOption {
@@ -50,6 +67,9 @@ const CreateContent: React.FC = () => {
     url: "",
     textContent: "",
     masjid_id: "",
+    qr_code_enabled: true, // Enabled by default
+    qr_code_url: "", // Empty means use default (public content page)
+    qr_code_position: "bottom-right",
   });
 
   const [availableMasjids, setAvailableMasjids] = useState<MasjidOption[]>([]);
@@ -60,6 +80,10 @@ const CreateContent: React.FC = () => {
   const [loadingMasjids, setLoadingMasjids] = useState(true);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string>("");
+  const [imageCreationMode, setImageCreationMode] =
+    useState<ImageCreationMode>("upload");
+  const [generatedCanvas, setGeneratedCanvas] =
+    useState<HTMLCanvasElement | null>(null);
 
   // Load all active masjids for content submission (any registered user can submit to any masjid)
   useEffect(() => {
@@ -154,42 +178,49 @@ const CreateContent: React.FC = () => {
         throw new Error("Please select a masjid");
       }
 
-      if (formData.type === "image" && !selectedFile) {
-        throw new Error("Please select an image file");
+      if (formData.type === "image" && !selectedFile && !generatedCanvas) {
+        throw new Error("Please select an image file or create a text design");
       }
 
       if (formData.type === "youtube_video" && !formData.url.trim()) {
         throw new Error("YouTube URL is required");
       }
 
-      if (
-        formData.type === "text_announcement" &&
-        !formData.textContent.trim()
-      ) {
-        throw new Error("Text content is required for announcements");
-      }
-
-      if (
-        formData.type === "text_announcement" &&
-        formData.textContent.length > 5000
-      ) {
-        throw new Error("Text content must be less than 5000 characters");
-      }
-
       let contentUrl = formData.url;
 
       // Upload file if image type
-      if (formData.type === "image" && selectedFile) {
+      if (formData.type === "image" && (selectedFile || generatedCanvas)) {
         setUploading(true);
 
         try {
-          const fileExt = selectedFile.name.split(".").pop();
+          let fileToUpload: File;
+          let fileExt: string;
+
+          if (generatedCanvas) {
+            // Convert canvas to blob and then to file
+            const blob = await new Promise<Blob>((resolve) => {
+              generatedCanvas.toBlob((blob) => {
+                resolve(blob!);
+              }, "image/png");
+            });
+
+            fileToUpload = new File([blob], "text-design.png", {
+              type: "image/png",
+            });
+            fileExt = "png";
+          } else if (selectedFile) {
+            fileToUpload = selectedFile;
+            fileExt = selectedFile.name.split(".").pop() || "jpg";
+          } else {
+            throw new Error("No file or canvas to upload");
+          }
+
           const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
           const filePath = `content-images/${formData.masjid_id}/${fileName}`;
 
           const { error: uploadError } = await supabase.storage
             .from("content-images")
-            .upload(filePath, selectedFile, {
+            .upload(filePath, fileToUpload, {
               cacheControl: "3600",
               upsert: false,
             });
@@ -208,11 +239,6 @@ const CreateContent: React.FC = () => {
         } finally {
           setUploading(false);
         }
-      }
-
-      // For text announcements, store the text content in the url field
-      if (formData.type === "text_announcement") {
-        contentUrl = formData.textContent;
       }
 
       // Insert content to database with default values for duration and dates
@@ -234,6 +260,9 @@ const CreateContent: React.FC = () => {
           end_date: nextWeek, // Default to 7 days from now
           submitted_by: user!.id,
           status: "pending",
+          qr_code_enabled: formData.qr_code_enabled,
+          qr_code_url: formData.qr_code_url || null,
+          qr_code_position: formData.qr_code_position,
         },
       ]);
 
@@ -249,9 +278,14 @@ const CreateContent: React.FC = () => {
         url: "",
         textContent: "",
         masjid_id: "", // Don't auto-select, let user choose which masjid to submit to
+        qr_code_enabled: true,
+        qr_code_url: "",
+        qr_code_position: "bottom-right",
       });
       setSelectedFile(null);
       setImagePreview("");
+      setGeneratedCanvas(null);
+      setImageCreationMode("upload");
       setUploading(false);
     } catch (err: any) {
       console.error("Content submission error:", err);
@@ -286,8 +320,10 @@ const CreateContent: React.FC = () => {
         Create Content
       </Typography>
       <Typography variant="body1" color="text.secondary" gutterBottom>
-        Submit new content to any masjid for approval. The masjid admin(s) will
-        review your submission and set the display duration and schedule.
+        Submit new content to any masjid for approval. Upload your own images or
+        create beautiful text designs with Islamic-themed backgrounds. The
+        masjid admin(s) will review your submission and set the display duration
+        and schedule.
       </Typography>
 
       <Divider sx={{ my: 3 }} />
@@ -339,12 +375,19 @@ const CreateContent: React.FC = () => {
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
                   <InputLabel>Content Type</InputLabel>
-                  <Select value={formData.type} onChange={handleChange("type")}>
-                    <MenuItem value="image">Image</MenuItem>
+                  <Select
+                    value={formData.type}
+                    onChange={(e) => {
+                      handleChange("type")(e);
+                      // Reset states when switching types
+                      setSelectedFile(null);
+                      setImagePreview("");
+                      setGeneratedCanvas(null);
+                      setImageCreationMode("upload");
+                    }}
+                  >
+                    <MenuItem value="image">Image/Text Design</MenuItem>
                     <MenuItem value="youtube_video">YouTube Video</MenuItem>
-                    <MenuItem value="text_announcement">
-                      Text Announcement
-                    </MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -372,100 +415,169 @@ const CreateContent: React.FC = () => {
                 />
               </Grid>
 
-              {/* Image Upload */}
+              {/* Image Creation - Upload or Text Overlay */}
               {formData.type === "image" && (
                 <Grid item xs={12}>
-                  <Typography variant="h6" gutterBottom>
-                    Upload Image
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    gutterBottom
-                  >
-                    Supported formats: JPG, PNG, GIF, WebP (Max 10MB)
-                  </Typography>
+                  <Paper variant="outlined" sx={{ p: 2 }}>
+                    <Typography variant="h6" gutterBottom>
+                      Create Image Content
+                    </Typography>
 
-                  {!selectedFile ? (
-                    <>
-                      <input
-                        accept="image/*"
-                        style={{ display: "none" }}
-                        id="image-upload"
-                        type="file"
-                        onChange={handleFileSelect}
+                    {/* Mode Selection Tabs */}
+                    <Tabs
+                      value={imageCreationMode}
+                      onChange={(_, newValue) => {
+                        setImageCreationMode(newValue);
+                        // Clear previous selections
+                        setSelectedFile(null);
+                        setImagePreview("");
+                        setGeneratedCanvas(null);
+                      }}
+                      sx={{ mb: 3, borderBottom: 1, borderColor: "divider" }}
+                    >
+                      <Tab
+                        value="upload"
+                        label="Upload Image"
+                        icon={<ImageIcon />}
+                        iconPosition="start"
                       />
-                      <label htmlFor="image-upload">
-                        <Button
-                          variant="outlined"
-                          component="span"
-                          startIcon={<CloudUpload />}
-                          size="large"
-                          sx={{ mt: 1 }}
-                        >
-                          Choose Image
-                        </Button>
-                      </label>
-                    </>
-                  ) : (
-                    <Box sx={{ mt: 2 }}>
-                      {/* Image Preview */}
-                      {imagePreview && (
-                        <Box
-                          sx={{
-                            mb: 2,
-                            border: "1px solid",
-                            borderColor: "divider",
-                            borderRadius: 1,
-                            p: 2,
-                            bgcolor: "background.default",
-                          }}
-                        >
-                          <img
-                            src={imagePreview}
-                            alt="Preview"
-                            style={{
-                              maxWidth: "100%",
-                              maxHeight: "400px",
-                              display: "block",
-                              margin: "0 auto",
-                              borderRadius: "4px",
-                            }}
-                          />
-                        </Box>
-                      )}
+                      <Tab
+                        value="text-overlay"
+                        label="Create Text Design"
+                        icon={<TextFields />}
+                        iconPosition="start"
+                      />
+                    </Tabs>
 
-                      {/* File Info */}
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          p: 2,
-                          bgcolor: "action.hover",
-                          borderRadius: 1,
-                        }}
-                      >
-                        <Box>
-                          <Typography variant="body2" fontWeight="medium">
-                            {selectedFile.name}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {(selectedFile.size / 1024).toFixed(2)} KB •{" "}
-                            {selectedFile.type}
-                          </Typography>
-                        </Box>
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          color="error"
-                          onClick={handleClearImage}
+                    {/* Upload Mode */}
+                    {imageCreationMode === "upload" && (
+                      <Box>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          gutterBottom
                         >
-                          Remove
-                        </Button>
+                          Supported formats: JPG, PNG, GIF, WebP (Max 10MB)
+                        </Typography>
+
+                        {!selectedFile ? (
+                          <>
+                            <input
+                              accept="image/*"
+                              style={{ display: "none" }}
+                              id="image-upload"
+                              type="file"
+                              onChange={handleFileSelect}
+                            />
+                            <label htmlFor="image-upload">
+                              <Button
+                                variant="outlined"
+                                component="span"
+                                startIcon={<CloudUpload />}
+                                size="large"
+                                sx={{ mt: 1 }}
+                              >
+                                Choose Image
+                              </Button>
+                            </label>
+                          </>
+                        ) : (
+                          <Box sx={{ mt: 2 }}>
+                            {/* Image Preview */}
+                            {imagePreview && (
+                              <Box
+                                sx={{
+                                  mb: 2,
+                                  border: "1px solid",
+                                  borderColor: "divider",
+                                  borderRadius: 1,
+                                  p: 2,
+                                  bgcolor: "background.default",
+                                }}
+                              >
+                                <img
+                                  src={imagePreview}
+                                  alt="Preview"
+                                  style={{
+                                    maxWidth: "100%",
+                                    maxHeight: "400px",
+                                    display: "block",
+                                    margin: "0 auto",
+                                    borderRadius: "4px",
+                                  }}
+                                />
+                              </Box>
+                            )}
+
+                            {/* File Info */}
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                p: 2,
+                                bgcolor: "action.hover",
+                                borderRadius: 1,
+                              }}
+                            >
+                              <Box>
+                                <Typography variant="body2" fontWeight="medium">
+                                  {selectedFile.name}
+                                </Typography>
+                                <Typography
+                                  variant="caption"
+                                  color="text.secondary"
+                                >
+                                  {(selectedFile.size / 1024).toFixed(2)} KB •{" "}
+                                  {selectedFile.type}
+                                </Typography>
+                              </Box>
+                              <Button
+                                variant="outlined"
+                                size="small"
+                                color="error"
+                                onClick={handleClearImage}
+                              >
+                                Remove
+                              </Button>
+                            </Box>
+                          </Box>
+                        )}
                       </Box>
-                    </Box>
-                  )}
+                    )}
+
+                    {/* Text Overlay Mode */}
+                    {imageCreationMode === "text-overlay" && (
+                      <Box>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          gutterBottom
+                          sx={{ mb: 2 }}
+                        >
+                          Create a professional text announcement with
+                          Islamic-themed backgrounds or solid colors. Perfect
+                          for announcements, quotes, and reminders.
+                        </Typography>
+
+                        <TextOverlayEditor
+                          onGenerate={(canvas) => {
+                            setGeneratedCanvas(canvas);
+                            // Show success message
+                            const preview = canvas.toDataURL("image/png");
+                            setImagePreview(preview);
+                          }}
+                        />
+
+                        {generatedCanvas && (
+                          <Alert severity="success" sx={{ mt: 2 }}>
+                            ✓ Text design created! You can now submit this
+                            content.
+                          </Alert>
+                        )}
+                      </Box>
+                    )}
+                  </Paper>
                 </Grid>
               )}
 
@@ -483,23 +595,101 @@ const CreateContent: React.FC = () => {
                 </Grid>
               )}
 
-              {/* Text Announcement Content */}
-              {formData.type === "text_announcement" && (
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    multiline
-                    rows={6}
-                    label="Announcement Text"
-                    placeholder="Enter your announcement text here..."
-                    value={formData.textContent}
-                    onChange={handleChange("textContent")}
-                    required
-                    inputProps={{ maxLength: 5000 }}
-                    helperText={`${formData.textContent.length}/5000 characters`}
+              {/* QR Code Settings */}
+              <Grid item xs={12}>
+                <Paper variant="outlined" sx={{ p: 2 }}>
+                  <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                    <QrCode2 sx={{ mr: 1, color: "primary.main" }} />
+                    <Typography variant="h6">QR Code Settings</Typography>
+                  </Box>
+
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={formData.qr_code_enabled}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            qr_code_enabled: e.target.checked,
+                          }))
+                        }
+                      />
+                    }
+                    label="Enable QR Code on TV Display"
                   />
-                </Grid>
-              )}
+
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mt: 1, mb: 2 }}
+                  >
+                    When enabled, a QR code will appear on the TV display. By
+                    default, it links to this content's public detail page where
+                    viewers can get more information.
+                  </Typography>
+
+                  <Collapse in={formData.qr_code_enabled}>
+                    <Grid container spacing={2}>
+                      {/* Custom URL */}
+                      <Grid item xs={12}>
+                        <TextField
+                          fullWidth
+                          label="Custom QR Code URL (Optional)"
+                          placeholder="https://example.com/your-link"
+                          value={formData.qr_code_url}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              qr_code_url: e.target.value,
+                            }))
+                          }
+                          helperText="Leave empty to use default public content page. Enter a custom URL to link to your website, registration form, donation page, etc."
+                        />
+                      </Grid>
+
+                      {/* Position */}
+                      <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth>
+                          <InputLabel>QR Code Position</InputLabel>
+                          <Select
+                            value={formData.qr_code_position}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                qr_code_position: e.target.value as any,
+                              }))
+                            }
+                            label="QR Code Position"
+                          >
+                            <MenuItem value="top-left">Top Left</MenuItem>
+                            <MenuItem value="top-right">Top Right</MenuItem>
+                            <MenuItem value="bottom-left">Bottom Left</MenuItem>
+                            <MenuItem value="bottom-right">
+                              Bottom Right (Default)
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+
+                      {/* Preview Note */}
+                      <Grid item xs={12}>
+                        <Alert severity="info" icon={<QrCode2 />}>
+                          <Typography variant="body2">
+                            <strong>QR Code Preview:</strong> The QR code will
+                            be generated and displayed on the TV screen when
+                            your content is approved and shown. Viewers can scan
+                            it with their phones to{" "}
+                            {formData.qr_code_url
+                              ? "visit your custom link"
+                              : "view detailed information about this content"}
+                            .
+                          </Typography>
+                        </Alert>
+                      </Grid>
+                    </Grid>
+                  </Collapse>
+                </Paper>
+              </Grid>
 
               {/* Error Display */}
               {error && (

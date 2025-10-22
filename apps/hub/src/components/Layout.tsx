@@ -212,9 +212,17 @@ function Layout() {
     <Box>
       {/* Logo/Brand */}
       <Toolbar sx={{ px: 3 }}>
-        <Avatar sx={{ bgcolor: "primary.main", mr: 2 }}>
-          <Mosque />
-        </Avatar>
+        <Box
+          component="img"
+          src="/emasjid-500x500.png"
+          alt="E-Masjid.My Logo"
+          sx={{
+            width: 40,
+            height: 40,
+            borderRadius: 1,
+            mr: 2,
+          }}
+        />
         {drawerOpen && (
           <Typography
             variant="h6"
@@ -222,7 +230,7 @@ function Layout() {
             component="div"
             sx={{ fontWeight: "bold" }}
           >
-            E-Masjid
+            E-Masjid.My
           </Typography>
         )}
       </Toolbar>

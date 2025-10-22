@@ -11,6 +11,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { DisplayContent, ContentType, SponsorshipTier } from '@masjid-suite/shared-types';
 import ContentViewer from './ContentViewer';
 import SponsorshipOverlay from './SponsorshipOverlay';
+import QRCodeOverlay from './QRCodeOverlay';
 
 // Extended content type with sponsor info from API response
 interface DisplayContentWithSponsor extends DisplayContent {
@@ -182,13 +183,41 @@ export function ContentCarousel({
   useEffect(() => {
     fetchContent();
 
-    // Refresh content every 5 minutes
+    // Refresh content every 5 minutes as fallback
     const refreshInterval = setInterval(fetchContent, 5 * 60 * 1000);
 
     return () => {
       clearInterval(refreshInterval);
     };
   }, [fetchContent]);
+
+  // Real-time subscription for immediate content updates
+  useEffect(() => {
+    // Import the EnhancedSupabaseService dynamically
+    import('../lib/services/enhanced-supabase').then(({ EnhancedSupabaseService }) => {
+      const supabaseService = new EnhancedSupabaseService();
+      
+      console.log('[ContentCarousel] Setting up real-time subscription for display content:', displayId);
+      
+      // Subscribe to content changes for this display
+      const unsubscribe = supabaseService.subscribeToContentChanges(
+        displayId,
+        (payload) => {
+          console.log('[ContentCarousel] Content updated via real-time:', payload);
+          // Immediately fetch updated content
+          fetchContent();
+        }
+      );
+      
+      // Cleanup subscription on unmount
+      return () => {
+        console.log('[ContentCarousel] Cleaning up real-time subscription');
+        unsubscribe();
+      };
+    }).catch(error => {
+      console.error('[ContentCarousel] Failed to setup real-time subscription:', error);
+    });
+  }, [displayId, fetchContent]);
 
   // Touch event handlers for swipe navigation
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
@@ -346,6 +375,10 @@ export function ContentCarousel({
         const isActive = index === state.currentIndex;
         const transitionType = content.transition_type || config.contentTransitionType;
         
+        // For YouTube videos, only render when active to force restart from beginning
+        // For other content types, keep pre-rendered for smooth transitions
+        const shouldRender = content.type === 'youtube_video' ? isActive : true;
+        
         // Determine transition classes based on type and active state
         let transitionClasses = '';
         let visibilityClasses = '';
@@ -372,6 +405,11 @@ export function ContentCarousel({
             visibilityClasses = isActive ? 'opacity-100' : 'opacity-0';
         }
 
+        // Don't render inactive YouTube videos (unmount them completely)
+        if (!shouldRender) {
+          return null;
+        }
+
         return (
           <div
             key={content.id}
@@ -396,6 +434,14 @@ export function ContentCarousel({
                 content={content}
                 showAmount={config.showSponsorshipAmounts}
                 className="absolute bottom-4 right-4"
+              />
+            )}
+
+            {/* QR Code overlay */}
+            {isActive && content.qr_code_enabled && (
+              <QRCodeOverlay
+                content={content}
+                className="z-10"
               />
             )}
           </div>

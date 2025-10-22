@@ -5,6 +5,8 @@
 E-Masjid.My is a comprehensive Islamic community management platform built as a monorepo with React 18+ frontend and Supabase backend. The system serves Malaysian mosques with multilingual support (Bahasa Malaysia/English) and follows strict constitutional principles for development.
 
 ## Active Technologies
+- TypeScript 5.2+, React 18+, Next.js 15+ (for SSR/SEO) + Next.js, React, @masjid-suite/supabase-client, @masjid-suite/shared-types, Tailwind CSS (for Islamic theme from masjidbro-mockup) (006-create-a-new)
+- Supabase PostgreSQL (read-only access to display_content, categories, masjids tables) (006-create-a-new)
 
 **Frontend Stack**:
 

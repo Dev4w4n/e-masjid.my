@@ -57,6 +57,11 @@ export interface DisplayContent {
   transition_type?: "fade" | "slide" | "zoom" | "none";
   image_display_mode?: "contain" | "cover" | "fill" | "none";
   display_order?: number; // Display order in carousel (0-indexed)
+
+  // QR Code settings
+  qr_code_enabled: boolean; // Whether to show QR code overlay on TV display
+  qr_code_url?: string | null; // Custom URL for QR code. If null, defaults to public content detail page
+  qr_code_position?: "top-left" | "top-right" | "bottom-left" | "bottom-right"; // Position of QR code on screen
 }
 
 export type CreateDisplayContent = Omit<
