@@ -228,7 +228,7 @@ function Layout() {
             variant="h6"
             noWrap
             component="div"
-            sx={{ fontWeight: "bold" }}
+            sx={{ fontWeight: "bold", color: "text.primary" }}
           >
             E-Masjid.My
           </Typography>
@@ -249,6 +249,7 @@ function Layout() {
                 borderRadius: 1,
                 mb: 0.5,
                 mx: 1,
+                color: "text.primary",
                 "&.Mui-selected": {
                   bgcolor: "primary.main",
                   color: "primary.contrastText",
@@ -258,6 +259,9 @@ function Layout() {
                   "& .MuiListItemIcon-root": {
                     color: "inherit",
                   },
+                  "& .MuiListItemText-primary": {
+                    color: "inherit",
+                  },
                 },
               }}
             >
@@ -265,6 +269,7 @@ function Layout() {
                 sx={{
                   minWidth: drawerOpen ? 56 : "auto",
                   mr: drawerOpen ? 0 : "auto",
+                  color: "inherit",
                 }}
               >
                 {item.badge ? (
@@ -275,7 +280,12 @@ function Layout() {
                   item.icon
                 )}
               </ListItemIcon>
-              {drawerOpen && <ListItemText primary={item.text} />}
+              {drawerOpen && (
+                <ListItemText
+                  primary={item.text}
+                  sx={{ "& .MuiListItemText-primary": { color: "inherit" } }}
+                />
+              )}
             </ListItemButton>
           </ListItem>
         ))}
@@ -295,17 +305,24 @@ function Layout() {
                   borderRadius: 1,
                   mx: 1,
                   my: 1,
+                  color: "text.primary",
                 }}
               >
                 <ListItemIcon
                   sx={{
                     minWidth: drawerOpen ? 56 : "auto",
                     mr: drawerOpen ? 0 : "auto",
+                    color: "inherit",
                   }}
                 >
                   <Settings />
                 </ListItemIcon>
-                {drawerOpen && <ListItemText primary="Settings" />}
+                {drawerOpen && (
+                  <ListItemText
+                    primary="Settings"
+                    sx={{ "& .MuiListItemText-primary": { color: "inherit" } }}
+                  />
+                )}
               </ListItemButton>
             </ListItem>
           </List>
@@ -522,6 +539,13 @@ function Layout() {
               boxSizing: "border-box",
               width: drawerWidth,
               bgcolor: "background.paper",
+              color: "text.primary",
+            },
+            "& .MuiListItemText-primary": {
+              color: "text.primary",
+            },
+            "& .MuiListItemIcon-root": {
+              color: "text.primary",
             },
           }}
         >
