@@ -34,7 +34,7 @@
     "react-dom": "^19.0.0",
     "react-player": "^2.13.0",
     "tailwind-merge": "^2.0.0",
-    "zustand": "^4.4.7"
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@masjid-suite/eslint-config": "workspace:*",
