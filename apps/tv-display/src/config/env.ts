@@ -1,21 +1,14 @@
 /**
  * TV Display Environment Configuration
- * Validates and provides typed access to environment variables
+ * 
+ * IMPORTANT: TV Display configuration (masjid_id, prayer times, display settings, etc.)
+ * is fetched dynamically from the database via /api/displays/[id]/config endpoint.
+ * This file only contains infrastructure configuration (API endpoints, etc.)
+ * 
+ * Each TV display has a unique display_id in the URL which determines all its settings.
  */
 
-// Display Configuration
-export const DISPLAY_CONFIG = {
-  name: process.env.NEXT_PUBLIC_DISPLAY_NAME || 'TV Display',
-  masjidId: process.env.NEXT_PUBLIC_MASJID_ID || '',
-  
-  // TV Display Settings
-  fullscreenMode: process.env.NEXT_PUBLIC_FULLSCREEN_MODE === 'true',
-  kioskMode: process.env.NEXT_PUBLIC_KIOSK_MODE === 'true',
-  autoRefresh: process.env.NEXT_PUBLIC_AUTO_REFRESH === 'true',
-  refreshInterval: parseInt(process.env.NEXT_PUBLIC_REFRESH_INTERVAL || '3600000'),
-} as const;
-
-// API Configuration
+// API Configuration - Required for connecting to backend services
 export const API_CONFIG = {
   supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
   supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
@@ -23,29 +16,16 @@ export const API_CONFIG = {
   baseApiUrl: process.env.NEXT_PUBLIC_API_BASE_URL || '',
 } as const;
 
-// Prayer Times Configuration
-export const PRAYER_CONFIG = {
-  location: process.env.NEXT_PUBLIC_PRAYER_LOCATION || 'JOHOR',
-  zone: process.env.NEXT_PUBLIC_PRAYER_ZONE || 'JHR01',
-  updateInterval: parseInt(process.env.NEXT_PUBLIC_PRAYER_UPDATE_INTERVAL || '300000'),
-} as const;
-
-// Content Configuration
-export const CONTENT_CONFIG = {
-  refreshInterval: parseInt(process.env.NEXT_PUBLIC_CONTENT_REFRESH_INTERVAL || '60000'),
-} as const;
-
 // Environment
 export const APP_ENV = process.env.NEXT_PUBLIC_APP_ENV || 'development';
 export const IS_DEVELOPMENT = APP_ENV === 'development';
 export const IS_PRODUCTION = APP_ENV === 'production';
 
-// Validation helper
+// Validation helper - Only validates infrastructure config
 export function validateEnvironment(): { isValid: boolean; missingVars: string[] } {
   const requiredVars = [
     'NEXT_PUBLIC_SUPABASE_URL',
     'NEXT_PUBLIC_SUPABASE_ANON_KEY',
-    'NEXT_PUBLIC_MASJID_ID',
   ];
   
   const missingVars = requiredVars.filter(
@@ -57,3 +37,9 @@ export function validateEnvironment(): { isValid: boolean; missingVars: string[]
     missingVars,
   };
 }
+
+// DEPRECATED: These exports are kept for backward compatibility but are not used.
+// All display configuration comes from the database via display_id.
+export const DISPLAY_CONFIG = {} as const;
+export const PRAYER_CONFIG = {} as const;
+export const CONTENT_CONFIG = {} as const;

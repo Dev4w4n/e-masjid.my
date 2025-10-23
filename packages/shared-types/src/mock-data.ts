@@ -607,6 +607,16 @@ export class DisplayContentMockFactory {
       updated_at: MockUtils.randomRecentDate(),
       approval_notes: null,
       resubmission_of: null,
+      qr_code_enabled: MockUtils.randomBoolean(),
+      qr_code_url: MockUtils.randomBoolean()
+        ? "https://example.com/custom-url"
+        : null,
+      qr_code_position: MockUtils.randomElement([
+        "top-left",
+        "top-right",
+        "bottom-left",
+        "bottom-right",
+      ] as const),
     };
 
     return {

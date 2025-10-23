@@ -40,21 +40,25 @@ declare module "@mui/material/Typography" {
 }
 
 /**
- * Islamic-inspired color palette
+ * E-Masjid.My color palette (from https://e-masjid.my/)
  */
-export const ISLAMIC_COLORS = {
-  // Traditional Islamic green
-  green: "#146B3A",
-  // Islamic gold/amber
-  gold: "#F5B800",
-  // Calming teal
-  teal: "#0D7377",
-  // Deep navy blue
-  navy: "#1B263B",
-  // Warm earth tones
-  earth: "#A0522D",
-  // Pearl white
-  pearl: "#F8F9FA",
+export const EMASJID_COLORS = {
+  // Primary blue (matches e-masjid.my)
+  blue: "#338CF5",
+  // Teal/Cyan accent
+  teal: "#4FD1C5",
+  // Button blue
+  buttonBlue: "#0070F4",
+  // Text colors
+  textPrimary: "#191919",
+  textSecondary: "#666666",
+  textTertiary: "#999999",
+  // Background
+  background: "#FFFFFF",
+  backgroundGray: "#FBFBFB",
+  // Borders
+  border: "#EAEAEA",
+  borderDark: "#DFDFDF",
 } as const;
 
 /**
@@ -114,27 +118,27 @@ export function createMasjidTheme(
     palette: {
       mode,
       primary: {
-        main: customColors?.primary?.main || ISLAMIC_COLORS.green,
-        light: customColors?.primary?.light || "#4A9960",
-        dark: customColors?.primary?.dark || "#0E4B29",
+        main: customColors?.primary?.main || EMASJID_COLORS.blue,
+        light: customColors?.primary?.light || "#99C5FA",
+        dark: customColors?.primary?.dark || "#0070F4",
         contrastText: "#FFFFFF",
       },
       secondary: {
-        main: customColors?.secondary?.main || ISLAMIC_COLORS.gold,
-        light: customColors?.secondary?.light || "#F7C633",
-        dark: customColors?.secondary?.dark || "#B8860B",
-        contrastText: "#000000",
+        main: customColors?.secondary?.main || EMASJID_COLORS.teal,
+        light: customColors?.secondary?.light || "#79E1D1",
+        dark: customColors?.secondary?.dark || "#2BA68E",
+        contrastText: "#FFFFFF",
       },
       background: {
-        default: mode === "light" ? "#FAFAFA" : "#121212",
-        paper: mode === "light" ? "#FFFFFF" : "#1E1E1E",
+        default: mode === "light" ? EMASJID_COLORS.backgroundGray : "#121212",
+        paper: mode === "light" ? EMASJID_COLORS.background : "#1E1E1E",
       },
       text: {
         primary:
           mode === "light"
             ? isHighContrast
               ? "#000000"
-              : "#1B263B"
+              : EMASJID_COLORS.textPrimary
             : isHighContrast
               ? "#FFFFFF"
               : "#E0E0E0",
@@ -142,7 +146,7 @@ export function createMasjidTheme(
           mode === "light"
             ? isHighContrast
               ? "#333333"
-              : "#0D7377"
+              : EMASJID_COLORS.textSecondary
             : isHighContrast
               ? "#CCCCCC"
               : "#B0BEC5",
@@ -158,61 +162,67 @@ export function createMasjidTheme(
         dark: "#E65100",
       },
       info: {
-        main: ISLAMIC_COLORS.teal,
-        light: "#26A69A",
-        dark: "#00695C",
+        main: EMASJID_COLORS.blue,
+        light: "#99C5FA",
+        dark: "#0070F4",
       },
       success: {
-        main: ISLAMIC_COLORS.green,
-        light: "#4A9960",
-        dark: "#0E4B29",
+        main: EMASJID_COLORS.teal,
+        light: "#79E1D1",
+        dark: "#2BA68E",
       },
     },
     typography: {
       fontFamily: [
+        '"Inter"',
+        "-apple-system",
+        "BlinkMacSystemFont",
+        '"Segoe UI"',
         '"Roboto"',
-        '"Noto Sans Arabic"',
         '"Helvetica Neue"',
         "Arial",
+        '"Noto Sans Arabic"',
         "sans-serif",
         '"Apple Color Emoji"',
         '"Segoe UI Emoji"',
         '"Segoe UI Symbol"',
-        '"Noto Color Emoji"',
       ].join(","),
       h1: {
-        fontWeight: 600,
-        fontSize: "2.5rem",
-        lineHeight: 1.2,
+        fontWeight: 800,
+        fontSize: "3.25rem", // 52px like e-masjid.my
+        lineHeight: 1.125,
+        letterSpacing: "-0.02em",
       },
       h2: {
-        fontWeight: 600,
-        fontSize: "2rem",
-        lineHeight: 1.3,
+        fontWeight: 800,
+        fontSize: "2.625rem", // 42px
+        lineHeight: 1.25,
+        letterSpacing: "-0.02em",
       },
       h3: {
-        fontWeight: 600,
-        fontSize: "1.75rem",
-        lineHeight: 1.4,
+        fontWeight: 700,
+        fontSize: "2rem", // 32px
+        lineHeight: 1.25,
       },
       h4: {
-        fontWeight: 500,
-        fontSize: "1.5rem",
-        lineHeight: 1.4,
+        fontWeight: 700,
+        fontSize: "1.5rem", // 24px
+        lineHeight: 1.375,
+        letterSpacing: "-0.01em",
       },
       h5: {
-        fontWeight: 500,
+        fontWeight: 600,
         fontSize: "1.25rem",
         lineHeight: 1.5,
       },
       h6: {
-        fontWeight: 500,
-        fontSize: "1.1rem",
+        fontWeight: 600,
+        fontSize: "1.125rem",
         lineHeight: 1.5,
       },
       body1: {
         fontSize: "1rem",
-        lineHeight: 1.6,
+        lineHeight: 1.5,
       },
       body2: {
         fontSize: "0.875rem",
@@ -246,15 +256,15 @@ export function createMasjidTheme(
     breakpoints: {
       values: {
         xs: 0,
-        sm: 600,
-        md: 900,
-        lg: 1200,
-        xl: 1536,
+        sm: 640,
+        md: 768,
+        lg: 1024,
+        xl: 1280,
       },
     },
-    spacing: 8, // 8px base spacing
+    spacing: 8, // 8px base spacing (0.5rem)
     shape: {
-      borderRadius: 8, // Subtle rounded corners
+      borderRadius: 4, // 0.25rem like e-masjid.my
     },
   });
 
@@ -273,7 +283,7 @@ export function createMasjidTheme(
               background: mode === "light" ? "#f1f1f1" : "#2b2b2b",
             },
             "&::-webkit-scrollbar-thumb": {
-              background: ISLAMIC_COLORS.green,
+              background: EMASJID_COLORS.blue,
               borderRadius: "4px",
             },
             "&::-webkit-scrollbar-thumb:hover": {
@@ -289,10 +299,11 @@ export function createMasjidTheme(
       MuiAppBar: {
         styleOverrides: {
           root: {
-            backgroundColor: ISLAMIC_COLORS.green,
-            boxShadow: "0 2px 8px rgba(20, 107, 58, 0.15)",
+            background: `linear-gradient(to right, ${EMASJID_COLORS.blue}, ${EMASJID_COLORS.teal})`,
+            boxShadow:
+              "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
             "&.MuiAppBar-colorPrimary": {
-              backgroundColor: ISLAMIC_COLORS.green,
+              background: `linear-gradient(to right, ${EMASJID_COLORS.blue}, ${EMASJID_COLORS.teal})`,
             },
           },
         },
@@ -300,19 +311,17 @@ export function createMasjidTheme(
       MuiCard: {
         styleOverrides: {
           root: {
-            borderRadius: 12,
+            borderRadius: 4, // 0.25rem like e-masjid.my
             boxShadow:
               mode === "light"
-                ? "0 2px 12px rgba(0,0,0,0.08)"
+                ? "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)"
                 : "0 2px 12px rgba(0,0,0,0.24)",
-            transition:
-              "box-shadow 0.3s ease-in-out, transform 0.2s ease-in-out",
+            transition: "all 150ms cubic-bezier(0.4, 0, 0.2, 1)",
             "&:hover": {
               boxShadow:
                 mode === "light"
-                  ? "0 4px 20px rgba(0,0,0,0.12)"
+                  ? "0 10px 15px -3px rgba(0,0,0,0.04), 0 4px 6px -2px rgba(0,0,0,0.02)"
                   : "0 4px 20px rgba(0,0,0,0.32)",
-              transform: "translateY(-2px)",
             },
           },
         },
@@ -320,28 +329,44 @@ export function createMasjidTheme(
       MuiButton: {
         styleOverrides: {
           root: {
-            borderRadius: 8,
+            borderRadius: 4, // 0.25rem like e-masjid.my
             textTransform: "none",
             fontWeight: 500,
-            padding: "8px 24px",
-            minHeight: "40px",
+            padding: "12px 32px", // 0.75rem 2rem
+            minHeight: "44px",
+            transition: "all 150ms cubic-bezier(0.4, 0, 0.2, 1)",
           },
           contained: {
-            boxShadow: "0 2px 8px rgba(20, 107, 58, 0.3)",
+            backgroundColor: EMASJID_COLORS.buttonBlue,
+            boxShadow:
+              "0 10px 15px -3px rgba(0,0,0,0.04), 0 4px 6px -2px rgba(0,0,0,0.02)",
             "&:hover": {
-              boxShadow: "0 4px 16px rgba(20, 107, 58, 0.4)",
-              transform: "translateY(-1px)",
+              backgroundColor: "#0064DA",
+              boxShadow:
+                "0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04)",
             },
             "&:active": {
-              transform: "translateY(0)",
+              transform: "scale(0.98)",
+            },
+            "&.MuiButton-containedPrimary": {
+              backgroundColor: EMASJID_COLORS.buttonBlue,
+              "&:hover": {
+                backgroundColor: "#0064DA",
+              },
             },
           },
           outlined: {
-            borderWidth: "2px",
+            borderWidth: "1px",
+            borderColor: EMASJID_COLORS.border,
             "&:hover": {
-              borderWidth: "2px",
-              backgroundColor: `${ISLAMIC_COLORS.green}08`,
+              borderWidth: "1px",
+              borderColor: EMASJID_COLORS.blue,
+              backgroundColor: `${EMASJID_COLORS.blue}08`,
             },
+          },
+          sizeLarge: {
+            padding: "14px 40px",
+            fontSize: "1.125rem",
           },
         },
       },
@@ -349,13 +374,13 @@ export function createMasjidTheme(
         styleOverrides: {
           root: {
             "& .MuiOutlinedInput-root": {
-              borderRadius: 8,
+              borderRadius: 4,
               "&:hover .MuiOutlinedInput-notchedOutline": {
-                borderColor: ISLAMIC_COLORS.green,
+                borderColor: EMASJID_COLORS.borderDark,
               },
               "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: ISLAMIC_COLORS.green,
-                borderWidth: "2px",
+                borderColor: EMASJID_COLORS.buttonBlue,
+                borderWidth: "1px",
               },
             },
           },
@@ -364,7 +389,7 @@ export function createMasjidTheme(
       MuiOutlinedInput: {
         styleOverrides: {
           root: {
-            borderRadius: 8,
+            borderRadius: 4,
           },
         },
       },
@@ -372,46 +397,51 @@ export function createMasjidTheme(
         styleOverrides: {
           root: {
             borderRadius: 16,
+            fontWeight: 500,
           },
           colorPrimary: {
-            backgroundColor: ISLAMIC_COLORS.green,
+            backgroundColor: EMASJID_COLORS.blue,
             color: "#FFFFFF",
           },
           colorSecondary: {
-            backgroundColor: ISLAMIC_COLORS.gold,
-            color: "#000000",
+            backgroundColor: EMASJID_COLORS.teal,
+            color: "#FFFFFF",
           },
         },
       },
       MuiPaper: {
         styleOverrides: {
           root: {
-            borderRadius: 8,
+            borderRadius: 4,
           },
           elevation1: {
-            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+            boxShadow:
+              "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
           },
           elevation2: {
-            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            boxShadow:
+              "0 4px 6px -1px rgba(0,0,0,0.04), 0 2px 4px -1px rgba(0,0,0,0.03)",
           },
           elevation3: {
-            boxShadow: "0 6px 16px rgba(0,0,0,0.12)",
+            boxShadow:
+              "0 10px 15px -3px rgba(0,0,0,0.04), 0 4px 6px -2px rgba(0,0,0,0.02)",
           },
         },
       },
       MuiDialogTitle: {
         styleOverrides: {
           root: {
-            color: ISLAMIC_COLORS.green,
-            fontWeight: 600,
+            color: EMASJID_COLORS.textPrimary,
+            fontWeight: 700,
+            fontSize: "1.5rem",
           },
         },
       },
       MuiTabs: {
         styleOverrides: {
           indicator: {
-            backgroundColor: ISLAMIC_COLORS.gold,
-            height: 3,
+            backgroundColor: EMASJID_COLORS.buttonBlue,
+            height: 2,
           },
         },
       },
@@ -421,7 +451,7 @@ export function createMasjidTheme(
             textTransform: "none",
             fontWeight: 500,
             "&.Mui-selected": {
-              color: ISLAMIC_COLORS.green,
+              color: EMASJID_COLORS.buttonBlue,
             },
           },
         },

@@ -197,7 +197,11 @@ export async function GET(
           transition_type: assignment.transition_type,
           image_display_mode: assignment.image_display_mode,
           display_order: assignment.display_order
-        })
+        }),
+        // QR Code fields
+        qr_code_enabled: item.qr_code_enabled || false,
+        ...(item.qr_code_url && { qr_code_url: item.qr_code_url }),
+        ...(item.qr_code_position && { qr_code_position: item.qr_code_position })
       };
     }) || [])
     // Sort by display_order (ascending), then by sponsorship_amount (descending), then by created_at (descending)
@@ -658,7 +662,12 @@ export async function POST(
       ...(createdContent.file_size && { file_size: createdContent.file_size }),
       ...(createdContent.file_type && { file_type: createdContent.file_type }),
       created_at: createdContent.created_at || new Date().toISOString(),
-      updated_at: createdContent.updated_at || new Date().toISOString()
+      updated_at: createdContent.updated_at || new Date().toISOString(),
+
+      // QR Code fields
+      qr_code_enabled: createdContent.qr_code_enabled || false,
+      ...(createdContent.qr_code_url && { qr_code_url: createdContent.qr_code_url }),
+      ...(createdContent.qr_code_position && { qr_code_position: createdContent.qr_code_position as "top-left" | "top-right" | "bottom-left" | "bottom-right" })
     };
 
     return NextResponse.json({

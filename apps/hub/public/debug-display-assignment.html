@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Display Assignment</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .error { color: red; }
+        .success { color: green; }
+        button { margin: 5px; padding: 10px; }
+        select, input { margin: 5px; padding: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Display Content Assignment Debug</h1>
+    
+    <div class="section">
+        <h2>Database Connection Test</h2>
+        <button onclick="testConnection()">Test Connection</button>
+        <div id="connectionResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>Fetch Displays</h2>
+        <button onclick="fetchDisplays()">Fetch All Displays</button>
+        <div id="displaysResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>Fetch Content</h2>
+        <button onclick="fetchContent()">Fetch All Content</button>
+        <div id="contentResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>Assign Content to Display</h2>
+        <select id="displaySelect">
+            <option value="">Select Display</option>
+        </select>
+        <select id="contentSelect">
+            <option value="">Select Content</option>
+        </select>
+        <button onclick="assignContent()">Assign Content</button>
+        <div id="assignResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>View Assignments</h2>
+        <select id="displaySelectView">
+            <option value="">Select Display</option>
+        </select>
+        <button onclick="viewAssignments()">View Assignments</button>
+        <div id="assignmentsResult"></div>
+    </div>
+
+    <script type="module">
+        const SUPABASE_URL = 'http://127.0.0.1:54321';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0';
+        
+        let displays = [];
+        let content = [];
+
+        window.testConnection = async function() {
+            const result = document.getElementById('connectionResult');
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+                
+                if (response.ok) {
+                    result.innerHTML = '<span class="success">✅ Connection successful!</span>';
+                } else {
+                    result.innerHTML = `<span class="error">❌ Connection failed: ${response.status}</span>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ Connection error: ${error.message}</span>`;
+            }
+        };
+
+        window.fetchDisplays = async function() {
+            const result = document.getElementById('displaysResult');
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/tv_displays?select=*`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+                
+                if (response.ok) {
+                    displays = await response.json();
+                    result.innerHTML = `<span class="success">✅ Found ${displays.length} displays:</span><pre>${JSON.stringify(displays, null, 2)}</pre>`;
+                    
+                    // Populate display selects
+                    const displaySelect = document.getElementById('displaySelect');
+                    const displaySelectView = document.getElementById('displaySelectView');
+                    displaySelect.innerHTML = '<option value="">Select Display</option>';
+                    displaySelectView.innerHTML = '<option value="">Select Display</option>';
+                    
+                    displays.forEach(display => {
+                        const option1 = document.createElement('option');
+                        option1.value = display.id;
+                        option1.textContent = display.display_name;
+                        displaySelect.appendChild(option1);
+                        
+                        const option2 = document.createElement('option');
+                        option2.value = display.id;
+                        option2.textContent = display.display_name;
+                        displaySelectView.appendChild(option2);
+                    });
+                } else {
+                    result.innerHTML = `<span class="error">❌ Failed to fetch displays: ${response.status}</span>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+            }
+        };
+
+        window.fetchContent = async function() {
+            const result = document.getElementById('contentResult');
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/display_content?select=*&status=eq.active`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+                
+                if (response.ok) {
+                    content = await response.json();
+                    result.innerHTML = `<span class="success">✅ Found ${content.length} active content items:</span><pre>${JSON.stringify(content, null, 2)}</pre>`;
+                    
+                    // Populate content select
+                    const contentSelect = document.getElementById('contentSelect');
+                    contentSelect.innerHTML = '<option value="">Select Content</option>';
+                    
+                    content.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.id;
+                        option.textContent = item.title;
+                        contentSelect.appendChild(option);
+                    });
+                } else {
+                    result.innerHTML = `<span class="error">❌ Failed to fetch content: ${response.status}</span>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+            }
+        };
+
+        window.assignContent = async function() {
+            const result = document.getElementById('assignResult');
+            const displayId = document.getElementById('displaySelect').value;
+            const contentId = document.getElementById('contentSelect').value;
+            
+            if (!displayId || !contentId) {
+                result.innerHTML = '<span class="error">❌ Please select both display and content</span>';
+                return;
+            }
+
+            try {
+                // First get a user ID to use as assigned_by
+                const usersResponse = await fetch(`${SUPABASE_URL}/rest/v1/users?limit=1`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+                
+                const users = await usersResponse.json();
+                if (users.length === 0) {
+                    result.innerHTML = '<span class="error">❌ No users found to assign content</span>';
+                    return;
+                }
+                
+                const assignedBy = users[0].id;
+
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/display_content_assignments`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify({
+                        display_id: displayId,
+                        content_id: contentId,
+                        assigned_by: assignedBy
+                    })
+                });
+                
+                if (response.ok) {
+                    const assignment = await response.json();
+                    result.innerHTML = `<span class="success">✅ Content assigned successfully!</span><pre>${JSON.stringify(assignment, null, 2)}</pre>`;
+                } else {
+                    const error = await response.text();
+                    result.innerHTML = `<span class="error">❌ Failed to assign content: ${response.status} - ${error}</span>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+            }
+        };
+
+        window.viewAssignments = async function() {
+            const result = document.getElementById('assignmentsResult');
+            const displayId = document.getElementById('displaySelectView').value;
+            
+            if (!displayId) {
+                result.innerHTML = '<span class="error">❌ Please select a display</span>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/display_content_assignments?display_id=eq.${displayId}&select=*,display_content(title,type,status)`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const assignments = await response.json();
+                    result.innerHTML = `<span class="success">✅ Found ${assignments.length} assignments:</span><pre>${JSON.stringify(assignments, null, 2)}</pre>`;
+                } else {
+                    const error = await response.text();
+                    result.innerHTML = `<span class="error">❌ Failed to fetch assignments: ${response.status} - ${error}</span>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+            }
+        };
+    </script>
+</body>
+</html>

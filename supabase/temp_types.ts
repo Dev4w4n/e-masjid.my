@@ -163,6 +163,9 @@ export type Database = {
           masjid_id: string
           payment_reference: string | null
           payment_status: Database["public"]["Enums"]["payment_status"]
+          qr_code_enabled: boolean
+          qr_code_position: string | null
+          qr_code_url: string | null
           rejection_reason: string | null
           resubmission_of: string | null
           sponsorship_amount: number
@@ -193,6 +196,9 @@ export type Database = {
           masjid_id: string
           payment_reference?: string | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
+          qr_code_enabled?: boolean
+          qr_code_position?: string | null
+          qr_code_url?: string | null
           rejection_reason?: string | null
           resubmission_of?: string | null
           sponsorship_amount?: number
@@ -223,6 +229,9 @@ export type Database = {
           masjid_id?: string
           payment_reference?: string | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
+          qr_code_enabled?: boolean
+          qr_code_position?: string | null
+          qr_code_url?: string | null
           rejection_reason?: string | null
           resubmission_of?: string | null
           sponsorship_amount?: number
@@ -274,23 +283,35 @@ export type Database = {
         Row: {
           assigned_at: string | null
           assigned_by: string
+          carousel_duration: number | null
           content_id: string
           display_id: string
+          display_order: number
           id: string
+          image_display_mode: string | null
+          transition_type: string | null
         }
         Insert: {
           assigned_at?: string | null
           assigned_by: string
+          carousel_duration?: number | null
           content_id: string
           display_id: string
+          display_order?: number
           id?: string
+          image_display_mode?: string | null
+          transition_type?: string | null
         }
         Update: {
           assigned_at?: string | null
           assigned_by?: string
+          carousel_duration?: number | null
           content_id?: string
           display_id?: string
+          display_order?: number
           id?: string
+          image_display_mode?: string | null
+          transition_type?: string | null
         }
         Relationships: [
           {
@@ -674,6 +695,7 @@ export type Database = {
         Row: {
           created_at: string
           full_name: string
+          home_masjid_approved_at: string | null
           home_masjid_id: string | null
           id: string
           is_complete: boolean | null
@@ -685,6 +707,7 @@ export type Database = {
         Insert: {
           created_at?: string
           full_name: string
+          home_masjid_approved_at?: string | null
           home_masjid_id?: string | null
           id?: string
           is_complete?: boolean | null
@@ -696,6 +719,7 @@ export type Database = {
         Update: {
           created_at?: string
           full_name?: string
+          home_masjid_approved_at?: string | null
           home_masjid_id?: string | null
           id?: string
           is_complete?: boolean | null
@@ -806,8 +830,11 @@ export type Database = {
           display_name: string
           heartbeat_interval: number
           id: string
+          image_background_color: string | null
+          image_display_mode: string
           is_active: boolean
           is_touch_enabled: boolean
+          language: string | null
           last_heartbeat: string | null
           location_description: string | null
           masjid_id: string
@@ -815,12 +842,15 @@ export type Database = {
           max_retry_attempts: number
           offline_cache_duration: number
           orientation: Database["public"]["Enums"]["display_orientation"]
+          prayer_time_alignment: string
           prayer_time_background_opacity: number
           prayer_time_color: string
           prayer_time_font_size: string
+          prayer_time_layout: string
           prayer_time_position: Database["public"]["Enums"]["prayer_time_position"]
           resolution: Database["public"]["Enums"]["display_resolution"]
           retry_backoff_multiplier: number
+          show_debug_info: boolean
           show_sponsorship_amounts: boolean
           sponsorship_tier_colors: Json
           updated_at: string | null
@@ -834,8 +864,11 @@ export type Database = {
           display_name: string
           heartbeat_interval?: number
           id?: string
+          image_background_color?: string | null
+          image_display_mode?: string
           is_active?: boolean
           is_touch_enabled?: boolean
+          language?: string | null
           last_heartbeat?: string | null
           location_description?: string | null
           masjid_id: string
@@ -843,12 +876,15 @@ export type Database = {
           max_retry_attempts?: number
           offline_cache_duration?: number
           orientation?: Database["public"]["Enums"]["display_orientation"]
+          prayer_time_alignment?: string
           prayer_time_background_opacity?: number
           prayer_time_color?: string
           prayer_time_font_size?: string
+          prayer_time_layout?: string
           prayer_time_position?: Database["public"]["Enums"]["prayer_time_position"]
           resolution?: Database["public"]["Enums"]["display_resolution"]
           retry_backoff_multiplier?: number
+          show_debug_info?: boolean
           show_sponsorship_amounts?: boolean
           sponsorship_tier_colors?: Json
           updated_at?: string | null
@@ -862,8 +898,11 @@ export type Database = {
           display_name?: string
           heartbeat_interval?: number
           id?: string
+          image_background_color?: string | null
+          image_display_mode?: string
           is_active?: boolean
           is_touch_enabled?: boolean
+          language?: string | null
           last_heartbeat?: string | null
           location_description?: string | null
           masjid_id?: string
@@ -871,12 +910,15 @@ export type Database = {
           max_retry_attempts?: number
           offline_cache_duration?: number
           orientation?: Database["public"]["Enums"]["display_orientation"]
+          prayer_time_alignment?: string
           prayer_time_background_opacity?: number
           prayer_time_color?: string
           prayer_time_font_size?: string
+          prayer_time_layout?: string
           prayer_time_position?: Database["public"]["Enums"]["prayer_time_position"]
           resolution?: Database["public"]["Enums"]["display_resolution"]
           retry_backoff_multiplier?: number
+          show_debug_info?: boolean
           show_sponsorship_amounts?: boolean
           sponsorship_tier_colors?: Json
           updated_at?: string | null
@@ -887,6 +929,64 @@ export type Database = {
             columns: ["masjid_id"]
             isOneToOne: false
             referencedRelation: "masjids"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_approvals: {
+        Row: {
+          created_at: string
+          home_masjid_id: string
+          id: string
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["user_approval_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          home_masjid_id: string
+          id?: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["user_approval_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          home_masjid_id?: string
+          id?: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["user_approval_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_approvals_home_masjid_id_fkey"
+            columns: ["home_masjid_id"]
+            isOneToOne: false
+            referencedRelation: "masjids"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_approvals_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_approvals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -950,6 +1050,9 @@ export type Database = {
           masjid_id: string
           payment_reference: string | null
           payment_status: Database["public"]["Enums"]["payment_status"]
+          qr_code_enabled: boolean
+          qr_code_position: string | null
+          qr_code_url: string | null
           rejection_reason: string | null
           resubmission_of: string | null
           sponsorship_amount: number
@@ -966,6 +1069,14 @@ export type Database = {
           updated_at: string | null
           url: string
         }
+      }
+      approve_user_registration: {
+        Args: {
+          approval_id: string
+          approval_notes?: string
+          approver_id: string
+        }
+        Returns: boolean
       }
       cleanup_expired_content: {
         Args: Record<PropertyKey, never>
@@ -1053,6 +1164,18 @@ export type Database = {
         Args: { admin_user_id: string }
         Returns: number
       }
+      get_pending_user_approvals: {
+        Args: { target_masjid_id: string }
+        Returns: {
+          approval_id: string
+          profile_complete: boolean
+          requested_at: string
+          user_email: string
+          user_full_name: string
+          user_id: string
+          user_phone: string
+        }[]
+      }
       get_resubmission_history: {
         Args: { content_id: string }
         Returns: {
@@ -1079,6 +1202,20 @@ export type Database = {
       get_user_admin_masjids: {
         Args: Record<PropertyKey, never>
         Returns: string[]
+      }
+      get_user_approvals_history: {
+        Args: { target_masjid_id: string }
+        Returns: {
+          approval_id: string
+          requested_at: string
+          review_notes: string
+          reviewed_at: string
+          reviewer_email: string
+          status: Database["public"]["Enums"]["user_approval_status"]
+          user_email: string
+          user_full_name: string
+          user_id: string
+        }[]
       }
       get_user_role: {
         Args: Record<PropertyKey, never>
@@ -1125,6 +1262,9 @@ export type Database = {
           masjid_id: string
           payment_reference: string | null
           payment_status: Database["public"]["Enums"]["payment_status"]
+          qr_code_enabled: boolean
+          qr_code_position: string | null
+          qr_code_url: string | null
           rejection_reason: string | null
           resubmission_of: string | null
           sponsorship_amount: number
@@ -1141,6 +1281,14 @@ export type Database = {
           updated_at: string | null
           url: string
         }
+      }
+      reject_user_registration: {
+        Args: {
+          approval_id: string
+          rejection_notes: string
+          rejector_id: string
+        }
+        Returns: boolean
       }
       revoke_admin_assignment: {
         Args: { revoking_user_id: string; target_assignment_id: string }
@@ -1181,6 +1329,8 @@ export type Database = {
         | "Kuala Lumpur"
         | "Labuan"
         | "Putrajaya"
+        | "Melaka"
+        | "Pulau Pinang"
       masjid_status: "active" | "inactive" | "pending_verification"
       payment_method: "fpx" | "credit_card" | "bank_transfer" | "cash"
       payment_status: "pending" | "paid" | "failed" | "refunded"
@@ -1194,6 +1344,7 @@ export type Database = {
         | "hidden"
       prayer_time_source: "JAKIM_API" | "MANUAL_ENTRY" | "CACHED_FALLBACK"
       sponsorship_tier: "bronze" | "silver" | "gold" | "platinum"
+      user_approval_status: "pending" | "approved" | "rejected"
       user_role: "super_admin" | "masjid_admin" | "registered" | "public"
     }
     CompositeTypes: {
@@ -1887,6 +2038,8 @@ export const Constants = {
         "Kuala Lumpur",
         "Labuan",
         "Putrajaya",
+        "Melaka",
+        "Pulau Pinang",
       ],
       masjid_status: ["active", "inactive", "pending_verification"],
       payment_method: ["fpx", "credit_card", "bank_transfer", "cash"],
@@ -1902,6 +2055,7 @@ export const Constants = {
       ],
       prayer_time_source: ["JAKIM_API", "MANUAL_ENTRY", "CACHED_FALLBACK"],
       sponsorship_tier: ["bronze", "silver", "gold", "platinum"],
+      user_approval_status: ["pending", "approved", "rejected"],
       user_role: ["super_admin", "masjid_admin", "registered", "public"],
     },
   },
