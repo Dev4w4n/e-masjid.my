@@ -698,9 +698,17 @@ const CreateContent: React.FC = () => {
                 </Grid>
               )}
 
-              {/* Submit Button */}
+              {/* Action Buttons */}
               <Grid item xs={12}>
-                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 2,
+                  }}
+                >
+                  {/* Submit Button */}
                   <Button
                     type="submit"
                     variant="contained"

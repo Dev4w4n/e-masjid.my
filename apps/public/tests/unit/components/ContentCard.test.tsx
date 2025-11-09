@@ -79,11 +79,26 @@ describe("ContentCard Component", () => {
   it("should link to content detail page with slug", () => {
     render(<ContentCard content={mockContent} />);
 
-    const link = screen.getByRole("link");
-    expect(link).toHaveAttribute("href", expect.stringContaining("/iklan/"));
-    expect(link).toHaveAttribute(
+    // Get the "Lihat Butiran" button link
+    const detailLink = screen.getByRole("link", { name: /lihat butiran/i });
+    expect(detailLink).toHaveAttribute(
+      "href",
+      expect.stringContaining("/iklan/")
+    );
+    expect(detailLink).toHaveAttribute(
       "href",
       expect.stringContaining(mockContent.id)
+    );
+  });
+
+  it("should link masjid name to masjid details page", () => {
+    render(<ContentCard content={mockContent} />);
+
+    // Get the masjid name link
+    const masjidLink = screen.getByRole("link", { name: /masjid test/i });
+    expect(masjidLink).toHaveAttribute(
+      "href",
+      `/masjid/${mockContent.masjids.id}`
     );
   });
 });

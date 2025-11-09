@@ -104,7 +104,7 @@ const MyContent: React.FC = () => {
     try {
       setLoading(true);
 
-      // Use basic query for now
+      // Fetch user's content with masjid name
       const { data, error: fetchError } = await supabase
         .from("display_content")
         .select(
@@ -119,7 +119,10 @@ const MyContent: React.FC = () => {
           end_date,
           status,
           created_at,
-          masjid_id
+          masjid_id,
+          masjids!inner(
+            name
+          )
         `
         )
         .eq("submitted_by", user!.id)
@@ -128,7 +131,7 @@ const MyContent: React.FC = () => {
       if (fetchError) throw fetchError;
 
       // Transform data for display
-      const transformedData: UserContent[] = (data || []).map((item) => ({
+      const transformedData: UserContent[] = (data || []).map((item: any) => ({
         id: item.id,
         title: item.title,
         description: item.description,
@@ -145,7 +148,7 @@ const MyContent: React.FC = () => {
         rejection_reason: null,
         resubmission_of: null,
         masjid_id: item.masjid_id,
-        masjid_name: "Masjid", // Simplified for now
+        masjid_name: item.masjids?.name || "Unknown Masjid",
       }));
 
       setContent(transformedData);

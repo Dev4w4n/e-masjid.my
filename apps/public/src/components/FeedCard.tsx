@@ -52,9 +52,14 @@ export default function FeedCard({ content, priority = false }: FeedCardProps) {
 
             {/* Masjid Name & Location */}
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-sm text-gray-900 truncate">
-                {content.masjids.name}
-              </h3>
+              <Link
+                href={`/masjid/${content.masjids.id}`}
+                className="hover:underline"
+              >
+                <h3 className="font-semibold text-sm text-gray-900 truncate hover:text-primary-600 transition-colors">
+                  {content.masjids.name}
+                </h3>
+              </Link>
               <div className="flex items-center gap-2 text-xs text-gray-600">
                 <span className="truncate">
                   {content.masjids.address.city},{" "}

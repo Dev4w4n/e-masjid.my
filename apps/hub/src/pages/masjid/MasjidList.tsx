@@ -445,8 +445,10 @@ function MasjidList() {
 
                 <CardActions sx={{ p: 2, pt: 0 }}>
                   <Button
-                    component={Link}
-                    to={`/masjids/${masjid.id}`}
+                    component="a"
+                    href={`${import.meta.env.VITE_PUBLIC_APP_URL || "http://localhost:3002"}/masjid/${masjid.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     startIcon={<Visibility />}
                     size="small"
                   >

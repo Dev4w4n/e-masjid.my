@@ -95,6 +95,50 @@ export type Database = {
           },
         ]
       }
+      content_preview_sessions: {
+        Row: {
+          access_count: number
+          accessed_at: string | null
+          content_snapshot: Json
+          created_at: string
+          expires_at: string
+          id: string
+          masjid_id: string
+          token: string
+          user_id: string
+        }
+        Insert: {
+          access_count?: number
+          accessed_at?: string | null
+          content_snapshot: Json
+          created_at?: string
+          expires_at: string
+          id?: string
+          masjid_id: string
+          token: string
+          user_id: string
+        }
+        Update: {
+          access_count?: number
+          accessed_at?: string | null
+          content_snapshot?: Json
+          created_at?: string
+          expires_at?: string
+          id?: string
+          masjid_id?: string
+          token?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_preview_sessions_masjid_id_fkey"
+            columns: ["masjid_id"]
+            isOneToOne: false
+            referencedRelation: "masjids"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       display_analytics: {
         Row: {
           active_sponsors: number
@@ -1082,9 +1126,17 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      cleanup_expired_preview_sessions: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       complete_user_profile: {
         Args: { address_data: Json; profile_data: Json }
         Returns: Json
+      }
+      generate_preview_token: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       get_display_content: {
         Args: { p_display_id: string; p_limit?: number }

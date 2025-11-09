@@ -36,7 +36,48 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        // Preview routes: Allow embedding in iframes for preview functionality
+        source: '/preview/:path*',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'ALLOWALL', // Allow embedding in any iframe for preview
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: "frame-ancestors 'self' http://localhost:* https://*.emasjid.my", // Allow hub app domains
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate', // Don't cache previews
+          },
+        ],
+      },
+      {
+        // API routes for preview: Allow cross-origin requests
+        source: '/api/preview/:path*',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*', // Allow from any origin (preview is token-protected)
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, OPTIONS',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate',
+          },
+        ],
+      },
+      {
+        // All other routes: Protect with SAMEORIGIN
+        source: '/((?!preview).*)',
         headers: [
           {
             key: 'X-Frame-Options',

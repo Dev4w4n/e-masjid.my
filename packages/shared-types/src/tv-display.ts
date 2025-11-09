@@ -127,6 +127,8 @@ export interface DisplayContentAssignment {
   image_display_mode: "contain" | "cover" | "fill" | "none";
 }
 
+// ============================================================================
+
 export type CreateContentAssignment = Omit<
   DisplayContentAssignment,
   "id" | "assigned_at"

@@ -541,6 +541,8 @@ export class EnhancedSupabaseService {
 
   /**
    * Subscribe to content changes
+   * Subscribes to both display_content and display_content_assignments tables
+   * to catch all content updates for a display
    */
   subscribeToContentChanges(
     displayId: string,
@@ -556,6 +558,7 @@ export class EnhancedSupabaseService {
 
     const channel = this.client
       .channel(`content-${displayId}-changes`)
+      // Listen to display_content table changes for this display
       .on(
         'postgres_changes',
         {
@@ -565,7 +568,32 @@ export class EnhancedSupabaseService {
           filter: `display_id=eq.${displayId}`
         },
         (payload) => {
-          console.log(`[EnhancedSupabase] Content for display ${displayId} changed:`, payload);
+          console.log(`[EnhancedSupabase] Display content changed for display ${displayId}:`, payload);
+          
+          // Invalidate cache
+          const cache = this.getCache<DisplayContent[]>('content');
+          // Clear all content cache entries for this display
+          for (const key of Array.from(cache['cache'].keys())) {
+            if (key.startsWith(`content_${displayId}_`)) {
+              cache.delete(key);
+            }
+          }
+          
+          callback(payload);
+        }
+      )
+      // Also listen to display_content_assignments table changes
+      // This catches when content is assigned/unassigned from this display
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'display_content_assignments',
+          filter: `display_id=eq.${displayId}`
+        },
+        (payload) => {
+          console.log(`[EnhancedSupabase] Content assignment changed for display ${displayId}:`, payload);
           
           // Invalidate cache
           const cache = this.getCache<DisplayContent[]>('content');
