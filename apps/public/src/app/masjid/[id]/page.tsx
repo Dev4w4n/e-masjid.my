@@ -302,7 +302,7 @@ export default async function MasjidPage({ params }: MasjidPageProps) {
                 Jawatankuasa
               </h2>
               <div className="space-y-3">
-                {admins.map((admin: any) => (
+                {admins.map((admin: MasjidAdmin) => (
                   <div
                     key={admin.user_id}
                     className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
