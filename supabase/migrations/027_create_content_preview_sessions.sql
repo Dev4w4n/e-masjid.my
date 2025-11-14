@@ -68,11 +68,9 @@ CREATE POLICY "Users can delete their own preview sessions"
     FOR DELETE
     USING (auth.uid() = user_id);
 
--- Anonymous users can access preview sessions by token (for viewing on TV)
-CREATE POLICY "Anyone can view preview sessions by token"
-    ON content_preview_sessions
-    FOR SELECT
-    USING (true); -- Token validation happens in application logic
+-- [SECURITY] Removed overly permissive anonymous SELECT policy.
+-- Preview access by token must be handled via a secure API endpoint using a Supabase service role key.
+-- Token validation and access control should be enforced in backend logic, not via RLS.
 
 -- =============================================================================
 -- AUTOMATIC CLEANUP FUNCTION
