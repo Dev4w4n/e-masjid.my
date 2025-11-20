@@ -85,7 +85,7 @@ function App() {
         {/* Public routes */}
         <Route index element={<Home />} />
         <Route path="masjids" element={<MasjidList />} />
-        {/* Masjid details page moved to public app (see MasjidList for external links) */}
+        {/* Masjid details page moved to public app (/apps/public/src/app/masjid/[id]/page.tsx) */}
 
         {/* Protected routes */}
         <Route
