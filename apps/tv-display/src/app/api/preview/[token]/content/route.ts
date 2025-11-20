@@ -171,7 +171,9 @@ export async function GET(
     return NextResponse.json(
       {
         error: {
-          message: error instanceof Error ? error.message : 'Internal server error',
+          message: process.env.NODE_ENV === 'production'
+            ? 'Internal server error'
+            : (error instanceof Error ? error.message : 'Internal server error'),
           code: 'INTERNAL_ERROR'
         }
       },
