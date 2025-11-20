@@ -40,10 +40,6 @@ const nextConfig = {
         source: '/preview/:path*',
         headers: [
           {
-            key: 'X-Frame-Options',
-            value: 'ALLOWALL', // Allow embedding in any iframe for preview
-          },
-          {
             key: 'Content-Security-Policy',
             value: "frame-ancestors 'self' http://localhost:* https://*.emasjid.my", // Allow hub app domains
           },
