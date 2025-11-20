@@ -113,7 +113,7 @@ BEGIN
         
         -- Check if token already exists
         SELECT EXISTS (
-            SELECT 1 FROM content_preview_sessions WHERE token = token
+            SELECT 1 FROM content_preview_sessions WHERE content_preview_sessions.token = token
         ) INTO token_exists;
         
         -- Exit loop if token is unique
