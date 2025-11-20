@@ -368,7 +368,7 @@ export default async function MasjidPage({ params }: MasjidPageProps) {
                           </p>
                         )}
                         <a
-                          href={`${process.env.NEXT_PUBLIC_TV_DISPLAY_URL || "http://localhost:3001"}/display/${display.id}`}
+                          href={`${process.env.NEXT_PUBLIC_TV_DISPLAY_URL || "https://tv.emasjid.my"}/display/${display.id}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 mt-2 text-sm text-blue-600 hover:text-blue-800 hover:underline"
