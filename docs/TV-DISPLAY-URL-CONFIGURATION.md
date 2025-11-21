@@ -27,19 +27,21 @@ Created a unified configuration system that automatically detects the environmen
 
 #### Default URLs
 
-| Environment | TV Display URL |
-|-------------|----------------|
+| Environment | TV Display URL                  |
+| ----------- | ------------------------------- |
 | Development | `http://localhost:3001/display` |
 | Production  | `https://tv.emasjid.my/display` |
 
 ### Apps Updated
 
 #### Hub App (`apps/hub`)
+
 - **File**: `src/pages/masjid/tv-display/TvDisplayList.tsx`
 - **Change**: Replaced hardcoded `tvDisplayBaseUrl` with `getTvDisplayUrlForDisplay(display.id)`
 - **Environment Variable**: `VITE_TV_DISPLAY_BASE_URL=http://localhost:3001/display`
 
 #### Public App (`apps/public`)
+
 - **File**: `src/app/masjid/[id]/page.tsx`
 - **Change**: Replaced hardcoded URL with `getTvDisplayUrlForDisplay(display.id)`
 - **Environment Variable**: `NEXT_PUBLIC_TV_DISPLAY_URL=http://localhost:3001/display`
@@ -106,9 +108,11 @@ const displayUrl = getTvDisplayUrlForDisplay(display.id);
 ### File Changes Summary
 
 #### New Files
+
 - `packages/shared-types/src/config.ts` - Unified URL configuration
 
 #### Modified Files
+
 - `packages/shared-types/src/index.ts` - Export new config functions
 - `apps/hub/src/pages/masjid/tv-display/TvDisplayList.tsx` - Use shared config
 - `apps/public/src/app/masjid/[id]/page.tsx` - Use shared config
@@ -120,13 +124,17 @@ const displayUrl = getTvDisplayUrlForDisplay(display.id);
 ### Troubleshooting
 
 #### Issue: Links still point to production
+
 **Solution**: Ensure environment variables are set correctly and restart dev servers
 
 #### Issue: TypeScript errors
+
 **Solution**: Run `pnpm run build:clean` to rebuild all packages
 
 #### Issue: Environment variable not working
+
 **Solution**: Check that variable names match exactly:
+
 - Hub app: `VITE_TV_DISPLAY_BASE_URL`
 - Public/TV Display apps: `NEXT_PUBLIC_TV_DISPLAY_URL`
 
