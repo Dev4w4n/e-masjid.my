@@ -9,7 +9,6 @@ import Profile from "./pages/profile/Profile";
 import ProfileView from "./pages/profile/ProfileView";
 import MasjidList from "./pages/masjid/MasjidList";
 import MasjidForm from "./pages/masjid/MasjidForm";
-import MasjidView from "./pages/masjid/MasjidView";
 import AdminApplications from "./pages/admin/AdminApplications";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserApprovals from "./pages/admin/UserApprovals";
@@ -86,7 +85,7 @@ function App() {
         {/* Public routes */}
         <Route index element={<Home />} />
         <Route path="masjids" element={<MasjidList />} />
-        <Route path="masjids/:id" element={<MasjidView />} />
+        {/* Masjid details page moved to public app (/apps/public/src/app/masjid/[id]/page.tsx) */}
 
         {/* Protected routes */}
         <Route

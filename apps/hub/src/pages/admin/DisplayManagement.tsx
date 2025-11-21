@@ -46,7 +46,6 @@ import {
   Article,
   DragIndicator,
   Settings,
-  Timer,
   Animation,
 } from "@mui/icons-material";
 import {
@@ -217,18 +216,14 @@ function SortableContentItem({
       </IconButton>
       <ListItemText
         primary={content.title}
+        secondaryTypographyProps={{ component: "div" }}
         secondary={
           <Box component="span">
             <Typography variant="body2" component="span" display="block">
-              {content.type} • {content.duration}s
+              {content.type} • Display:{" "}
+              {content.carousel_duration || content.duration || 10}s
             </Typography>
             <Box sx={{ mt: 0.5, display: "flex", gap: 0.5, flexWrap: "wrap" }}>
-              <Chip
-                size="small"
-                label={`${content.carousel_duration || 10}s`}
-                icon={<Timer />}
-                sx={{ height: 20 }}
-              />
               <Chip
                 size="small"
                 label={content.transition_type || "fade"}

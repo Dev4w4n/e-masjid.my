@@ -11,12 +11,9 @@ import {
 } from "@mui/material";
 import { OpenInNew } from "@mui/icons-material";
 import { getDisplaysByMasjid } from "@masjid-suite/supabase-client";
-import { Tables } from "@masjid-suite/shared-types";
+import { Tables, getTvDisplayUrlForDisplay } from "@masjid-suite/shared-types";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
-const tvDisplayBaseUrl =
-  import.meta.env.VITE_TV_DISPLAY_BASE_URL || "http://localhost:3001/display";
 
 type TvDisplay = Tables<"tv_displays">;
 
@@ -66,7 +63,7 @@ export const TvDisplayList = () => {
                     edge="end"
                     aria-label="open"
                     component="a"
-                    href={`${tvDisplayBaseUrl}/${display.id}`}
+                    href={getTvDisplayUrlForDisplay(display.id)}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

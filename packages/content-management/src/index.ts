@@ -8,8 +8,8 @@
 // Export all types
 export * from "./types";
 
-// Export services (to be implemented)
-// export * from './services';
+// Export services
+// (none currently implemented)
 
 // Export hooks (to be implemented)
 // export * from './hooks';

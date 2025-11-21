@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@masjid-suite/i18n": "workspace:*",
+    "@masjid-suite/prayer-times": "workspace:*",
     "@masjid-suite/shared-types": "workspace:*",
     "@masjid-suite/supabase-client": "workspace:*",
     "next": "^15.0.0",

@@ -81,9 +81,12 @@ export default function ContentCard({
         <div className="space-y-1 mt-auto">
           <div className="flex items-center text-sm text-gray-700">
             <span className="mr-1.5">🕌</span>
-            <span className="font-semibold truncate">
+            <Link
+              href={`/masjid/${content.masjids.id}`}
+              className="font-semibold truncate hover:text-primary-600 hover:underline transition-colors"
+            >
               {content.masjids.name}
-            </span>
+            </Link>
           </div>
 
           <div className="flex items-center text-xs text-gray-500">
