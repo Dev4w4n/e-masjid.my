@@ -1,0 +1,67 @@
+# Public App - Production Configuration
+# Cloudflare Pages Project: public-emasjid-production
+# GitHub Branch: main
+# Framework: Next.js
+
+[build]
+command = "cd apps/public && pnpm install --frozen-lockfile && pnpm build"
+publish = "apps/public/.next"
+
+[build.environment]
+NODE_ENV = "production"
+NEXT_PUBLIC_SUPABASE_URL = "https://YOUR_PRODUCTION_SUPABASE_PROJECT_ID.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY = "YOUR_PRODUCTION_SUPABASE_ANON_KEY"
+NEXT_PUBLIC_BASE_URL = "https://YOUR_PRODUCTION_PUBLIC_DOMAIN"
+
+# Server-side environment variables (sensitive - set in dashboard only)
+# SUPABASE_SERVICE_ROLE_KEY = "set-in-cloudflare-dashboard"
+
+# Cross-app integration
+NEXT_PUBLIC_HUB_URL = "https://hub-emasjid-production.pages.dev"
+NEXT_PUBLIC_TV_DISPLAY_URL = "https://tv-emasjid-production.pages.dev"
+
+# SEO and performance optimizations
+NEXT_PUBLIC_APP_ENV = "production"
+NEXT_PUBLIC_ENABLE_ANALYTICS = "true"
+NEXT_PUBLIC_ENABLE_SEO = "true"
+
+# Security headers for public content
+[headers]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co"
+
+# Next.js routing and API
+[[redirects]]
+  from = "/api/*"
+  to = "/api/:splat"
+  status = 200
+
+# SEO redirects
+[[redirects]]
+  from = "/masjid/:id"
+  to = "/masjid/:id/"
+  status = 301
+
+# Asset optimization
+[asset_optimization]
+css = true
+html = true
+img = true
+js = true
+
+# Cache control for static assets
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
