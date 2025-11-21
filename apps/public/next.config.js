@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+
+  // Set workspace root to avoid lockfile warnings
+  outputFileTracingRoot: process.cwd().replace('/apps/public', ''),
   
   // ISR revalidation - 1 hour default
   experimental: {
@@ -42,9 +45,6 @@ const nextConfig = {
 
   // Compression
   compress: true,
-
-  // Production optimizations
-  swcMinify: true,
   
   // Optimize bundle
   poweredByHeader: false,

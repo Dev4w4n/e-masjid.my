@@ -10,6 +10,8 @@ import {
   getTodayPrayerTimes,
   type MalaysianZone,
 } from "@masjid-suite/prayer-times/server";
+import type { MasjidAdmin } from "@masjid-suite/shared-types";
+import { getTvDisplayUrlForDisplay } from "@masjid-suite/shared-types";
 
 interface MasjidPageProps {
   params: Promise<{ id: string }>;
@@ -368,7 +370,7 @@ export default async function MasjidPage({ params }: MasjidPageProps) {
                           </p>
                         )}
                         <a
-                          href={`${process.env.NEXT_PUBLIC_TV_DISPLAY_URL || "https://tv.emasjid.my"}/display/${display.id}`}
+                          href={getTvDisplayUrlForDisplay(display.id)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 mt-2 text-sm text-blue-600 hover:text-blue-800 hover:underline"

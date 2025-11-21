@@ -288,3 +288,11 @@ export {
   isApiError,
   isApiSuccess,
 } from "./api-responses";
+// Configuration utilities
+export {
+  getTvDisplayUrl,
+  getTvDisplayUrlForDisplay,
+  getHubUrl,
+  getPublicUrl,
+  APP_CONFIG,
+} from "./config";

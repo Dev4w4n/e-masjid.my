@@ -5,6 +5,9 @@ const nextConfig = {
     ppr: false,
     reactCompiler: true,
   },
+
+  // Set workspace root to avoid lockfile warnings
+  outputFileTracingRoot: process.cwd().replace('/apps/tv-display', ''),
   
   // Image optimization for TV displays
   images: {
