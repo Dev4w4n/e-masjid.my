@@ -180,17 +180,39 @@ jwt_expiry = 3600
 
 ### If Git History Contains Secrets
 
-**Clean up git history:**
+**Clean up git history (removing secrets):**
+
+> ⚠️ **WARNING:** Rewriting git history is disruptive. All team members will need to re-clone the repository or perform complex rebasing operations. Coordinate with your team before proceeding.
+> 
+> **Use modern tools:** The `git filter-branch` command is deprecated. Use [`git filter-repo`](https://github.com/newren/git-filter-repo) or [BFG Repo-Cleaner](https://rtyley.github.io/bfg-repo-cleaner/) for safer, faster history rewriting.
+
+**Option 1: Using `git filter-repo` (recommended)**
+
+1. Install `git-filter-repo` ([installation guide](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md))
+2. Run:
 
 ```bash
-# ⚠️ This rewrites history - coordinate with team
-git filter-branch --force --index-filter \
-  'git rm --cached --ignore-unmatch path/to/secret/file' \
-  --prune-empty --tag-name-filter cat -- --all
+git filter-repo --path path/to/secret/file --invert-paths
+```
 
-# Force push to update remote (dangerous!)
+3. Force push to update remote (dangerous!):
+
+```bash
 git push origin --force --all
 ```
+
+**Option 2: Using BFG Repo-Cleaner**
+
+1. Download BFG Repo-Cleaner ([BFG homepage](https://rtyley.github.io/bfg-repo-cleaner/))
+2. Run:
+
+```bash
+java -jar bfg.jar --delete-files path/to/secret/file
+git reflog expire --expire=now --all && git gc --prune=now --aggressive
+git push origin --force --all
+```
+
+> **After rewriting history:** All team members must re-clone the repository. See [GitHub's Removing sensitive data from a repository](https://docs.github.com/en/github/authenticating-to-github/removing-sensitive-data-from-a-repository) for more details.
 
 ## 🔍 Security Monitoring
 

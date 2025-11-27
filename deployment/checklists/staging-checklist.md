@@ -1,8 +1,8 @@
-# Ustaging Deployment Checklist
+# Staging Deployment Checklist
 
 Generated on Fri Nov 21 19:41:14 +08 2025
 
-## 🎯 Ustaging Environment Setup
+## 🎯 Staging Environment Setup
 
 ### Supabase Project Setup
 - [ ] Create Supabase project: `e-masjid-staging`

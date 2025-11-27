@@ -204,7 +204,7 @@ Our monorepo structure requires specific build commands:
 **1. "pnpm: command not found"**
 
 - Cloudflare Pages might not have pnpm pre-installed
-- Solution: Use npm or add pnpm installation to build command
+- Solution: Add pnpm installation to build command: `npm install -g pnpm && pnpm install && pnpm build`
 
 **2. "Module not found" errors**
 
@@ -221,19 +221,13 @@ Our monorepo structure requires specific build commands:
 
 If the standard build fails, try these alternatives:
 
-**Option 1: Use npm instead of pnpm**
-
-```bash
-cd apps/hub && npm install && npm run build
-```
-
-**Option 2: Build from root with turborepo**
+**Option 1: Build from root with turborepo**
 
 ```bash
 npm install -g pnpm && pnpm install && pnpm build --filter=@masjid-suite/hub
 ```
 
-**Option 3: Manual package building**
+**Option 2: Manual package building**
 
 ```bash
 pnpm install && ./scripts/build-packages.sh && cd apps/hub && pnpm build

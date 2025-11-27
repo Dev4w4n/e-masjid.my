@@ -37,7 +37,6 @@ VITE_MINIFY = "true"
   from = "/*"
   to = "/index.html"
   status = 200
-  conditions = {Role = ["admin"]}
 
 # API proxy for Supabase (if needed)
 [[redirects]]

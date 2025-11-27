@@ -39,5 +39,4 @@ local.env
 # Allow the template and example files
 !*-template.*
 !*-example.*
-!*.md
-!*.toml
+!README.md
