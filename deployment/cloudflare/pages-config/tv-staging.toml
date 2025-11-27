@@ -1,0 +1,82 @@
+# TV Display App - Staging Configuration
+# Cloudflare Pages Project: tv-emasjid-staging
+# GitHub Branch: dev
+# Framework: Next.js
+
+[build]
+command = "cd apps/tv-display && pnpm install --frozen-lockfile && pnpm build"
+publish = "apps/tv-display/.next"
+
+[build.environment]
+NODE_ENV = "staging"
+NEXT_PUBLIC_SUPABASE_URL = "https://YOUR_STAGING_SUPABASE_PROJECT_ID.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY = "YOUR_STAGING_SUPABASE_ANON_KEY"
+NEXT_PUBLIC_APP_URL = "https://YOUR_STAGING_TV_DOMAIN"
+
+# Server-side environment variables (sensitive - set in dashboard only)
+# SUPABASE_SERVICE_ROLE_KEY = "set-in-cloudflare-dashboard"
+
+# Cross-app integration (staging)
+NEXT_PUBLIC_HUB_URL = "https://hub-emasjid-staging.pages.dev"
+NEXT_PUBLIC_BASE_URL = "https://public-emasjid-staging.pages.dev"
+
+# TV Display specific configuration (staging values)
+NEXT_PUBLIC_AUTO_REFRESH = "true"
+NEXT_PUBLIC_REFRESH_INTERVAL = "1800000"  # 30 minutes for faster testing
+NEXT_PUBLIC_PRAYER_UPDATE_INTERVAL = "60000"  # 1 minute for testing
+NEXT_PUBLIC_CONTENT_REFRESH_INTERVAL = "30000"  # 30 seconds for testing
+NEXT_PUBLIC_APP_ENV = "staging"
+
+# Development features enabled for staging
+NEXT_PUBLIC_ENABLE_DEV_TOOLS = "true"
+NEXT_PUBLIC_SHOW_LOGGER = "true"
+NEXT_PUBLIC_FULLSCREEN_MODE = "false"
+NEXT_PUBLIC_KIOSK_MODE = "false"
+
+# Default prayer time configuration
+NEXT_PUBLIC_PRAYER_LOCATION = "JOHOR"
+NEXT_PUBLIC_PRAYER_ZONE = "JHR01"
+
+# More permissive headers for staging/testing
+[headers]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Next.js routing and API
+[[redirects]]
+  from = "/api/*"
+  to = "/api/:splat"
+  status = 200
+
+# Display routes
+[[redirects]]
+  from = "/display/:masjidId"
+  to = "/display/:masjidId/"
+  status = 301
+
+# Basic asset optimization for staging
+[asset_optimization]
+css = false
+html = true
+img = false
+js = false
+
+# Shorter cache times for staging
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=1800"
+
+# No caching for API endpoints in staging
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"

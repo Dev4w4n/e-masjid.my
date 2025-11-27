@@ -1,0 +1,92 @@
+# Supabase Production Configuration
+# Project: e-masjid-production
+# GitHub Branch: main
+# Environment: Production
+
+# A string used to distinguish different Supabase projects on the same host
+project_id = "e-masjid-production"
+
+[api]
+enabled = true
+# Port to use for the API URL (not applicable for hosted Supabase)
+port = 54321
+# Schemas to expose in your API
+schemas = ["public", "storage", "graphql_public"]
+# Extra schemas to add to the search_path of every request
+extra_search_path = ["public", "extensions"]
+# Maximum number of rows returned from a table in a single query
+max_rows = 1000
+
+[db]
+# The database major version (Supabase uses PostgreSQL 15)
+major_version = 15
+
+[realtime]
+enabled = true
+
+[studio]
+enabled = true
+
+[storage]
+enabled = true
+# Maximum file size allowed for uploads
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+# The base URL of your production website
+site_url = "https://hub.emasjid.my"
+
+# Production redirect URLs - add your actual domains
+additional_redirect_urls = [
+  "https://hub.emasjid.my",
+  "https://public.emasjid.my", 
+  "https://tv.emasjid.my",
+  "https://hub-emasjid-production.pages.dev",
+  "https://public-emasjid-production.pages.dev",
+  "https://tv-emasjid-production.pages.dev"
+]
+
+# Token configuration for production
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
+
+# User signup settings
+enable_signup = true
+enable_anonymous_sign_ins = false
+
+[auth.email]
+# Allow new user signups via email
+enable_signup = true
+# Require email confirmation for new signups
+enable_confirmations = true
+
+[auth.sms]
+# SMS signup configuration (optional)
+enable_signup = true
+enable_confirmations = true
+
+# Configure OAuth providers (uncomment and configure as needed)
+# [auth.external.google]
+# enabled = true
+# client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"
+# secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
+# redirect_uri = "https://your-production-project.supabase.co/auth/v1/callback"
+
+# Security and performance settings for production
+[analytics]
+enabled = true
+backend = "postgres"
+
+# Production environment variables to set in Supabase dashboard:
+# SUPER_ADMIN_EMAIL = "admin@emasjid.my"
+# SUPER_ADMIN_PASSWORD = "GENERATE_STRONG_PASSWORD" 
+# SUPER_ADMIN_ID = "GENERATED_AFTER_USER_CREATION"
+
+# Rate limiting and security (configure in Supabase dashboard)
+# - Enable API rate limiting
+# - Configure CORS for your domains only
+# - Enable database connection pooling
+# - Set up monitoring and alerting
+# - Configure automated backups
