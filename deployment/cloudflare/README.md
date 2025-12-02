@@ -97,7 +97,7 @@ Project Name: public-emasjid-production
 Production Branch: main
 Build Settings:
   Framework Preset: Next.js
-  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build && cd ../.. && npx @cloudflare/next-on-pages --experimental-minify apps/public
+  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build && cd ../.. && pnpm --package=@cloudflare/next-on-pages dlx @cloudflare/next-on-pages --experimental-minify apps/public
   Build Output Directory: apps/public/.vercel/output/static
   Root Directory: /
 Environment Variables: [See environment section below]
@@ -110,7 +110,7 @@ Project Name: public-emasjid-staging
 Production Branch: dev
 Build Settings:
   Framework Preset: Next.js
-  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build && cd ../.. && npx @cloudflare/next-on-pages --experimental-minify apps/public
+  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build && cd ../.. && pnpm --package=@cloudflare/next-on-pages dlx @cloudflare/next-on-pages --experimental-minify apps/public
   Build Output Directory: apps/public/.vercel/output/static
   Root Directory: /
 Environment Variables: [See environment section below]
@@ -125,7 +125,7 @@ Project Name: tv-emasjid-production
 Production Branch: main
 Build Settings:
   Framework Preset: Next.js
-  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && cd ../.. && npx @cloudflare/next-on-pages --experimental-minify apps/tv-display
+  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && cd ../.. && pnpm --package=@cloudflare/next-on-pages dlx @cloudflare/next-on-pages --experimental-minify apps/tv-display
   Build Output Directory: apps/tv-display/.vercel/output/static
   Root Directory: /
 Environment Variables: [See environment section below]
@@ -138,7 +138,7 @@ Project Name: tv-emasjid-staging
 Production Branch: dev
 Build Settings:
   Framework Preset: Next.js
-  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && cd ../.. && npx @cloudflare/next-on-pages --experimental-minify apps/tv-display
+  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && cd ../.. && pnpm --package=@cloudflare/next-on-pages dlx @cloudflare/next-on-pages --experimental-minify apps/tv-display
   Build Output Directory: apps/tv-display/.vercel/output/static
   Root Directory: /
 Environment Variables: [See environment section below]
