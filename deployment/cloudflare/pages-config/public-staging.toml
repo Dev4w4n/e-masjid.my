@@ -4,7 +4,7 @@
 # Framework: Next.js
 
 [build]
-command = "cd apps/public && pnpm install --frozen-lockfile && pnpm build"
+command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build"
 publish = "apps/public/.next"
 
 [build.environment]

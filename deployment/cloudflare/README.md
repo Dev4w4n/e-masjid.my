@@ -36,6 +36,20 @@ Choose the correct framework preset during project creation:
 
 > **Note**: For Hub app, if "None" isn't available, select "Create React App" then customize the build settings as shown below.
 
+#### 🔥 Important: Monorepo Build Requirements
+
+All build commands follow this pattern:
+```bash
+pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/<app-name> && pnpm build
+```
+
+**Why?** E-Masjid.My uses TypeScript composite projects in a monorepo. Packages must be built BEFORE apps, otherwise you'll see errors like:
+```
+error TS6305: Output file '/opt/buildhome/repo/packages/auth/dist/index.d.ts' has not been built
+```
+
+The `build:packages` script compiles all shared packages in the correct dependency order.
+
 ### 2. Hub App Configuration
 
 #### Production: `hub-emasjid-production`
@@ -45,7 +59,7 @@ Project Name: hub-emasjid-production
 Production Branch: main
 Build Settings:
   Framework Preset: None (Custom)
-  Build Command: cd apps/hub && pnpm install --frozen-lockfile && pnpm build
+  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/hub && pnpm build
   Build Output Directory: apps/hub/dist
   Root Directory: /
 Environment Variables: [See environment section below]
@@ -58,7 +72,7 @@ Project Name: hub-emasjid-staging
 Production Branch: dev
 Build Settings:
   Framework Preset: None (Custom)
-  Build Command: cd apps/hub && pnpm install --frozen-lockfile && pnpm build
+  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/hub && pnpm build
   Build Output Directory: apps/hub/dist
   Root Directory: /
 Environment Variables: [See environment section below]
@@ -73,7 +87,7 @@ Project Name: public-emasjid-production
 Production Branch: main
 Build Settings:
   Framework Preset: Next.js
-  Build Command: cd apps/public && pnpm install --frozen-lockfile && pnpm build
+  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build
   Build Output Directory: apps/public/.next
   Root Directory: /
 Environment Variables: [See environment section below]
@@ -86,7 +100,7 @@ Project Name: public-emasjid-staging
 Production Branch: dev
 Build Settings:
   Framework Preset: Next.js
-  Build Command: cd apps/public && pnpm install --frozen-lockfile && pnpm build
+  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build
   Build Output Directory: apps/public/.next
   Root Directory: /
 Environment Variables: [See environment section below]
@@ -101,7 +115,7 @@ Project Name: tv-emasjid-production
 Production Branch: main
 Build Settings:
   Framework Preset: Next.js
-  Build Command: cd apps/tv-display && pnpm install --frozen-lockfile && pnpm build
+  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build
   Build Output Directory: apps/tv-display/.next
   Root Directory: /
 Environment Variables: [See environment section below]
@@ -114,7 +128,7 @@ Project Name: tv-emasjid-staging
 Production Branch: dev
 Build Settings:
   Framework Preset: Next.js
-  Build Command: cd apps/tv-display && pnpm install --frozen-lockfile && pnpm build
+  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build
   Build Output Directory: apps/tv-display/.next
   Root Directory: /
 Environment Variables: [See environment section below]

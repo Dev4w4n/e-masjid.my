@@ -4,7 +4,7 @@
 # Framework: Vite (React)
 
 [build]
-command = "cd apps/hub && pnpm install --frozen-lockfile && pnpm build"
+command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/hub && pnpm build"
 publish = "apps/hub/dist"
 
 [build.environment]

@@ -4,7 +4,7 @@
 # Framework: Next.js
 
 [build]
-command = "cd apps/tv-display && pnpm install --frozen-lockfile && pnpm build"
+command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build"
 publish = "apps/tv-display/.next"
 
 [build.environment]
