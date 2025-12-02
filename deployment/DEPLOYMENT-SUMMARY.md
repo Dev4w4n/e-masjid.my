@@ -63,10 +63,10 @@ deployment/
 
 ## 🌍 Deployment Matrix
 
-| Environment    | Branch | Supabase Setup              | Cloudflare Projects                                                                |
-| -------------- | ------ | --------------------------- | ---------------------------------------------------------------------------------- |
-| **Production** | `main` | Main project branch         | `hub-emasjid-production`<br>`public-emasjid-production`<br>`tv-emasjid-production` |
-| **Staging**    | `dev`  | Preview branch (`staging`)  | `hub-emasjid-staging`<br>`public-emasjid-staging`<br>`tv-emasjid-staging`          |
+| Environment    | Branch | Supabase Setup             | Cloudflare Projects                                                                |
+| -------------- | ------ | -------------------------- | ---------------------------------------------------------------------------------- |
+| **Production** | `main` | Main project branch        | `hub-emasjid-production`<br>`public-emasjid-production`<br>`tv-emasjid-production` |
+| **Staging**    | `dev`  | Preview branch (`staging`) | `hub-emasjid-staging`<br>`public-emasjid-staging`<br>`tv-emasjid-staging`          |
 
 ## 🔐 Security Features Implemented
 

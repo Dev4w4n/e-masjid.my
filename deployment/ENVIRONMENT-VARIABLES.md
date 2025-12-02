@@ -16,13 +16,13 @@ This document outlines environment variable management for secure deployment acr
 
 > **Note:** Staging uses a **Supabase preview branch** (not a separate project), which provides isolated data with shared configuration.
 
-| Variable                    | Development       | Staging (Branch)         | Production (Main) | Notes                       |
-| --------------------------- | ----------------- | ------------------------ | ----------------- | --------------------------- |
+| Variable                    | Development       | Staging (Branch)             | Production (Main)   | Notes                            |
+| --------------------------- | ----------------- | ---------------------------- | ------------------- | -------------------------------- |
 | `SUPABASE_URL`              | localhost:54321   | project--staging.supabase.co | project.supabase.co | Branch URLs have `--branch-name` |
-| `SUPABASE_ANON_KEY`         | local-anon-key    | staging-branch-anon-key  | prod-anon-key     | Public, safe to expose      |
-| `SUPABASE_SERVICE_ROLE_KEY` | local-service-key | **SECRET** (branch)      | **SECRET**        | Server-side only            |
-| `SUPER_ADMIN_EMAIL`         | dev@example.com   | **SECRET**               | **SECRET**        | Admin account               |
-| `SUPER_ADMIN_PASSWORD`      | dev-password      | **SECRET**               | **SECRET**        | Strong password required    |
+| `SUPABASE_ANON_KEY`         | local-anon-key    | staging-branch-anon-key      | prod-anon-key       | Public, safe to expose           |
+| `SUPABASE_SERVICE_ROLE_KEY` | local-service-key | **SECRET** (branch)          | **SECRET**          | Server-side only                 |
+| `SUPER_ADMIN_EMAIL`         | dev@example.com   | **SECRET**                   | **SECRET**          | Admin account                    |
+| `SUPER_ADMIN_PASSWORD`      | dev-password      | **SECRET**                   | **SECRET**          | Strong password required         |
 
 ## 🎯 Application-Specific Variables
 

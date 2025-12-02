@@ -28,6 +28,7 @@ Use the setup script for local development with full test data:
 ```
 
 **What it does:**
+
 - Resets database and applies all migrations
 - Creates auth users (super admin, masjid admins, regular users)
 - Generates test masjids with proper relationships
@@ -35,6 +36,7 @@ Use the setup script for local development with full test data:
 - Sets up environment files automatically
 
 **Use this for:**
+
 - ✅ Local development
 - ✅ Running unit tests
 - ✅ Integration testing
@@ -45,22 +47,25 @@ Use the setup script for local development with full test data:
 The `seed.sql` file runs automatically when Supabase deploys:
 
 **What it does:**
+
 - Runs after migrations complete
 - Checks for existing super admin user
 - Updates roles and profiles if user exists
 - Provides instructions if user doesn't exist
 
 **Manual steps required:**
+
 1. Create super admin user via Supabase Dashboard → Authentication
    - Production: `admin@emasjid.my`
    - Staging: `staging-admin@emasjid.my`
 2. Run SQL to set role:
    ```sql
-   UPDATE users SET role = 'super_admin' 
+   UPDATE users SET role = 'super_admin'
    WHERE email = 'your-admin-email@emasjid.my';
    ```
 
 **Use this for:**
+
 - ✅ Staging environment (preview branch)
 - ✅ Production environment (main branch)
 - ✅ Cloud-based deployments
@@ -68,11 +73,13 @@ The `seed.sql` file runs automatically when Supabase deploys:
 ## 🔄 Deployment Flow
 
 ### Local Development
+
 ```
 Developer runs script → Setup creates users → Full test data loaded → Ready for development
 ```
 
 ### Cloud Deployment
+
 ```
 Push to GitHub → Migrations run → seed.sql runs → Create admin manually → Update role via SQL → Ready
 ```
@@ -80,6 +87,7 @@ Push to GitHub → Migrations run → seed.sql runs → Create admin manually �
 ## 📝 Seed Data File
 
 The `seed.sql` file is intentionally minimal because:
+
 - **Cloud limitation**: Cannot create auth.users via SQL (requires Supabase Admin API)
 - **Security**: Credentials shouldn't be in code/migrations
 - **Flexibility**: Different environments need different admin emails
@@ -87,6 +95,7 @@ The `seed.sql` file is intentionally minimal because:
 ## 🚀 Quick Start
 
 **For local development:**
+
 ```bash
 # Reset and setup with test data
 ./scripts/setup-supabase.sh --test
@@ -96,6 +105,7 @@ pnpm dev
 ```
 
 **For cloud deployment:**
+
 1. Push to GitHub (migrations run automatically)
 2. Create super admin user in Supabase Dashboard
 3. Run SQL to set super_admin role
@@ -104,15 +114,18 @@ pnpm dev
 ## 🔧 Troubleshooting
 
 **"No files matched pattern: supabase/supabase/seed.sql"**
+
 - This is expected if the file path is incorrect in config
 - The seed.sql is at `supabase/seed.sql` (not `supabase/supabase/seed.sql`)
 - Supabase will find it automatically
 
 **"No super admin user found"**
+
 - Create user manually via Supabase Dashboard → Authentication
 - Then run the UPDATE SQL command to set their role
 
 **Local setup fails**
+
 - Ensure Supabase CLI is installed: `brew install supabase/tap/supabase`
 - Check if Supabase is running: `supabase status`
 - Reset if needed: `supabase db reset`

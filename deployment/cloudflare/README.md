@@ -21,7 +21,20 @@ For each application:
 1. Go to [Cloudflare Pages](https://dash.cloudflare.com/pages)
 2. Click "Create a project" → "Connect to Git"
 3. Select your repository: `Dev4w4n/e-masjid.my`
-4. Configure as shown in the tables below
+4. **Select Framework Preset** (see table below)
+5. Configure as shown in the detailed tables
+
+#### Framework Preset Selection
+
+Choose the correct framework preset during project creation:
+
+| Application | Framework Preset | Why                                    |
+| ----------- | ---------------- | -------------------------------------- |
+| Hub App     | **None**         | Vite + React (custom build to `/dist`) |
+| Public App  | **Next.js**      | Next.js with SSR for SEO               |
+| TV Display  | **Next.js**      | Next.js with real-time updates         |
+
+> **Note**: For Hub app, if "None" isn't available, select "Create React App" then customize the build settings as shown below.
 
 ### 2. Hub App Configuration
 

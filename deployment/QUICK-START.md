@@ -44,6 +44,7 @@ This creates:
 5. Note down: Staging branch URL and API keys (different from production)
 
 **Benefits of using branches:**
+
 - Single project management
 - Shared configuration with isolated data
 - Lower cost (no separate project)
@@ -72,11 +73,13 @@ Create 6 projects total (3 apps × 2 environments):
 2. Create project → Connect Git
 3. Repository: `Dev4w4n/e-masjid.my`
 4. Production branch: `main`
-5. Build settings:
+5. Framework preset: **None** (or select "Create React App" then customize)
+6. Build settings:
    ```
    Build command: cd apps/hub && pnpm install --frozen-lockfile && pnpm build
    Build output: apps/hub/dist
    ```
+   > **Note**: Hub app uses Vite + React. Select "None" preset for full control over build settings.
 6. Environment variables:
    ```
    VITE_SUPABASE_URL=https://your-production-project.supabase.co
@@ -100,11 +103,13 @@ Same steps but:
 1. Create project → Connect Git
 2. Repository: `Dev4w4n/e-masjid.my`
 3. Production branch: `main`
-4. Build settings:
+4. Framework preset: **Next.js**
+5. Build settings:
    ```
    Build command: cd apps/public && pnpm install --frozen-lockfile && pnpm build
    Build output: apps/public/.next
    ```
+   > **Note**: Public app uses Next.js for SEO-friendly server-side rendering.
 5. Environment variables:
    ```
    NEXT_PUBLIC_SUPABASE_URL=https://your-production-project.supabase.co
@@ -124,11 +129,13 @@ Same steps but use `dev` branch and staging environment variables.
 1. Create project → Connect Git
 2. Repository: `Dev4w4n/e-masjid.my`
 3. Production branch: `main`
-4. Build settings:
+4. Framework preset: **Next.js**
+5. Build settings:
    ```
    Build command: cd apps/tv-display && pnpm install --frozen-lockfile && pnpm build
    Build output: apps/tv-display/.next
    ```
+   > **Note**: TV Display app uses Next.js for real-time content updates and SSR.
 5. Environment variables:
    ```
    NEXT_PUBLIC_SUPABASE_URL=https://your-production-project.supabase.co

@@ -183,7 +183,7 @@ jwt_expiry = 3600
 **Clean up git history (removing secrets):**
 
 > ⚠️ **WARNING:** Rewriting git history is disruptive. All team members will need to re-clone the repository or perform complex rebasing operations. Coordinate with your team before proceeding.
-> 
+>
 > **Use modern tools:** The `git filter-branch` command is deprecated. Use [`git filter-repo`](https://github.com/newren/git-filter-repo) or [BFG Repo-Cleaner](https://rtyley.github.io/bfg-repo-cleaner/) for safer, faster history rewriting.
 
 **Option 1: Using `git filter-repo` (recommended)**

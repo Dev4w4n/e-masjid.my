@@ -6,12 +6,13 @@ This directory contains configuration and setup guides for deploying E-Masjid.My
 
 We use Supabase's **branch feature** to manage deployment environments:
 
-| Environment    | Supabase Setup        | GitHub Branch | Database        |
-| -------------- | --------------------- | ------------- | --------------- |
-| **Production** | Main project branch   | `main`        | Production data |
-| **Staging**    | Preview branch        | `dev`         | Test data       |
+| Environment    | Supabase Setup      | GitHub Branch | Database        |
+| -------------- | ------------------- | ------------- | --------------- |
+| **Production** | Main project branch | `main`        | Production data |
+| **Staging**    | Preview branch      | `dev`         | Test data       |
 
 **Why use branches instead of separate projects?**
+
 - Single project management and billing
 - Shared configuration with isolated database instances
 - Easy data migration between environments
@@ -46,6 +47,7 @@ We use Supabase's **branch feature** to manage deployment environments:
 Our database schema is managed through migrations in the `/supabase/migrations/` directory.
 
 **Migrations and seeding happen automatically** when you push to GitHub:
+
 - Migrations from `/supabase/migrations/` are applied automatically
 - Seed data from `/supabase/seed.sql` is run after migrations complete
 
@@ -61,13 +63,14 @@ Our database schema is managed through migrations in the `/supabase/migrations/`
    - Set a strong password
 4. ⚠️ **Set super admin role:**
    - Go to SQL Editor in Supabase Dashboard
-   - Run: 
+   - Run:
      ```sql
-     UPDATE users SET role = 'super_admin' 
+     UPDATE users SET role = 'super_admin'
      WHERE email = 'admin@emasjid.my'; -- or staging email
      ```
 
 **Local Development:**
+
 - Use `scripts/setup-supabase.sh` for comprehensive test data
 - Creates users, masjids, and TV display test data automatically
 - Run: `./scripts/setup-supabase.sh` (default) or `./scripts/setup-supabase.sh --test`

@@ -1,10 +1,11 @@
 # Staging Deployment Checklist
 
-Generated on Tue Dec  2 17:17:28 +08 2025
+Generated on Tue Dec 2 17:17:28 +08 2025
 
 ## 🎯 Staging Environment Setup
 
 ### Supabase Branch Setup
+
 - [ ] Ensure main Supabase project `e-masjid-my` exists
 - [ ] Navigate to Database → Branches in Supabase dashboard
 - [ ] Create preview branch: `staging`
@@ -19,6 +20,7 @@ Generated on Tue Dec  2 17:17:28 +08 2025
 ### Cloudflare Pages Setup
 
 #### Hub App: `hub-emasjid-staging`
+
 - [ ] Create Cloudflare Pages project
 - [ ] Connect to GitHub: `Dev4w4n/e-masjid.my`
 - [ ] Set production branch: `dev`
@@ -26,7 +28,8 @@ Generated on Tue Dec  2 17:17:28 +08 2025
 - [ ] Set build output: `apps/hub/dist`
 - [ ] Add environment variables from template
 
-#### Public App: `public-emasjid-staging`  
+#### Public App: `public-emasjid-staging`
+
 - [ ] Create Cloudflare Pages project
 - [ ] Connect to GitHub: `Dev4w4n/e-masjid.my`
 - [ ] Set production branch: `dev`
@@ -35,7 +38,8 @@ Generated on Tue Dec  2 17:17:28 +08 2025
 - [ ] Add environment variables from template
 
 #### TV Display App: `tv-emasjid-staging`
-- [ ] Create Cloudflare Pages project  
+
+- [ ] Create Cloudflare Pages project
 - [ ] Connect to GitHub: `Dev4w4n/e-masjid.my`
 - [ ] Set production branch: `dev`
 - [ ] Configure build command: `cd apps/tv-display && pnpm install --frozen-lockfile && pnpm build`
@@ -43,13 +47,15 @@ Generated on Tue Dec  2 17:17:28 +08 2025
 - [ ] Add environment variables from template
 
 ### Environment Variables
+
 - [ ] Hub app variables configured in Cloudflare Pages
-- [ ] Public app variables configured in Cloudflare Pages  
+- [ ] Public app variables configured in Cloudflare Pages
 - [ ] TV Display variables configured in Cloudflare Pages
 - [ ] Super admin credentials set in Supabase
 - [ ] OAuth providers configured (if needed)
 
 ### Testing & Validation
+
 - [ ] All applications deploy successfully
 - [ ] Database connectivity verified
 - [ ] Authentication flows tested
@@ -59,6 +65,7 @@ Generated on Tue Dec  2 17:17:28 +08 2025
 - [ ] Performance acceptable
 
 ### Security Review
+
 - [ ] No secrets committed to git
 - [ ] RLS policies verified
 - [ ] CORS settings configured
