@@ -45,12 +45,32 @@ We use Supabase's **branch feature** to manage deployment environments:
 
 Our database schema is managed through migrations in the `/supabase/migrations/` directory.
 
-**For both projects:**
+**Migrations and seeding happen automatically** when you push to GitHub:
+- Migrations from `/supabase/migrations/` are applied automatically
+- Seed data from `/supabase/seed.sql` is run after migrations complete
 
-1. Run all migrations to create the complete schema
-2. Seed initial data using `/supabase/seed.sql`
-3. Configure Row Level Security (RLS) policies
-4. Set up super admin user
+**Post-deployment setup:**
+
+1. ✅ Migrations run automatically (no action needed)
+2. ✅ RLS policies applied automatically (no action needed)
+3. ⚠️ **Create super admin user manually:**
+   - Go to Supabase Dashboard → Authentication → Users
+   - Click "Add user" → Email
+   - For production: `admin@emasjid.my`
+   - For staging: `staging-admin@emasjid.my`
+   - Set a strong password
+4. ⚠️ **Set super admin role:**
+   - Go to SQL Editor in Supabase Dashboard
+   - Run: 
+     ```sql
+     UPDATE users SET role = 'super_admin' 
+     WHERE email = 'admin@emasjid.my'; -- or staging email
+     ```
+
+**Local Development:**
+- Use `scripts/setup-supabase.sh` for comprehensive test data
+- Creates users, masjids, and TV display test data automatically
+- Run: `./scripts/setup-supabase.sh` (default) or `./scripts/setup-supabase.sh --test`
 
 ### 4. Authentication Configuration
 
