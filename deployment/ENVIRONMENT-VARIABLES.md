@@ -14,13 +14,15 @@ This document outlines environment variable management for secure deployment acr
 
 ## 📊 Environment Matrix
 
-| Variable                    | Development       | Staging             | Production       | Notes                       |
-| --------------------------- | ----------------- | ------------------- | ---------------- | --------------------------- |
-| `SUPABASE_URL`              | localhost:54321   | staging.supabase.co | prod.supabase.co | Auto-configured by Supabase |
-| `SUPABASE_ANON_KEY`         | local-anon-key    | staging-anon-key    | prod-anon-key    | Public, safe to expose      |
-| `SUPABASE_SERVICE_ROLE_KEY` | local-service-key | **SECRET**          | **SECRET**       | Server-side only            |
-| `SUPER_ADMIN_EMAIL`         | dev@example.com   | **SECRET**          | **SECRET**       | Admin account               |
-| `SUPER_ADMIN_PASSWORD`      | dev-password      | **SECRET**          | **SECRET**       | Strong password required    |
+> **Note:** Staging uses a **Supabase preview branch** (not a separate project), which provides isolated data with shared configuration.
+
+| Variable                    | Development       | Staging (Branch)         | Production (Main) | Notes                       |
+| --------------------------- | ----------------- | ------------------------ | ----------------- | --------------------------- |
+| `SUPABASE_URL`              | localhost:54321   | project--staging.supabase.co | project.supabase.co | Branch URLs have `--branch-name` |
+| `SUPABASE_ANON_KEY`         | local-anon-key    | staging-branch-anon-key  | prod-anon-key     | Public, safe to expose      |
+| `SUPABASE_SERVICE_ROLE_KEY` | local-service-key | **SECRET** (branch)      | **SECRET**        | Server-side only            |
+| `SUPER_ADMIN_EMAIL`         | dev@example.com   | **SECRET**               | **SECRET**        | Admin account               |
+| `SUPER_ADMIN_PASSWORD`      | dev-password      | **SECRET**               | **SECRET**        | Strong password required    |
 
 ## 🎯 Application-Specific Variables
 
@@ -93,25 +95,26 @@ NEXT_PUBLIC_ENABLE_DEV_TOOLS=true
 ### Staging
 
 ```bash
-# Staging Supabase project
-SUPABASE_URL=https://your-staging-project.supabase.co
-VITE_SUPABASE_URL=https://your-staging-project.supabase.co
-NEXT_PUBLIC_SUPABASE_URL=https://your-staging-project.supabase.co
+# Staging Supabase branch (preview branch URL)
+# Note: This is a branch URL, different from production but same project
+SUPABASE_URL=https://your-project-id--staging.supabase.co
+VITE_SUPABASE_URL=https://your-project-id--staging.supabase.co
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-id--staging.supabase.co
 
 # Staging URLs
 VITE_APP_URL=https://hub-staging.emasjid.my
 NEXT_PUBLIC_APP_URL=https://tv-staging.emasjid.my
 NEXT_PUBLIC_BASE_URL=https://public-staging.emasjid.my
 
-# Development flags disabled
-VITE_ENABLE_DEV_TOOLS=false
-NEXT_PUBLIC_ENABLE_DEV_TOOLS=false
+# Development flags can be enabled for staging
+VITE_ENABLE_DEV_TOOLS=true
+NEXT_PUBLIC_ENABLE_DEV_TOOLS=true
 ```
 
 ### Production
 
 ```bash
-# Production Supabase project
+# Production Supabase project (main branch)
 SUPABASE_URL=https://your-production-project.supabase.co
 VITE_SUPABASE_URL=https://your-production-project.supabase.co
 NEXT_PUBLIC_SUPABASE_URL=https://your-production-project.supabase.co

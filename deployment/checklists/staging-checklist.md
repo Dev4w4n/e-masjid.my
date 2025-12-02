@@ -1,17 +1,19 @@
 # Staging Deployment Checklist
 
-Generated on Fri Nov 21 19:41:14 +08 2025
+Generated on Tue Dec  2 17:17:28 +08 2025
 
 ## 🎯 Staging Environment Setup
 
-### Supabase Project Setup
-- [ ] Create Supabase project: `e-masjid-staging`
-- [ ] Link to GitHub repository: `Dev4w4n/e-masjid.my`
-- [ ] Configure branch deployment: `dev`
-- [ ] Apply database migrations
-- [ ] Load seed data (full test data)
-- [ ] Configure authentication settings
-- [ ] Set environment variables in Supabase dashboard
+### Supabase Branch Setup
+- [ ] Ensure main Supabase project `e-masjid-my` exists
+- [ ] Navigate to Database → Branches in Supabase dashboard
+- [ ] Create preview branch: `staging`
+- [ ] Connect branch to GitHub repository: `Dev4w4n/e-masjid.my`, branch: `dev`
+- [ ] Apply database migrations (automatically from GitHub)
+- [ ] Load seed data (full test data) to staging branch
+- [ ] Configure authentication settings for staging branch
+- [ ] Set environment variables in Supabase dashboard for staging branch
+- [ ] Note down staging branch URL and API keys (different from production)
 
 ### Cloudflare Pages Setup
 

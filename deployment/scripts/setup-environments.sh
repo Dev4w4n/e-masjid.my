@@ -155,14 +155,29 @@ Generated on $(date)
 
 ## 🎯 $(echo ${environment} | sed 's/./\U&/') Environment Setup
 
+$( [ "$environment" = "production" ] && cat << 'PROD'
 ### Supabase Project Setup
-- [ ] Create Supabase project: \`e-masjid-${environment}\`
+- [ ] Create Supabase project: \`e-masjid-my\`
 - [ ] Link to GitHub repository: \`${GITHUB_REPO}\`
-- [ ] Configure branch deployment: \`$( [ "$environment" = "production" ] && echo "$MAIN_BRANCH" || echo "$DEV_BRANCH" )\`
+- [ ] Configure branch deployment: \`${MAIN_BRANCH}\`
 - [ ] Apply database migrations
-- [ ] Load seed data ($( [ "$environment" = "production" ] && echo "minimal" || echo "full test data" ))
+- [ ] Load seed data (minimal)
 - [ ] Configure authentication settings
 - [ ] Set environment variables in Supabase dashboard
+PROD
+ || cat << 'STAGING'
+### Supabase Branch Setup
+- [ ] Ensure main Supabase project \`e-masjid-my\` exists
+- [ ] Navigate to Database → Branches in Supabase dashboard
+- [ ] Create preview branch: \`staging\`
+- [ ] Connect branch to GitHub repository: \`${GITHUB_REPO}\`, branch: \`${DEV_BRANCH}\`
+- [ ] Apply database migrations (automatically from GitHub)
+- [ ] Load seed data (full test data) to staging branch
+- [ ] Configure authentication settings for staging branch
+- [ ] Set environment variables in Supabase dashboard for staging branch
+- [ ] Note down staging branch URL and API keys (different from production)
+STAGING
+)
 
 ### Cloudflare Pages Setup
 

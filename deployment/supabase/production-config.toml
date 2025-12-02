@@ -1,10 +1,13 @@
 # Supabase Production Configuration
-# Project: e-masjid-production
+# Project: e-masjid-my (main branch)
 # GitHub Branch: main
 # Environment: Production
+#
+# NOTE: This is the main production branch of the project.
+# Staging environment uses a preview branch within the same project.
 
 # A string used to distinguish different Supabase projects on the same host
-project_id = "e-masjid-production"
+project_id = "e-masjid-my"
 
 [api]
 enabled = true

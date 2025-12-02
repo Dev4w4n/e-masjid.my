@@ -4,32 +4,42 @@ This directory contains configuration and setup guides for deploying E-Masjid.My
 
 ## 🎯 Overview
 
-We need 2 Supabase projects to match our deployment environments:
+We use Supabase's **branch feature** to manage deployment environments:
 
-| Environment    | Purpose               | GitHub Branch | Database        |
+| Environment    | Supabase Setup        | GitHub Branch | Database        |
 | -------------- | --------------------- | ------------- | --------------- |
-| **Production** | Live application      | `main`        | Production data |
-| **Staging**    | Testing & development | `dev`         | Test data       |
+| **Production** | Main project branch   | `main`        | Production data |
+| **Staging**    | Preview branch        | `dev`         | Test data       |
+
+**Why use branches instead of separate projects?**
+- Single project management and billing
+- Shared configuration with isolated database instances
+- Easy data migration between environments
+- Simplified API key and credential management
 
 ## 🚀 Quick Setup Guide
 
-### 1. Create Supabase Projects
+### 1. Create Supabase Project
 
 1. Go to [Supabase Dashboard](https://app.supabase.com)
-2. Create two new projects:
-   - `e-masjid-production` (or similar naming)
-   - `e-masjid-staging`
-3. Note down the project URLs and API keys for each
+2. Create one project: `e-masjid-my`
+3. Note down the production project URL and API keys
 
 ### 2. Link GitHub Repository
 
-For each Supabase project:
-
 1. Go to project settings → Integrations
 2. Connect to GitHub repository: `Dev4w4n/e-masjid.my`
-3. Configure branch-specific deployments:
-   - **Production project**: Deploy from `main` branch
-   - **Staging project**: Deploy from `dev` branch
+3. Set production branch: `main`
+
+### 3. Create Staging Branch
+
+1. In the same project, navigate to **Database** → **Branches**
+2. Click **Create preview branch**
+3. Configure the branch:
+   - Branch name: `staging`
+   - Connect to GitHub branch: `dev`
+   - Enable automatic migrations from repository
+4. Note down the staging branch URL and API keys (different from production)
 
 ### 3. Database Schema Setup
 

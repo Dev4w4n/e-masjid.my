@@ -3,7 +3,7 @@
 **Generated on:** November 21, 2025  
 **Repository:** Dev4w4n/e-masjid.my  
 **Environments:** Production (`main` branch) + Staging (`dev` branch)  
-**Platform:** Cloudflare Pages + Supabase
+**Platform:** Cloudflare Pages + Supabase (with preview branches)
 
 ## 📦 What Was Created
 
@@ -63,10 +63,10 @@ deployment/
 
 ## 🌍 Deployment Matrix
 
-| Environment    | Branch | Supabase Project      | Cloudflare Projects                                                                |
-| -------------- | ------ | --------------------- | ---------------------------------------------------------------------------------- |
-| **Production** | `main` | `e-masjid-production` | `hub-emasjid-production`<br>`public-emasjid-production`<br>`tv-emasjid-production` |
-| **Staging**    | `dev`  | `e-masjid-staging`    | `hub-emasjid-staging`<br>`public-emasjid-staging`<br>`tv-emasjid-staging`          |
+| Environment    | Branch | Supabase Setup              | Cloudflare Projects                                                                |
+| -------------- | ------ | --------------------------- | ---------------------------------------------------------------------------------- |
+| **Production** | `main` | Main project branch         | `hub-emasjid-production`<br>`public-emasjid-production`<br>`tv-emasjid-production` |
+| **Staging**    | `dev`  | Preview branch (`staging`)  | `hub-emasjid-staging`<br>`public-emasjid-staging`<br>`tv-emasjid-staging`          |
 
 ## 🔐 Security Features Implemented
 
@@ -137,11 +137,11 @@ deployment/
 
 ### Phase 1: Supabase Setup
 
-- [ ] Create production Supabase project
-- [ ] Create staging Supabase project
-- [ ] Link GitHub repository to both projects
+- [ ] Create main Supabase project
+- [ ] Link GitHub repository to project (main branch)
+- [ ] Create staging preview branch (connected to dev branch)
 - [ ] Configure branch-specific deployments
-- [ ] Set environment variables in Supabase dashboards
+- [ ] Set environment variables in Supabase for both branches
 
 ### Phase 2: Cloudflare Pages Setup
 

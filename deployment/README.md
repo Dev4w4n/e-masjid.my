@@ -89,10 +89,10 @@ Or use the automated setup:
 
 ### Phase 1: Supabase Setup
 
-- [ ] Create production Supabase project
-- [ ] Create staging Supabase project
-- [ ] Link GitHub repository to both projects
-- [ ] Configure branch-specific deployments
+- [ ] Create main Supabase project
+- [ ] Link GitHub repository (main branch)
+- [ ] Create staging preview branch (dev branch)
+- [ ] Configure automatic migrations for both branches
 - [ ] Set up database migrations
 - [ ] Configure RLS policies
 - [ ] Set up authentication providers

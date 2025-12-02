@@ -1,10 +1,15 @@
 # Supabase Staging Configuration  
-# Project: e-masjid-staging
+# Setup: Preview branch within main project (e-masjid-my)
+# Branch Name: staging
 # GitHub Branch: dev
 # Environment: Staging
+#
+# NOTE: Use Supabase's preview branch feature instead of creating a separate project.
+# This provides isolated staging data while sharing the same project configuration.
+# Branch URL format: https://your-project-id--staging.supabase.co
 
-# A string used to distinguish different Supabase projects on the same host
-project_id = "e-masjid-staging"
+# A string used to distinguish different Supabase branches
+project_id = "e-masjid-my-staging"
 
 [api]
 enabled = true

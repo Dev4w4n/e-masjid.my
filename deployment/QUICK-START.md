@@ -24,33 +24,41 @@ This creates:
 - Deployment checklists
 - Configuration files
 
-## ⚡ Step 2: Create Supabase Projects (10 minutes)
+## ⚡ Step 2: Create Supabase Project with Branches (10 minutes)
 
 ### Production Project
 
 1. Go to [Supabase Dashboard](https://app.supabase.com)
-2. Create project: `e-masjid-production`
+2. Create project: `e-masjid-my`
 3. Note down: Project URL and API keys
 4. Go to Settings → Integrations → GitHub
 5. Connect repository: `Dev4w4n/e-masjid.my`
 6. Set production branch: `main`
 
-### Staging Project
+### Create Staging Branch
 
-1. Create project: `e-masjid-staging`
-2. Note down: Project URL and API keys
-3. Connect to same repository
-4. Set production branch: `dev`
+1. In the same project, go to **Database** → **Branches**
+2. Click **Create preview branch**
+3. Name it: `staging`
+4. Connect to GitHub branch: `dev`
+5. Note down: Staging branch URL and API keys (different from production)
 
-### Configure Both Projects
+**Benefits of using branches:**
+- Single project management
+- Shared configuration with isolated data
+- Lower cost (no separate project)
+- Easy migration path from staging to production
 
-1. Run database migrations (auto-deployed from repo)
-2. Set environment variables in project settings:
+### Configure Project
+
+1. Run database migrations (auto-deployed from repo to both branches)
+2. Set environment variables in project settings for **production**:
    ```
    SUPER_ADMIN_EMAIL=admin@yourdomain.com
    SUPER_ADMIN_PASSWORD=your-strong-password
    ```
-3. Configure auth settings (redirect URLs, etc.)
+3. Set environment variables for **staging branch** (can use different values)
+4. Configure auth settings (redirect URLs for both production and staging)
 
 ## ⚡ Step 3: Create Cloudflare Pages Projects (15 minutes)
 
