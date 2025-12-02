@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev --port 3001",
     "build": "next build",
+    "build:cloudflare": "npx @cloudflare/next-on-pages",
     "start": "next start",
     "preview": "next start",
     "lint": "next lint",
@@ -37,6 +38,7 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.13.5",
     "@masjid-suite/eslint-config": "workspace:*",
     "@playwright/test": "^1.55.0",
     "@testing-library/jest-dom": "^6.1.4",

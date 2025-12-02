@@ -4,8 +4,8 @@
 # Framework: Next.js
 
 [build]
-command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build"
-publish = "apps/tv-display/.next"
+command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && npx @cloudflare/next-on-pages"
+publish = "apps/tv-display/.vercel/output/static"
 
 [build.environment]
 NODE_ENV = "staging"

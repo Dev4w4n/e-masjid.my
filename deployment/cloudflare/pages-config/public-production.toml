@@ -4,8 +4,8 @@
 # Framework: Next.js
 
 [build]
-command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build"
-publish = "apps/public/.next"
+command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build && npx @cloudflare/next-on-pages"
+publish = "apps/public/.vercel/output/static"
 
 [build.environment]
 NODE_ENV = "production"

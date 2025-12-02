@@ -50,6 +50,16 @@ error TS6305: Output file '/opt/buildhome/repo/packages/auth/dist/index.d.ts' ha
 
 The `build:packages` script compiles all shared packages in the correct dependency order.
 
+#### 🔥 Important: Next.js on Cloudflare Pages
+
+**Public and TV Display apps use `@cloudflare/next-on-pages` adapter** because:
+- Cloudflare Pages has a **25 MiB file size limit**
+- Standard Next.js `.next` output includes large webpack cache files (27+ MiB)
+- The adapter optimizes Next.js for Cloudflare's edge runtime
+- Output directory changes from `.next` to `.vercel/output/static`
+
+Without this adapter, deployments fail with: `Error: Pages only supports files up to 25 MiB in size`
+
 ### 2. Hub App Configuration
 
 #### Production: `hub-emasjid-production`
@@ -87,8 +97,8 @@ Project Name: public-emasjid-production
 Production Branch: main
 Build Settings:
   Framework Preset: Next.js
-  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build
-  Build Output Directory: apps/public/.next
+  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build && npx @cloudflare/next-on-pages
+  Build Output Directory: apps/public/.vercel/output/static
   Root Directory: /
 Environment Variables: [See environment section below]
 ```
@@ -100,8 +110,8 @@ Project Name: public-emasjid-staging
 Production Branch: dev
 Build Settings:
   Framework Preset: Next.js
-  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build
-  Build Output Directory: apps/public/.next
+  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build && npx @cloudflare/next-on-pages
+  Build Output Directory: apps/public/.vercel/output/static
   Root Directory: /
 Environment Variables: [See environment section below]
 ```
@@ -115,8 +125,8 @@ Project Name: tv-emasjid-production
 Production Branch: main
 Build Settings:
   Framework Preset: Next.js
-  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build
-  Build Output Directory: apps/tv-display/.next
+  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && npx @cloudflare/next-on-pages
+  Build Output Directory: apps/tv-display/.vercel/output/static
   Root Directory: /
 Environment Variables: [See environment section below]
 ```
@@ -128,8 +138,8 @@ Project Name: tv-emasjid-staging
 Production Branch: dev
 Build Settings:
   Framework Preset: Next.js
-  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build
-  Build Output Directory: apps/tv-display/.next
+  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && npx @cloudflare/next-on-pages
+  Build Output Directory: apps/tv-display/.vercel/output/static
   Root Directory: /
 Environment Variables: [See environment section below]
 ```
