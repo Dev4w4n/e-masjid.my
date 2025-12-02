@@ -106,10 +106,10 @@ Same steps but:
 4. Framework preset: **Next.js**
 5. Build settings:
    ```
-   Build command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build && npx @cloudflare/next-on-pages
+   Build command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build && cd ../.. && npx @cloudflare/next-on-pages --experimental-minify apps/public
    Build output: apps/public/.vercel/output/static
    ```
-   > **Note**: Public app uses Next.js for SEO-friendly server-side rendering. The `build:packages` step compiles shared packages, then `@cloudflare/next-on-pages` adapts Next.js for Cloudflare Pages (avoiding 25 MiB file size limits).
+   > **Note**: Public app uses Next.js for SEO-friendly server-side rendering. The `build:packages` step compiles shared packages, then `@cloudflare/next-on-pages` adapts Next.js for Cloudflare Pages (avoiding 25 MiB file size limits). Must run adapter from repo root.
 5. Environment variables:
    ```
    NEXT_PUBLIC_SUPABASE_URL=https://your-production-project.supabase.co
@@ -132,10 +132,10 @@ Same steps but use `dev` branch and staging environment variables.
 4. Framework preset: **Next.js**
 5. Build settings:
    ```
-   Build command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && npx @cloudflare/next-on-pages
+   Build command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && cd ../.. && npx @cloudflare/next-on-pages --experimental-minify apps/tv-display
    Build output: apps/tv-display/.vercel/output/static
    ```
-   > **Note**: TV Display app uses Next.js for real-time content updates and SSR. The `build:packages` step compiles shared packages, then `@cloudflare/next-on-pages` adapts Next.js for Cloudflare Pages.
+   > **Note**: TV Display app uses Next.js for real-time content updates and SSR. The `build:packages` step compiles shared packages, then `@cloudflare/next-on-pages` adapts Next.js for Cloudflare Pages. Must run adapter from repo root.
 5. Environment variables:
    ```
    NEXT_PUBLIC_SUPABASE_URL=https://your-production-project.supabase.co
