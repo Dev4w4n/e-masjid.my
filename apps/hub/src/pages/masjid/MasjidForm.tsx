@@ -56,7 +56,7 @@ export const MasjidForm: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(isEditMode);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  
+
   // Admin management state
   const [admins, setAdmins] = useState<MasjidAdmin[]>([]);
   const [adminsLoading, setAdminsLoading] = useState(false);
@@ -807,8 +807,9 @@ export const MasjidForm: React.FC = () => {
               setAssignSuccess(null);
               try {
                 // Lookup user by email in users table
-                const { data: users, error: lookupError } = await (masjidService as any).db
-                  .client
+                const { data: users, error: lookupError } = await (
+                  masjidService as any
+                ).db.client
                   .from("users")
                   .select("id,email")
                   .eq("email", assignEmail)
@@ -822,7 +823,9 @@ export const MasjidForm: React.FC = () => {
                   masjid_id: id,
                   user_id: found.id,
                   status: "active",
-                  approved_by: (await (masjidService as any).db.client.auth.getUser()).data.user?.id ?? undefined,
+                  approved_by:
+                    (await (masjidService as any).db.client.auth.getUser()).data
+                      .user?.id ?? undefined,
                   approved_at: new Date().toISOString(),
                 } as any);
 
@@ -875,8 +878,7 @@ export const MasjidForm: React.FC = () => {
             onClick={async () => {
               if (!id || !selectedAdmin) return;
               try {
-                await (masjidService as any).db
-                  .client
+                await (masjidService as any).db.client
                   .from("masjid_admins")
                   .delete()
                   .eq("masjid_id", id)
