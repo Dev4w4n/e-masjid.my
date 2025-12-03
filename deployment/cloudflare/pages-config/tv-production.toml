@@ -4,7 +4,7 @@
 # Framework: Next.js
 
 [build]
-command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify"
+command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && VERCEL_PROJECT_DIR=. pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify"
 publish = "apps/tv-display/.vercel/output/static"
 
 [build.environment]
