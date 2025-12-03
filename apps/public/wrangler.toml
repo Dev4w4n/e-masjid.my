@@ -1,0 +1,9 @@
+# Cloudflare Pages configuration for public app
+name = "public-emasjid"
+compatibility_date = "2024-01-01"
+
+# Enable Node.js compatibility for Edge Runtime
+compatibility_flags = ["nodejs_compat"]
+
+# Pages configuration
+pages_build_output_dir = ".vercel/output/static"
