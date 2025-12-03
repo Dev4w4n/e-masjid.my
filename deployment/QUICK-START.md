@@ -80,7 +80,7 @@ Create 6 projects total (3 apps × 2 environments):
    Build output: apps/hub/dist
    ```
    > **Note**: Hub app uses Vite + React. Select "None" preset for full control over build settings. The `build:packages` step is required to compile shared TypeScript packages first.
-6. Environment variables:
+7. Environment variables:
    ```
    VITE_SUPABASE_URL=https://your-production-project.supabase.co
    VITE_SUPABASE_ANON_KEY=your-production-anon-key

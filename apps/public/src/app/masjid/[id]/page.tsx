@@ -14,7 +14,7 @@ import type { MasjidAdmin } from "@masjid-suite/shared-types";
 import { getTvDisplayUrlForDisplay } from "@masjid-suite/shared-types";
 
 // Required for Cloudflare Pages deployment
-export const runtime = 'edge';
+export const runtime = "edge";
 
 interface MasjidPageProps {
   params: Promise<{ id: string }>;

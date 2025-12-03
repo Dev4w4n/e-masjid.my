@@ -39,11 +39,13 @@ Choose the correct framework preset during project creation:
 #### 🔥 Important: Monorepo Build Requirements
 
 All build commands follow this pattern:
+
 ```bash
 pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/<app-name> && pnpm build
 ```
 
 **Why?** E-Masjid.My uses TypeScript composite projects in a monorepo. Packages must be built BEFORE apps, otherwise you'll see errors like:
+
 ```
 error TS6305: Output file '/opt/buildhome/repo/packages/auth/dist/index.d.ts' has not been built
 ```
@@ -53,6 +55,7 @@ The `build:packages` script compiles all shared packages in the correct dependen
 #### 🔥 Important: Next.js on Cloudflare Pages
 
 **Public and TV Display apps use `@cloudflare/next-on-pages` adapter** because:
+
 - Cloudflare Pages has a **25 MiB file size limit**
 - Standard Next.js `.next` output includes large webpack cache files (27+ MiB)
 - The adapter optimizes Next.js for Cloudflare's edge runtime

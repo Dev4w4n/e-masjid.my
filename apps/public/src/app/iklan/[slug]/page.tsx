@@ -12,7 +12,7 @@ import PremiumBadge from "@/components/PremiumBadge";
 import type { Metadata } from "next";
 
 // Required for Cloudflare Pages deployment
-export const runtime = 'edge';
+export const runtime = "edge";
 
 // Note: Edge Runtime doesn't support generateStaticParams
 // Content will be rendered on-demand at the edge
