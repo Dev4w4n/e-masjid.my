@@ -14,17 +14,8 @@ import type { Metadata } from "next";
 // Required for Cloudflare Pages deployment
 export const runtime = 'edge';
 
-// ISR - Revalidate every 24 hours
-export const revalidate = 86400;
-
-// Generate static params for build-time generation
-export async function generateStaticParams() {
-  const contents = await getAllActiveContent();
-
-  return contents.map((content) => ({
-    slug: `${content.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${content.id}`,
-  }));
-}
+// Note: Edge Runtime doesn't support generateStaticParams
+// Content will be rendered on-demand at the edge
 
 // Generate dynamic metadata
 export async function generateMetadata({
