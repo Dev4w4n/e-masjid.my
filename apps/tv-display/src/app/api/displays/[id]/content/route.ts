@@ -9,6 +9,9 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+
+// Required for Cloudflare Pages deployment
+export const runtime = 'edge';
 import { 
   Database,
   DisplayContent,
