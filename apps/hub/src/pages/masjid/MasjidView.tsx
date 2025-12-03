@@ -420,7 +420,10 @@ function MasjidView() {
               </Typography>
               {permissions.isSuperAdmin() && (
                 <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-                  <Button variant="contained" onClick={() => setAssignDialogOpen(true)}>
+                  <Button
+                    variant="contained"
+                    onClick={() => setAssignDialogOpen(true)}
+                  >
                     Assign Admin
                   </Button>
                 </Box>
@@ -806,8 +809,9 @@ function MasjidView() {
               setAssignSuccess(null);
               try {
                 // Lookup user by email in users table
-                const { data: users, error: lookupError } = await (masjidService as any).db
-                  .client
+                const { data: users, error: lookupError } = await (
+                  masjidService as any
+                ).db.client
                   .from("users")
                   .select("id,email")
                   .eq("email", assignEmail)
@@ -821,7 +825,9 @@ function MasjidView() {
                   masjid_id: id,
                   user_id: found.id,
                   status: "active",
-                  approved_by: (await (masjidService as any).db.client.auth.getUser()).data.user?.id ?? undefined,
+                  approved_by:
+                    (await (masjidService as any).db.client.auth.getUser()).data
+                      .user?.id ?? undefined,
                   approved_at: new Date().toISOString(),
                 } as any);
 
