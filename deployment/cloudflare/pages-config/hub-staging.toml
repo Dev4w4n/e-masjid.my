@@ -1,0 +1,53 @@
+# Hub App - Staging Configuration
+# Cloudflare Pages Project: hub-emasjid-staging
+# GitHub Branch: dev
+# Framework: Vite (React)
+
+[build]
+command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/hub && pnpm build"
+publish = "apps/hub/dist"
+
+[build.environment]
+NODE_ENV = "staging"
+VITE_SUPABASE_URL = "https://YOUR_STAGING_SUPABASE_PROJECT_ID.supabase.co"
+VITE_SUPABASE_ANON_KEY = "YOUR_STAGING_SUPABASE_ANON_KEY"
+VITE_APP_URL = "https://YOUR_STAGING_DOMAIN"
+VITE_ENABLE_DEV_TOOLS = "true"
+VITE_SHOW_LOGGER = "true"
+
+# Cross-app integration URLs (staging)
+VITE_TV_DISPLAY_BASE_URL = "https://tv-emasjid-staging.pages.dev/display"
+VITE_PUBLIC_BASE_URL = "https://public-emasjid-staging.pages.dev"
+
+# Development features enabled for staging
+VITE_BUILD_TARGET = "staging"
+VITE_MINIFY = "false"
+VITE_SOURCE_MAPS = "true"
+
+# More permissive headers for testing
+[headers]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# SPA routing support
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# API proxy for Supabase staging
+[[redirects]]
+  from = "/api/*"
+  to = "https://YOUR_STAGING_SUPABASE_PROJECT_ID.supabase.co/rest/v1/:splat"
+  status = 200
+  headers = {Authorization = "Bearer YOUR_STAGING_SUPABASE_ANON_KEY"}
+
+# Basic asset optimization for staging
+[asset_optimization]
+css = false
+html = true
+img = false
+js = false

@@ -1,0 +1,7 @@
+# Cloudflare Pages ignore file
+
+# Exclude Next.js build cache to stay under 25 MiB limit
+
+.next/cache/
+.next/standalone/
+cache/

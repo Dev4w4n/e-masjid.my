@@ -1,0 +1,53 @@
+# Hub App - Production Configuration
+# Cloudflare Pages Project: hub-emasjid-production
+# GitHub Branch: main
+# Framework: Vite (React)
+
+[build]
+command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/hub && pnpm build"
+publish = "apps/hub/dist"
+
+[build.environment]
+NODE_ENV = "production"
+VITE_SUPABASE_URL = "https://YOUR_PRODUCTION_SUPABASE_PROJECT_ID.supabase.co"
+VITE_SUPABASE_ANON_KEY = "YOUR_PRODUCTION_SUPABASE_ANON_KEY"
+VITE_APP_URL = "https://YOUR_PRODUCTION_DOMAIN"
+VITE_ENABLE_DEV_TOOLS = "false"
+VITE_SHOW_LOGGER = "false"
+
+# Cross-app integration URLs
+VITE_TV_DISPLAY_BASE_URL = "https://tv-emasjid-production.pages.dev/display"
+VITE_PUBLIC_BASE_URL = "https://public-emasjid-production.pages.dev"
+
+# Build optimization
+VITE_BUILD_TARGET = "production"
+VITE_MINIFY = "true"
+
+# Security headers (configured in Cloudflare Pages)
+[headers]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# SPA routing support
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# API proxy for Supabase (if needed)
+[[redirects]]
+  from = "/api/*"
+  to = "https://YOUR_PRODUCTION_SUPABASE_PROJECT_ID.supabase.co/rest/v1/:splat"
+  status = 200
+  headers = {Authorization = "Bearer YOUR_PRODUCTION_SUPABASE_ANON_KEY"}
+
+# Asset optimization
+[asset_optimization]
+css = true
+html = true
+img = true
+js = true

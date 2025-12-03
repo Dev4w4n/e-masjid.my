@@ -1,0 +1,42 @@
+# Deployment Directory .gitignore
+# This ensures no sensitive deployment data is accidentally committed
+
+# Generated environment templates (may contain project-specific URLs)
+env-templates/*.env
+
+# Generated checklists (may contain project-specific information) 
+checklists/*-checklist.md
+
+# Any secrets or private keys
+.secrets/
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Temporary deployment files
+*.tmp
+*.temp
+deploy-*.log
+
+# IDE files specific to deployment
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Local configuration overrides
+local-config.toml
+local.env
+
+# Allow the template and example files
+!*-template.*
+!*-example.*
+!README.md

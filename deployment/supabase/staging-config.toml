@@ -1,0 +1,100 @@
+# Supabase Staging Configuration  
+# Setup: Preview branch within main project (e-masjid-my)
+# Branch Name: staging
+# GitHub Branch: dev
+# Environment: Staging
+#
+# NOTE: Use Supabase's preview branch feature instead of creating a separate project.
+# This provides isolated staging data while sharing the same project configuration.
+# Branch URL format: https://your-project-id--staging.supabase.co
+
+# A string used to distinguish different Supabase branches
+project_id = "e-masjid-my-staging"
+
+[api]
+enabled = true
+# Port to use for the API URL (not applicable for hosted Supabase)
+port = 54321
+# Schemas to expose in your API
+schemas = ["public", "storage", "graphql_public"]
+# Extra schemas to add to the search_path of every request
+extra_search_path = ["public", "extensions"]
+# Maximum number of rows returned from a table in a single query
+max_rows = 1000
+
+[db]
+# The database major version (Supabase uses PostgreSQL 15)
+major_version = 15
+
+[realtime]
+enabled = true
+
+[studio]
+enabled = true
+
+[storage]
+enabled = true
+# Maximum file size allowed for uploads
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+# The base URL of your staging website
+site_url = "https://hub-emasjid-staging.pages.dev"
+
+# Staging redirect URLs - includes localhost for development
+additional_redirect_urls = [
+  "https://hub-emasjid-staging.pages.dev",
+  "https://public-emasjid-staging.pages.dev", 
+  "https://tv-emasjid-staging.pages.dev",
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "http://localhost:3002",
+  "http://127.0.0.1:3000",
+  "http://127.0.0.1:3001", 
+  "http://127.0.0.1:3002"
+]
+
+# Token configuration for staging (same as production)
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
+
+# User signup settings
+enable_signup = true
+enable_anonymous_sign_ins = false
+
+[auth.email]
+# Allow new user signups via email
+enable_signup = true
+# Disable email confirmation for easier staging testing
+enable_confirmations = false
+
+[auth.sms]
+# SMS signup configuration (optional - disabled for staging)
+enable_signup = false
+enable_confirmations = false
+
+# Configure OAuth providers for staging (uncomment and configure as needed)
+# [auth.external.google]
+# enabled = true  
+# client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID_STAGING)"
+# secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET_STAGING)"
+# redirect_uri = "https://your-staging-project.supabase.co/auth/v1/callback"
+
+# Analytics enabled for testing
+[analytics]
+enabled = true
+backend = "postgres"
+
+# Staging environment variables to set in Supabase dashboard:
+# SUPER_ADMIN_EMAIL = "staging-admin@emasjid.my"
+# SUPER_ADMIN_PASSWORD = "GENERATE_STRONG_PASSWORD"
+# SUPER_ADMIN_ID = "GENERATED_AFTER_USER_CREATION"
+
+# Staging-specific settings (configure in Supabase dashboard):
+# - More permissive CORS settings for testing
+# - Less aggressive rate limiting  
+# - Full seed data loaded for testing
+# - All development features enabled
+# - Shorter session timeouts for testing auth flows

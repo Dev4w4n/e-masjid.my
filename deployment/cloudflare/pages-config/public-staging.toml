@@ -1,0 +1,64 @@
+# Public App - Staging Configuration
+# Cloudflare Pages Project: public-emasjid-staging
+# GitHub Branch: dev
+# Framework: Next.js
+
+[build]
+command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build && mkdir -p apps/public && cp -r .next apps/public/.next && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify"
+publish = "apps/public/.vercel/output/static"
+
+# Cloudflare Pages Functions configuration
+[functions]
+compatibility_flags = ["nodejs_compat"]
+compatibility_date = "2024-01-01"
+
+[build.environment]
+NODE_ENV = "staging"
+NEXT_PUBLIC_SUPABASE_URL = "https://YOUR_STAGING_SUPABASE_PROJECT_ID.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY = "YOUR_STAGING_SUPABASE_ANON_KEY"
+NEXT_PUBLIC_BASE_URL = "https://YOUR_STAGING_PUBLIC_DOMAIN"
+
+# Server-side environment variables (sensitive - set in dashboard only)
+# SUPABASE_SERVICE_ROLE_KEY = "set-in-cloudflare-dashboard"
+
+# Cross-app integration (staging)
+NEXT_PUBLIC_HUB_URL = "https://hub-emasjid-staging.pages.dev"
+NEXT_PUBLIC_TV_DISPLAY_URL = "https://tv-emasjid-staging.pages.dev"
+
+# Development features for staging
+NEXT_PUBLIC_APP_ENV = "staging"
+NEXT_PUBLIC_ENABLE_ANALYTICS = "false"
+NEXT_PUBLIC_ENABLE_SEO = "true"
+NEXT_PUBLIC_ENABLE_DEV_TOOLS = "true"
+
+# More permissive headers for staging
+[headers]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Next.js routing and API
+[[redirects]]
+  from = "/api/*"
+  to = "/api/:splat"
+  status = 200
+
+# Basic asset optimization for staging
+[asset_optimization]
+css = false
+html = true
+img = false
+js = false
+
+# Shorter cache times for staging
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=1800"

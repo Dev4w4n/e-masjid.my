@@ -19,6 +19,9 @@ import {
   createApiError 
 } from '../../../../../lib/api-utils';
 
+// Required for Cloudflare Pages deployment
+export const runtime = 'edge';
+
 // Create Supabase client for API routes
 function createSupabaseClient() {
   const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;

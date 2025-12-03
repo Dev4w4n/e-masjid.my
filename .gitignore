@@ -127,4 +127,9 @@ supabase/.branches
 supabase/.temp
 supabase/functions/.env
 
+# Deployment - Generated files that may contain sensitive data
+deployment/env-templates/*.env
+deployment/checklists/*-checklist.md
+deployment/.secrets/
+
 test-data-generated.sql

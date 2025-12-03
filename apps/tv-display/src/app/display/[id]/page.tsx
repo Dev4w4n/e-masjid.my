@@ -11,6 +11,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { DisplayConfig, PrayerTimes } from '@masjid-suite/shared-types';
 
+// Required for Cloudflare Pages deployment
+export const runtime = 'edge';
+
 // Component imports
 import ContentCarousel from '../../../components/ContentCarousel';
 import PrayerTimesOverlay from '../../../components/PrayerTimesOverlay';
