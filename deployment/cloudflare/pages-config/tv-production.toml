@@ -7,6 +7,11 @@
 command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && mkdir -p apps/tv-display && cp -r .next apps/tv-display/.next && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify"
 publish = "apps/tv-display/.vercel/output/static"
 
+# Cloudflare Pages Functions configuration
+[functions]
+compatibility_flags = ["nodejs_compat"]
+compatibility_date = "2024-01-01"
+
 [build.environment]
 NODE_ENV = "production"
 NEXT_PUBLIC_SUPABASE_URL = "https://YOUR_PRODUCTION_SUPABASE_PROJECT_ID.supabase.co"
