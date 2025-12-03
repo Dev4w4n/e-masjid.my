@@ -9,8 +9,6 @@ import Profile from "./pages/profile/Profile";
 import ProfileView from "./pages/profile/ProfileView";
 import MasjidList from "./pages/masjid/MasjidList";
 import MasjidForm from "./pages/masjid/MasjidForm";
-import AdminApplications from "./pages/admin/AdminApplications";
-import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserApprovals from "./pages/admin/UserApprovals";
 import CreateContent from "./pages/content/CreateContent";
 import MyContent from "./pages/content/MyContent";
@@ -122,26 +120,6 @@ function App() {
         />
 
         {/* Admin routes */}
-        <Route
-          path="admin"
-          element={
-            <ProtectedRoute>
-              <WithRole role={["super_admin", "masjid_admin"]}>
-                <AdminDashboard />
-              </WithRole>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="admin/applications"
-          element={
-            <ProtectedRoute>
-              <WithRole role="super_admin">
-                <AdminApplications />
-              </WithRole>
-            </ProtectedRoute>
-          }
-        />
         <Route
           path="admin/user-approvals"
           element={

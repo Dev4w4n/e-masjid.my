@@ -502,9 +502,24 @@ export class MasjidService {
   async createMasjid(
     masjid: Database["public"]["Tables"]["masjids"]["Insert"]
   ) {
+    // Get the current authenticated user via the db's client
+    const {
+      data: { user },
+    } = await (this.db as any).client.auth.getUser();
+
+    if (!user) {
+      throw new Error("User must be authenticated to create a masjid");
+    }
+
+    // Automatically set created_by to the current user's ID
+    const masjidWithCreator = {
+      ...masjid,
+      created_by: user.id,
+    };
+
     const { data, error } = await this.db
       .table("masjids")
-      .insert(masjid)
+      .insert(masjidWithCreator)
       .select()
       .single();
 
