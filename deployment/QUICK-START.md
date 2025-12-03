@@ -106,11 +106,14 @@ Same steps but:
 4. Framework preset: **Next.js**
 5. Build settings:
    ```
-   Build command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build && VERCEL_PROJECT_DIR=. pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
+   Build command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build && mkdir -p apps/public && cp -r .next apps/public/.next && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
    Build output: apps/public/.vercel/output/static
    ```
-   > **Note**: Public app uses Next.js for SEO-friendly server-side rendering. The `build:packages` step compiles shared packages, then `@cloudflare/next-on-pages` adapts Next.js for Cloudflare Pages (avoiding 25 MiB file size limits). VERCEL_PROJECT_DIR=. prevents path duplication in monorepo.
-5. Environment variables:
+   > **Note**: Public app uses Next.js for SEO-friendly server-side rendering. The `build:packages` step compiles shared packages, then `@cloudflare/next-on-pages` adapts Next.js for Cloudflare Pages (avoiding 25 MiB file size limits). The `mkdir -p` and `cp -r` commands work around Vercel CLI's monorepo path detection bug.
+6. **Functions configuration** (in Settings → Functions):
+   - Compatibility flags: `nodejs_compat`
+   - Compatibility date: `2024-01-01`
+7. Environment variables:
    ```
    NEXT_PUBLIC_SUPABASE_URL=https://your-production-project.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your-production-anon-key
@@ -132,11 +135,14 @@ Same steps but use `dev` branch and staging environment variables.
 4. Framework preset: **Next.js**
 5. Build settings:
    ```
-   Build command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && VERCEL_PROJECT_DIR=. pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
+   Build command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && mkdir -p apps/tv-display && cp -r .next apps/tv-display/.next && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
    Build output: apps/tv-display/.vercel/output/static
    ```
-   > **Note**: TV Display app uses Next.js for real-time content updates and SSR. The `build:packages` step compiles shared packages, then `@cloudflare/next-on-pages` adapts Next.js for Cloudflare Pages. VERCEL_PROJECT_DIR=. prevents path duplication in monorepo.
-5. Environment variables:
+   > **Note**: TV Display app uses Next.js for real-time content updates and SSR. The `build:packages` step compiles shared packages, then `@cloudflare/next-on-pages` adapts Next.js for Cloudflare Pages. The `mkdir -p` and `cp -r` commands work around Vercel CLI's monorepo path detection bug.
+6. **Functions configuration** (in Settings → Functions):
+   - Compatibility flags: `nodejs_compat`
+   - Compatibility date: `2024-01-01`
+7. Environment variables:
    ```
    NEXT_PUBLIC_SUPABASE_URL=https://your-production-project.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your-production-anon-key
