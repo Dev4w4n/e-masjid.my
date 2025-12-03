@@ -11,6 +11,9 @@ import {
 import PremiumBadge from "@/components/PremiumBadge";
 import type { Metadata } from "next";
 
+// Required for Cloudflare Pages deployment
+export const runtime = 'edge';
+
 // ISR - Revalidate every 24 hours
 export const revalidate = 86400;
 
