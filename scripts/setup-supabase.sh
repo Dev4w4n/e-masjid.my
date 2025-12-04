@@ -456,7 +456,6 @@ create_env_files() {
 # ===========================================
 SUPABASE_URL=$API_URL
 SUPABASE_ANON_KEY=$ANON_KEY
-SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY
 
 # Client-side variables (VITE_ prefix for client-side access)
 VITE_SUPABASE_URL=$API_URL
@@ -505,7 +504,6 @@ EOL
 # ===========================================
 SUPABASE_URL=$API_URL
 SUPABASE_ANON_KEY=$ANON_KEY
-SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY
 
 # Next.js client-side variables (NEXT_PUBLIC_ prefix for Next.js client-side access)
 NEXT_PUBLIC_SUPABASE_URL=$API_URL

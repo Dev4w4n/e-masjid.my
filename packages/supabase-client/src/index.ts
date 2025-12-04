@@ -34,15 +34,23 @@ function getEnvironmentVariables() {
     } catch {
       // ignore; fall back to process.env below (useful in tests/node)
     }
+    
+    // Check Next.js environment variables (NEXT_PUBLIC_ prefix)
+    if (!SUPABASE_URL && typeof process !== "undefined") {
+      SUPABASE_URL = process.env?.NEXT_PUBLIC_SUPABASE_URL;
+    }
+    if (!SUPABASE_ANON_KEY && typeof process !== "undefined") {
+      SUPABASE_ANON_KEY = process.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    }
   }
 
   // Fallback for Node.js/test environments
   if (!SUPABASE_URL) {
-    SUPABASE_URL = process.env?.VITE_SUPABASE_URL || process.env?.SUPABASE_URL;
+    SUPABASE_URL = process.env?.VITE_SUPABASE_URL || process.env?.NEXT_PUBLIC_SUPABASE_URL || process.env?.SUPABASE_URL;
   }
   if (!SUPABASE_ANON_KEY) {
     SUPABASE_ANON_KEY =
-      process.env?.VITE_SUPABASE_ANON_KEY || process.env?.SUPABASE_ANON_KEY;
+      process.env?.VITE_SUPABASE_ANON_KEY || process.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env?.SUPABASE_ANON_KEY;
   }
 
   return { SUPABASE_URL, SUPABASE_ANON_KEY, isTest };
