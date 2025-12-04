@@ -60,8 +60,50 @@ RETURNS TRIGGER AS $$
 DECLARE
     suggested_zone VARCHAR(10);
 BEGIN
-    -- Call the existing address validation
-    PERFORM public.validate_masjid_address();
+    -- Inline address validation (cannot call trigger functions directly)
+    -- Check required address fields
+    IF NOT (
+        NEW.address ? 'address_line_1' AND
+        NEW.address ? 'city' AND
+        NEW.address ? 'state' AND
+        NEW.address ? 'postcode' AND
+        NEW.address ? 'country'
+    ) THEN
+        RAISE EXCEPTION 'Address must contain address_line_1, city, state, postcode, and country';
+    END IF;
+    
+    -- Validate postcode format
+    IF NOT (NEW.address->>'postcode' ~ '^[0-9]{5}$') THEN
+        RAISE EXCEPTION 'Postcode must be 5 digits';
+    END IF;
+    
+    -- Validate postcode range for Malaysia
+    IF (NEW.address->>'postcode')::INTEGER NOT BETWEEN 10000 AND 98000 THEN
+        RAISE EXCEPTION 'Postcode must be between 10000 and 98000 for Malaysia';
+    END IF;
+    
+    -- Validate state is Malaysian state (accepts both old and new names)
+    IF NOT (NEW.address->>'state' IN (
+        'Johor', 'Kedah', 'Kelantan', 'Melaka', 'Malacca', 'Negeri Sembilan', 
+        'Pahang', 'Pulau Pinang', 'Penang', 'Perak', 'Perlis', 'Sabah', 'Sarawak', 
+        'Selangor', 'Terengganu', 'Kuala Lumpur', 'Labuan', 'Putrajaya'
+    )) THEN
+        RAISE EXCEPTION 'State must be a valid Malaysian state';
+    END IF;
+    
+    -- Validate country is Malaysia
+    IF NEW.address->>'country' != 'MYS' THEN
+        RAISE EXCEPTION 'Country must be MYS (Malaysia)';
+    END IF;
+    
+    -- Ensure required text fields are not empty
+    IF length(trim(NEW.address->>'address_line_1')) = 0 THEN
+        RAISE EXCEPTION 'Address line 1 cannot be empty';
+    END IF;
+    
+    IF length(trim(NEW.address->>'city')) = 0 THEN
+        RAISE EXCEPTION 'City cannot be empty';
+    END IF;
     
     -- Auto-suggest zone code based on state if not provided
     IF NEW.jakim_zone_code IS NULL THEN
