@@ -17,7 +17,7 @@
   "scripts": {
     "build": "turbo build",
     "build:clean": "./scripts/build-packages.sh",
-    "build:packages": "pnpm tsc --build packages/shared-types packages/ui-theme packages/supabase-client packages/auth packages/ui-components packages/i18n packages/prayer-times packages/user-approval packages/content-management",
+    "build:packages": "pnpm tsc --build packages/shared-types packages/ui-theme packages/supabase-client packages/auth packages/ui-components packages/i18n packages/prayer-times packages/content-management",
     "dev": "turbo dev --concurrency 15",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
