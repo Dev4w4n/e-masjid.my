@@ -183,14 +183,7 @@ export const PerformanceOptimizedLayout: React.FC<PerformanceOptimizedLayoutProp
               config={{
                 carouselInterval: 30,
                 contentTransitionType: 'fade',
-                maxContentItems: 10,
-                showSponsorshipAmounts: true,
-                sponsorshipTierColors: {
-                  bronze: '#CD7F32',
-                  silver: '#C0C0C0',
-                  gold: '#FFD700',
-                  platinum: '#E5E4E2'
-                }
+                maxContentItems: 10
               }}
               onError={(error) => handleComponentError(error, 'ContentCarousel')}
             />

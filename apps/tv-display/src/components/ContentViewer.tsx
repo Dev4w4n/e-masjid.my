@@ -326,9 +326,6 @@ export function ContentViewer({
           <div className="font-semibold">{content.title}</div>
           <div>Type: {content.type}</div>
           <div>Duration: {content.duration}s</div>
-          {content.sponsorship_amount > 0 && (
-            <div>Sponsorship: RM{content.sponsorship_amount}</div>
-          )}
         </div>
       )}
     </div>

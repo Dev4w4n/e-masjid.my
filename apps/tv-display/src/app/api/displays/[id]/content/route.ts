@@ -17,7 +17,6 @@ import {
   DisplayContent,
   DisplayContentResponse,
   ContentType,
-  SponsorshipTier,
 } from '@masjid-suite/shared-types';
 import {
   ApiError,
@@ -232,15 +231,6 @@ export async function GET(
     const activeCount = stats?.filter((s: any) => s.status === 'active').length || 0;
     const pendingCount = stats?.filter((s: any) => s.status === 'pending').length || 0;
 
-    // Get total sponsorship revenue
-    const { data: revenueData } = await supabase
-      .from('sponsorships')
-      .select('amount')
-      .eq('masjid_id', display.masjid_id)
-      .eq('payment_status', 'paid');
-
-    const totalRevenue = revenueData?.reduce((sum: number, item: any) => sum + item.amount, 0) || 0;
-
     // Calculate pagination
     const totalPages = Math.ceil((count || 0) / limit);
     const hasMore = page < totalPages;
@@ -262,8 +252,7 @@ export async function GET(
         carousel_interval: display.carousel_interval,
         next_refresh: new Date(Date.now() + display.carousel_interval * 1000).toISOString(),
         total_active: activeCount,
-        total_pending: pendingCount,
-        sponsorship_revenue: totalRevenue
+        total_pending: pendingCount
       },
       links: {
         self: new URL(request.url).toString(),
@@ -300,21 +289,6 @@ export async function GET(
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
 const YOUTUBE_URL_REGEX = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
-
-// Sponsorship tier thresholds (in MYR)
-const SPONSORSHIP_TIERS = {
-  bronze: { min: 50, max: 199 },
-  silver: { min: 200, max: 499 },
-  gold: { min: 500, max: 999 },
-  platinum: { min: 1000, max: Infinity }
-};
-
-function calculateSponsorshipTier(amount: number): SponsorshipTier {
-  if (amount >= SPONSORSHIP_TIERS.platinum.min) return 'platinum';
-  if (amount >= SPONSORSHIP_TIERS.gold.min) return 'gold';
-  if (amount >= SPONSORSHIP_TIERS.silver.min) return 'silver';
-  return 'bronze';
-}
 
 function validateContentType(type: string, url: string, mimeType?: string): boolean {
   switch (type as ContentType) {
@@ -427,29 +401,16 @@ export async function POST(
     const duration = parseInt(formData.get('duration') as string);
     const startDate = formData.get('start_date') as string;
     const endDate = formData.get('end_date') as string;
-    const sponsorshipAmount = parseFloat(formData.get('sponsorship_amount') as string);
     const submittedBy = formData.get('submitted_by') as string;
     
     // Optional fields
     const url = formData.get('url') as string | null;
     const file = formData.get('file') as File | null;
-    const sponsorName = formData.get('sponsor_name') as string | null;
-    const sponsorEmail = formData.get('sponsor_email') as string | null;
-    const sponsorPhone = formData.get('sponsor_phone') as string | null;
-    const sponsorMessage = formData.get('sponsor_message') as string | null;
-    const showSponsorName = formData.get('show_sponsor_name') === 'true';
 
     // Validation
-    if (!title || !type || !duration || !startDate || !endDate || !sponsorshipAmount || !submittedBy) {
+    if (!title || !type || !duration || !startDate || !endDate || !submittedBy) {
       return NextResponse.json(
-        createApiError('VALIDATION_ERROR', 'Missing required fields: title, type, duration, start_date, end_date, sponsorship_amount, submitted_by'),
-        { status: 400 }
-      );
-    }
-
-    if (sponsorshipAmount < SPONSORSHIP_TIERS.bronze.min) {
-      return NextResponse.json(
-        createApiError('VALIDATION_ERROR', `Minimum sponsorship amount is RM${SPONSORSHIP_TIERS.bronze.min}`),
+        createApiError('VALIDATION_ERROR', 'Missing required fields: title, type, duration, start_date, end_date, submitted_by'),
         { status: 400 }
       );
     }
@@ -545,9 +506,6 @@ export async function POST(
       }
     }
 
-    // Calculate sponsorship tier
-    const sponsorshipTier = calculateSponsorshipTier(sponsorshipAmount);
-
     // Create content record
     const newContent = {
       id: contentId,
@@ -559,24 +517,15 @@ export async function POST(
       url: contentUrl,
       thumbnail_url: thumbnailUrl || null,
       
-      // Sponsorship details
-      sponsorship_amount: sponsorshipAmount,
-      sponsorship_tier: sponsorshipTier,
-      payment_status: 'pending' as const,
-      payment_reference: null,
-      
       // Display settings
       duration,
       start_date: startDate,
       end_date: endDate,
       
       // Content management
-      status: 'pending' as const,
+      status: 'active' as const,
       submitted_by: submittedBy,
       submitted_at: new Date().toISOString(),
-      approved_by: null,
-      approved_at: null,
-      rejection_reason: null,
       
       // File metadata
       file_size: fileSize || null,
@@ -600,42 +549,6 @@ export async function POST(
       );
     }
 
-    // Create sponsorship record if sponsor details provided
-    if (sponsorName) {
-      const sponsorshipData = {
-        id: crypto.randomUUID(),
-        content_id: contentId,
-        masjid_id: display.masjid_id,
-        sponsor_name: sponsorName,
-        sponsor_email: sponsorEmail || null,
-        sponsor_phone: sponsorPhone || null,
-        
-        amount: sponsorshipAmount,
-        currency: 'MYR' as const,
-        tier: sponsorshipTier,
-        
-        payment_method: 'fpx' as const, // Default payment method
-        payment_reference: `pending-${contentId}`,
-        payment_status: 'pending' as const,
-        payment_date: null,
-        
-        show_sponsor_name: showSponsorName,
-        sponsor_message: sponsorMessage || null,
-        
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-
-      const { error: sponsorshipError } = await supabase
-        .from('sponsorships')
-        .insert(sponsorshipData);
-
-      if (sponsorshipError) {
-        console.error('Sponsorship creation error:', sponsorshipError);
-        // Log error but don't fail the content creation
-      }
-    }
-
     // Transform database record to DisplayContent interface
     const responseContent: DisplayContent = {
       id: createdContent.id,
@@ -646,11 +559,6 @@ export async function POST(
       url: createdContent.url,
       ...(createdContent.thumbnail_url && { thumbnail_url: createdContent.thumbnail_url }),
       
-      sponsorship_amount: createdContent.sponsorship_amount,
-      ...(createdContent.sponsorship_tier && { sponsorship_tier: createdContent.sponsorship_tier as SponsorshipTier }),
-      payment_status: createdContent.payment_status as any,
-      ...(createdContent.payment_reference && { payment_reference: createdContent.payment_reference }),
-      
       duration: createdContent.duration,
       start_date: createdContent.start_date,
       end_date: createdContent.end_date,
@@ -658,9 +566,6 @@ export async function POST(
       status: createdContent.status as any,
       submitted_by: createdContent.submitted_by,
       submitted_at: createdContent.submitted_at || new Date().toISOString(),
-      ...(createdContent.approved_by && { approved_by: createdContent.approved_by }),
-      ...(createdContent.approved_at && { approved_at: createdContent.approved_at }),
-      ...(createdContent.rejection_reason && { rejection_reason: createdContent.rejection_reason }),
       
       ...(createdContent.file_size && { file_size: createdContent.file_size }),
       ...(createdContent.file_type && { file_type: createdContent.file_type }),
@@ -679,10 +584,7 @@ export async function POST(
     }, {
       status: 201,
       headers: {
-        'X-Content-ID': contentId,
-        'X-Sponsorship-Tier': sponsorshipTier,
-        'X-Payment-Status': 'pending',
-        'X-Approval-Status': 'pending'
+        'X-Content-ID': contentId
       }
     });
 

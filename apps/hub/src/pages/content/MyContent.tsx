@@ -55,11 +55,6 @@ interface UserContent {
   end_date: string;
   status: "pending" | "active" | "rejected" | "expired";
   submitted_at: string;
-  approved_at?: string | null;
-  approved_by?: string | null;
-  approval_notes?: string | null;
-  rejection_reason?: string | null;
-  resubmission_of?: string | null;
   masjid_id: string;
   masjid_name?: string;
 }
@@ -142,11 +137,6 @@ const MyContent: React.FC = () => {
         end_date: item.end_date,
         status: item.status as "pending" | "active" | "rejected" | "expired",
         submitted_at: item.created_at || "",
-        approved_at: null, // Will be populated when types are updated
-        approved_by: null,
-        approval_notes: null,
-        rejection_reason: null,
-        resubmission_of: null,
         masjid_id: item.masjid_id,
         masjid_name: item.masjids?.name || "Unknown Masjid",
       }));

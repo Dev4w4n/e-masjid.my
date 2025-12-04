@@ -11,11 +11,9 @@ import type {
   PrayerTimes,
   DisplayConfig,
   DisplayStatus,
-  Sponsorship,
   DisplayAnalytics,
   ContentType,
   ContentStatus,
-  SponsorshipTier,
   PrayerTimePosition,
   DisplayResolution,
   DisplayOrientation,
@@ -144,13 +142,6 @@ export type ApiErrorCode =
   | "PRAYER_ZONE_INVALID"
   | "PRAYER_CONFIG_MISSING"
 
-  // Sponsorship errors
-  | "SPONSORSHIP_PAYMENT_FAILED"
-  | "SPONSORSHIP_AMOUNT_INVALID"
-  | "SPONSORSHIP_TIER_MISMATCH"
-  | "PAYMENT_REFERENCE_DUPLICATE"
-  | "PAYMENT_VERIFICATION_FAILED"
-
   // Cache and network errors
   | "CACHE_MISS"
   | "CACHE_EXPIRED"
@@ -184,7 +175,6 @@ export interface DisplayContentResponse extends ApiResponse {
     next_refresh: string;
     total_active: number;
     total_pending: number;
-    sponsorship_revenue: number;
   };
 }
 
@@ -193,11 +183,6 @@ export interface SingleContentResponse extends ApiResponse {
   meta: ApiMeta & {
     masjid_name: string;
     display_name?: string;
-    sponsor_info?: {
-      name: string;
-      tier: string;
-      message?: string;
-    };
   };
 }
 
@@ -255,15 +240,6 @@ export interface HeartbeatResponse extends ApiResponse {
   };
 }
 
-export interface SponsorshipResponse extends ApiResponse {
-  data: Sponsorship;
-  meta: ApiMeta & {
-    payment_deadline?: string;
-    tier_benefits: string[];
-    next_tier_amount?: number;
-  };
-}
-
 export interface ContentUploadResponse extends ApiResponse {
   data: {
     content_id: string;
@@ -297,35 +273,6 @@ export interface AnalyticsResponse extends ApiResponse {
       revenue: number;
       uptime_hours: number;
       error_count: number;
-    };
-  };
-}
-
-export interface RevenueReportResponse extends ApiResponse {
-  data: {
-    period: string;
-    total_revenue: number;
-    transactions: number;
-    top_sponsors: Array<{
-      name: string;
-      amount: number;
-      content_count: number;
-    }>;
-    tier_breakdown: Record<
-      SponsorshipTier,
-      {
-        count: number;
-        revenue: number;
-        avg_amount: number;
-      }
-    >;
-  };
-  meta: ApiMeta & {
-    currency: "MYR";
-    exchange_rate?: number;
-    tax_info?: {
-      rate: number;
-      total_tax: number;
     };
   };
 }
@@ -565,7 +512,6 @@ export interface CreateContentRequest {
   description?: string;
   type: ContentType;
   file?: File | string; // File for upload or URL for YouTube
-  sponsorship_amount: number;
   duration: number;
   start_date: string;
   end_date: string;
@@ -586,8 +532,6 @@ export interface ContentFiltersRequest {
   type?: ContentType[];
   masjid_id?: string;
   display_id?: string;
-  min_sponsorship?: number;
-  max_sponsorship?: number;
   date_range?: {
     start: string;
     end: string;
@@ -604,19 +548,7 @@ export interface UpdateDisplayConfigRequest {
   max_content_items?: number;
   prayer_time_position?: PrayerTimePosition;
   prayer_time_font_size?: string;
-  show_sponsorship_amounts?: boolean;
   is_active?: boolean;
-}
-
-export interface CreateSponsorshipRequest {
-  content_id: string;
-  sponsor_name: string;
-  sponsor_email?: string;
-  sponsor_phone?: string;
-  amount: number;
-  payment_method: "fpx" | "credit_card" | "bank_transfer" | "cash";
-  show_sponsor_name: boolean;
-  sponsor_message?: string;
 }
 
 export interface PrayerTimeAdjustmentRequest {

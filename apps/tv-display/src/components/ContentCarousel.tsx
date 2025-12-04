@@ -8,9 +8,8 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { DisplayContent, ContentType, SponsorshipTier } from '@masjid-suite/shared-types';
+import { DisplayContent, ContentType } from '@masjid-suite/shared-types';
 import ContentViewer from './ContentViewer';
-import SponsorshipOverlay from './SponsorshipOverlay';
 import QRCodeOverlay from './QRCodeOverlay';
 
 // Extended content type with sponsor info from API response
@@ -24,13 +23,6 @@ interface ContentCarouselProps {
     carouselInterval: number; // seconds
     contentTransitionType: 'fade' | 'slide' | 'zoom' | 'none';
     maxContentItems: number;
-    showSponsorshipAmounts: boolean;
-    sponsorshipTierColors: {
-      bronze: string;
-      silver: string;
-      gold: string;
-      platinum: string;
-    };
     imageDisplayMode?: 'contain' | 'cover' | 'fill' | 'none';
     imageBackgroundColor?: string;
   };
@@ -427,15 +419,6 @@ export function ContentCarousel({
               imageBackgroundColor={config.imageBackgroundColor || '#000000'}
               showDebugInfo={showDebugInfo}
             />
-            
-            {/* Sponsorship overlay */}
-            {isActive && content.sponsorship_tier && (
-              <SponsorshipOverlay
-                content={content}
-                showAmount={config.showSponsorshipAmounts}
-                className="absolute bottom-4 right-4"
-              />
-            )}
 
             {/* QR Code overlay */}
             {isActive && content.qr_code_enabled && (
@@ -472,9 +455,6 @@ export function ContentCarousel({
           <div>Content: {state.currentIndex + 1} of {state.content.length}</div>
           <div>Title: {currentContent.title}</div>
           <div>Type: {currentContent.type}</div>
-          {currentContent.sponsorship_tier && (
-            <div>Tier: {currentContent.sponsorship_tier}</div>
-          )}
         </div>
       )}
 

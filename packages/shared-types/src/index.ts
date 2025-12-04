@@ -20,7 +20,6 @@ export {
   validateProfile,
   validateAddress,
   validateMasjid,
-  validateAdminApplication,
 } from "./validation";
 export * from "./tv-display";
 export * from "./mock-data";
@@ -173,54 +172,7 @@ export {
   getCalculationMethodName,
   validatePrayerScheduleConfig,
 } from "./prayer-schedule";
-// SponsorshipRecord types
-export type {
-  SponsorshipRecord,
-  CreateSponsorshipRequest as SponsorshipCreateRequest,
-  UpdateSponsorshipRequest as SponsorshipUpdateRequest,
-  ApproveSponsorshipRequest,
-  SponsorshipRecordWithRelations,
-  SponsorshipAnalytics,
-  SponsorshipType,
-  SponsorshipStatus,
-  PaymentStatus,
-  PaymentMethod,
-  SponsorshipVisibility,
-  SponsorContact,
-  PaymentInfo,
-  SponsorshipBenefits,
-  SponsorshipErrorCode,
-  SPONSORSHIP_TYPES,
-  SPONSORSHIP_STATUSES,
-  PAYMENT_METHODS,
-  PAYMENT_METHOD_NAMES,
-  DEFAULT_SPONSORSHIP_VISIBILITY,
-  DEFAULT_SPONSORSHIP_BENEFITS,
-  SPONSORSHIP_TYPE_BENEFITS,
-  SPONSORSHIP_VALIDATION,
-  MIN_SPONSORSHIP_AMOUNTS,
-} from "./sponsorship-record";
-export {
-  isValidSponsorshipType,
-  isValidSponsorshipStatus,
-  isValidPaymentMethod,
-  isValidSponsorshipAmount,
-  isSponsorshipRecord,
-  isCreateSponsorshipRequest,
-  getSponsorshipTypeDisplayName,
-  getSponsorshipStatusDisplayName,
-  getPaymentMethodDisplayName,
-  calculateSponsorshipDuration,
-  calculateCostPerDay,
-  isSponsorshipActive,
-  isSponsorshipEditable,
-  isSponsorshipCancellable,
-  calculateRecommendedAmount,
-  formatSponsorshipAmount as formatSponsorAmount,
-  createSponsorshipRecord,
-  validateSponsorshipDates,
-  validateSponsorshipRecord,
-} from "./sponsorship-record";
+
 // DisplayContentAssignment types
 export type {
   DisplayContentAssignment,
@@ -273,14 +225,12 @@ export type {
   PrayerTimesResponse,
   DisplayConfigResponse,
   HeartbeatResponse,
-  SponsorshipResponse,
   ContentUploadResponse,
   ApiMeta,
   ApiLinks,
   ContentFiltersRequest,
   CreateContentRequest,
   UpdateContentRequest,
-  CreateSponsorshipRequest,
 } from "./api-responses";
 export {
   createApiResponse,

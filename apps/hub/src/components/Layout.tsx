@@ -27,7 +27,6 @@ import {
   Home,
   Person,
   Mosque,
-  Assignment,
   Logout,
   Settings,
   Notifications,
@@ -119,20 +118,12 @@ function Layout() {
 
     // Add admin-specific items
     if (permissions.isSuperAdmin() || permissions.isMasjidAdmin()) {
-      items.push(
-        {
-          text: t("nav.user_approvals"),
-          icon: <Assignment />,
-          path: "/admin/user-approvals",
-          roles: ["masjid_admin", "super_admin"],
-        },
-        {
-          text: t("nav.manage_displays"),
-          icon: <Tv />,
-          path: "/admin/display-management",
-          roles: ["masjid_admin", "super_admin"],
-        }
-      );
+      items.push({
+        text: t("nav.manage_displays"),
+        icon: <Tv />,
+        path: "/admin/display-management",
+        roles: ["masjid_admin", "super_admin"],
+      });
     }
 
     return items.filter(
@@ -362,8 +353,6 @@ function Layout() {
             {location.pathname === "/" && "Dashboard"}
             {location.pathname === "/masjids" && "Masjids"}
             {location.pathname === "/profile" && "My Profile"}
-            {location.pathname === "/admin/user-approvals" &&
-              t("nav.user_approvals")}
             {location.pathname === "/admin/display-management" &&
               "Display Management"}
             {location.pathname === "/content/create" && "Create Content"}
