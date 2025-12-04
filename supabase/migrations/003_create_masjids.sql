@@ -76,8 +76,8 @@ BEGIN
     
     -- Validate state is Malaysian state
     IF NOT (NEW.address->>'state' IN (
-        'Johor', 'Kedah', 'Kelantan', 'Malacca', 'Negeri Sembilan', 
-        'Pahang', 'Penang', 'Perak', 'Perlis', 'Sabah', 'Sarawak', 
+        'Johor', 'Kedah', 'Kelantan', 'Melaka', 'Negeri Sembilan', 
+        'Pahang', 'Pulau Pinang', 'Perak', 'Perlis', 'Sabah', 'Sarawak', 
         'Selangor', 'Terengganu', 'Kuala Lumpur', 'Labuan', 'Putrajaya'
     )) THEN
         RAISE EXCEPTION 'State must be a valid Malaysian state';
