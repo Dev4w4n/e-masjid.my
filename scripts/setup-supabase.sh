@@ -74,6 +74,21 @@ echo -e "${BLUE}   • API URL: $API_URL${NC}"
 echo -e "${BLUE}   • Anon Key: ${ANON_KEY:0:20}...${NC}"
 echo -e "${BLUE}   • Service Role Key: ${SERVICE_ROLE_KEY:0:20}...${NC}"
 
+# Create storage bucket for content images using REST API
+echo -e "${BLUE}3. Creating storage bucket for content images...${NC}"
+curl -X POST "$API_URL/storage/v1/bucket" \
+  -H "Authorization: Bearer $SERVICE_ROLE_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "content-images",
+    "name": "content-images",
+    "public": true,
+    "file_size_limit": 10485760,
+    "allowed_mime_types": ["image/jpeg", "image/png", "image/gif", "image/webp"]
+  }' 2>/dev/null || echo -e "${YELLOW}   ⚠️  Bucket may already exist${NC}"
+
+echo -e "${GREEN}✅ Storage bucket created/verified${NC}"
+
 # Function to create TV display test data
 create_tv_display_data() {
     local test_user_id="$1"

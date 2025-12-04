@@ -103,12 +103,6 @@ export async function GET(
       .from('display_content')
       .select(`
         *,
-        sponsorships (
-          sponsor_name,
-          sponsor_message,
-          tier,
-          amount
-        ),
         display_content_assignments!inner (
           display_id,
           carousel_duration,
@@ -118,7 +112,6 @@ export async function GET(
         )
       `)
       .eq('display_content_assignments.display_id', displayId)
-      .order('sponsorship_amount', { ascending: false })
       .order('created_at', { ascending: false });
 
     // Apply filters
@@ -128,12 +121,7 @@ export async function GET(
     if (filters.type?.length) {
       query = query.in('type', filters.type);
     }
-    if (filters.min_amount !== undefined) {
-      query = query.gte('sponsorship_amount', filters.min_amount);
-    }
-    if (filters.max_amount !== undefined) {
-      query = query.lte('sponsorship_amount', filters.max_amount);
-    }
+    // Note: sponsorship_amount filters removed (schema simplified in migration 100)
     if (filters.date_from) {
       query = query.gte('created_at', filters.date_from);
     }
@@ -176,19 +164,16 @@ export async function GET(
         type: item.type,
         url: item.url,
         ...(item.thumbnail_url && { thumbnail_url: item.thumbnail_url }),
-        sponsorship_amount: item.sponsorship_amount,
-        ...(item.sponsorship_tier && { sponsorship_tier: item.sponsorship_tier }),
-        payment_status: item.payment_status,
-        ...(item.payment_reference && { payment_reference: item.payment_reference }),
+        // Sponsorship fields removed in migration 100_simplification_cleanup.sql
+        sponsorship_amount: 0,
+        payment_status: 'paid', // Default to paid for simplified schema
         duration: item.duration,
         start_date: item.start_date,
         end_date: item.end_date,
         status: item.status,
         submitted_by: item.submitted_by,
         submitted_at: item.submitted_at || item.created_at || '',
-        ...(item.approved_by && { approved_by: item.approved_by }),
-        ...(item.approved_at && { approved_at: item.approved_at }),
-        ...(item.rejection_reason && { rejection_reason: item.rejection_reason }),
+        // Approval fields removed in simplification
         ...(item.file_size && { file_size: item.file_size }),
         ...(item.file_type && { file_type: item.file_type }),
         created_at: item.created_at || '',
@@ -206,7 +191,7 @@ export async function GET(
         ...(item.qr_code_position && { qr_code_position: item.qr_code_position })
       };
     }) || [])
-    // Sort by display_order (ascending), then by sponsorship_amount (descending), then by created_at (descending)
+    // Sort by display_order (ascending), then by created_at (descending)
     .sort((a, b) => {
       // Primary sort: display_order (lower numbers first)
       if (a.display_order !== undefined && b.display_order !== undefined) {
@@ -214,11 +199,7 @@ export async function GET(
           return a.display_order - b.display_order;
         }
       }
-      // Secondary sort: sponsorship_amount (higher amounts first)
-      if (a.sponsorship_amount !== b.sponsorship_amount) {
-        return b.sponsorship_amount - a.sponsorship_amount;
-      }
-      // Tertiary sort: created_at (newer first)
+      // Secondary sort: created_at (newer first)
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
 
