@@ -4,49 +4,82 @@ This directory contains configuration and setup guides for deploying E-Masjid.My
 
 ## 🎯 Overview
 
-We use Supabase's **branch feature** to manage deployment environments:
+We use **separate Supabase projects** to manage deployment environments with GitHub integration for automatic deployments:
 
-| Environment    | Supabase Setup      | GitHub Branch | Database        |
-| -------------- | ------------------- | ------------- | --------------- |
-| **Production** | Main project branch | `main`        | Production data |
-| **Staging**    | Preview branch      | `dev`         | Test data       |
+| Environment    | Supabase Project           | GitHub Branch | Region              | Instance |
+| -------------- | -------------------------- | ------------- | ------------------- | -------- |
+| **Production** | e-masjid.my production     | `main`        | AWS ap-southeast-2  | Micro    |
+| **Development**| e-masjid.my dev            | `dev`         | AWS ap-southeast-2  | Micro    |
 
-**Why use branches instead of separate projects?**
+**Why use separate projects?**
 
-- Single project management and billing
-- Shared configuration with isolated database instances
-- Easy data migration between environments
-- Simplified API key and credential management
+- Complete isolation between environments
+- Independent scaling and resource management
+- Separate billing and monitoring
+- Zero risk of development affecting production
+- Each environment has its own API keys and credentials
 
-## 🚀 Quick Setup Guide
+## 📚 Setup Guides
 
-### 1. Create Supabase Project
+### ⚡ New Here? Start With This!
 
-1. Go to [Supabase Dashboard](https://app.supabase.com)
-2. Create one project: `e-masjid-my`
-3. Note down the production project URL and API keys
+**👉 [GETTING-STARTED.md](./GETTING-STARTED.md) - 5-minute overview**
 
-### 2. Link GitHub Repository
+Quick introduction to understand what you're setting up and where to go next.
 
-1. Go to project settings → Integrations
-2. Connect to GitHub repository: `Dev4w4n/e-masjid.my`
-3. Set production branch: `main`
+### 🚀 Ready to Set Up?
 
-### 3. Create Staging Branch
+**👉 [GITHUB-INTEGRATION-SETUP.md](./GITHUB-INTEGRATION-SETUP.md) - Complete setup guide**
 
-1. In the same project, navigate to **Database** → **Branches**
-2. Click **Create preview branch**
-3. Configure the branch:
-   - Branch name: `staging`
-   - Connect to GitHub branch: `dev`
-   - Enable automatic migrations from repository
-4. Note down the staging branch URL and API keys (different from production)
+This is the main setup guide for automatic deployments:
+- Push to `dev` branch → Auto-deploys to Supabase Dev
+- Merge to `main` branch → Auto-deploys to Supabase Production
 
-### 3. Database Schema Setup
+## 🚀 Setup Guides - Start Here!
+
+### 📖 Complete Documentation
+
+| Document | Purpose | Time | When to Use |
+|----------|---------|------|-------------|
+| **[SETUP-SUMMARY.md](./SETUP-SUMMARY.md)** | Overview & index | 5 min | Start here! |
+| **[GITHUB-INTEGRATION-SETUP.md](./GITHUB-INTEGRATION-SETUP.md)** | Full setup guide | 30 min | Initial setup |
+| **[SETUP-CHECKLIST.md](./SETUP-CHECKLIST.md)** | Step-by-step checklist | 30 min | During setup |
+| **[QUICK-REFERENCE.md](./QUICK-REFERENCE.md)** | Daily commands | 2 min | Daily dev |
+| **[VISUAL-WORKFLOW.md](./VISUAL-WORKFLOW.md)** | Diagrams & examples | 10 min | Understanding |
+
+### 🎯 Quick Start Path
+
+```
+1. Read SETUP-SUMMARY.md (overview)
+   ↓
+2. Follow GITHUB-INTEGRATION-SETUP.md (detailed steps)
+   ↓
+3. Use SETUP-CHECKLIST.md (verification)
+   ↓
+4. Bookmark QUICK-REFERENCE.md (daily use)
+   ↓
+5. Refer to VISUAL-WORKFLOW.md (when confused)
+```
+
+## 🏗️ What This Setup Does
+
+### Automatic Deployments
+
+```bash
+# Push to dev branch
+git push origin dev
+# ✨ Migrations automatically deploy to Supabase Dev
+
+# Merge to main branch
+git push origin main
+# ✨ Migrations automatically deploy to Supabase Production
+```
+
+### Database Schema Management
 
 Our database schema is managed through migrations in the `/supabase/migrations/` directory.
 
-**Migrations and seeding happen automatically** when you push to GitHub:
+**All migrations run automatically** via GitHub Integration:
 
 - Migrations from `/supabase/migrations/` are applied automatically
 - Seed data from `/supabase/seed.sql` is run after migrations complete
