@@ -22,6 +22,7 @@ import {
   DialogContent,
   DialogActions,
   Skeleton,
+  TextField,
 } from "@mui/material";
 import {
   AccessTime,
@@ -64,6 +65,11 @@ function MasjidView() {
   const [admins, setAdmins] = useState<MasjidAdmin[]>([]);
   const [adminsLoading, setAdminsLoading] = useState(true);
   const [adminsError, setAdminsError] = useState<string | null>(null);
+  const [assignDialogOpen, setAssignDialogOpen] = useState(false);
+  const [assignEmail, setAssignEmail] = useState("");
+  const [assignSubmitting, setAssignSubmitting] = useState(false);
+  const [assignError, setAssignError] = useState<string | null>(null);
+  const [assignSuccess, setAssignSuccess] = useState<string | null>(null);
 
   // Use the real prayer times hook with the masjid's zone code
   const {
@@ -412,6 +418,16 @@ function MasjidView() {
               <Typography variant="h6" gutterBottom>
                 Committee
               </Typography>
+              {permissions.isSuperAdmin() && (
+                <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+                  <Button
+                    variant="contained"
+                    onClick={() => setAssignDialogOpen(true)}
+                  >
+                    Assign Admin
+                  </Button>
+                </Box>
+              )}
               {adminsLoading ? (
                 <CircularProgress size={24} />
               ) : adminsError ? (
@@ -743,6 +759,91 @@ function MasjidView() {
           <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
           <Button onClick={handleDelete} color="error" variant="contained">
             Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Assign Admin Dialog */}
+      <Dialog
+        open={assignDialogOpen}
+        onClose={() => setAssignDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Assign Masjid Admin</DialogTitle>
+        <DialogContent>
+          {assignError && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {assignError}
+            </Alert>
+          )}
+          {assignSuccess && (
+            <Alert severity="success" sx={{ mb: 2 }}>
+              {assignSuccess}
+            </Alert>
+          )}
+          <Typography variant="body2" sx={{ mb: 2 }}>
+            Enter the user's email to assign them as an admin for this masjid.
+          </Typography>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <TextField
+              label="User Email"
+              type="email"
+              value={assignEmail}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setAssignEmail(e.target.value)
+              }
+              fullWidth
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setAssignDialogOpen(false)}>Cancel</Button>
+          <Button
+            variant="contained"
+            disabled={assignSubmitting || !assignEmail}
+            onClick={async () => {
+              if (!id) return;
+              setAssignSubmitting(true);
+              setAssignError(null);
+              setAssignSuccess(null);
+              try {
+                // Lookup user by email in users table
+                const { data: users, error: lookupError } = await (
+                  masjidService as any
+                ).db.client
+                  .from("users")
+                  .select("id,email")
+                  .eq("email", assignEmail)
+                  .limit(1);
+
+                if (lookupError) throw new Error(lookupError.message);
+                const found = users?.[0];
+                if (!found) throw new Error("User not found with that email");
+
+                await masjidService.assignAdmin({
+                  masjid_id: id,
+                  user_id: found.id,
+                  status: "active",
+                  approved_by:
+                    (await (masjidService as any).db.client.auth.getUser()).data
+                      .user?.id ?? undefined,
+                  approved_at: new Date().toISOString(),
+                } as any);
+
+                setAssignSuccess("Admin assigned successfully");
+                setAssignEmail("");
+                // Refresh admins list
+                const adminData = await masjidService.getMasjidAdmins(id);
+                setAdmins(adminData);
+              } catch (err: any) {
+                setAssignError(err.message || String(err));
+              } finally {
+                setAssignSubmitting(false);
+              }
+            }}
+          >
+            Assign
           </Button>
         </DialogActions>
       </Dialog>

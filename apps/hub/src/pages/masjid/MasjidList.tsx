@@ -26,6 +26,7 @@ import {
   ListItemText,
   Divider,
 } from "@mui/material";
+import { getPublicUrl } from "@masjid-suite/shared-types";
 import {
   Search,
   Add,
@@ -446,7 +447,7 @@ function MasjidList() {
                 <CardActions sx={{ p: 2, pt: 0 }}>
                   <Button
                     component="a"
-                    href={`${import.meta.env.VITE_PUBLIC_APP_URL || "http://localhost:3002"}/masjid/${masjid.id}`}
+                    href={`${getPublicUrl()}/masjid/${masjid.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     startIcon={<Visibility />}

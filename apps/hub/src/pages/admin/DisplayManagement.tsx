@@ -25,25 +25,15 @@ import {
   ListItem,
   ListItemText,
   Divider,
-  CardActions,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Stack,
   IconButton,
   Tooltip,
 } from "@mui/material";
 import {
-  Check,
-  Close,
-  Visibility,
-  Schedule,
-  YouTube,
   Image as ImageIcon,
-  Person,
-  CalendarToday,
-  Article,
   DragIndicator,
   Settings,
   Animation,
@@ -81,7 +71,6 @@ import {
   ContentSettingsDialog,
   ContentSettings,
 } from "../../components/ContentSettingsDialog";
-import supabase from "@masjid-suite/supabase-client";
 import { getContentForAdmin } from "../../services/contentService";
 import { updateDisplay } from "../../services/displayService";
 import { DisplayContent, Tables } from "@masjid-suite/shared-types";
@@ -94,33 +83,6 @@ interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
-}
-
-// Content approval interfaces
-interface PendingContent {
-  id: string;
-  title: string;
-  description?: string | null;
-  type: "image" | "youtube_video" | "text_announcement";
-  url: string;
-  duration: number;
-  start_date: string;
-  end_date: string;
-  submitted_by: string;
-  submitted_at: string;
-  submitter_name?: string;
-  masjid_id: string;
-  masjid_name?: string;
-}
-
-interface ApprovalDialogState {
-  open: boolean;
-  content: PendingContent | null;
-  action: "approve" | "reject";
-  notes: string;
-  duration: number;
-  start_date: string;
-  end_date: string;
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -294,21 +256,6 @@ const DisplayManagement = () => {
     })
   );
 
-  // Content approval state
-  const [pendingContent, setPendingContent] = useState<PendingContent[]>([]);
-  const [approvalLoading, setApprovalLoading] = useState(false);
-  const [dialogState, setDialogState] = useState<ApprovalDialogState>({
-    open: false,
-    content: null,
-    action: "approve",
-    notes: "",
-    duration: 10,
-    start_date: new Date().toISOString().split("T")[0]!,
-    end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-      .toISOString()
-      .split("T")[0]!,
-  });
-
   // Create display state
   const [createDisplayDialog, setCreateDisplayDialog] = useState(false);
   const [newDisplayName, setNewDisplayName] = useState("");
@@ -399,7 +346,6 @@ const DisplayManagement = () => {
   // Load content when masjid is selected
   useEffect(() => {
     fetchAllContent();
-    loadPendingContent(); // Also load pending content
   }, [selectedMasjidId]);
 
   // Load assigned content when display is selected
@@ -638,138 +584,6 @@ const DisplayManagement = () => {
   };
 
   // Load pending content for approval
-  const loadPendingContent = async () => {
-    if (!selectedMasjidId) return;
-
-    try {
-      setApprovalLoading(true);
-
-      const { data, error: fetchError } = await supabase
-        .from("display_content")
-        .select(
-          `
-          id,
-          title,
-          description,
-          type,
-          url,
-          duration,
-          start_date,
-          end_date,
-          submitted_by,
-          created_at,
-          masjid_id,
-          masjids!inner(name)
-        `
-        )
-        .eq("status", "pending")
-        .eq("masjid_id", selectedMasjidId)
-        .order("created_at", { ascending: false });
-
-      if (fetchError) throw fetchError;
-
-      const transformedData: PendingContent[] = (data || [])
-        .filter(
-          (item) =>
-            item.type === "image" ||
-            item.type === "youtube_video" ||
-            item.type === "text_announcement"
-        )
-        .map((item: any) => ({
-          id: item.id,
-          title: item.title,
-          description: item.description,
-          type: item.type as "image" | "youtube_video" | "text_announcement",
-          url: item.url,
-          duration: item.duration,
-          start_date: item.start_date,
-          end_date: item.end_date,
-          submitted_by: item.submitted_by,
-          submitted_at: item.created_at || "",
-          submitter_name: "User",
-          masjid_id: item.masjid_id,
-          masjid_name: item.masjids?.name || "Unknown Masjid",
-        }));
-
-      setPendingContent(transformedData);
-    } catch (err: any) {
-      console.error("Failed to load pending content:", err);
-      enqueueSnackbar("Failed to load pending content", { variant: "error" });
-    } finally {
-      setApprovalLoading(false);
-    }
-  };
-
-  // Handle approval/rejection
-  const handleApprovalAction = async () => {
-    if (!dialogState.content) return;
-
-    try {
-      const updateData = {
-        approved_by: user!.id,
-        approved_at: new Date().toISOString(),
-        approval_notes: dialogState.notes || null,
-        updated_at: new Date().toISOString(),
-      };
-
-      if (dialogState.action === "approve") {
-        const { error: updateError } = await supabase
-          .from("display_content")
-          .update({
-            status: "active",
-            duration: dialogState.duration,
-            start_date: dialogState.start_date,
-            end_date: dialogState.end_date,
-            ...updateData,
-          })
-          .eq("id", dialogState.content.id);
-
-        if (updateError) throw updateError;
-        enqueueSnackbar("Content approved successfully!", {
-          variant: "success",
-        });
-      } else {
-        const { error: updateError } = await supabase
-          .from("display_content")
-          .update({
-            status: "rejected",
-            rejection_reason: dialogState.notes,
-            ...updateData,
-          })
-          .eq("id", dialogState.content.id);
-
-        if (updateError) throw updateError;
-        enqueueSnackbar("Content rejected successfully!", {
-          variant: "success",
-        });
-      }
-
-      // Remove from pending list and refresh available content
-      setPendingContent((prev) =>
-        prev.filter((item) => item.id !== dialogState.content!.id)
-      );
-
-      // Refresh available content if it was approved
-      if (dialogState.action === "approve") {
-        fetchAllContent();
-      }
-
-      setDialogState({
-        open: false,
-        content: null,
-        action: "approve",
-        notes: "",
-        duration: 10,
-        start_date: new Date().toISOString().split("T")[0]!,
-        end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-          .toISOString()
-          .split("T")[0]!,
-      });
-    } catch (err: any) {
-      console.error("Failed to update content status:", err);
-      enqueueSnackbar("Failed to update content status", { variant: "error" });
-    }
-  };
 
   // Create display handler
   const handleCreateDisplay = async () => {
@@ -801,36 +615,6 @@ const DisplayManagement = () => {
     } finally {
       setCreateLoading(false);
     }
-  };
-
-  // Format date for display
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("ms-MY", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-  };
-
-  // Format date for input field
-  const formatDateForInput = (dateString: string) => {
-    return new Date(dateString).toISOString().split("T")[0]!;
-  };
-
-  // Get default values for approval dialog
-  const getDefaultApprovalValues = (content: PendingContent | null) => {
-    if (!content) {
-      const today = new Date().toISOString().split("T")[0]!;
-      const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .split("T")[0]!;
-      return { duration: 10, start_date: today, end_date: nextWeek };
-    }
-    return {
-      duration: content.duration,
-      start_date: formatDateForInput(content.start_date),
-      end_date: formatDateForInput(content.end_date),
-    };
   };
 
   const unassignedContent = availableContent.filter(
@@ -925,7 +709,6 @@ const DisplayManagement = () => {
             >
               <Tab label="Display Settings" />
               <Tab label="Content Assignment" />
-              <Tab label="Content Approvals" />
             </Tabs>
           </Box>
 
@@ -1478,406 +1261,6 @@ const DisplayManagement = () => {
               </Grid>
             )}
           </TabPanel>
-
-          {/* Content Approvals Tab */}
-          <TabPanel value={tabValue} index={2}>
-            {approvalLoading ? (
-              <Box sx={{ display: "flex", justifyContent: "center", my: 3 }}>
-                <CircularProgress />
-              </Box>
-            ) : pendingContent.length === 0 ? (
-              <Paper sx={{ p: 4, textAlign: "center" }}>
-                <Typography variant="h6" color="text.secondary">
-                  No pending content submissions
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ mt: 1 }}
-                >
-                  All content has been reviewed or no new submissions yet.
-                </Typography>
-              </Paper>
-            ) : (
-              <Grid container spacing={3}>
-                {pendingContent.map((content) => (
-                  <Grid item xs={12} md={6} lg={4} key={content.id}>
-                    <Card
-                      sx={{
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <CardContent sx={{ flexGrow: 1 }}>
-                        {/* Content Type Badge */}
-                        <Box
-                          sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            mb: 2,
-                          }}
-                        >
-                          <Chip
-                            icon={
-                              content.type === "image" ? (
-                                <ImageIcon />
-                              ) : content.type === "youtube_video" ? (
-                                <YouTube />
-                              ) : (
-                                <Article />
-                              )
-                            }
-                            label={
-                              content.type === "image"
-                                ? "Image"
-                                : content.type === "youtube_video"
-                                  ? "YouTube Video"
-                                  : "Text Announcement"
-                            }
-                            color="primary"
-                            size="small"
-                          />
-                          <Chip
-                            icon={<Schedule />}
-                            label={`${content.duration}s`}
-                            size="small"
-                            variant="outlined"
-                          />
-                        </Box>
-
-                        {/* Title */}
-                        <Typography variant="h6" gutterBottom noWrap>
-                          {content.title}
-                        </Typography>
-
-                        {/* Description */}
-                        {content.description && (
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{
-                              mb: 2,
-                              display: "-webkit-box",
-                              WebkitLineClamp: 3,
-                              WebkitBoxOrient: "vertical",
-                              overflow: "hidden",
-                            }}
-                          >
-                            {content.description}
-                          </Typography>
-                        )}
-
-                        {/* Content Preview */}
-                        {content.type === "image" ? (
-                          <Box
-                            sx={{
-                              width: "100%",
-                              height: 120,
-                              backgroundColor: "grey.100",
-                              borderRadius: 1,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              mb: 2,
-                              backgroundImage: `url(${content.url})`,
-                              backgroundSize: "cover",
-                              backgroundPosition: "center",
-                            }}
-                          >
-                            {!content.url && (
-                              <ImageIcon
-                                sx={{ fontSize: 48, color: "grey.400" }}
-                              />
-                            )}
-                          </Box>
-                        ) : content.type === "youtube_video" ? (
-                          <Box
-                            sx={{
-                              width: "100%",
-                              height: 120,
-                              backgroundColor: "red.50",
-                              borderRadius: 1,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              mb: 2,
-                            }}
-                          >
-                            <YouTube sx={{ fontSize: 48, color: "red.500" }} />
-                          </Box>
-                        ) : (
-                          <Box
-                            sx={{
-                              width: "100%",
-                              height: 120,
-                              backgroundColor: "primary.50",
-                              border: "1px solid",
-                              borderColor: "primary.200",
-                              borderRadius: 1,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              mb: 2,
-                              p: 2,
-                            }}
-                          >
-                            {content.url ? (
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  display: "-webkit-box",
-                                  WebkitLineClamp: 4,
-                                  WebkitBoxOrient: "vertical",
-                                  overflow: "hidden",
-                                  textAlign: "center",
-                                }}
-                              >
-                                {content.url}
-                              </Typography>
-                            ) : (
-                              <Article
-                                sx={{ fontSize: 48, color: "primary.main" }}
-                              />
-                            )}
-                          </Box>
-                        )}
-
-                        {/* Metadata */}
-                        <Stack spacing={1}>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 1,
-                            }}
-                          >
-                            <Person fontSize="small" color="action" />
-                            <Typography variant="caption">
-                              {content.submitter_name}
-                            </Typography>
-                          </Box>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 1,
-                            }}
-                          >
-                            <CalendarToday fontSize="small" color="action" />
-                            <Typography variant="caption">
-                              {formatDate(content.start_date)} -{" "}
-                              {formatDate(content.end_date)}
-                            </Typography>
-                          </Box>
-                        </Stack>
-                      </CardContent>
-
-                      <CardActions
-                        sx={{ justifyContent: "space-between", p: 2 }}
-                      >
-                        <Tooltip title="Preview Content">
-                          <IconButton
-                            size="small"
-                            onClick={() => {
-                              if (content.type === "text_announcement") {
-                                // For text announcements, we could show a dialog or just skip preview
-                                // For now, let's disable preview for text content since there's no URL
-                                return;
-                              }
-                              window.open(content.url, "_blank");
-                            }}
-                            disabled={content.type === "text_announcement"}
-                          >
-                            <Visibility />
-                          </IconButton>
-                        </Tooltip>
-
-                        <Box sx={{ display: "flex", gap: 1 }}>
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            color="error"
-                            startIcon={<Close />}
-                            onClick={() => {
-                              const defaults =
-                                getDefaultApprovalValues(content);
-                              setDialogState({
-                                open: true,
-                                content,
-                                action: "reject",
-                                notes: "",
-                                ...defaults,
-                              });
-                            }}
-                          >
-                            Reject
-                          </Button>
-                          <Button
-                            size="small"
-                            variant="contained"
-                            color="success"
-                            startIcon={<Check />}
-                            onClick={() => {
-                              const defaults =
-                                getDefaultApprovalValues(content);
-                              setDialogState({
-                                open: true,
-                                content,
-                                action: "approve",
-                                notes: "",
-                                ...defaults,
-                              });
-                            }}
-                          >
-                            Approve
-                          </Button>
-                        </Box>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
-            )}
-          </TabPanel>
-
-          {/* Approval/Rejection Dialog */}
-          <Dialog
-            open={dialogState.open}
-            onClose={() => setDialogState({ ...dialogState, open: false })}
-            maxWidth="sm"
-            fullWidth
-          >
-            <DialogTitle>
-              {dialogState.action === "approve"
-                ? "Approve Content"
-                : "Reject Content"}
-            </DialogTitle>
-            <DialogContent>
-              {dialogState.content && (
-                <>
-                  <Typography variant="h6" gutterBottom>
-                    {dialogState.content.title}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 3 }}
-                  >
-                    Submitted by: {dialogState.content.submitter_name}
-                  </Typography>
-
-                  {/* Display settings for approval */}
-                  {dialogState.action === "approve" && (
-                    <Grid container spacing={2} sx={{ mb: 3 }}>
-                      <Grid item xs={12}>
-                        <Typography
-                          variant="subtitle2"
-                          color="primary"
-                          gutterBottom
-                        >
-                          Display Settings
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={12} sm={4}>
-                        <TextField
-                          fullWidth
-                          label="Duration (seconds)"
-                          type="number"
-                          inputProps={{ min: 5, max: 300 }}
-                          value={dialogState.duration}
-                          onChange={(e) =>
-                            setDialogState({
-                              ...dialogState,
-                              duration: parseInt(e.target.value) || 10,
-                            })
-                          }
-                          required
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={4}>
-                        <TextField
-                          fullWidth
-                          label="Start Date"
-                          type="date"
-                          InputLabelProps={{ shrink: true }}
-                          value={dialogState.start_date}
-                          onChange={(e) =>
-                            setDialogState({
-                              ...dialogState,
-                              start_date: e.target.value,
-                            })
-                          }
-                          required
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={4}>
-                        <TextField
-                          fullWidth
-                          label="End Date"
-                          type="date"
-                          InputLabelProps={{ shrink: true }}
-                          value={dialogState.end_date}
-                          onChange={(e) =>
-                            setDialogState({
-                              ...dialogState,
-                              end_date: e.target.value,
-                            })
-                          }
-                          required
-                        />
-                      </Grid>
-                    </Grid>
-                  )}
-
-                  <TextField
-                    fullWidth
-                    multiline
-                    rows={3}
-                    label={
-                      dialogState.action === "approve"
-                        ? "Approval Notes (optional)"
-                        : "Rejection Reason (required)"
-                    }
-                    value={dialogState.notes}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setDialogState({ ...dialogState, notes: e.target.value })
-                    }
-                    required={dialogState.action === "reject"}
-                  />
-                </>
-              )}
-            </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={() =>
-                  setDialogState({
-                    open: false,
-                    content: null,
-                    action: "approve",
-                    notes: "",
-                    duration: 10,
-                    start_date: new Date().toISOString().split("T")[0]!,
-                    end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-                      .toISOString()
-                      .split("T")[0]!,
-                  })
-                }
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                color={dialogState.action === "approve" ? "success" : "error"}
-                onClick={handleApprovalAction}
-                disabled={
-                  dialogState.action === "reject" && !dialogState.notes.trim()
-                }
-              >
-                {dialogState.action === "approve" ? "Approve" : "Reject"}
-              </Button>
-            </DialogActions>
-          </Dialog>
         </>
       )}
 

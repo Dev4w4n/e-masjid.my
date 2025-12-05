@@ -129,14 +129,26 @@ export function getHubUrl(): string {
 export function getPublicUrl(): string {
   // For browser environments
   if (typeof window !== "undefined") {
+    // Vite app (hub) - uses VITE_ prefix
+    const viteUrl = getViteEnv("VITE_PUBLIC_APP_URL");
+    if (viteUrl) {
+      return viteUrl;
+    }
+
+    // Next.js app (public/tv-display) - uses NEXT_PUBLIC_ prefix
     if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_BASE_URL) {
       return process.env.NEXT_PUBLIC_BASE_URL;
     }
   }
 
   // For server environments
-  if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_BASE_URL) {
-    return process.env.NEXT_PUBLIC_BASE_URL;
+  if (typeof process !== "undefined" && process.env) {
+    if (process.env.NEXT_PUBLIC_BASE_URL) {
+      return process.env.NEXT_PUBLIC_BASE_URL;
+    }
+    if (process.env.VITE_PUBLIC_APP_URL) {
+      return process.env.VITE_PUBLIC_APP_URL;
+    }
   }
 
   return "http://localhost:3002";

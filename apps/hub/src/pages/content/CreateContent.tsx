@@ -242,7 +242,7 @@ const CreateContent: React.FC = () => {
       }
 
       // Insert content to database with default values for duration and dates
-      // These will be set by masjid admins during approval
+      // Content is active immediately in simplified workflow
       const today = new Date().toISOString().split("T")[0]!;
       const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         .toISOString()
@@ -255,11 +255,11 @@ const CreateContent: React.FC = () => {
           description: formData.description || null,
           type: formData.type,
           url: contentUrl,
-          duration: 10, // Default duration, admin will set during approval
+          duration: 10, // Default duration
           start_date: today, // Default to today
           end_date: nextWeek, // Default to 7 days from now
           submitted_by: user!.id,
-          status: "pending",
+          status: "active",
           qr_code_enabled: formData.qr_code_enabled,
           qr_code_url: formData.qr_code_url || null,
           qr_code_position: formData.qr_code_position,
@@ -300,15 +300,15 @@ const CreateContent: React.FC = () => {
       <Box sx={{ p: 3, textAlign: "center" }}>
         <Alert severity="success" sx={{ mb: 3 }}>
           <Typography variant="h6" gutterBottom>
-            Content Submitted Successfully!
+            Content Created Successfully!
           </Typography>
           <Typography>
-            Your content has been submitted for approval. You will be notified
-            once it's reviewed.
+            Your content is now active and will be displayed on the selected
+            masjid's TV displays.
           </Typography>
         </Alert>
         <Button variant="contained" onClick={() => setSuccess(false)}>
-          Submit Another
+          Create Another
         </Button>
       </Box>
     );
@@ -320,10 +320,9 @@ const CreateContent: React.FC = () => {
         Create Content
       </Typography>
       <Typography variant="body1" color="text.secondary" gutterBottom>
-        Submit new content to any masjid for approval. Upload your own images or
-        create beautiful text designs with Islamic-themed backgrounds. The
-        masjid admin(s) will review your submission and set the display duration
-        and schedule.
+        Create new content for display on masjid TV screens. Upload your own
+        images or create beautiful text designs with Islamic-themed backgrounds.
+        Content will be active immediately.
       </Typography>
 
       <Divider sx={{ my: 3 }} />
@@ -721,8 +720,8 @@ const CreateContent: React.FC = () => {
                     {uploading
                       ? "Uploading Image..."
                       : loading
-                        ? "Submitting..."
-                        : "Submit for Approval"}
+                        ? "Creating..."
+                        : "Create Content"}
                   </Button>
                 </Box>
               </Grid>

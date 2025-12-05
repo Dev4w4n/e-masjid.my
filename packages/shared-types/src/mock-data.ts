@@ -17,7 +17,6 @@ type TvDisplay = Tables<"tv_displays">;
 type DisplayContent = Tables<"display_content">;
 type PrayerTimes = Tables<"prayer_times">;
 type PrayerTimeConfig = Tables<"prayer_time_config">;
-type Sponsorship = Tables<"sponsorships">;
 type DisplayStatus = Tables<"display_status">;
 type DisplayAnalytics = Tables<"display_analytics">;
 
@@ -55,14 +54,6 @@ const CONTENT_TYPES = [
   "event_poster",
 ] as const;
 const CONTENT_STATUSES = ["pending", "active", "expired", "rejected"] as const;
-const SPONSORSHIP_TIERS = ["bronze", "silver", "gold", "platinum"] as const;
-const PAYMENT_STATUSES = ["pending", "paid", "failed", "refunded"] as const;
-const PAYMENT_METHODS = [
-  "fpx",
-  "credit_card",
-  "bank_transfer",
-  "cash",
-] as const;
 const PRAYER_TIME_POSITIONS = [
   "top",
   "bottom",
@@ -300,10 +291,6 @@ export class ProfileMockFactory {
       phone_number: MockUtils.randomBoolean() ? MockUtils.randomPhone() : null,
       preferred_language: MockUtils.randomElement(LANGUAGE_CODES),
       home_masjid_id: hasHomeMasjid ? MockUtils.generateId() : null,
-      home_masjid_approved_at:
-        hasHomeMasjid && MockUtils.randomBoolean()
-          ? MockUtils.randomDate()
-          : null,
       is_complete: MockUtils.randomBoolean(),
       created_at: MockUtils.randomDate(),
       updated_at: MockUtils.randomRecentDate(),
@@ -485,13 +472,6 @@ export class TvDisplayMockFactory {
       ]),
       prayer_time_color: "#FFFFFF",
       prayer_time_background_opacity: MockUtils.randomFloat(0, 1, 1),
-      show_sponsorship_amounts: MockUtils.randomBoolean(),
-      sponsorship_tier_colors: {
-        bronze: "#CD7F32",
-        silver: "#C0C0C0",
-        gold: "#FFD700",
-        platinum: "#E5E4E2",
-      },
       image_background_color: MockUtils.randomBoolean() ? "#000000" : null,
       image_display_mode: MockUtils.randomElement(["fill", "fit", "stretch"]),
       language: MockUtils.randomBoolean()
@@ -558,8 +538,6 @@ export class DisplayContentMockFactory {
         file_type = "text/plain";
     }
 
-    const sponsorshipAmount = MockUtils.randomFloat(0, 500, 2);
-
     const baseContent: DisplayContent = {
       id: MockUtils.generateId(),
       masjid_id: MockUtils.generateId(),
@@ -573,40 +551,18 @@ export class DisplayContentMockFactory {
       thumbnail_url: MockUtils.randomBoolean()
         ? MockUtils.randomImageUrl()
         : null,
-      sponsorship_amount: sponsorshipAmount,
-      sponsorship_tier:
-        sponsorshipAmount >= 200
-          ? "platinum"
-          : sponsorshipAmount >= 100
-            ? "gold"
-            : sponsorshipAmount >= 50
-              ? "silver"
-              : "bronze",
-      payment_status: MockUtils.randomElement(PAYMENT_STATUSES),
-      payment_reference: MockUtils.randomBoolean()
-        ? MockUtils.generateId()
-        : null,
       duration: MockUtils.randomNumber(5, 300),
       start_date: MockUtils.randomDateOnly(),
       end_date: MockUtils.randomFutureDate().split("T")[0]!,
       status: MockUtils.randomElement(CONTENT_STATUSES),
       submitted_by: MockUtils.generateId(),
       submitted_at: MockUtils.randomDate(),
-      approved_by: MockUtils.randomBoolean() ? MockUtils.generateId() : null,
-      approved_at: MockUtils.randomBoolean()
-        ? MockUtils.randomRecentDate()
-        : null,
-      rejection_reason: MockUtils.randomBoolean()
-        ? "Content does not meet guidelines"
-        : null,
       file_size: MockUtils.randomBoolean()
         ? MockUtils.randomNumber(1024, 10485760)
         : null,
       file_type,
       created_at: MockUtils.randomDate(),
       updated_at: MockUtils.randomRecentDate(),
-      approval_notes: null,
-      resubmission_of: null,
       qr_code_enabled: MockUtils.randomBoolean(),
       qr_code_url: MockUtils.randomBoolean()
         ? "https://example.com/custom-url"
@@ -641,8 +597,6 @@ export class DisplayContentMockFactory {
       status: "active",
       start_date: today,
       end_date: futureDate.toISOString().split("T")[0]!,
-      approved_by: MockUtils.generateId(),
-      approved_at: MockUtils.randomRecentDate(),
       ...overrides,
     });
   }

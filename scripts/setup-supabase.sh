@@ -74,6 +74,21 @@ echo -e "${BLUE}   • API URL: $API_URL${NC}"
 echo -e "${BLUE}   • Anon Key: ${ANON_KEY:0:20}...${NC}"
 echo -e "${BLUE}   • Service Role Key: ${SERVICE_ROLE_KEY:0:20}...${NC}"
 
+# Create storage bucket for content images using REST API
+echo -e "${BLUE}3. Creating storage bucket for content images...${NC}"
+curl -X POST "$API_URL/storage/v1/bucket" \
+  -H "Authorization: Bearer $SERVICE_ROLE_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "content-images",
+    "name": "content-images",
+    "public": true,
+    "file_size_limit": 10485760,
+    "allowed_mime_types": ["image/jpeg", "image/png", "image/gif", "image/webp"]
+  }' 2>/dev/null || echo -e "${YELLOW}   ⚠️  Bucket may already exist${NC}"
+
+echo -e "${GREEN}✅ Storage bucket created/verified${NC}"
+
 # Function to create TV display test data
 create_tv_display_data() {
     local test_user_id="$1"
@@ -271,7 +286,7 @@ BEGIN
 
   INSERT INTO display_content (
     id, masjid_id, title, type, url, duration,
-    status, submitted_by, start_date, end_date, sponsorship_amount
+    status, submitted_by, start_date, end_date
   ) VALUES 
     (
       gen_random_uuid(),
@@ -283,14 +298,13 @@ BEGIN
       'active',
       masjid_admin_id,
       CURRENT_DATE,
-      CURRENT_DATE + INTERVAL '7 days',
-      50.00
+      CURRENT_DATE + INTERVAL '7 days'
     )
   RETURNING id INTO content_2_id;
 
   INSERT INTO display_content (
     id, masjid_id, title, type, url, duration,
-    status, submitted_by, start_date, end_date, sponsorship_amount
+    status, submitted_by, start_date, end_date
   ) VALUES 
     (
       gen_random_uuid(),
@@ -302,8 +316,7 @@ BEGIN
       'active',
       test_user_id,
       CURRENT_DATE,
-      CURRENT_DATE + INTERVAL '14 days',
-      25.00
+      CURRENT_DATE + INTERVAL '14 days'
     )
   RETURNING id INTO content_3_id;
 
@@ -363,34 +376,6 @@ BEGIN
   WHERE NOT EXISTS (
     SELECT 1 FROM prayer_time_config WHERE masjid_id = test_masjid_id
   );
-
-  -- Insert test sponsorships
-  INSERT INTO sponsorships (
-    content_id, masjid_id, sponsor_name, sponsor_email, amount, 
-    tier, payment_method, payment_reference, payment_status
-  ) VALUES 
-    (
-      content_2_id,
-      test_masjid_id,
-      'Local Islamic Bookstore',
-      'contact@islamicbooks.com',
-      50.00,
-      'silver',
-      'fpx',
-      'TXN-001-TEST',
-      'paid'
-    ),
-    (
-      content_3_id,
-      test_masjid_id,
-      'Halal Restaurant',
-      'info@halalrestaurant.com',
-      25.00,
-      'bronze',
-      'bank_transfer',
-      'TXN-002-TEST',
-      'paid'
-    );
 
   -- Insert display status
   INSERT INTO display_status (
@@ -471,7 +456,6 @@ create_env_files() {
 # ===========================================
 SUPABASE_URL=$API_URL
 SUPABASE_ANON_KEY=$ANON_KEY
-SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY
 
 # Client-side variables (VITE_ prefix for client-side access)
 VITE_SUPABASE_URL=$API_URL
@@ -520,7 +504,6 @@ EOL
 # ===========================================
 SUPABASE_URL=$API_URL
 SUPABASE_ANON_KEY=$ANON_KEY
-SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY
 
 # Next.js client-side variables (NEXT_PUBLIC_ prefix for Next.js client-side access)
 NEXT_PUBLIC_SUPABASE_URL=$API_URL
@@ -920,51 +903,6 @@ BEGIN
     SELECT 1 FROM public.profiles 
     WHERE user_id = '$USER1_ID' AND is_complete = true
   );
-    
-  -- Create admin applications
-  INSERT INTO public.admin_applications (
-    user_id, masjid_id, application_message, status, review_notes, reviewed_by, reviewed_at
-  )
-  VALUES
-    (
-      '$USER2_ID', 
-      first_masjid_id,
-      'I would like to help manage this masjid. I am active in the community.',
-      'pending',
-      NULL,
-      NULL,
-      NULL
-    );
-    
-  -- Create approved admin application
-  INSERT INTO public.admin_applications (
-    user_id, masjid_id, application_message, status, review_notes, reviewed_by, reviewed_at
-  )
-  VALUES
-    (
-      '$USER3_ID', 
-      first_masjid_id,
-      'Please consider my application to help manage this masjid.',
-      'approved',
-      'Approved based on community recommendation',
-      '$SUPER_ADMIN_ID',
-      NOW() - INTERVAL '7 days'
-    );
-    
-  -- Create rejected admin application
-  INSERT INTO public.admin_applications (
-    user_id, masjid_id, application_message, status, review_notes, reviewed_by, reviewed_at
-  )
-  VALUES
-    (
-      '$USER1_ID', 
-      (SELECT id FROM public.masjids WHERE name = 'Masjid Pending'),
-      'I want to help manage this masjid.',
-      'rejected',
-      'Masjid is still pending verification',
-      '$SUPER_ADMIN_ID',
-      NOW() - INTERVAL '14 days'
-    );
 END \$\$;
 EOL
     

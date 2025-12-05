@@ -16,13 +16,13 @@ This document outlines environment variable management for secure deployment acr
 
 > **Note:** Staging uses a **Supabase preview branch** (not a separate project), which provides isolated data with shared configuration.
 
-| Variable                    | Development       | Staging (Branch)             | Production (Main)   | Notes                            |
-| --------------------------- | ----------------- | ---------------------------- | ------------------- | -------------------------------- |
-| `SUPABASE_URL`              | localhost:54321   | project--staging.supabase.co | project.supabase.co | Branch URLs have `--branch-name` |
-| `SUPABASE_ANON_KEY`         | local-anon-key    | staging-branch-anon-key      | prod-anon-key       | Public, safe to expose           |
-| `SUPABASE_SERVICE_ROLE_KEY` | local-service-key | **SECRET** (branch)          | **SECRET**          | Server-side only                 |
-| `SUPER_ADMIN_EMAIL`         | dev@example.com   | **SECRET**                   | **SECRET**          | Admin account                    |
-| `SUPER_ADMIN_PASSWORD`      | dev-password      | **SECRET**                   | **SECRET**          | Strong password required         |
+| Variable                        | Development     | Staging (Branch)             | Production (Main)   | Notes                                                             |
+| ------------------------------- | --------------- | ---------------------------- | ------------------- | ----------------------------------------------------------------- |
+| `SUPABASE_URL`                  | localhost:54321 | project--staging.supabase.co | project.supabase.co | Branch URLs have `--branch-name`                                  |
+| `SUPABASE_ANON_KEY`             | local-anon-key  | staging-branch-anon-key      | prod-anon-key       | Public, safe to expose                                            |
+| ~~`SUPABASE_SERVICE_ROLE_KEY`~~ | ~~Not used~~    | ~~Not used~~                 | ~~Not used~~        | ⚠️ **Removed for security** - Apps use RLS policies with anon key |
+| `SUPER_ADMIN_EMAIL`             | dev@example.com | **SECRET**                   | **SECRET**          | Admin account                                                     |
+| `SUPER_ADMIN_PASSWORD`          | dev-password    | **SECRET**                   | **SECRET**          | Strong password required                                          |
 
 ## 🎯 Application-Specific Variables
 
@@ -51,13 +51,16 @@ NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
 NEXT_PUBLIC_BASE_URL=https://public.emasjid.my
 
-# 🔒 Server-side only (no NEXT_PUBLIC_ prefix)
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
+# 🔒 Server-side (no NEXT_PUBLIC_ prefix)
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
 ```
+
+> 🔒 **Security Note:** Public App uses only the anon key with RLS policies. Service role key is not needed.
 
 ### TV Display App (Next.js)
 
-Uses `NEXT_PUBLIC_` for client-side, regular env vars for server-side:
+Uses `NEXT_PUBLIC_` for client-side variables. **Note:** This app uses only the anon key with RLS policies for security:
 
 ```bash
 # ✅ Safe to expose (client-side)
@@ -65,12 +68,18 @@ NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
 NEXT_PUBLIC_APP_URL=https://tv.emasjid.my
 
+# Server-side (used in API routes)
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+
 # TV-specific configuration
 NEXT_PUBLIC_AUTO_REFRESH=true
 NEXT_PUBLIC_REFRESH_INTERVAL=3600000
 NEXT_PUBLIC_PRAYER_UPDATE_INTERVAL=300000
 NEXT_PUBLIC_CONTENT_REFRESH_INTERVAL=60000
 ```
+
+> 🔒 **Security Note:** TV Display app does NOT use `SUPABASE_SERVICE_ROLE_KEY`. All database access uses the anon key with Row Level Security (RLS) policies for public read access to display content.
 
 ## 🌍 Environment-Specific Configuration
 

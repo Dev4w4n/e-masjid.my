@@ -27,9 +27,6 @@ import {
   Home,
   Person,
   Mosque,
-  AdminPanelSettings,
-  Assignment,
-  Dashboard,
   Logout,
   Settings,
   Notifications,
@@ -121,35 +118,11 @@ function Layout() {
 
     // Add admin-specific items
     if (permissions.isSuperAdmin() || permissions.isMasjidAdmin()) {
-      items.push(
-        {
-          text: t("nav.admin_dashboard"),
-          icon: <Dashboard />,
-          path: "/admin",
-          roles: ["masjid_admin", "super_admin"],
-        },
-        {
-          text: t("nav.user_approvals"),
-          icon: <Assignment />,
-          path: "/admin/user-approvals",
-          roles: ["masjid_admin", "super_admin"],
-        },
-        {
-          text: t("nav.manage_displays"),
-          icon: <Tv />,
-          path: "/admin/display-management",
-          roles: ["masjid_admin", "super_admin"],
-        }
-      );
-    }
-
-    if (permissions.isSuperAdmin()) {
       items.push({
-        text: t("nav.manage_applications"),
-        icon: <Assignment />,
-        path: "/admin/applications",
-        roles: ["super_admin"],
-        badge: 8, // Mock badge count
+        text: t("nav.manage_displays"),
+        icon: <Tv />,
+        path: "/admin/display-management",
+        roles: ["masjid_admin", "super_admin"],
       });
     }
 
@@ -380,10 +353,6 @@ function Layout() {
             {location.pathname === "/" && "Dashboard"}
             {location.pathname === "/masjids" && "Masjids"}
             {location.pathname === "/profile" && "My Profile"}
-            {location.pathname === "/admin" && "Admin Dashboard"}
-            {location.pathname === "/admin/applications" && "Applications"}
-            {location.pathname === "/admin/user-approvals" &&
-              t("nav.user_approvals")}
             {location.pathname === "/admin/display-management" &&
               "Display Management"}
             {location.pathname === "/content/create" && "Create Content"}
@@ -457,19 +426,6 @@ function Layout() {
                     </ListItemIcon>
                     {t("nav.settings")}
                   </MenuItem>
-                  {permissions.isSuperAdmin() && (
-                    <MenuItem
-                      onClick={() => {
-                        handleProfileMenuClose();
-                        navigate("/admin");
-                      }}
-                    >
-                      <ListItemIcon>
-                        <AdminPanelSettings fontSize="small" />
-                      </ListItemIcon>
-                      {t("nav.admin_dashboard")}
-                    </MenuItem>
-                  )}
                   <Divider />
                   <MenuItem onClick={handleSignOut}>
                     <ListItemIcon>

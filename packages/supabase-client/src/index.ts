@@ -34,15 +34,28 @@ function getEnvironmentVariables() {
     } catch {
       // ignore; fall back to process.env below (useful in tests/node)
     }
+
+    // Check Next.js environment variables (NEXT_PUBLIC_ prefix)
+    if (!SUPABASE_URL && typeof process !== "undefined") {
+      SUPABASE_URL = process.env?.NEXT_PUBLIC_SUPABASE_URL;
+    }
+    if (!SUPABASE_ANON_KEY && typeof process !== "undefined") {
+      SUPABASE_ANON_KEY = process.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    }
   }
 
   // Fallback for Node.js/test environments
   if (!SUPABASE_URL) {
-    SUPABASE_URL = process.env?.VITE_SUPABASE_URL || process.env?.SUPABASE_URL;
+    SUPABASE_URL =
+      process.env?.VITE_SUPABASE_URL ||
+      process.env?.NEXT_PUBLIC_SUPABASE_URL ||
+      process.env?.SUPABASE_URL;
   }
   if (!SUPABASE_ANON_KEY) {
     SUPABASE_ANON_KEY =
-      process.env?.VITE_SUPABASE_ANON_KEY || process.env?.SUPABASE_ANON_KEY;
+      process.env?.VITE_SUPABASE_ANON_KEY ||
+      process.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+      process.env?.SUPABASE_ANON_KEY;
   }
 
   return { SUPABASE_URL, SUPABASE_ANON_KEY, isTest };
@@ -502,9 +515,24 @@ export class MasjidService {
   async createMasjid(
     masjid: Database["public"]["Tables"]["masjids"]["Insert"]
   ) {
+    // Get the current authenticated user via the db's client
+    const {
+      data: { user },
+    } = await (this.db as any).client.auth.getUser();
+
+    if (!user) {
+      throw new Error("User must be authenticated to create a masjid");
+    }
+
+    // Automatically set created_by to the current user's ID
+    const masjidWithCreator = {
+      ...masjid,
+      created_by: user.id,
+    };
+
     const { data, error } = await this.db
       .table("masjids")
-      .insert(masjid)
+      .insert(masjidWithCreator)
       .select()
       .single();
 

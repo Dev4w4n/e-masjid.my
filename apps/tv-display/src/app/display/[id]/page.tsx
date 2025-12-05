@@ -288,9 +288,7 @@ function DisplayPageContent() {
         config={{
           carouselInterval: state.config.carousel_interval,
           contentTransitionType: state.config.content_transition_type as 'fade' | 'slide' | 'zoom' | 'none',
-          maxContentItems: state.config.max_content_items,
-          showSponsorshipAmounts: state.config.show_sponsorship_amounts,
-          sponsorshipTierColors: state.config.sponsorship_tier_colors
+          maxContentItems: state.config.max_content_items
         }}
         onContentChange={(content) => {
           // Could send analytics or update status

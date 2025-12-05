@@ -125,12 +125,6 @@ export async function GET(
       url: snapshot.url,
       thumbnail_url: null,
       
-      // Preview defaults
-      sponsorship_amount: 0,
-      sponsorship_tier: null,
-      payment_status: 'pending',
-      payment_reference: null,
-      
       // Display settings from snapshot
       duration: snapshot.duration,
       start_date: new Date().toISOString().split('T')[0]!, // Today
@@ -138,12 +132,9 @@ export async function GET(
       image_display_mode: 'contain', // Default display mode (same as live TV)
       
       // Preview status
-      status: 'pending',
+      status: 'active',
       submitted_by: session.user_id,
       submitted_at: session.created_at,
-      approved_by: null,
-      approved_at: null,
-      rejection_reason: null,
       
       // QR Code settings
       qr_code_enabled: snapshot.qr_code_enabled || false,

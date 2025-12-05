@@ -22,7 +22,6 @@ interface ContentPreviewProps {
     status: string;
     submitted_by?: string;
     submitted_at?: string;
-    sponsorship_amount: number;
   };
   showMetadata?: boolean;
 }
@@ -298,11 +297,6 @@ const ContentPreview: React.FC<ContentPreviewProps> = ({
               <Typography variant="caption" color="text.secondary">
                 {content.start_date} - {content.end_date}
               </Typography>
-              {content.sponsorship_amount > 0 && (
-                <Typography variant="caption" color="primary">
-                  RM {content.sponsorship_amount.toFixed(2)} sponsored
-                </Typography>
-              )}
             </Box>
             {content.submitted_at && (
               <Typography

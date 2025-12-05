@@ -1,61 +1,12 @@
--- Create storage bucket for content images
-INSERT INTO storage.buckets (id, name, public)
-VALUES ('content-images', 'content-images', true);
+-- Note: Storage buckets and policies should be created via Supabase Dashboard or supabase/seed.sql
+-- This migration file is kept for reference but storage setup is done post-migration
 
--- Allow authenticated users to upload images to their masjid folders
-CREATE POLICY "Authenticated users can upload content images"
-ON storage.objects FOR INSERT
-TO authenticated
-WITH CHECK (
-  bucket_id = 'content-images' AND
-  (storage.foldername(name))[1] = 'content-images'
-);
+-- Storage bucket 'content-images' should be created with:
+-- - Public access: true
+-- - File size limit: 10MB (10485760 bytes)
+-- - Allowed MIME types: image/jpeg, image/png, image/gif, image/webp
 
--- Allow public read access to content images
-CREATE POLICY "Public read access to content images"
-ON storage.objects FOR SELECT
-TO public
-USING (bucket_id = 'content-images');
-
--- Allow users to update their own uploaded images
-CREATE POLICY "Users can update their uploaded images"
-ON storage.objects FOR UPDATE
-TO authenticated
-USING (
-  bucket_id = 'content-images' AND
-  auth.uid() = owner
-)
-WITH CHECK (
-  bucket_id = 'content-images' AND
-  auth.uid() = owner
-);
-
--- Allow users to delete their own uploaded images
-CREATE POLICY "Users can delete their uploaded images"
-ON storage.objects FOR DELETE
-TO authenticated
-USING (
-  bucket_id = 'content-images' AND
-  auth.uid() = owner
-);
-
--- Allow masjid admins to manage content images for their masjids
-CREATE POLICY "Masjid admins can manage content images for their masjids"
-ON storage.objects FOR ALL
-TO authenticated
-USING (
-  bucket_id = 'content-images' AND
-  (storage.foldername(name))[2] IN (
-    SELECT masjid_id::text 
-    FROM masjid_admins 
-    WHERE user_id = auth.uid()
-  )
-)
-WITH CHECK (
-  bucket_id = 'content-images' AND
-  (storage.foldername(name))[2] IN (
-    SELECT masjid_id::text 
-    FROM masjid_admins 
-    WHERE user_id = auth.uid()
-  )
-);
+-- Storage policies should be created to:
+-- - Allow authenticated users to upload images
+-- - Allow public read access to content images
+-- - Allow users to update/delete their own uploaded images

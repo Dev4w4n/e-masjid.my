@@ -283,14 +283,8 @@ export class ContentManagementService {
   private calculateContentScore(content: DisplayContent, context: SchedulingContext): number {
     let score = 0;
 
-    // Base score from sponsorship amount
-    score += Math.log(content.sponsorship_amount + 1) * 10;
-
-    // Status-based priority (treating higher tier sponsorships as higher priority)
-    const tierScore = content.sponsorship_tier === 'platinum' ? 40 : 
-                     content.sponsorship_tier === 'gold' ? 30 :
-                     content.sponsorship_tier === 'silver' ? 20 : 10;
-    score += tierScore;
+    // Base score for active content
+    score += 20;
 
     // Freshness factor (newer content gets boost)
     const ageInDays = (Date.now() - new Date(content.created_at).getTime()) / (1000 * 60 * 60 * 24);

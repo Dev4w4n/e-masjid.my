@@ -47,7 +47,11 @@ The `.env.local` file for TV Display contains **ONLY infrastructure configuratio
 # ✅ REQUIRED: API Connection
 NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-SUPABASE_SERVICE_ROLE_KEY=...
+SUPABASE_URL=http://127.0.0.1:54321
+SUPABASE_ANON_KEY=...
+
+# 🔒 SECURITY: Service role key is NOT used
+# TV Display uses anon key with RLS policies for public read access
 
 # ✅ REQUIRED: App Settings
 NODE_ENV=development

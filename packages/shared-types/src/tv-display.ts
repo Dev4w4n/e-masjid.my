@@ -15,7 +15,6 @@ export type ContentType =
   | "text_announcement"
   | "event_poster";
 export type ContentStatus = "pending" | "active" | "expired" | "rejected";
-export type SponsorshipTier = "bronze" | "silver" | "gold" | "platinum";
 
 export interface DisplayContent {
   id: string;
@@ -25,12 +24,6 @@ export interface DisplayContent {
   type: ContentType;
   url: string;
   thumbnail_url?: string | null;
-
-  // Sponsorship and financial
-  sponsorship_amount: number;
-  sponsorship_tier?: SponsorshipTier | null;
-  payment_status: "pending" | "paid" | "failed" | "refunded";
-  payment_reference?: string | null;
 
   // Display settings
   duration: number; // seconds
@@ -90,7 +83,6 @@ export interface ContentSubmission {
   description?: string;
   type: ContentType;
   file?: File | string; // File object for upload or URL for YouTube
-  sponsorship_amount: number;
   duration: number;
   start_date: string;
   end_date: string;
@@ -101,8 +93,6 @@ export interface ContentFilters {
   type?: ContentType;
   masjid_id?: string;
   display_id?: string;
-  min_sponsorship?: number;
-  max_sponsorship?: number;
   date_range?: {
     start: string;
     end: string;
@@ -256,15 +246,6 @@ export interface DisplayConfig {
   image_display_mode: ImageDisplayMode; // How images should be displayed
   image_background_color: string; // Background color for letterboxed images (hex)
 
-  // Sponsorship display
-  show_sponsorship_amounts: boolean;
-  sponsorship_tier_colors: {
-    bronze: string;
-    silver: string;
-    gold: string;
-    platinum: string;
-  };
-
   // Network and caching
   offline_cache_duration: number; // hours
   heartbeat_interval: number; // seconds
@@ -315,48 +296,6 @@ export interface DisplayStatus {
 
   created_at: string;
   updated_at: string;
-}
-
-// ============================================================================
-// Sponsorship Types
-// ============================================================================
-
-export interface Sponsorship {
-  id: string;
-  content_id: string;
-  masjid_id: string;
-  sponsor_name: string;
-  sponsor_email?: string;
-  sponsor_phone?: string;
-
-  // Financial details
-  amount: number;
-  currency: "MYR";
-  tier: SponsorshipTier;
-
-  // Payment information
-  payment_method: "fpx" | "credit_card" | "bank_transfer" | "cash";
-  payment_reference: string;
-  payment_status: "pending" | "paid" | "failed" | "refunded";
-  payment_date?: string; // ISO datetime
-
-  // Display preferences
-  show_sponsor_name: boolean;
-  sponsor_message?: string; // Optional message to display
-
-  created_at: string;
-  updated_at: string;
-}
-
-export interface SponsorshipPackage {
-  tier: SponsorshipTier;
-  name: string;
-  min_amount: number;
-  max_amount?: number;
-  display_duration: number; // days
-  priority_weight: number; // for content ordering
-  features: string[];
-  description: string;
 }
 
 // ============================================================================
@@ -479,10 +418,6 @@ export interface DisplayAnalytics {
   downtime_minutes: number;
   error_count: number;
 
-  // Sponsorship metrics
-  total_sponsorship_revenue: number;
-  active_sponsors: number;
-
   created_at: string;
 }
 
@@ -496,14 +431,9 @@ export interface ContentUploadForm {
   type: ContentType;
   file?: File;
   youtube_url?: string;
-  sponsorship_amount: number;
   duration: number;
   start_date: string;
   end_date: string;
-  sponsor_name?: string;
-  sponsor_email?: string;
-  show_sponsor_name: boolean;
-  sponsor_message?: string;
 }
 
 export interface PrayerTimeAdjustmentForm {
@@ -528,7 +458,6 @@ export interface DisplayConfigForm {
   auto_refresh_interval: number;
   prayer_time_position: PrayerTimePosition;
   prayer_time_font_size: "small" | "medium" | "large" | "extra_large";
-  show_sponsorship_amounts: boolean;
   offline_cache_duration: number;
   heartbeat_interval: number;
 }
@@ -542,13 +471,6 @@ export const CONTENT_TYPES: ContentType[] = [
   "youtube_video",
   "text_announcement",
   "event_poster",
-];
-
-export const SPONSORSHIP_TIERS: SponsorshipTier[] = [
-  "bronze",
-  "silver",
-  "gold",
-  "platinum",
 ];
 
 export const PRAYER_TIME_POSITIONS: PrayerTimePosition[] = [
@@ -575,58 +497,6 @@ export const PRAYER_TIME_ALIGNMENTS: PrayerTimeAlignment[] = [
   "space-around",
 ];
 
-export const DEFAULT_SPONSORSHIP_PACKAGES: SponsorshipPackage[] = [
-  {
-    tier: "bronze",
-    name: "Bronze Sponsor",
-    min_amount: 10,
-    max_amount: 49,
-    display_duration: 7,
-    priority_weight: 1,
-    features: ["Basic display", "7 days duration"],
-    description: "Entry-level sponsorship for community announcements",
-  },
-  {
-    tier: "silver",
-    name: "Silver Sponsor",
-    min_amount: 50,
-    max_amount: 99,
-    display_duration: 14,
-    priority_weight: 2,
-    features: ["Priority display", "14 days duration", "Sponsor name shown"],
-    description: "Enhanced visibility for important announcements",
-  },
-  {
-    tier: "gold",
-    name: "Gold Sponsor",
-    min_amount: 100,
-    max_amount: 199,
-    display_duration: 30,
-    priority_weight: 3,
-    features: [
-      "High priority",
-      "30 days duration",
-      "Sponsor message",
-      "Premium placement",
-    ],
-    description: "Premium sponsorship with extended display time",
-  },
-  {
-    tier: "platinum",
-    name: "Platinum Sponsor",
-    min_amount: 200,
-    display_duration: 60,
-    priority_weight: 4,
-    features: [
-      "Highest priority",
-      "60 days duration",
-      "Custom sponsor message",
-      "Prime time slots",
-    ],
-    description: "Top-tier sponsorship with maximum visibility",
-  },
-];
-
 export const DEFAULT_DISPLAY_CONFIG: Partial<DisplayConfig> = {
   resolution: "1920x1080",
   orientation: "landscape",
@@ -643,14 +513,7 @@ export const DEFAULT_DISPLAY_CONFIG: Partial<DisplayConfig> = {
   prayer_time_alignment: "center",
   image_display_mode: "contain",
   image_background_color: "#000000",
-  show_sponsorship_amounts: false,
   show_debug_info: false,
-  sponsorship_tier_colors: {
-    bronze: "#CD7F32",
-    silver: "#C0C0C0",
-    gold: "#FFD700",
-    platinum: "#E5E4E2",
-  },
   offline_cache_duration: 24,
   heartbeat_interval: 30,
   max_retry_attempts: 3,
@@ -671,11 +534,6 @@ export const CONTENT_VALIDATION = {
   description: {
     maxLength: 1000,
     required: false,
-  },
-  sponsorship_amount: {
-    min: 0,
-    max: 10000,
-    required: true,
   },
   duration: {
     min: 5,

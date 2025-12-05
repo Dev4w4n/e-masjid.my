@@ -180,8 +180,12 @@ SUPABASE_SERVICE_ROLE_KEY=YOUR_SUPABASE_SERVICE_ROLE_KEY
 
 ```bash
 NODE_ENV=production
+# Supabase configuration (anon key only - RLS policies control access)
+SUPABASE_URL=https://YOUR_SUPABASE_PROJECT_ID.supabase.co
+SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR_SUPABASE_PROJECT_ID.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
+# App configuration
 NEXT_PUBLIC_APP_URL=https://YOUR_CLOUDFLARE_PAGES_DOMAIN
 NEXT_PUBLIC_AUTO_REFRESH=true
 NEXT_PUBLIC_REFRESH_INTERVAL=3600000
@@ -190,8 +194,9 @@ NEXT_PUBLIC_CONTENT_REFRESH_INTERVAL=60000
 NEXT_PUBLIC_APP_ENV=production
 NEXT_PUBLIC_ENABLE_DEV_TOOLS=false
 NEXT_PUBLIC_SHOW_LOGGER=false
-SUPABASE_SERVICE_ROLE_KEY=YOUR_SUPABASE_SERVICE_ROLE_KEY
 ```
+
+> 🔒 **Security Note:** TV Display does NOT use `SUPABASE_SERVICE_ROLE_KEY`. All API routes use the anon key with Row Level Security (RLS) policies for access control.
 
 ## 🔧 Build Configuration Files
 
@@ -256,6 +261,56 @@ Our monorepo structure requires specific build commands:
 - Check variable names match exactly (case-sensitive)
 - Verify they're set in Cloudflare dashboard
 - Remember prefixes: VITE* for client-side, NEXT_PUBLIC* for Next.js client
+
+### TV Display API Routes 404 Errors
+
+**Problem:** API routes return 404 on Cloudflare Pages (e.g., `/api/displays/[id]/config`)
+
+**Root Cause:** Cloudflare Pages requires additional configuration for Next.js API routes to work with `@cloudflare/next-on-pages`
+
+**Solution Steps:**
+
+1. **Add Compatibility Flag in Cloudflare Dashboard:**
+   - Go to your TV Display project in Cloudflare Pages
+   - Navigate to **Settings** → **Functions**
+   - Add compatibility flag: `nodejs_compat`
+   - Add compatibility date: `2024-01-01`
+
+2. **Verify Environment Variables:**
+
+   ```bash
+   # Required for API routes
+   SUPABASE_URL=https://your-project.supabase.co
+   SUPABASE_ANON_KEY=your-anon-key
+   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+   ```
+
+3. **Verify Build Command includes `@cloudflare/next-on-pages`:**
+
+   ```bash
+   pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && VERCEL_PROJECT_DIR=. pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
+   ```
+
+4. **Check Build Output Directory:**
+   - Must be set to: `apps/tv-display/.vercel/output/static`
+
+5. **Redeploy:**
+   - Trigger a new deployment after making the above changes
+   - Monitor build logs for any errors
+
+**Why This Happens:**
+
+- `@cloudflare/next-on-pages` converts Next.js API routes to Cloudflare Workers
+- Without `nodejs_compat`, Node.js APIs used by Supabase client fail
+- The API routes have `export const runtime = 'edge'` which requires proper edge runtime setup
+
+**Verification:**
+After deployment, test these endpoints:
+
+- `https://tv-emasjid-staging.pages.dev/api/displays/[valid-id]/config`
+- `https://tv-emasjid-staging.pages.dev/api/displays/[valid-id]/content`
+- `https://tv-emasjid-staging.pages.dev/api/displays/[valid-id]/prayer-times`
 
 ### Build Command Alternatives
 

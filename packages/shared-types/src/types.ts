@@ -11,9 +11,6 @@ export type User = Database["public"]["Tables"]["users"]["Row"];
 export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 export type ProfileAddress =
   Database["public"]["Tables"]["profile_addresses"]["Row"];
-export type AdminApplication =
-  Database["public"]["Tables"]["admin_applications"]["Row"];
-// export type MalaysianPostcode = Database['public']['Tables']['malaysian_postcodes']['Row']; // Removed - not in current schema
 
 // Insert types
 export type UserInsert = Database["public"]["Tables"]["users"]["Insert"];
@@ -23,8 +20,6 @@ export type ProfileAddressInsert =
 export type MasjidInsert = Database["public"]["Tables"]["masjids"]["Insert"];
 export type MasjidAdminInsert =
   Database["public"]["Tables"]["masjid_admins"]["Insert"];
-export type AdminApplicationInsert =
-  Database["public"]["Tables"]["admin_applications"]["Insert"];
 
 // Update types
 export type UserUpdate = Database["public"]["Tables"]["users"]["Update"];
@@ -34,8 +29,6 @@ export type ProfileAddressUpdate =
 export type MasjidUpdate = Database["public"]["Tables"]["masjids"]["Update"];
 export type MasjidAdminUpdate =
   Database["public"]["Tables"]["masjid_admins"]["Update"];
-export type AdminApplicationUpdate =
-  Database["public"]["Tables"]["admin_applications"]["Update"];
 
 // Enum types
 export type UserRole = Database["public"]["Enums"]["user_role"];
@@ -45,18 +38,12 @@ export type MalaysianState = Database["public"]["Enums"]["malaysian_state"];
 export type MasjidStatus = Database["public"]["Enums"]["masjid_status"];
 export type AdminAssignmentStatus =
   Database["public"]["Enums"]["admin_assignment_status"];
-export type ApplicationStatus =
-  Database["public"]["Enums"]["application_status"];
 
 // Function return types
 export type UserAdminAssignment =
   Database["public"]["Functions"]["get_user_admin_assignments"]["Returns"][0];
 export type MasjidAdminList =
   Database["public"]["Functions"]["get_masjid_admin_list"]["Returns"][0];
-export type MasjidApplication =
-  Database["public"]["Functions"]["get_masjid_applications"]["Returns"][0];
-export type PendingApplication =
-  Database["public"]["Functions"]["get_pending_applications"]["Returns"][0];
 export type MasjidByState =
   Database["public"]["Functions"]["get_masjids_by_state"]["Returns"][0];
 
@@ -73,26 +60,6 @@ export interface ProfileWithAddress extends Profile {
 export interface MasjidWithDetails extends Masjid {
   admin_count: number;
   member_count: number;
-  pending_applications: number;
-}
-
-export interface AdminApplicationWithDetails extends AdminApplication {
-  user: {
-    id: string;
-    email: string;
-    profile: {
-      full_name: string;
-      phone_number: string | null;
-    };
-  };
-  masjid: {
-    id: string;
-    name: string;
-  };
-  reviewer?: {
-    id: string;
-    email: string;
-  };
 }
 
 export interface MasjidAdminWithDetails extends MasjidAdmin {
@@ -182,12 +149,6 @@ export interface MasjidFilters {
   search?: string;
 }
 
-export interface ApplicationFilters {
-  status?: ApplicationStatus;
-  masjid_id?: string;
-  user_id?: string;
-}
-
 // Utility types
 export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type RequiredFields<T, K extends keyof T> = T & Required<Pick<T, K>>;
@@ -205,12 +166,6 @@ export const MASJID_STATUSES: MasjidStatus[] = [
   "active",
   "inactive",
   "pending_verification",
-];
-export const APPLICATION_STATUSES: ApplicationStatus[] = [
-  "pending",
-  "approved",
-  "rejected",
-  "withdrawn",
 ];
 export const ADMIN_ASSIGNMENT_STATUSES: AdminAssignmentStatus[] = [
   "active",

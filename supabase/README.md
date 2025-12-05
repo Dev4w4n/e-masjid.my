@@ -111,6 +111,31 @@ pnpm dev
 3. Run SQL to set super_admin role
 4. Start using the application
 
+## 🔒 Security Architecture
+
+### Row Level Security (RLS) Policies
+
+All tables use RLS policies to control data access:
+
+**Public Read Access:**
+
+- `display_content` - Active content visible to public
+- `display_content_assignments` - Content assignments visible to public
+- `tv_displays` - Display configuration accessible by display_id
+
+**Admin Access:**
+
+- Masjid admins can manage their own masjid's content
+- Super admins have full access across all masjids
+
+**Service Role Key Usage:**
+
+- ⚠️ **Not used in client-facing apps** (Hub, Public, TV Display)
+- Only used in setup scripts for initial database configuration
+- All API routes use anon key with RLS policies for security
+
+**Migration:** [20251205040832_add_public_read_display_assignments.sql](./migrations/20251205040832_add_public_read_display_assignments.sql) added public read policy to enable TV displays to fetch content without authentication.
+
 ## 🔧 Troubleshooting
 
 **"No files matched pattern: supabase/supabase/seed.sql"**

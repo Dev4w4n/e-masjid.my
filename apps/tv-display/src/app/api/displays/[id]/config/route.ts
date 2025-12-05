@@ -82,8 +82,6 @@ export async function GET(
       carousel_interval: display.carousel_interval,
       content_transition_type: (display.content_transition_type as any) || 'fade',
       max_content_items: display.max_content_items,
-      show_sponsorship_amounts: display.show_sponsorship_amounts,
-      sponsorship_tier_colors: display.sponsorship_tier_colors as any || {},
       
       // Image display settings
       image_display_mode: (display as any).image_display_mode || 'contain',
@@ -293,8 +291,6 @@ export async function PUT(
       carousel_interval: updatedDisplay.carousel_interval,
       content_transition_type: (updatedDisplay.content_transition_type as any) || 'fade',
       max_content_items: updatedDisplay.max_content_items,
-      show_sponsorship_amounts: updatedDisplay.show_sponsorship_amounts,
-      sponsorship_tier_colors: updatedDisplay.sponsorship_tier_colors as any || {},
       
       // Image display settings
       image_display_mode: (updatedDisplay as any).image_display_mode || 'contain',

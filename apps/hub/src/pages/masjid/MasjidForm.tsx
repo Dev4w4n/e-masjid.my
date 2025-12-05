@@ -18,8 +18,18 @@ import {
   TextField,
   Typography,
   Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
+  Divider,
 } from "@mui/material";
-import { ArrowBack, Save } from "@mui/icons-material";
+import { ArrowBack, Save, PersonAdd, Delete } from "@mui/icons-material";
 import {
   jakimZones,
   malaysianStates,
@@ -31,17 +41,32 @@ import {
 } from "@masjid-suite/shared-types";
 import { usePermissions } from "@masjid-suite/auth";
 import { masjidService } from "@masjid-suite/supabase-client";
+import { Database } from "@masjid-suite/shared-types";
+
+type MasjidAdmin =
+  Database["public"]["Functions"]["get_masjid_admin_list"]["Returns"][number];
 
 // The Zod schema is now the single source of truth for validation
 
 export const MasjidForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { canManageMasjids } = usePermissions();
+  const { canManageMasjids, isSuperAdmin } = usePermissions();
   const isEditMode = Boolean(id);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(isEditMode);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  // Admin management state
+  const [admins, setAdmins] = useState<MasjidAdmin[]>([]);
+  const [adminsLoading, setAdminsLoading] = useState(false);
+  const [assignDialogOpen, setAssignDialogOpen] = useState(false);
+  const [revokeDialogOpen, setRevokeDialogOpen] = useState(false);
+  const [selectedAdmin, setSelectedAdmin] = useState<MasjidAdmin | null>(null);
+  const [assignEmail, setAssignEmail] = useState("");
+  const [assignSubmitting, setAssignSubmitting] = useState(false);
+  const [assignError, setAssignError] = useState<string | null>(null);
+  const [assignSuccess, setAssignSuccess] = useState<string | null>(null);
 
   const {
     control,
@@ -129,6 +154,25 @@ export const MasjidForm: React.FC = () => {
       fetchMasjid();
     }
   }, [id, reset]);
+
+  // Load admins in edit mode
+  useEffect(() => {
+    if (!id || !isEditMode) return;
+
+    const fetchAdmins = async () => {
+      try {
+        setAdminsLoading(true);
+        const adminData = await masjidService.getMasjidAdmins(id);
+        setAdmins(adminData);
+      } catch (err: any) {
+        console.error("Failed to fetch masjid admins:", err);
+      } finally {
+        setAdminsLoading(false);
+      }
+    };
+
+    fetchAdmins();
+  }, [id, isEditMode]);
 
   const onSubmit = async (data: MasjidFormData) => {
     try {
@@ -622,6 +666,55 @@ export const MasjidForm: React.FC = () => {
               )}
             </Grid>
 
+            {/* Admin Management Section - Only in Edit Mode for Super Admin */}
+            {isEditMode && isSuperAdmin() && (
+              <>
+                <Divider sx={{ my: 4 }} />
+                <Typography variant="h6" gutterBottom>
+                  Masjid Administrators
+                </Typography>
+                <Box sx={{ mb: 2 }}>
+                  <Button
+                    variant="contained"
+                    startIcon={<PersonAdd />}
+                    onClick={() => setAssignDialogOpen(true)}
+                  >
+                    Assign Admin
+                  </Button>
+                </Box>
+                {adminsLoading ? (
+                  <CircularProgress size={24} />
+                ) : admins.length > 0 ? (
+                  <List>
+                    {admins.map((admin) => (
+                      <ListItem key={admin.user_id}>
+                        <ListItemText
+                          primary={admin.full_name}
+                          secondary={`${admin.email}${admin.phone_number ? ` — ${admin.phone_number}` : ""}`}
+                        />
+                        <ListItemSecondaryAction>
+                          <IconButton
+                            edge="end"
+                            color="error"
+                            onClick={() => {
+                              setSelectedAdmin(admin);
+                              setRevokeDialogOpen(true);
+                            }}
+                          >
+                            <Delete />
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                    ))}
+                  </List>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    No administrators assigned to this masjid.
+                  </Typography>
+                )}
+              </>
+            )}
+
             <Box
               sx={{
                 display: "flex",
@@ -654,6 +747,157 @@ export const MasjidForm: React.FC = () => {
           </CardContent>
         </form>
       </Card>
+
+      {/* Assign Admin Dialog */}
+      <Dialog
+        open={assignDialogOpen}
+        onClose={() => {
+          setAssignDialogOpen(false);
+          setAssignEmail("");
+          setAssignError(null);
+          setAssignSuccess(null);
+        }}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Assign Masjid Admin</DialogTitle>
+        <DialogContent>
+          {assignError && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {assignError}
+            </Alert>
+          )}
+          {assignSuccess && (
+            <Alert severity="success" sx={{ mb: 2 }}>
+              {assignSuccess}
+            </Alert>
+          )}
+          <Typography variant="body2" sx={{ mb: 2, mt: 1 }}>
+            Enter the user's email to assign them as an admin for this masjid.
+          </Typography>
+          <TextField
+            label="User Email"
+            type="email"
+            value={assignEmail}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setAssignEmail(e.target.value)
+            }
+            fullWidth
+            autoFocus
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setAssignDialogOpen(false);
+              setAssignEmail("");
+              setAssignError(null);
+              setAssignSuccess(null);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            disabled={assignSubmitting || !assignEmail}
+            onClick={async () => {
+              if (!id) return;
+              setAssignSubmitting(true);
+              setAssignError(null);
+              setAssignSuccess(null);
+              try {
+                // Lookup user by email in users table
+                const { data: users, error: lookupError } = await (
+                  masjidService as any
+                ).db.client
+                  .from("users")
+                  .select("id,email")
+                  .eq("email", assignEmail)
+                  .limit(1);
+
+                if (lookupError) throw new Error(lookupError.message);
+                const found = users?.[0];
+                if (!found) throw new Error("User not found with that email");
+
+                await masjidService.assignAdmin({
+                  masjid_id: id,
+                  user_id: found.id,
+                  status: "active",
+                  approved_by:
+                    (await (masjidService as any).db.client.auth.getUser()).data
+                      .user?.id ?? undefined,
+                  approved_at: new Date().toISOString(),
+                } as any);
+
+                setAssignSuccess("Admin assigned successfully");
+                setAssignEmail("");
+                const adminData = await masjidService.getMasjidAdmins(id);
+                setAdmins(adminData);
+                setTimeout(() => setAssignDialogOpen(false), 1500);
+              } catch (err: any) {
+                setAssignError(err.message || String(err));
+              } finally {
+                setAssignSubmitting(false);
+              }
+            }}
+          >
+            {assignSubmitting ? "Assigning..." : "Assign"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Revoke Admin Dialog */}
+      <Dialog
+        open={revokeDialogOpen}
+        onClose={() => {
+          setRevokeDialogOpen(false);
+          setSelectedAdmin(null);
+        }}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Revoke Admin Access</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to revoke admin access for{" "}
+            <strong>{selectedAdmin?.full_name}</strong>?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setRevokeDialogOpen(false);
+              setSelectedAdmin(null);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={async () => {
+              if (!id || !selectedAdmin) return;
+              try {
+                await (masjidService as any).db.client
+                  .from("masjid_admins")
+                  .delete()
+                  .eq("masjid_id", id)
+                  .eq("user_id", selectedAdmin.user_id);
+
+                const adminData = await masjidService.getMasjidAdmins(id);
+                setAdmins(adminData);
+                setRevokeDialogOpen(false);
+                setSelectedAdmin(null);
+              } catch (err: any) {
+                console.error("Failed to revoke admin:", err);
+                setError(err.message || "Failed to revoke admin access");
+              }
+            }}
+          >
+            Revoke
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
