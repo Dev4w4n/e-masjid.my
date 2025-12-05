@@ -754,6 +754,12 @@ export {
   updateContentSettings,
 } from "./services/display";
 
+// Export statistics service
+export {
+  StatisticsService,
+  type DashboardStatistics,
+} from "./services/statistics";
+
 // Re-export types for convenience
 export type { Database } from "@masjid-suite/shared-types";
 export type { SupabaseClient, User, Session } from "@supabase/supabase-js";
