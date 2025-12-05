@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -9,8 +8,6 @@ import {
   Typography,
   Grid,
   Avatar,
-  Paper,
-  Skeleton,
 } from "@mui/material";
 import {
   Person,
@@ -18,15 +15,10 @@ import {
   AdminPanelSettings,
   Dashboard,
   TrendingUp,
-  People,
   LocationOn,
 } from "@mui/icons-material";
 import { useUser, useProfile, usePermissions } from "@masjid-suite/auth";
 import { useTranslation } from "@masjid-suite/i18n";
-import {
-  StatisticsService,
-  type DashboardStatistics,
-} from "@masjid-suite/supabase-client";
 
 /**
  * Home/Dashboard page component
@@ -36,46 +28,6 @@ function Home() {
   const profile = useProfile();
   const permissions = usePermissions();
   const { t } = useTranslation();
-  const [statistics, setStatistics] = useState<DashboardStatistics | null>(
-    null
-  );
-  const [loading, setLoading] = useState(true);
-
-  // Fetch dashboard statistics for admin users
-  useEffect(() => {
-    if (permissions.hasAdminPrivileges()) {
-      const fetchStatistics = async () => {
-        setLoading(true);
-        try {
-          const stats = await StatisticsService.getDashboardStatistics();
-          setStatistics(stats);
-        } catch (error) {
-          console.error("Error fetching dashboard statistics:", error);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchStatistics();
-    } else {
-      setLoading(false);
-    }
-  }, [permissions]);
-
-  const stats = statistics
-    ? [
-        {
-          label: t("masjid.total"),
-          value: statistics.totalMasjids.toString(),
-          icon: <Mosque />,
-        },
-        {
-          label: t("admin.registered_users"),
-          value: statistics.registeredUsers.toString(),
-          icon: <People />,
-        },
-      ]
-    : [];
 
   const quickActions = [
     {
@@ -128,69 +80,6 @@ function Home() {
           {t("home.subtitle")}
         </Typography>
       </Box>
-
-      {/* Stats Overview (Admin Only) */}
-      {permissions.hasAdminPrivileges() && (
-        <Grid container spacing={3} sx={{ mb: 4 }}>
-          {loading ? (
-            // Loading skeletons
-            <>
-              {[1, 2, 3].map((index) => (
-                <Grid item xs={12} sm={6} md={4} key={index}>
-                  <Paper
-                    elevation={2}
-                    sx={{
-                      p: 3,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 2,
-                    }}
-                  >
-                    <Skeleton variant="circular" width={56} height={56} />
-                    <Box sx={{ flex: 1 }}>
-                      <Skeleton variant="text" width={60} height={48} />
-                      <Skeleton variant="text" width="80%" height={24} />
-                    </Box>
-                  </Paper>
-                </Grid>
-              ))}
-            </>
-          ) : (
-            // Actual statistics
-            stats.map((stat, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Paper
-                  elevation={2}
-                  sx={{
-                    p: 3,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 2,
-                  }}
-                >
-                  <Avatar
-                    sx={{
-                      bgcolor: "primary.main",
-                      width: 56,
-                      height: 56,
-                    }}
-                  >
-                    {stat.icon}
-                  </Avatar>
-                  <Box>
-                    <Typography variant="h4" fontWeight="bold">
-                      {stat.value}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {stat.label}
-                    </Typography>
-                  </Box>
-                </Paper>
-              </Grid>
-            ))
-          )}
-        </Grid>
-      )}
 
       {/* Quick Actions */}
       <Box sx={{ mb: 4 }}>
