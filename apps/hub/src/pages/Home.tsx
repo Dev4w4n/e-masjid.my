@@ -74,11 +74,6 @@ function Home() {
           value: statistics.registeredUsers.toString(),
           icon: <People />,
         },
-        {
-          label: t("admin.admin_applications"),
-          value: statistics.pendingUserApprovals.toString(),
-          icon: <AdminPanelSettings />,
-        },
       ]
     : [];
 

@@ -6,7 +6,6 @@ import { supabase } from "../index";
 export interface DashboardStatistics {
   totalMasjids: number;
   registeredUsers: number;
-  pendingUserApprovals: number;
 }
 
 /**
@@ -15,7 +14,7 @@ export interface DashboardStatistics {
 export class StatisticsService {
   /**
    * Get dashboard statistics for admin users
-   * Includes total masjids, registered users, and pending user approvals
+   * Includes total masjids and registered users
    */
   static async getDashboardStatistics(): Promise<DashboardStatistics> {
     try {
@@ -28,13 +27,6 @@ export class StatisticsService {
         supabase.from("users").select("*", { count: "exact", head: true }),
       ]);
 
-      // Fetch pending user approvals count using direct query
-      // Note: Using 'any' cast because user_approvals table types are not yet generated
-      const approvalsResult = await (supabase as any)
-        .from("user_approvals")
-        .select("*", { count: "exact", head: true })
-        .eq("status", "pending");
-
       // Handle errors
       if (masjidsResult.error) {
         console.error("Error fetching masjid count:", masjidsResult.error);
@@ -42,21 +34,16 @@ export class StatisticsService {
       if (usersResult.error) {
         console.error("Error fetching user count:", usersResult.error);
       }
-      if (approvalsResult.error) {
-        console.error("Error fetching approval count:", approvalsResult.error);
-      }
 
       return {
         totalMasjids: masjidsResult.count ?? 0,
         registeredUsers: usersResult.count ?? 0,
-        pendingUserApprovals: approvalsResult.count ?? 0,
       };
     } catch (error) {
       console.error("Error fetching dashboard statistics:", error);
       return {
         totalMasjids: 0,
         registeredUsers: 0,
-        pendingUserApprovals: 0,
       };
     }
   }
