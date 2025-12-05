@@ -1,4 +1,4 @@
--- Migration 105: Create content-images storage bucket
+-- Migration: Create content-images storage bucket
 -- This migration creates the storage bucket and policies for content images
 
 -- Create storage bucket for content images
@@ -15,8 +15,15 @@ ON CONFLICT (id) DO UPDATE SET
   file_size_limit = 10485760,
   allowed_mime_types = ARRAY['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Authenticated users can upload content images" ON storage.objects;
+DROP POLICY IF EXISTS "Public can read content images" ON storage.objects;
+DROP POLICY IF EXISTS "Users can update their masjid content images" ON storage.objects;
+DROP POLICY IF EXISTS "Users can delete their masjid content images" ON storage.objects;
+DROP POLICY IF EXISTS "Super admins can manage all content images" ON storage.objects;
+
 -- Policy: Allow authenticated users to upload images to their masjid folders
-CREATE POLICY IF NOT EXISTS "Authenticated users can upload content images"
+CREATE POLICY "Authenticated users can upload content images"
 ON storage.objects FOR INSERT
 TO authenticated
 WITH CHECK (
@@ -29,13 +36,13 @@ WITH CHECK (
 );
 
 -- Policy: Allow public read access to all content images
-CREATE POLICY IF NOT EXISTS "Public can read content images"
+CREATE POLICY "Public can read content images"
 ON storage.objects FOR SELECT
 TO public
 USING (bucket_id = 'content-images');
 
 -- Policy: Allow users to update their own masjid's images
-CREATE POLICY IF NOT EXISTS "Users can update their masjid content images"
+CREATE POLICY "Users can update their masjid content images"
 ON storage.objects FOR UPDATE
 TO authenticated
 USING (
@@ -52,7 +59,7 @@ WITH CHECK (
 );
 
 -- Policy: Allow users to delete their own masjid's images
-CREATE POLICY IF NOT EXISTS "Users can delete their masjid content images"
+CREATE POLICY "Users can delete their masjid content images"
 ON storage.objects FOR DELETE
 TO authenticated
 USING (
@@ -63,7 +70,7 @@ USING (
 );
 
 -- Policy: Allow super admins full access
-CREATE POLICY IF NOT EXISTS "Super admins can manage all content images"
+CREATE POLICY "Super admins can manage all content images"
 ON storage.objects FOR ALL
 TO authenticated
 USING (
