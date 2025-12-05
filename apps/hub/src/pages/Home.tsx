@@ -8,7 +8,6 @@ import {
   Typography,
   Grid,
   Avatar,
-  Paper,
 } from "@mui/material";
 import {
   Person,
@@ -16,7 +15,6 @@ import {
   AdminPanelSettings,
   Dashboard,
   TrendingUp,
-  People,
   LocationOn,
 } from "@mui/icons-material";
 import { useUser, useProfile, usePermissions } from "@masjid-suite/auth";
@@ -30,16 +28,6 @@ function Home() {
   const profile = useProfile();
   const permissions = usePermissions();
   const { t } = useTranslation();
-
-  const stats = [
-    { label: t("masjid.total"), value: "3", icon: <Mosque /> },
-    { label: t("admin.registered_users"), value: "24", icon: <People /> },
-    {
-      label: t("admin.admin_applications"),
-      value: "2",
-      icon: <AdminPanelSettings />,
-    },
-  ];
 
   const quickActions = [
     {
@@ -92,43 +80,6 @@ function Home() {
           {t("home.subtitle")}
         </Typography>
       </Box>
-
-      {/* Stats Overview (Admin Only) */}
-      {permissions.hasAdminPrivileges() && (
-        <Grid container spacing={3} sx={{ mb: 4 }}>
-          {stats.map((stat, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <Paper
-                elevation={2}
-                sx={{
-                  p: 3,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 2,
-                }}
-              >
-                <Avatar
-                  sx={{
-                    bgcolor: "primary.main",
-                    width: 56,
-                    height: 56,
-                  }}
-                >
-                  {stat.icon}
-                </Avatar>
-                <Box>
-                  <Typography variant="h4" fontWeight="bold">
-                    {stat.value}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {stat.label}
-                  </Typography>
-                </Box>
-              </Paper>
-            </Grid>
-          ))}
-        </Grid>
-      )}
 
       {/* Quick Actions */}
       <Box sx={{ mb: 4 }}>

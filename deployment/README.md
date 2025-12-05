@@ -5,26 +5,36 @@ This guide covers deploying E-Masjid.My to production and staging environments u
 ## 🏗️ Architecture Overview
 
 ```
-┌─────────────────────┐    ┌─────────────────────┐
-│     GitHub Repo     │    │     Supabase        │
-│  ┌───────────────┐  │    │  ┌───────────────┐  │
-│  │ main branch   │◄─┼────┼──┤ Production DB │  │
-│  │ dev branch    │◄─┼────┼──┤ Staging DB    │  │
-│  └───────────────┘  │    │  └───────────────┘  │
-└─────────────────────┘    └─────────────────────┘
-           │                          │
-           ▼                          │
-┌─────────────────────┐               │
-│  Cloudflare Pages   │               │
-│  ┌───────────────┐  │               │
-│  │ hub-prod      │◄─┼───────────────┘
-│  │ hub-dev       │  │
-│  │ public-prod   │  │
-│  │ public-dev    │  │
-│  │ tv-prod       │  │
-│  │ tv-dev        │  │
-│  └───────────────┘  │
-└─────────────────────┘
+┌─────────────────────────────────────────┐
+│          GitHub Repository              │
+│         Dev4w4n/e-masjid.my            │
+│                                         │
+│  ┌──────────┐         ┌──────────┐    │
+│  │   dev    │         │   main   │    │
+│  │  branch  │         │  branch  │    │
+│  └────┬─────┘         └────┬─────┘    │
+└───────┼──────────────────┼─────────────┘
+        │                   │
+        │ Auto Deploy       │ Auto Deploy
+        │ (migrations)      │ (migrations)
+        │                   │
+        ▼                   ▼
+┌─────────────────┐  ┌─────────────────┐
+│  Supabase Dev   │  │ Supabase Prod   │
+│  AWS Singapore  │  │  AWS Singapore  │
+└─────────────────┘  └─────────────────┘
+        │                   │
+        │ Env Vars          │ Env Vars
+        │                   │
+        ▼                   ▼
+┌─────────────────┐  ┌─────────────────┐
+│ Cloudflare Dev  │  │ Cloudflare Prod │
+│  ┌───────────┐  │  │  ┌───────────┐  │
+│  │ hub-dev   │  │  │  │ hub-prod  │  │
+│  │ public-dev│  │  │  │public-prod│  │
+│  │ tv-dev    │  │  │  │ tv-prod   │  │
+│  └───────────┘  │  │  └───────────┘  │
+└─────────────────┘  └─────────────────┘
 ```
 
 ## 🚀 Applications to Deploy
@@ -37,22 +47,25 @@ This guide covers deploying E-Masjid.My to production and staging environments u
 
 ```
 deployment/
-├── README.md                     # This file
+├── README.md                              # This file (overview)
+├── QUICK-START.md                         # Quick deployment guide
 ├── cloudflare/
 │   ├── pages-config/
-│   │   ├── hub-production.toml   # Hub app production config
-│   │   ├── hub-staging.toml      # Hub app staging config
+│   │   ├── hub-production.toml            # Hub app production config
+│   │   ├── hub-staging.toml               # Hub app staging config
 │   │   ├── public-production.toml
 │   │   ├── public-staging.toml
 │   │   ├── tv-production.toml
 │   │   └── tv-staging.toml
-│   └── wrangler-configs/         # Wrangler CLI configs (if needed)
+│   └── wrangler-configs/                  # Wrangler CLI configs (if needed)
 ├── supabase/
-│   ├── production-config.toml    # Production Supabase config
-│   └── staging-config.toml       # Staging Supabase config
+│   ├── README.md                          # Supabase overview
+│   ├── GITHUB-INTEGRATION-SETUP.md        # 🌟 Main setup guide
+│   ├── QUICK-REFERENCE.md                 # Quick commands reference
+│   └── SETUP-CHECKLIST.md                 # Step-by-step checklist
 └── scripts/
-    ├── deploy-cloudflare.sh      # Deployment automation
-    └── setup-environments.sh     # Environment setup
+    ├── deploy-cloudflare.sh               # Deployment automation
+    └── setup-environments.sh              # Environment setup
 ```
 
 ## 🔐 Security & Environment Variables
@@ -73,9 +86,22 @@ deployment/
 
 ## ⚡ Quick Start
 
-**For immediate deployment, follow the [Quick Start Guide](QUICK-START.md) (60 minutes total)**
+### 🎯 Recommended: GitHub Integration Setup
 
-Or use the automated setup:
+**For automatic deployments (production-ready), use Supabase GitHub Integration:**
+
+1. **[Supabase GitHub Integration Setup Guide](./supabase/GITHUB-INTEGRATION-SETUP.md)** - Complete setup (30 min)
+2. **[Setup Checklist](./supabase/SETUP-CHECKLIST.md)** - Step-by-step verification
+3. **[Quick Reference](./supabase/QUICK-REFERENCE.md)** - Daily commands
+
+**What you get:**
+
+- ✅ Push to `dev` branch → Auto-deploys to Supabase Dev
+- ✅ Merge to `main` branch → Auto-deploys to Supabase Production
+- ✅ Persistent dev and production environments
+- ✅ Zero manual migration management
+
+### Alternative: Manual Setup
 
 ```bash
 # Generate all deployment configurations
@@ -85,42 +111,48 @@ Or use the automated setup:
 ./deployment/scripts/deploy-cloudflare.sh staging all validate
 ```
 
-## 📋 Deployment Checklist
+## 📋 Deployment Workflow
 
-### Phase 1: Supabase Setup
+### Development Cycle
 
-- [ ] Create main Supabase project
-- [ ] Link GitHub repository (main branch)
-- [ ] Create staging preview branch (dev branch)
-- [ ] Configure automatic migrations for both branches
-- [ ] Set up database migrations
-- [ ] Configure RLS policies
-- [ ] Set up authentication providers
+```bash
+# 1. Work on feature
+git checkout -b feature/new-thing
+# Make changes, add migrations if needed
 
-### Phase 2: Cloudflare Pages Setup
+# 2. Push to dev for testing
+git checkout dev
+git merge feature/new-thing
+git push origin dev
+# ✨ Automatically deploys to Supabase Dev
 
-- [ ] Create 6 Cloudflare Pages projects (3 apps × 2 environments)
-- [ ] Configure GitHub integration for each project
-- [ ] Set branch-specific deployment rules
-- [ ] Configure build settings for each app type
-- [ ] Set environment variables (without exposing secrets)
-- [ ] Configure custom domains (optional)
+# 3. Test on dev environment
+# Visit your dev URLs and test thoroughly
 
-### Phase 3: Testing & Validation
+# 4. Deploy to production
+git checkout main
+git merge dev
+git push origin main
+# ✨ Automatically deploys to Supabase Production
+```
 
-- [ ] Test staging deployments
-- [ ] Validate environment variable propagation
-- [ ] Test database connectivity
-- [ ] Verify authentication flows
-- [ ] Test cross-app integrations
-- [ ] Performance testing
+### Migration Management
 
-## 🔗 Quick Start Guide
+All migrations in `/supabase/migrations/` are automatically applied when you push:
 
-1. [Supabase Configuration](./supabase/README.md)
-2. [Cloudflare Pages Configuration](./cloudflare/README.md)
-3. [Environment Variables Guide](./ENVIRONMENT-VARIABLES.md)
-4. [Deployment Scripts](./scripts/README.md)
+- Sequential numbered files: `001_*.sql`, `002_*.sql`, etc.
+- Never delete or modify deployed migrations
+- Always test on dev before production
+
+## 📚 Documentation Guide
+
+| Document                                                              | Purpose                | When to Use       |
+| --------------------------------------------------------------------- | ---------------------- | ----------------- |
+| [GITHUB-INTEGRATION-SETUP.md](./supabase/GITHUB-INTEGRATION-SETUP.md) | Complete setup guide   | Initial setup     |
+| [SETUP-CHECKLIST.md](./supabase/SETUP-CHECKLIST.md)                   | Verification checklist | During setup      |
+| [QUICK-REFERENCE.md](./supabase/QUICK-REFERENCE.md)                   | Daily commands         | Daily development |
+| [Supabase README](./supabase/README.md)                               | Overview & config      | Reference         |
+| [Environment Variables](./ENVIRONMENT-VARIABLES.md)                   | Env var guide          | Configuration     |
 
 ## 🛠️ Maintenance
 
