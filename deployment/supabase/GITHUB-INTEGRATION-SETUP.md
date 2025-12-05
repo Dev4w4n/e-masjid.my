@@ -94,6 +94,7 @@ ls -la supabase/migrations/
 #### 2.3 Verify Production Setup
 
 Both projects should now show:
+
 - ✅ GitHub connection active
 - ✅ Auto-deploy enabled
 - ✅ Correct branch linked
@@ -205,8 +206,8 @@ NODE_ENV=production
 -- Password: [secure-password]
 
 -- 2. Then run this SQL to set role:
-UPDATE users 
-SET role = 'super_admin' 
+UPDATE users
+SET role = 'super_admin'
 WHERE email = 'dev-admin@emasjid.my';
 
 -- 3. Verify
@@ -223,8 +224,8 @@ SELECT id, email, role FROM users WHERE role = 'super_admin';
 -- Password: [secure-password]
 
 -- 2. Then run this SQL to set role:
-UPDATE users 
-SET role = 'super_admin' 
+UPDATE users
+SET role = 'super_admin'
 WHERE email = 'admin@emasjid.my';
 
 -- 3. Verify
@@ -318,11 +319,13 @@ git push origin main
 ### Check Migration Status
 
 **In Supabase Dashboard:**
+
 1. Go to **Database** → **Migrations**
 2. See list of applied migrations with timestamps
 3. Check for any failed migrations
 
 **In SQL Editor:**
+
 ```sql
 -- View migration history
 SELECT * FROM supabase_migrations.schema_migrations
@@ -357,6 +360,7 @@ COMMIT;
 ```
 
 Then commit and push:
+
 ```bash
 git add supabase/migrations/XXX_rollback_feature.sql
 git commit -m "fix: rollback problematic migration"

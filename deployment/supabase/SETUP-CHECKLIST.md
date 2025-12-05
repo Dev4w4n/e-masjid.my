@@ -12,6 +12,7 @@ Use this checklist to ensure proper setup of automatic deployments for both dev 
 ## 🔧 Dev Environment Setup
 
 ### GitHub Integration
+
 - [ ] Logged into Supabase Dashboard
 - [ ] Selected "e-masjid.my dev" project
 - [ ] Navigated to Project Settings → Integrations
@@ -22,12 +23,14 @@ Use this checklist to ensure proper setup of automatic deployments for both dev 
 - [ ] Saved configuration
 
 ### Verification
+
 - [ ] GitHub connection shows as "Connected"
 - [ ] Branch shows as: `dev`
 - [ ] Auto-migrations enabled: ✅
 - [ ] Test migration deployed successfully
 
 ### Environment Variables
+
 - [ ] Copied Project URL from Project Settings → API
 - [ ] Copied `anon` `public` key from Project Settings → API
 - [ ] Created/Updated `.env.development`:
@@ -38,12 +41,13 @@ Use this checklist to ensure proper setup of automatic deployments for both dev 
 - [ ] Tested local connection with dev credentials
 
 ### Initial Data
+
 - [ ] Created super admin user via Authentication UI
   - Email: `dev-admin@emasjid.my`
   - Password: [secure password saved in password manager]
 - [ ] Ran SQL to set super admin role:
   ```sql
-  UPDATE users SET role = 'super_admin' 
+  UPDATE users SET role = 'super_admin'
   WHERE email = 'dev-admin@emasjid.my';
   ```
 - [ ] Verified super admin can log in
@@ -52,6 +56,7 @@ Use this checklist to ensure proper setup of automatic deployments for both dev 
 ## 🚀 Production Environment Setup
 
 ### GitHub Integration
+
 - [ ] Logged into Supabase Dashboard
 - [ ] Selected "e-masjid.my production" project
 - [ ] Navigated to Project Settings → Integrations
@@ -62,12 +67,14 @@ Use this checklist to ensure proper setup of automatic deployments for both dev 
 - [ ] Saved configuration
 
 ### Verification
+
 - [ ] GitHub connection shows as "Connected"
 - [ ] Branch shows as: `main`
 - [ ] Auto-migrations enabled: ✅
 - [ ] Test migration deployed successfully
 
 ### Environment Variables
+
 - [ ] Copied Project URL from Project Settings → API
 - [ ] Copied `anon` `public` key from Project Settings → API
 - [ ] Created/Updated `.env.production`:
@@ -78,12 +85,13 @@ Use this checklist to ensure proper setup of automatic deployments for both dev 
 - [ ] Configured Cloudflare Pages with production env vars
 
 ### Initial Data
+
 - [ ] Created super admin user via Authentication UI
   - Email: `admin@emasjid.my`
   - Password: [secure password saved in password manager]
 - [ ] Ran SQL to set super admin role:
   ```sql
-  UPDATE users SET role = 'super_admin' 
+  UPDATE users SET role = 'super_admin'
   WHERE email = 'admin@emasjid.my';
   ```
 - [ ] Verified super admin can log in
@@ -92,6 +100,7 @@ Use this checklist to ensure proper setup of automatic deployments for both dev 
 ## 🧪 Integration Testing
 
 ### Dev Environment Test
+
 - [ ] Created test branch: `git checkout -b test/integration`
 - [ ] Created test migration:
   ```bash
@@ -124,6 +133,7 @@ Use this checklist to ensure proper setup of automatic deployments for both dev 
   ```
 
 ### Production Environment Test
+
 - [ ] Created test migration:
   ```bash
   cat > supabase/migrations/999_test_prod.sql << 'EOF'
@@ -166,6 +176,7 @@ Use this checklist to ensure proper setup of automatic deployments for both dev 
 ## 📊 Post-Setup Verification
 
 ### Both Environments
+
 - [ ] All existing migrations applied successfully
 - [ ] No failed migrations in migration history
 - [ ] RLS policies working correctly
@@ -174,6 +185,7 @@ Use this checklist to ensure proper setup of automatic deployments for both dev 
 - [ ] Realtime subscriptions enabled
 
 ### Team Access
+
 - [ ] Team members added to Supabase projects
 - [ ] Team members understand deployment workflow
 - [ ] Team members have access to environment variables
@@ -198,6 +210,7 @@ Use this checklist to ensure proper setup of automatic deployments for both dev 
   - [ ] Prod: Production URLs only
 
 ### Dev Authentication URLs
+
 ```
 https://hub-emasjid-dev.pages.dev
 http://localhost:5173
@@ -205,6 +218,7 @@ http://localhost:3000
 ```
 
 ### Production Authentication URLs
+
 ```
 https://hub.emasjid.my
 https://public.emasjid.my
@@ -230,8 +244,8 @@ https://tv.emasjid.my
 
 ---
 
-**Setup Date**: _______________
-**Setup By**: _______________
-**Verified By**: _______________
+**Setup Date**: ******\_\_\_******
+**Setup By**: ******\_\_\_******
+**Verified By**: ******\_\_\_******
 
 **Last Updated**: December 5, 2025

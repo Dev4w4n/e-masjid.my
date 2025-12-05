@@ -21,13 +21,13 @@ GitHub Branches          Supabase Projects
 
 ## 📚 Documentation Files
 
-| File | Purpose | Audience |
-|------|---------|----------|
-| **[GITHUB-INTEGRATION-SETUP.md](./GITHUB-INTEGRATION-SETUP.md)** | Complete step-by-step setup guide | DevOps/Setup |
-| **[SETUP-CHECKLIST.md](./SETUP-CHECKLIST.md)** | Interactive checklist with verification | DevOps/Setup |
-| **[QUICK-REFERENCE.md](./QUICK-REFERENCE.md)** | Daily commands and workflows | Developers |
-| **[VISUAL-WORKFLOW.md](./VISUAL-WORKFLOW.md)** | Diagrams and visual explanations | Everyone |
-| **[README.md](./README.md)** | Overview and index | Everyone |
+| File                                                             | Purpose                                 | Audience     |
+| ---------------------------------------------------------------- | --------------------------------------- | ------------ |
+| **[GITHUB-INTEGRATION-SETUP.md](./GITHUB-INTEGRATION-SETUP.md)** | Complete step-by-step setup guide       | DevOps/Setup |
+| **[SETUP-CHECKLIST.md](./SETUP-CHECKLIST.md)**                   | Interactive checklist with verification | DevOps/Setup |
+| **[QUICK-REFERENCE.md](./QUICK-REFERENCE.md)**                   | Daily commands and workflows            | Developers   |
+| **[VISUAL-WORKFLOW.md](./VISUAL-WORKFLOW.md)**                   | Diagrams and visual explanations        | Everyone     |
+| **[README.md](./README.md)**                                     | Overview and index                      | Everyone     |
 
 ## 🚀 Setup Process (30 minutes)
 
@@ -171,6 +171,7 @@ COMMIT;
 ### Migration Not Running
 
 **Check:**
+
 1. Supabase Dashboard → Project Settings → Integrations
 2. GitHub connection status
 3. Branch configuration correct
@@ -180,10 +181,11 @@ COMMIT;
 ### Schema Mismatch Between Environments
 
 **Fix:**
+
 ```sql
 -- Check migration history in each environment
-SELECT version, name, executed_at 
-FROM supabase_migrations.schema_migrations 
+SELECT version, name, executed_at
+FROM supabase_migrations.schema_migrations
 ORDER BY version;
 
 -- Compare output between dev and prod
@@ -193,6 +195,7 @@ ORDER BY version;
 ### Failed Migration
 
 **Process:**
+
 1. Check error in Supabase Dashboard → Logs
 2. Don't modify failed migration file
 3. Create new migration to fix issue
@@ -314,9 +317,9 @@ After setup, you should have:
 
 ---
 
-**Setup Date**: _______________ (Fill in after completion)  
-**Completed By**: _______________ (Your name)  
-**Status**: [ ] Complete  [ ] In Progress  [ ] Pending
+**Setup Date**: ******\_\_\_****** (Fill in after completion)  
+**Completed By**: ******\_\_\_****** (Your name)  
+**Status**: [ ] Complete [ ] In Progress [ ] Pending
 
 **Last Updated**: December 5, 2025  
 **Version**: 1.0  

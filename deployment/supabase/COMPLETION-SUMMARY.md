@@ -59,36 +59,40 @@ Open: `deployment/supabase/QUICK-REFERENCE.md`
 
 ## 📖 Document Guide
 
-| Document | Use Case | Time |
-|----------|----------|------|
-| **GETTING-STARTED.md** | First time here? Start here! | 5 min |
-| **SETUP-SUMMARY.md** | Need overview of everything? | 10 min |
-| **GITHUB-INTEGRATION-SETUP.md** | Ready to set up? | 30 min |
-| **SETUP-CHECKLIST.md** | Following setup guide? | 30 min |
-| **QUICK-REFERENCE.md** | Daily development? | 2 min |
-| **VISUAL-WORKFLOW.md** | Visual learner? | 15 min |
-| **INDEX.md** | Need to find something? | 2 min |
+| Document                        | Use Case                     | Time   |
+| ------------------------------- | ---------------------------- | ------ |
+| **GETTING-STARTED.md**          | First time here? Start here! | 5 min  |
+| **SETUP-SUMMARY.md**            | Need overview of everything? | 10 min |
+| **GITHUB-INTEGRATION-SETUP.md** | Ready to set up?             | 30 min |
+| **SETUP-CHECKLIST.md**          | Following setup guide?       | 30 min |
+| **QUICK-REFERENCE.md**          | Daily development?           | 2 min  |
+| **VISUAL-WORKFLOW.md**          | Visual learner?              | 15 min |
+| **INDEX.md**                    | Need to find something?      | 2 min  |
 
 ## 🎯 What You'll Achieve
 
 After completing the setup:
 
 ### ✅ Automatic Deployments
+
 - Push to dev → Database updates automatically
 - Merge to main → Production updates automatically
 - No manual SQL execution needed
 
 ### ✅ Safe Testing
+
 - All changes tested on dev first
 - Production stays stable
 - Easy rollback if needed
 
 ### ✅ Full Tracking
+
 - All schema changes in git history
 - Migration history in Supabase
 - Clear audit trail
 
 ### ✅ Team Efficiency
+
 - Developers can deploy independently
 - No waiting for DevOps
 - Consistent process for everyone
@@ -96,20 +100,23 @@ After completing the setup:
 ## 💡 Key Features
 
 ### Two Separate Projects (Recommended)
+
 ✅ Complete isolation between environments  
 ✅ Independent scaling and resources  
 ✅ Zero risk of dev affecting production  
-✅ Separate API keys and credentials  
+✅ Separate API keys and credentials
 
 ### GitHub Integration Benefits
+
 ✅ Automatic migration deployment  
 ✅ No manual SQL execution  
 ✅ Git-tracked schema changes  
-✅ Consistent dev and production  
+✅ Consistent dev and production
 
 ## 📋 Setup Checklist Preview
 
 **Dev Environment**:
+
 - [ ] Connect GitHub to Supabase Dev project
 - [ ] Configure `dev` branch integration
 - [ ] Enable automatic migrations
@@ -117,6 +124,7 @@ After completing the setup:
 - [ ] Test with sample migration
 
 **Production Environment**:
+
 - [ ] Connect GitHub to Supabase Prod project
 - [ ] Configure `main` branch integration
 - [ ] Enable automatic migrations
@@ -163,16 +171,19 @@ git push origin main
 ## 🎓 Learning Path
 
 ### Beginner
+
 1. GETTING-STARTED.md → Understand basics
 2. VISUAL-WORKFLOW.md → See how it works
 3. QUICK-REFERENCE.md → Learn commands
 
 ### Intermediate
+
 1. SETUP-SUMMARY.md → Complete overview
 2. GITHUB-INTEGRATION-SETUP.md → Detailed guide
 3. SETUP-CHECKLIST.md → Hands-on practice
 
 ### Advanced
+
 1. All documents → Complete understanding
 2. Migration best practices
 3. Troubleshooting techniques
@@ -180,12 +191,14 @@ git push origin main
 ## 🆘 Help & Support
 
 ### Find Information
+
 - **Quick answer**: QUICK-REFERENCE.md
 - **Setup help**: GITHUB-INTEGRATION-SETUP.md
 - **Understanding**: VISUAL-WORKFLOW.md
 - **Everything**: INDEX.md
 
 ### External Resources
+
 - Supabase Dashboard: https://app.supabase.com
 - Supabase Docs: https://supabase.com/docs
 - Repository: https://github.com/Dev4w4n/e-masjid.my
@@ -193,18 +206,21 @@ git push origin main
 ## 🎁 Bonus Content Included
 
 ### Visual Diagrams
+
 - Architecture overview
 - Data flow
 - Deployment process
 - Migration tracking
 
 ### Real Examples
+
 - Complete migration example
 - Error handling scenarios
 - Rollback procedures
 - Testing workflows
 
 ### Best Practices
+
 - Migration guidelines
 - Naming conventions
 - Security checklist
@@ -213,22 +229,26 @@ git push origin main
 ## 📞 Next Steps
 
 ### Right Now
+
 1. Open: `deployment/supabase/GETTING-STARTED.md`
 2. Read: 5 minutes
 3. Choose your path
 
 ### Today
+
 1. Read relevant documentation (20-30 min)
 2. Understand the architecture
 3. Prepare for setup
 
 ### This Week
+
 1. Follow setup guide (30 min)
 2. Complete checklist
 3. Test deployments
 4. Train team
 
 ### Ongoing
+
 1. Use QUICK-REFERENCE.md daily
 2. Create migrations properly
 3. Test on dev first
@@ -237,18 +257,21 @@ git push origin main
 ## ✨ Benefits Summary
 
 ### For You
+
 - ⚡ Faster deployments
 - 🔒 Safer changes
 - 📝 Better tracking
 - 🎯 Clear process
 
 ### For Team
+
 - 🤝 Consistent workflow
 - 📚 Complete documentation
 - 🚀 Self-service deployments
 - 📊 Full transparency
 
 ### For Project
+
 - 💰 Cost effective
 - 📈 Scalable
 - 🛡️ Secure
@@ -259,12 +282,15 @@ git push origin main
 ## 🎊 Ready to Start?
 
 ### Option 1: Learn First
+
 👉 Open: `deployment/supabase/GETTING-STARTED.md`
 
 ### Option 2: Setup Now
+
 👉 Open: `deployment/supabase/GITHUB-INTEGRATION-SETUP.md`
 
 ### Option 3: Just Commands
+
 👉 Open: `deployment/supabase/QUICK-REFERENCE.md`
 
 ---

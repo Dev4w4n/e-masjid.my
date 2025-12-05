@@ -7,12 +7,14 @@ The absolute quickest way to understand the Supabase GitHub Integration setup.
 **Goal**: Automatic database deployments when you push code to GitHub
 
 **Result**:
+
 - Push to `dev` → Database updates in Supabase Dev
 - Push to `main` → Database updates in Supabase Production
 
 ## ⚡ Quick Overview (2 minutes)
 
 ### Current State
+
 ```
 You manually run SQL in Supabase Dashboard
 ❌ Manual work
@@ -21,6 +23,7 @@ You manually run SQL in Supabase Dashboard
 ```
 
 ### After Setup
+
 ```
 You push code to GitHub
 ✅ Automatic database updates
@@ -49,6 +52,7 @@ You push code to GitHub
 **👉 Go to: [QUICK-REFERENCE.md](./QUICK-REFERENCE.md)**
 
 **Common commands**:
+
 ```bash
 # Deploy to dev
 git push origin dev
@@ -62,6 +66,7 @@ git push origin main
 **👉 Go to: [VISUAL-WORKFLOW.md](./VISUAL-WORKFLOW.md)**
 
 **Shows**:
+
 - Diagrams
 - Examples
 - Data flow
@@ -69,13 +74,13 @@ git push origin main
 
 ## 📚 All Documents
 
-| Document | For | Read Time |
-|----------|-----|-----------|
-| [SETUP-SUMMARY.md](./SETUP-SUMMARY.md) | Overview | 5 min |
-| [GITHUB-INTEGRATION-SETUP.md](./GITHUB-INTEGRATION-SETUP.md) | Setup | 10 min |
-| [SETUP-CHECKLIST.md](./SETUP-CHECKLIST.md) | Setup | 30 min |
-| [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) | Daily dev | 2 min |
-| [VISUAL-WORKFLOW.md](./VISUAL-WORKFLOW.md) | Learning | 10 min |
+| Document                                                     | For       | Read Time |
+| ------------------------------------------------------------ | --------- | --------- |
+| [SETUP-SUMMARY.md](./SETUP-SUMMARY.md)                       | Overview  | 5 min     |
+| [GITHUB-INTEGRATION-SETUP.md](./GITHUB-INTEGRATION-SETUP.md) | Setup     | 10 min    |
+| [SETUP-CHECKLIST.md](./SETUP-CHECKLIST.md)                   | Setup     | 30 min    |
+| [QUICK-REFERENCE.md](./QUICK-REFERENCE.md)                   | Daily dev | 2 min     |
+| [VISUAL-WORKFLOW.md](./VISUAL-WORKFLOW.md)                   | Learning  | 10 min    |
 
 ## 🎬 Simple Example
 
@@ -126,6 +131,7 @@ supabase/migrations/
 ```
 
 **Rules**:
+
 - Sequential numbering
 - Never delete files
 - Never modify deployed files

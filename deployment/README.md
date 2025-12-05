@@ -95,6 +95,7 @@ deployment/
 3. **[Quick Reference](./supabase/QUICK-REFERENCE.md)** - Daily commands
 
 **What you get:**
+
 - ✅ Push to `dev` branch → Auto-deploys to Supabase Dev
 - ✅ Merge to `main` branch → Auto-deploys to Supabase Production
 - ✅ Persistent dev and production environments
@@ -138,19 +139,20 @@ git push origin main
 ### Migration Management
 
 All migrations in `/supabase/migrations/` are automatically applied when you push:
+
 - Sequential numbered files: `001_*.sql`, `002_*.sql`, etc.
 - Never delete or modify deployed migrations
 - Always test on dev before production
 
 ## 📚 Documentation Guide
 
-| Document | Purpose | When to Use |
-|----------|---------|-------------|
-| [GITHUB-INTEGRATION-SETUP.md](./supabase/GITHUB-INTEGRATION-SETUP.md) | Complete setup guide | Initial setup |
-| [SETUP-CHECKLIST.md](./supabase/SETUP-CHECKLIST.md) | Verification checklist | During setup |
-| [QUICK-REFERENCE.md](./supabase/QUICK-REFERENCE.md) | Daily commands | Daily development |
-| [Supabase README](./supabase/README.md) | Overview & config | Reference |
-| [Environment Variables](./ENVIRONMENT-VARIABLES.md) | Env var guide | Configuration |
+| Document                                                              | Purpose                | When to Use       |
+| --------------------------------------------------------------------- | ---------------------- | ----------------- |
+| [GITHUB-INTEGRATION-SETUP.md](./supabase/GITHUB-INTEGRATION-SETUP.md) | Complete setup guide   | Initial setup     |
+| [SETUP-CHECKLIST.md](./supabase/SETUP-CHECKLIST.md)                   | Verification checklist | During setup      |
+| [QUICK-REFERENCE.md](./supabase/QUICK-REFERENCE.md)                   | Daily commands         | Daily development |
+| [Supabase README](./supabase/README.md)                               | Overview & config      | Reference         |
+| [Environment Variables](./ENVIRONMENT-VARIABLES.md)                   | Env var guide          | Configuration     |
 
 ## 🛠️ Maintenance
 

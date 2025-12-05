@@ -63,10 +63,12 @@ This directory contains comprehensive guides for setting up automatic database d
 ## 📖 Document Details
 
 ### GETTING-STARTED.md
+
 **Purpose**: Quick introduction for newcomers  
 **Audience**: Everyone  
 **Reading Time**: 5 minutes  
 **Contents**:
+
 - What you're setting up
 - Why it matters
 - Where to go next
@@ -77,10 +79,12 @@ This directory contains comprehensive guides for setting up automatic database d
 ---
 
 ### SETUP-SUMMARY.md
+
 **Purpose**: Complete overview of the entire setup  
 **Audience**: Technical leads, DevOps  
 **Reading Time**: 10 minutes  
 **Contents**:
+
 - Architecture overview
 - All documentation files explained
 - Setup process summary
@@ -93,10 +97,12 @@ This directory contains comprehensive guides for setting up automatic database d
 ---
 
 ### GITHUB-INTEGRATION-SETUP.md
+
 **Purpose**: Complete step-by-step setup instructions  
 **Audience**: DevOps, System administrators  
 **Reading Time**: 10 minutes (Setup time: 30 minutes)  
 **Contents**:
+
 - Detailed architecture
 - Prerequisites
 - Step-by-step Supabase Dev setup
@@ -113,10 +119,12 @@ This directory contains comprehensive guides for setting up automatic database d
 ---
 
 ### SETUP-CHECKLIST.md
+
 **Purpose**: Interactive checklist for setup verification  
 **Audience**: Anyone performing the setup  
 **Setup Time**: 30 minutes  
 **Contents**:
+
 - Pre-setup requirements checklist
 - Dev environment setup checklist
 - Production environment setup checklist
@@ -131,10 +139,12 @@ This directory contains comprehensive guides for setting up automatic database d
 ---
 
 ### QUICK-REFERENCE.md
+
 **Purpose**: Fast reference for daily development  
 **Audience**: All developers  
 **Reading Time**: 2 minutes  
 **Contents**:
+
 - Project configuration table
 - Deployment commands
 - Migration file guidelines
@@ -149,10 +159,12 @@ This directory contains comprehensive guides for setting up automatic database d
 ---
 
 ### VISUAL-WORKFLOW.md
+
 **Purpose**: Visual explanation of the system  
 **Audience**: Visual learners, new team members  
 **Reading Time**: 15 minutes  
 **Contents**:
+
 - System architecture diagram
 - Development workflow visualization
 - Data flow diagrams
@@ -167,9 +179,11 @@ This directory contains comprehensive guides for setting up automatic database d
 ---
 
 ### README.md
+
 **Purpose**: Index and overview  
 **Audience**: Everyone  
 **Contents**:
+
 - Architecture overview
 - Quick links to all guides
 - Setup guides summary
@@ -277,19 +291,20 @@ EXPLAINED
 
 ## 📊 Document Statistics
 
-| Document | Words | Reading Time | Setup Time |
-|----------|-------|--------------|------------|
-| GETTING-STARTED.md | ~800 | 5 min | - |
-| SETUP-SUMMARY.md | ~2,000 | 10 min | - |
-| GITHUB-INTEGRATION-SETUP.md | ~3,500 | 15 min | 30 min |
-| SETUP-CHECKLIST.md | ~1,500 | 10 min | 30 min |
-| QUICK-REFERENCE.md | ~1,200 | 5 min | - |
-| VISUAL-WORKFLOW.md | ~2,500 | 15 min | - |
-| **Total** | **~11,500** | **60 min** | **60 min** |
+| Document                    | Words       | Reading Time | Setup Time |
+| --------------------------- | ----------- | ------------ | ---------- |
+| GETTING-STARTED.md          | ~800        | 5 min        | -          |
+| SETUP-SUMMARY.md            | ~2,000      | 10 min       | -          |
+| GITHUB-INTEGRATION-SETUP.md | ~3,500      | 15 min       | 30 min     |
+| SETUP-CHECKLIST.md          | ~1,500      | 10 min       | 30 min     |
+| QUICK-REFERENCE.md          | ~1,200      | 5 min        | -          |
+| VISUAL-WORKFLOW.md          | ~2,500      | 15 min       | -          |
+| **Total**                   | **~11,500** | **60 min**   | **60 min** |
 
 ## 🎓 Recommended Reading Order
 
 ### For Complete Understanding
+
 1. GETTING-STARTED.md
 2. SETUP-SUMMARY.md
 3. VISUAL-WORKFLOW.md
@@ -298,26 +313,31 @@ EXPLAINED
 6. QUICK-REFERENCE.md
 
 ### For Quick Setup
+
 1. GETTING-STARTED.md
 2. GITHUB-INTEGRATION-SETUP.md (with SETUP-CHECKLIST.md open)
 3. QUICK-REFERENCE.md
 
 ### For Daily Development
+
 1. QUICK-REFERENCE.md (bookmark it!)
 
 ## 📞 Support
 
 ### Internal Documentation
+
 - Start with relevant document above
 - Check troubleshooting sections
 - Review visual workflows
 
 ### External Resources
+
 - [Supabase Dashboard](https://app.supabase.com)
 - [Supabase GitHub Integration Docs](https://supabase.com/docs/guides/cli/github-integration)
 - [Supabase Discord](https://discord.supabase.com)
 
 ### Project Resources
+
 - **Repository**: [Dev4w4n/e-masjid.my](https://github.com/Dev4w4n/e-masjid.my)
 - **Issues**: [GitHub Issues](https://github.com/Dev4w4n/e-masjid.my/issues)
 
@@ -336,12 +356,14 @@ EXPLAINED
 ### Keeping Documentation Updated
 
 **When to update**:
+
 - Supabase changes their GitHub integration
 - Team discovers better practices
 - New troubleshooting scenarios emerge
 - Architecture changes
 
 **How to update**:
+
 1. Update affected document(s)
 2. Update "Last Updated" date
 3. Update this index if structure changes

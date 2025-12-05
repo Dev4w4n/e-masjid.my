@@ -15,6 +15,7 @@ You mentioned you already have Supabase linked to GitHub. Here's the fastest way
 ### Step 2: Reconnect to Two Projects (10 min)
 
 **Dev Project:**
+
 1. Supabase Dashboard → Select "e-masjid.my dev" project
 2. Project Settings → Integrations → Connect to GitHub
 3. Repository: `Dev4w4n/e-masjid.my`
@@ -23,6 +24,7 @@ You mentioned you already have Supabase linked to GitHub. Here's the fastest way
 6. Save
 
 **Production Project:**
+
 1. Supabase Dashboard → Select "e-masjid.my production" project
 2. Project Settings → Integrations → Connect to GitHub
 3. Repository: `Dev4w4n/e-masjid.my`
@@ -75,6 +77,7 @@ If you see this error:
 ### You Need Two Supabase Projects
 
 **Check what you have:**
+
 - Go to [Supabase Dashboard](https://app.supabase.com)
 - Do you see two projects?
   - ✅ Yes → Great! Proceed with reset
@@ -83,6 +86,7 @@ If you see this error:
 **If you only have one project:**
 
 Option 1: Create new Dev project
+
 ```
 1. Supabase Dashboard → New Project
 2. Name: e-masjid.my dev
@@ -91,6 +95,7 @@ Option 1: Create new Dev project
 ```
 
 Option 2: Create new Production project
+
 ```
 1. Supabase Dashboard → New Project
 2. Name: e-masjid.my production
@@ -119,12 +124,14 @@ Get project ref from: Project Settings → General → Reference ID
 ## 🎯 What You're Achieving
 
 ### Before
+
 ```
 Maybe: Single project with preview branch
 Or: One project connected to main only
 ```
 
 ### After
+
 ```
 ✅ Two separate projects
 ✅ Dev auto-deploys from dev branch

@@ -6,10 +6,10 @@ This directory contains configuration and setup guides for deploying E-Masjid.My
 
 We use **separate Supabase projects** to manage deployment environments with GitHub integration for automatic deployments:
 
-| Environment    | Supabase Project           | GitHub Branch | Region              | Instance |
-| -------------- | -------------------------- | ------------- | ------------------- | -------- |
-| **Production** | e-masjid.my production     | `main`        | AWS ap-southeast-2  | Micro    |
-| **Development**| e-masjid.my dev            | `dev`         | AWS ap-southeast-2  | Micro    |
+| Environment     | Supabase Project       | GitHub Branch | Region             | Instance |
+| --------------- | ---------------------- | ------------- | ------------------ | -------- |
+| **Production**  | e-masjid.my production | `main`        | AWS ap-southeast-2 | Micro    |
+| **Development** | e-masjid.my dev        | `dev`         | AWS ap-southeast-2 | Micro    |
 
 **Why use separate projects?**
 
@@ -32,6 +32,7 @@ Quick introduction to understand what you're setting up and where to go next.
 **👉 [GITHUB-INTEGRATION-SETUP.md](./GITHUB-INTEGRATION-SETUP.md) - Complete setup guide**
 
 This is the main setup guide for automatic deployments:
+
 - Push to `dev` branch → Auto-deploys to Supabase Dev
 - Merge to `main` branch → Auto-deploys to Supabase Production
 
@@ -39,13 +40,13 @@ This is the main setup guide for automatic deployments:
 
 ### 📖 Complete Documentation
 
-| Document | Purpose | Time | When to Use |
-|----------|---------|------|-------------|
-| **[SETUP-SUMMARY.md](./SETUP-SUMMARY.md)** | Overview & index | 5 min | Start here! |
-| **[GITHUB-INTEGRATION-SETUP.md](./GITHUB-INTEGRATION-SETUP.md)** | Full setup guide | 30 min | Initial setup |
-| **[SETUP-CHECKLIST.md](./SETUP-CHECKLIST.md)** | Step-by-step checklist | 30 min | During setup |
-| **[QUICK-REFERENCE.md](./QUICK-REFERENCE.md)** | Daily commands | 2 min | Daily dev |
-| **[VISUAL-WORKFLOW.md](./VISUAL-WORKFLOW.md)** | Diagrams & examples | 10 min | Understanding |
+| Document                                                         | Purpose                | Time   | When to Use   |
+| ---------------------------------------------------------------- | ---------------------- | ------ | ------------- |
+| **[SETUP-SUMMARY.md](./SETUP-SUMMARY.md)**                       | Overview & index       | 5 min  | Start here!   |
+| **[GITHUB-INTEGRATION-SETUP.md](./GITHUB-INTEGRATION-SETUP.md)** | Full setup guide       | 30 min | Initial setup |
+| **[SETUP-CHECKLIST.md](./SETUP-CHECKLIST.md)**                   | Step-by-step checklist | 30 min | During setup  |
+| **[QUICK-REFERENCE.md](./QUICK-REFERENCE.md)**                   | Daily commands         | 2 min  | Daily dev     |
+| **[VISUAL-WORKFLOW.md](./VISUAL-WORKFLOW.md)**                   | Diagrams & examples    | 10 min | Understanding |
 
 ### 🎯 Quick Start Path
 

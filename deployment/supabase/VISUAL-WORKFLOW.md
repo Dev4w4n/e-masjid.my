@@ -212,7 +212,7 @@ EOF
 
 # Verify migration applied
 psql -h localhost -p 54322 -d postgres -U postgres -c \
-  "SELECT column_name FROM information_schema.columns 
+  "SELECT column_name FROM information_schema.columns
    WHERE table_name = 'display_content';"
 
 # Should show qr_code_url and qr_code_position
@@ -341,14 +341,14 @@ git push origin dev
 
 ## 📈 Benefits of This Setup
 
-| Feature | Benefit |
-|---------|---------|
-| **Automatic** | No manual SQL running required |
-| **Tracked** | Every migration recorded with timestamp |
-| **Safe** | Test on dev before production |
-| **Reversible** | Create rollback migrations if needed |
-| **Auditable** | Git history shows who/when/why |
-| **Consistent** | Dev and prod schemas always match |
+| Feature        | Benefit                                 |
+| -------------- | --------------------------------------- |
+| **Automatic**  | No manual SQL running required          |
+| **Tracked**    | Every migration recorded with timestamp |
+| **Safe**       | Test on dev before production           |
+| **Reversible** | Create rollback migrations if needed    |
+| **Auditable**  | Git history shows who/when/why          |
+| **Consistent** | Dev and prod schemas always match       |
 
 ## 🎯 Best Practices
 

@@ -5,10 +5,12 @@ Complete guide to disconnect your current setup and migrate to the new two-proje
 ## 🎯 Current Setup vs New Setup
 
 ### What You Have Now
+
 - Single Supabase project with preview branches OR
 - Existing GitHub connection that needs reconfiguration
 
 ### What You're Moving To
+
 - Two separate Supabase projects
 - Dev project connected to `dev` branch
 - Production project connected to `main` branch
@@ -64,6 +66,7 @@ git push origin backup-before-migration-$(date +%Y%m%d)
 #### 2.2 Document Current Configuration
 
 Create a note with:
+
 - Current Supabase project name(s)
 - Current project URL(s)
 - Current API keys (you'll get new ones)
@@ -93,6 +96,7 @@ For **EACH** Supabase project that has GitHub connected:
 #### 4.1 Option A: You Have Two Projects Already
 
 If you already have:
+
 - `e-masjid.my dev` project
 - `e-masjid.my production` project
 
@@ -103,6 +107,7 @@ Skip to Phase 5!
 If you only have one project (e.g., `e-masjid.my`):
 
 **Decide which will be Production:**
+
 ```
 Option 1: Keep existing as Production, create new Dev
 ✅ Recommended if existing has real data
@@ -183,6 +188,7 @@ supabase db push
 Repeat the same process for Production project.
 
 **⚠️ Important Notes:**
+
 - If production already has data, migrations might already be applied
 - Only apply missing migrations
 - Test on dev first before production
@@ -228,6 +234,7 @@ You now have new project URLs and API keys.
 #### 7.1 Get New Credentials
 
 **For Dev Project:**
+
 1. Supabase Dashboard → Select Dev project
 2. Project Settings → API
 3. Copy:
@@ -235,6 +242,7 @@ You now have new project URLs and API keys.
    - `anon` `public` key
 
 **For Production Project:**
+
 1. Supabase Dashboard → Select Production project
 2. Project Settings → API
 3. Copy:
@@ -266,6 +274,7 @@ EOF
 If you're using Cloudflare Pages:
 
 **Dev Environment:**
+
 1. Cloudflare Dashboard → Pages
 2. Select your dev projects (hub-dev, tv-dev, etc.)
 3. Settings → Environment variables
@@ -275,6 +284,7 @@ If you're using Cloudflare Pages:
 5. Save and redeploy
 
 **Production Environment:**
+
 1. Same process for production projects
 2. Use production credentials
 
@@ -298,7 +308,7 @@ CREATE TABLE IF NOT EXISTS github_integration_test (
 );
 
 -- Insert test data
-INSERT INTO github_integration_test (environment, message) 
+INSERT INTO github_integration_test (environment, message)
 VALUES ('test', 'If you see this, integration is working!');
 EOF
 ```
@@ -313,6 +323,7 @@ git push origin dev
 ```
 
 **Verify:**
+
 1. Wait 1-2 minutes
 2. Go to Supabase Dev Dashboard
 3. Navigate to Database → Migrations
@@ -331,6 +342,7 @@ git push origin main
 ```
 
 **Verify:**
+
 1. Wait 1-2 minutes
 2. Go to Supabase Production Dashboard
 3. Same verification as dev
@@ -356,6 +368,7 @@ git push origin main
 #### 9.1 Checklist
 
 **Dev Environment:**
+
 - [ ] GitHub connected in Supabase Dashboard
 - [ ] Branch set to `dev`
 - [ ] Auto-migrations enabled
@@ -365,6 +378,7 @@ git push origin main
 - [ ] Super admin user exists and can login
 
 **Production Environment:**
+
 - [ ] GitHub connected in Supabase Dashboard
 - [ ] Branch set to `main`
 - [ ] Auto-migrations enabled
@@ -379,9 +393,9 @@ In each project's SQL Editor:
 
 ```sql
 -- Check all applied migrations
-SELECT version, name, executed_at 
-FROM supabase_migrations.schema_migrations 
-ORDER BY version DESC 
+SELECT version, name, executed_at
+FROM supabase_migrations.schema_migrations
+ORDER BY version DESC
 LIMIT 20;
 
 -- Should see all your migrations including the test one
@@ -399,7 +413,7 @@ cat >> /Users/rohaizan/Codes/ai-gen/agent-1-emasjid-my/deployment/.env.local << 
 DEV_SUPABASE_URL=https://[dev-ref].supabase.co
 DEV_SUPABASE_ANON_KEY=[dev-anon-key]
 
-# Production Project  
+# Production Project
 PROD_SUPABASE_URL=https://[prod-ref].supabase.co
 PROD_SUPABASE_ANON_KEY=[prod-anon-key]
 
@@ -410,6 +424,7 @@ EOF
 ## ✅ Migration Complete!
 
 You now have:
+
 - ✅ Two separate Supabase projects
 - ✅ Dev project auto-deploys from `dev` branch
 - ✅ Production project auto-deploys from `main` branch
@@ -419,12 +434,12 @@ You now have:
 
 ## 🎯 What Changed
 
-| Before | After |
-|--------|-------|
-| Single project (maybe with preview branch) | Two separate projects |
-| Manual disconnection needed | Clean GitHub integration |
-| Old credentials | New credentials for each environment |
-| Mixed environments | Complete isolation |
+| Before                                     | After                                |
+| ------------------------------------------ | ------------------------------------ |
+| Single project (maybe with preview branch) | Two separate projects                |
+| Manual disconnection needed                | Clean GitHub integration             |
+| Old credentials                            | New credentials for each environment |
+| Mixed environments                         | Complete isolation                   |
 
 ## 🔄 New Daily Workflow
 
@@ -453,6 +468,7 @@ git push origin main
 ### Issue: "GitHub already connected to another project"
 
 **Solution:**
+
 1. Make sure you disconnected from ALL projects
 2. In GitHub: Settings → Applications → Supabase
 3. Revoke access completely
@@ -461,6 +477,7 @@ git push origin main
 ### Issue: "Migrations already applied" errors
 
 **Solution:**
+
 ```sql
 -- Check which migrations are recorded
 SELECT * FROM supabase_migrations.schema_migrations;
@@ -473,6 +490,7 @@ SELECT * FROM supabase_migrations.schema_migrations;
 ### Issue: Environment variables not working
 
 **Solution:**
+
 1. Clear browser cache
 2. Restart local dev server
 3. Verify in Supabase Dashboard the keys are correct
@@ -482,6 +500,7 @@ SELECT * FROM supabase_migrations.schema_migrations;
 ### Issue: Can't see migrations in Supabase
 
 **Solution:**
+
 1. Check GitHub connection status
 2. Verify branch name is exactly `dev` or `main`
 3. Check repository path includes `/supabase`
@@ -503,7 +522,7 @@ git branch
 # Deploy to dev
 git push origin dev
 
-# Deploy to production  
+# Deploy to production
 git checkout main
 git merge dev
 git push origin main
@@ -514,8 +533,8 @@ git push origin main
 
 ---
 
-**Migration Date**: _______________ (Fill this in)  
-**Performed By**: _______________  
+**Migration Date**: ******\_\_\_****** (Fill this in)  
+**Performed By**: ******\_\_\_******  
 **Status**: [ ] Complete [ ] In Progress
 
 **Last Updated**: December 5, 2025  

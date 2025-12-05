@@ -4,14 +4,15 @@ Fast reference for the auto-deployment workflow with separate Supabase projects.
 
 ## 🔧 Project Configuration
 
-| Environment | Project              | Branch  | URL                                    |
-|------------|----------------------|---------|----------------------------------------|
-| **Dev**    | e-masjid.my dev      | `dev`   | https://[dev-ref].supabase.co         |
-| **Prod**   | e-masjid.my production| `main`  | https://[prod-ref].supabase.co        |
+| Environment | Project                | Branch | URL                            |
+| ----------- | ---------------------- | ------ | ------------------------------ |
+| **Dev**     | e-masjid.my dev        | `dev`  | https://[dev-ref].supabase.co  |
+| **Prod**    | e-masjid.my production | `main` | https://[prod-ref].supabase.co |
 
 ## 🚀 Deployment Commands
 
 ### Deploy to Dev
+
 ```bash
 git checkout dev
 git add .
@@ -21,6 +22,7 @@ git push origin dev
 ```
 
 ### Deploy to Production
+
 ```bash
 # After testing on dev
 git checkout main
@@ -33,11 +35,13 @@ git push origin main
 
 **Location**: `/supabase/migrations/`
 
-**Naming**: 
+**Naming**:
+
 - `NNN_description.sql` (e.g., `030_add_feature.sql`)
 - `YYYYMMDDHHMMSS_description.sql` (e.g., `20251205120000_add_feature.sql`)
 
 **Rules**:
+
 - ✅ Sequential numbering
 - ✅ Always test on dev first
 - ❌ Never delete migrations
@@ -79,6 +83,7 @@ git push origin main
 4. Look for green checkmark ✅
 
 ### Via SQL
+
 ```sql
 -- See applied migrations
 SELECT * FROM supabase_migrations.schema_migrations
@@ -89,6 +94,7 @@ LIMIT 10;
 ## 🚨 Emergency Rollback
 
 ### Option 1: Revert Git Commit
+
 ```bash
 # Revert the last commit
 git revert HEAD
@@ -97,6 +103,7 @@ git push origin [branch-name]
 ```
 
 ### Option 2: Create Fix Migration
+
 ```bash
 # Create new migration that undoes changes
 cd supabase/migrations
@@ -118,18 +125,21 @@ git push origin [branch-name]
 ### Get from Supabase Dashboard
 
 **For each project:**
+
 1. Project Settings → API
 2. Copy:
    - Project URL
    - `anon` `public` key
 
 ### Dev Environment (.env.development)
+
 ```bash
 VITE_SUPABASE_URL=https://[dev-ref].supabase.co
 VITE_SUPABASE_ANON_KEY=[dev-anon-key]
 ```
 
 ### Production Environment (.env.production)
+
 ```bash
 VITE_SUPABASE_URL=https://[prod-ref].supabase.co
 VITE_SUPABASE_ANON_KEY=[prod-anon-key]
@@ -150,6 +160,7 @@ VITE_SUPABASE_ANON_KEY=[prod-anon-key]
 ### Migrations Not Running
 
 **Check:**
+
 - [ ] GitHub connection active in Supabase Dashboard
 - [ ] Correct branch configured
 - [ ] Migration files in `/supabase/migrations/`
@@ -157,6 +168,7 @@ VITE_SUPABASE_ANON_KEY=[prod-anon-key]
 - [ ] No SQL syntax errors
 
 **Fix:**
+
 ```bash
 # Verify migrations locally first
 supabase db reset  # In local setup
@@ -168,10 +180,11 @@ supabase db reset  # In local setup
 **Symptoms**: Dev and prod have different schemas
 
 **Fix**:
+
 ```sql
 -- In Supabase SQL Editor, check migration history
-SELECT version, name 
-FROM supabase_migrations.schema_migrations 
+SELECT version, name
+FROM supabase_migrations.schema_migrations
 ORDER BY version;
 
 -- Compare dev vs prod
