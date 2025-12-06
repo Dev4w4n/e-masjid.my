@@ -229,6 +229,7 @@ const MyContent: React.FC = () => {
   };
 
   // Handle resubmit content
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleResubmit = (contentItem: UserContent) => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
