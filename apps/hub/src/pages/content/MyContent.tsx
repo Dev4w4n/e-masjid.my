@@ -69,16 +69,6 @@ interface UserContent {
 // Filter options
 type StatusFilter = "all" | "pending" | "active" | "rejected" | "expired";
 
-interface ResubmitDialogState {
-  open: boolean;
-  content: UserContent | null;
-  title: string;
-  description: string;
-  duration: number;
-  start_date: string;
-  end_date: string;
-}
-
 interface EditDialogState {
   open: boolean;
   content: UserContent | null;
@@ -109,15 +99,6 @@ const MyContent: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
-  const [resubmitDialog, setResubmitDialog] = useState<ResubmitDialogState>({
-    open: false,
-    content: null,
-    title: "",
-    description: "",
-    duration: 10,
-    start_date: "",
-    end_date: "",
-  });
   const [editDialog, setEditDialog] = useState<EditDialogState>({
     open: false,
     content: null,
@@ -226,69 +207,6 @@ const MyContent: React.FC = () => {
       month: "short",
       year: "numeric",
     });
-  };
-
-  // Handle resubmit content
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleResubmit = (contentItem: UserContent) => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const nextWeek = new Date();
-    nextWeek.setDate(nextWeek.getDate() + 7);
-
-    setResubmitDialog({
-      open: true,
-      content: contentItem,
-      title: contentItem.title,
-      description: contentItem.description || "",
-      duration: contentItem.duration,
-      start_date: tomorrow.toISOString().split("T")[0] || "",
-      end_date: nextWeek.toISOString().split("T")[0] || "",
-    });
-  };
-
-  // Submit resubmission
-  const handleResubmitSubmit = async () => {
-    if (!resubmitDialog.content) return;
-
-    try {
-      const { error: insertError } = await supabase
-        .from("display_content")
-        .insert([
-          {
-            masjid_id: resubmitDialog.content.masjid_id,
-            title: resubmitDialog.title,
-            description: resubmitDialog.description || null,
-            type: resubmitDialog.content.type,
-            url: resubmitDialog.content.url,
-            duration: resubmitDialog.duration,
-            start_date: resubmitDialog.start_date,
-            end_date: resubmitDialog.end_date,
-            submitted_by: user!.id,
-            status: "pending",
-            resubmission_of: resubmitDialog.content.id,
-          },
-        ]);
-
-      if (insertError) throw insertError;
-
-      // Reload content to show new submission
-      await loadUserContent();
-
-      // Close dialog
-      setResubmitDialog({
-        open: false,
-        content: null,
-        title: "",
-        description: "",
-        duration: 10,
-        start_date: "",
-        end_date: "",
-      });
-    } catch (err: any) {
-      console.error("Failed to resubmit content:", err);
-      setError(err.message || "Failed to resubmit content");
-    }
   };
 
   // Open edit dialog
@@ -649,105 +567,6 @@ const MyContent: React.FC = () => {
           })}
         </Grid>
       )}
-
-      {/* Resubmit Dialog */}
-      <Dialog
-        open={resubmitDialog.open}
-        onClose={() => setResubmitDialog({ ...resubmitDialog, open: false })}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>{t("myContent.resubmit_title")}</DialogTitle>
-        <DialogContent>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            {t("myContent.resubmit_desc")}
-          </Typography>
-
-          <Stack spacing={3}>
-            <TextField
-              fullWidth
-              label={t("myContent.title_field")}
-              value={resubmitDialog.title}
-              onChange={(e) =>
-                setResubmitDialog({ ...resubmitDialog, title: e.target.value })
-              }
-            />
-
-            <TextField
-              fullWidth
-              multiline
-              rows={3}
-              label={t("myContent.description_field")}
-              value={resubmitDialog.description}
-              onChange={(e) =>
-                setResubmitDialog({
-                  ...resubmitDialog,
-                  description: e.target.value,
-                })
-              }
-            />
-
-            <TextField
-              fullWidth
-              type="number"
-              label={t("myContent.duration_field")}
-              inputProps={{ min: 5, max: 300 }}
-              value={resubmitDialog.duration}
-              onChange={(e) =>
-                setResubmitDialog({
-                  ...resubmitDialog,
-                  duration: parseInt(e.target.value),
-                })
-              }
-            />
-
-            <Box sx={{ display: "flex", gap: 2 }}>
-              <TextField
-                fullWidth
-                type="date"
-                label={t("myContent.start_date")}
-                InputLabelProps={{ shrink: true }}
-                value={resubmitDialog.start_date}
-                onChange={(e) =>
-                  setResubmitDialog({
-                    ...resubmitDialog,
-                    start_date: e.target.value,
-                  })
-                }
-              />
-              <TextField
-                fullWidth
-                type="date"
-                label={t("myContent.end_date")}
-                InputLabelProps={{ shrink: true }}
-                value={resubmitDialog.end_date}
-                onChange={(e) =>
-                  setResubmitDialog({
-                    ...resubmitDialog,
-                    end_date: e.target.value,
-                  })
-                }
-              />
-            </Box>
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() =>
-              setResubmitDialog({ ...resubmitDialog, open: false })
-            }
-          >
-            {t("myContent.cancel")}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleResubmitSubmit}
-            disabled={!resubmitDialog.title.trim()}
-          >
-            {t("myContent.resubmit_approval")}
-          </Button>
-        </DialogActions>
-      </Dialog>
 
       {/* Edit Dialog */}
       <Dialog
