@@ -23,6 +23,9 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  FormControlLabel,
+  Switch,
+  Collapse,
 } from "@mui/material";
 import {
   Visibility,
@@ -37,6 +40,7 @@ import {
   Cancel,
   Pending,
   FilterList,
+  QrCode2,
 } from "@mui/icons-material";
 import { useUser } from "@masjid-suite/auth";
 import supabase from "@masjid-suite/supabase-client";
@@ -619,38 +623,23 @@ const MyContent: React.FC = () => {
                     </Tooltip>
 
                     <Box sx={{ display: "flex", gap: 1 }}>
-                      {(item.status === "pending" ||
-                        item.status === "rejected") && (
-                        <>
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            startIcon={<Edit />}
-                            onClick={() => handleEdit(item)}
-                          >
-                            {t("myContent.edit")}
-                          </Button>
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            color="error"
-                            startIcon={<Delete />}
-                            onClick={() => handleDelete(item)}
-                          >
-                            {t("myContent.delete")}
-                          </Button>
-                        </>
-                      )}
-                      {item.status === "rejected" && (
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          color="info"
-                          onClick={() => handleResubmit(item)}
-                        >
-                          {t("myContent.resubmit")}
-                        </Button>
-                      )}
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        startIcon={<Edit />}
+                        onClick={() => handleEdit(item)}
+                      >
+                        {t("myContent.edit")}
+                      </Button>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        color="error"
+                        startIcon={<Delete />}
+                        onClick={() => handleDelete(item)}
+                      >
+                        {t("myContent.delete")}
+                      </Button>
                     </Box>
                   </CardActions>
                 </Card>

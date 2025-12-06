@@ -44,7 +44,7 @@ SUPABASE_STATUS_OUTPUT=$(supabase status 2>/dev/null)
 # Extract keys from status output (modern sb_ format)
 SERVICE_ROLE_KEY=$(echo "$SUPABASE_STATUS_OUTPUT" | grep "Secret key:" | awk '{print $3}')
 ANON_KEY=$(echo "$SUPABASE_STATUS_OUTPUT" | grep "Publishable key:" | awk '{print $3}')
-API_URL=$(echo "$SUPABASE_STATUS_OUTPUT" | grep "API URL:" | awk '{print $3}')
+API_URL=$(echo "$SUPABASE_STATUS_OUTPUT" | grep "Project URL" | awk -F'│' '{print $3}' | xargs)
 
 # The modern keys are in sb_ format, but we need the underlying JWT tokens
 # Let's extract the actual JWT from the config files
