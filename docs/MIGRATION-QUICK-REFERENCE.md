@@ -86,7 +86,7 @@ psql $DATABASE_URL -c "SELECT * FROM supabase_migrations.schema_migrations ORDER
 
 | ❌ Mistake                  | ✅ Solution                       |
 | --------------------------- | --------------------------------- |
-| Manual numbering (030\_)    | Use CLI: `supabase migration new` |
+| Manual numbering (030_)    | Use CLI: `supabase migration new` |
 | Editing deployed migrations | Create new migration to fix       |
 | Skipping local testing      | Always run `supabase db reset`    |
 | Not checking dashboard      | Verify in Supabase after push     |
