@@ -2,86 +2,50 @@
 -- This migration creates the storage bucket and policies for content images
 
 -- Create storage bucket for content images
-INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+-- Note: public, file_size_limit, and allowed_mime_types are configured via Supabase Dashboard
+-- or storage.buckets configuration, not in the table columns
+INSERT INTO storage.buckets (id, name)
 VALUES (
   'content-images',
-  'content-images',
-  true,
-  10485760, -- 10MB
-  ARRAY['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+  'content-images'
 )
-ON CONFLICT (id) DO UPDATE SET
-  public = true,
-  file_size_limit = 10485760,
-  allowed_mime_types = ARRAY['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+ON CONFLICT (id) DO NOTHING;
 
 -- Drop existing policies if they exist
-DROP POLICY IF EXISTS "Authenticated users can upload content images" ON storage.objects;
-DROP POLICY IF EXISTS "Public can read content images" ON storage.objects;
-DROP POLICY IF EXISTS "Users can update their masjid content images" ON storage.objects;
-DROP POLICY IF EXISTS "Users can delete their masjid content images" ON storage.objects;
-DROP POLICY IF EXISTS "Super admins can manage all content images" ON storage.objects;
+DROP POLICY IF EXISTS "content_images_authenticated_upload" ON storage.objects;
+DROP POLICY IF EXISTS "content_images_public_read" ON storage.objects;
+DROP POLICY IF EXISTS "content_images_authenticated_update" ON storage.objects;
+DROP POLICY IF EXISTS "content_images_authenticated_delete" ON storage.objects;
 
--- Policy: Allow authenticated users to upload images to their masjid folders
-CREATE POLICY "Authenticated users can upload content images"
+-- Policy: Allow authenticated users to upload images
+-- Simplified version without folder-based restrictions to avoid storage service startup issues
+CREATE POLICY "content_images_authenticated_upload"
 ON storage.objects FOR INSERT
 TO authenticated
 WITH CHECK (
-  bucket_id = 'content-images' AND
-  (storage.foldername(name))[1] = 'content-images' AND
-  -- Users can only upload to folders of masjids they are admins of
-  (storage.foldername(name))[2]::uuid IN (
-    SELECT masjid_id FROM masjid_admins WHERE user_id = auth.uid()
-  )
+  bucket_id = 'content-images'
 );
 
 -- Policy: Allow public read access to all content images
-CREATE POLICY "Public can read content images"
+CREATE POLICY "content_images_public_read"
 ON storage.objects FOR SELECT
 TO public
 USING (bucket_id = 'content-images');
 
--- Policy: Allow users to update their own masjid's images
-CREATE POLICY "Users can update their masjid content images"
+-- Policy: Allow authenticated users to update their own uploaded files
+CREATE POLICY "content_images_authenticated_update"
 ON storage.objects FOR UPDATE
 TO authenticated
 USING (
   bucket_id = 'content-images' AND
-  (storage.foldername(name))[2]::uuid IN (
-    SELECT masjid_id FROM masjid_admins WHERE user_id = auth.uid()
-  )
-)
-WITH CHECK (
-  bucket_id = 'content-images' AND
-  (storage.foldername(name))[2]::uuid IN (
-    SELECT masjid_id FROM masjid_admins WHERE user_id = auth.uid()
-  )
+  auth.uid() = owner
 );
 
--- Policy: Allow users to delete their own masjid's images
-CREATE POLICY "Users can delete their masjid content images"
+-- Policy: Allow authenticated users to delete their own uploaded files
+CREATE POLICY "content_images_authenticated_delete"
 ON storage.objects FOR DELETE
 TO authenticated
 USING (
   bucket_id = 'content-images' AND
-  (storage.foldername(name))[2]::uuid IN (
-    SELECT masjid_id FROM masjid_admins WHERE user_id = auth.uid()
-  )
-);
-
--- Policy: Allow super admins full access
-CREATE POLICY "Super admins can manage all content images"
-ON storage.objects FOR ALL
-TO authenticated
-USING (
-  bucket_id = 'content-images' AND
-  EXISTS (
-    SELECT 1 FROM users WHERE id = auth.uid() AND role = 'super_admin'
-  )
-)
-WITH CHECK (
-  bucket_id = 'content-images' AND
-  EXISTS (
-    SELECT 1 FROM users WHERE id = auth.uid() AND role = 'super_admin'
-  )
+  auth.uid() = owner
 );

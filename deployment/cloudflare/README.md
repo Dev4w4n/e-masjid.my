@@ -335,6 +335,56 @@ pnpm install && ./scripts/build-packages.sh && cd apps/hub && pnpm build
 - [Environment Variables](https://developers.cloudflare.com/pages/platform/build-configuration/#environment-variables)
 - [Custom Domains](https://developers.cloudflare.com/pages/platform/custom-domains/)
 
+## 🚨 Critical: Disable Cloudflare RUM
+
+**IMPORTANT**: After deploying the Hub app, you MUST disable Cloudflare's Real User Monitoring (RUM) to prevent app hangs.
+
+### Symptoms of RUM Issue:
+
+- App hangs after clicking submit buttons or navigating
+- Browser shows requests to `/cdn-cgi/rum?`
+- Users must clear localStorage and re-login to continue
+- Affects all pages after some time of use
+
+### Fix Steps (Do This Immediately After Deployment):
+
+1. **First, verify RUM is the issue**:
+   - Open https://hub.e-masjid.my in browser
+   - Open DevTools (F12) → Network tab
+   - Navigate/submit forms
+   - Look for `/cdn-cgi/rum?` requests
+   - If present → RUM is active (continue to step 2)
+
+2. **Login to Cloudflare Dashboard**: https://dash.cloudflare.com/
+
+3. **Option A - Via Pages Project** (try this first):
+   - Go to **Pages** → Select `hub-emasjid-production` or `hub-emasjid-staging`
+   - Click **Analytics** tab
+   - Look for **Web Analytics** or **RUM** toggle
+   - If found, **Disable** it
+
+4. **Option B - Via Account Analytics** (if not in Pages project):
+   - From dashboard home → **Account** → **Analytics & Logs**
+   - Click **Web Analytics**
+   - Find your domain (`hub.e-masjid.my`)
+   - Click settings ⚙️ → **Disable** or **Remove**
+
+5. **Option C - Contact Support** (if you can't find the toggle):
+   - Click **? Help** in dashboard
+   - Request: "Disable Real User Monitoring for hub-emasjid-production"
+6. **Verify the fix**:
+   - Clear browser cache (Ctrl+Shift+Delete)
+   - Hard refresh (Ctrl+Shift+R)
+   - Check Network tab - no more `/cdn-cgi/rum?` requests ✅
+
+### Projects That Need This Fix:
+
+- ✅ **hub-emasjid-production** (REQUIRED)
+- ✅ **hub-emasjid-staging** (REQUIRED)
+- ℹ️ public/tv apps (optional - Next.js handles this better)
+
+> 📖 **See**: `CLOUDFLARE-RUM-FIX.md` for detailed explanation and troubleshooting
+
 ## 📞 Support
 
 For Cloudflare-specific deployment issues:
@@ -342,7 +392,8 @@ For Cloudflare-specific deployment issues:
 1. Check build logs in Cloudflare Pages dashboard
 2. Verify environment variables are set correctly
 3. Test build commands locally first
-4. Use Cloudflare community forums for platform-specific issues
+4. **If app hangs**: Check if RUM is disabled (see above)
+5. Use Cloudflare community forums for platform-specific issues
 
 ---
 

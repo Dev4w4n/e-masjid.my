@@ -9,6 +9,7 @@ import {
   generateStructuredData,
 } from "@/lib/seo";
 import PremiumBadge from "@/components/PremiumBadge";
+import MarkdownViewer from "@/components/MarkdownViewer";
 import type { Metadata } from "next";
 
 // Required for Cloudflare Pages deployment
@@ -112,6 +113,7 @@ export default async function ContentDetailPage({
                 fill
                 className="object-contain"
                 priority
+                unoptimized
               />
             </div>
           )}
@@ -129,11 +131,7 @@ export default async function ContentDetailPage({
           )}
 
           {content.description && (
-            <div className="prose max-w-none">
-              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                {content.description}
-              </p>
-            </div>
+            <MarkdownViewer content={content.description} />
           )}
         </div>
 

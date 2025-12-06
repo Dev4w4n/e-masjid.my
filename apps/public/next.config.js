@@ -28,18 +28,20 @@ const nextConfig = {
         protocol: 'http',
         hostname: '127.0.0.1',
         port: '54321',
-        pathname: '/storage/v1/object/public/**',
+        pathname: '/**',
       },
       {
         protocol: 'http',
         hostname: 'localhost',
         port: '54321',
-        pathname: '/storage/v1/object/public/**',
+        pathname: '/**',
       },
     ],
+    domains: ['127.0.0.1', 'localhost'],
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    qualities: [25, 50, 75, 80, 85, 90, 100],
     minimumCacheTTL: 86400, // 24 hours cache
   },
 
