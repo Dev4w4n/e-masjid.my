@@ -3,6 +3,10 @@
 # GitHub Branch: dev
 # Framework: Vite (React)
 
+# ⚠️ CRITICAL: Disable Cloudflare RUM in Dashboard
+# After deployment, go to Settings → Speed → Real User Monitoring
+# and DISABLE it to prevent app hangs. See: CLOUDFLARE-RUM-FIX.md
+
 [build]
 command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/hub && pnpm build"
 publish = "apps/hub/dist"

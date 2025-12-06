@@ -57,6 +57,9 @@ interface UserContent {
   submitted_at: string;
   masjid_id: string;
   masjid_name?: string;
+  qr_code_enabled?: boolean;
+  qr_code_url?: string | null;
+  qr_code_position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
 }
 
 // Filter options
@@ -70,6 +73,24 @@ interface ResubmitDialogState {
   duration: number;
   start_date: string;
   end_date: string;
+}
+
+interface EditDialogState {
+  open: boolean;
+  content: UserContent | null;
+  title: string;
+  description: string;
+  duration: number;
+  start_date: string;
+  end_date: string;
+  qr_code_enabled: boolean;
+  qr_code_url: string;
+  qr_code_position: "top-left" | "top-right" | "bottom-left" | "bottom-right";
+}
+
+interface DeleteDialogState {
+  open: boolean;
+  content: UserContent | null;
 }
 
 /**
@@ -93,6 +114,22 @@ const MyContent: React.FC = () => {
     start_date: "",
     end_date: "",
   });
+  const [editDialog, setEditDialog] = useState<EditDialogState>({
+    open: false,
+    content: null,
+    title: "",
+    description: "",
+    duration: 10,
+    start_date: "",
+    end_date: "",
+    qr_code_enabled: true,
+    qr_code_url: "",
+    qr_code_position: "bottom-right",
+  });
+  const [deleteDialog, setDeleteDialog] = useState<DeleteDialogState>({
+    open: false,
+    content: null,
+  });
 
   // Load user's content
   const loadUserContent = async () => {
@@ -115,6 +152,9 @@ const MyContent: React.FC = () => {
           status,
           created_at,
           masjid_id,
+          qr_code_enabled,
+          qr_code_url,
+          qr_code_position,
           masjids!inner(
             name
           )
@@ -139,6 +179,9 @@ const MyContent: React.FC = () => {
         submitted_at: item.created_at || "",
         masjid_id: item.masjid_id,
         masjid_name: item.masjids?.name || "Unknown Masjid",
+        qr_code_enabled: item.qr_code_enabled ?? true,
+        qr_code_url: item.qr_code_url,
+        qr_code_position: item.qr_code_position || "bottom-right",
       }));
 
       setContent(transformedData);
@@ -243,21 +286,97 @@ const MyContent: React.FC = () => {
     }
   };
 
-  // Delete content (only drafts/pending)
-  const handleDelete = async (contentId: string) => {
-    if (!confirm("Are you sure you want to delete this content?")) return;
+  // Open edit dialog
+  const handleEdit = (contentItem: UserContent) => {
+    setEditDialog({
+      open: true,
+      content: contentItem,
+      title: contentItem.title,
+      description: contentItem.description || "",
+      duration: contentItem.duration,
+      start_date: contentItem.start_date,
+      end_date: contentItem.end_date,
+      qr_code_enabled: contentItem.qr_code_enabled ?? true,
+      qr_code_url: contentItem.qr_code_url || "",
+      qr_code_position: contentItem.qr_code_position || "bottom-right",
+    });
+  };
+
+  // Submit edit
+  const handleEditSubmit = async () => {
+    if (!editDialog.content) return;
+
+    try {
+      const { error: updateError } = await supabase
+        .from("display_content")
+        .update({
+          title: editDialog.title,
+          description: editDialog.description || null,
+          duration: editDialog.duration,
+          start_date: editDialog.start_date,
+          end_date: editDialog.end_date,
+          qr_code_enabled: editDialog.qr_code_enabled,
+          qr_code_url: editDialog.qr_code_url || null,
+          qr_code_position: editDialog.qr_code_position,
+        })
+        .eq("id", editDialog.content.id)
+        .eq("submitted_by", user!.id);
+
+      if (updateError) throw updateError;
+
+      // Reload content to show updated data
+      await loadUserContent();
+
+      // Close dialog
+      setEditDialog({
+        open: false,
+        content: null,
+        title: "",
+        description: "",
+        duration: 10,
+        start_date: "",
+        end_date: "",
+        qr_code_enabled: true,
+        qr_code_url: "",
+        qr_code_position: "bottom-right",
+      });
+    } catch (err: any) {
+      console.error("Failed to update content:", err);
+      setError(err.message || "Failed to update content");
+    }
+  };
+
+  // Open delete dialog
+  const handleDelete = (contentItem: UserContent) => {
+    setDeleteDialog({
+      open: true,
+      content: contentItem,
+    });
+  };
+
+  // Confirm delete
+  const handleDeleteConfirm = async () => {
+    if (!deleteDialog.content) return;
 
     try {
       const { error: deleteError } = await supabase
         .from("display_content")
         .delete()
-        .eq("id", contentId)
+        .eq("id", deleteDialog.content.id)
         .eq("submitted_by", user!.id);
 
       if (deleteError) throw deleteError;
 
       // Remove from local state
-      setContent((prev) => prev.filter((item) => item.id !== contentId));
+      setContent((prev) =>
+        prev.filter((item) => item.id !== deleteDialog.content!.id)
+      );
+
+      // Close dialog
+      setDeleteDialog({
+        open: false,
+        content: null,
+      });
     } catch (err: any) {
       console.error("Failed to delete content:", err);
       setError(err.message || "Failed to delete content");
@@ -500,26 +619,36 @@ const MyContent: React.FC = () => {
                     </Tooltip>
 
                     <Box sx={{ display: "flex", gap: 1 }}>
+                      {(item.status === "pending" ||
+                        item.status === "rejected") && (
+                        <>
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            startIcon={<Edit />}
+                            onClick={() => handleEdit(item)}
+                          >
+                            {t("myContent.edit")}
+                          </Button>
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            color="error"
+                            startIcon={<Delete />}
+                            onClick={() => handleDelete(item)}
+                          >
+                            {t("myContent.delete")}
+                          </Button>
+                        </>
+                      )}
                       {item.status === "rejected" && (
                         <Button
                           size="small"
                           variant="outlined"
-                          startIcon={<Edit />}
+                          color="info"
                           onClick={() => handleResubmit(item)}
                         >
                           {t("myContent.resubmit")}
-                        </Button>
-                      )}
-                      {(item.status === "pending" ||
-                        item.status === "rejected") && (
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          color="error"
-                          startIcon={<Delete />}
-                          onClick={() => handleDelete(item.id)}
-                        >
-                          {t("myContent.delete")}
                         </Button>
                       )}
                     </Box>
@@ -626,6 +755,232 @@ const MyContent: React.FC = () => {
             disabled={!resubmitDialog.title.trim()}
           >
             {t("myContent.resubmit_approval")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog
+        open={editDialog.open}
+        onClose={() => setEditDialog({ ...editDialog, open: false })}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>{t("myContent.edit_title")}</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            {t("myContent.edit_desc")}
+          </Typography>
+
+          <Stack spacing={3}>
+            <TextField
+              fullWidth
+              required
+              label={t("myContent.title_field")}
+              value={editDialog.title}
+              onChange={(e) =>
+                setEditDialog({ ...editDialog, title: e.target.value })
+              }
+            />
+
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              label={t("myContent.description_field")}
+              value={editDialog.description}
+              onChange={(e) =>
+                setEditDialog({
+                  ...editDialog,
+                  description: e.target.value,
+                })
+              }
+            />
+
+            <TextField
+              fullWidth
+              type="number"
+              required
+              label={t("myContent.duration_field")}
+              helperText={t("myContent.duration_help")}
+              inputProps={{ min: 5, max: 300 }}
+              value={editDialog.duration}
+              onChange={(e) =>
+                setEditDialog({
+                  ...editDialog,
+                  duration: parseInt(e.target.value) || 10,
+                })
+              }
+            />
+
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <TextField
+                fullWidth
+                required
+                type="date"
+                label={t("myContent.start_date")}
+                InputLabelProps={{ shrink: true }}
+                value={editDialog.start_date}
+                onChange={(e) =>
+                  setEditDialog({
+                    ...editDialog,
+                    start_date: e.target.value,
+                  })
+                }
+              />
+              <TextField
+                fullWidth
+                required
+                type="date"
+                label={t("myContent.end_date")}
+                InputLabelProps={{ shrink: true }}
+                value={editDialog.end_date}
+                onChange={(e) =>
+                  setEditDialog({
+                    ...editDialog,
+                    end_date: e.target.value,
+                  })
+                }
+              />
+            </Box>
+
+            <Divider />
+
+            {/* QR Code Settings */}
+            <Box>
+              <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                <QrCode2 sx={{ mr: 1, color: "primary.main" }} />
+                <Typography variant="h6">
+                  {t("myContent.qr_code_title")}
+                </Typography>
+              </Box>
+
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={editDialog.qr_code_enabled}
+                    onChange={(e) =>
+                      setEditDialog({
+                        ...editDialog,
+                        qr_code_enabled: e.target.checked,
+                      })
+                    }
+                  />
+                }
+                label={t("myContent.qr_code_enabled")}
+              />
+
+              <Collapse in={editDialog.qr_code_enabled}>
+                <Stack spacing={2} sx={{ mt: 2 }}>
+                  <TextField
+                    fullWidth
+                    label={t("myContent.qr_code_url")}
+                    helperText={t("myContent.qr_code_url_help")}
+                    value={editDialog.qr_code_url}
+                    onChange={(e) =>
+                      setEditDialog({
+                        ...editDialog,
+                        qr_code_url: e.target.value,
+                      })
+                    }
+                  />
+
+                  <FormControl fullWidth>
+                    <InputLabel>{t("myContent.qr_code_position")}</InputLabel>
+                    <Select
+                      value={editDialog.qr_code_position}
+                      label={t("myContent.qr_code_position")}
+                      onChange={(e) =>
+                        setEditDialog({
+                          ...editDialog,
+                          qr_code_position: e.target.value as any,
+                        })
+                      }
+                    >
+                      <MenuItem value="top-left">
+                        {t("myContent.qr_position_tl")}
+                      </MenuItem>
+                      <MenuItem value="top-right">
+                        {t("myContent.qr_position_tr")}
+                      </MenuItem>
+                      <MenuItem value="bottom-left">
+                        {t("myContent.qr_position_bl")}
+                      </MenuItem>
+                      <MenuItem value="bottom-right">
+                        {t("myContent.qr_position_br")}
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </Stack>
+              </Collapse>
+            </Box>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditDialog({ ...editDialog, open: false })}>
+            {t("myContent.cancel")}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleEditSubmit}
+            disabled={
+              !editDialog.title.trim() ||
+              editDialog.duration < 5 ||
+              editDialog.duration > 300 ||
+              !editDialog.start_date ||
+              !editDialog.end_date
+            }
+          >
+            {t("myContent.save_changes")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteDialog.open}
+        onClose={() => setDeleteDialog({ open: false, content: null })}
+        maxWidth="sm"
+      >
+        <DialogTitle>{t("myContent.delete_title")}</DialogTitle>
+        <DialogContent>
+          <Alert severity="warning" sx={{ mb: 2 }}>
+            {t("myContent.delete_warning")}
+          </Alert>
+          <Typography variant="body1">
+            {t("myContent.delete_confirm")}
+          </Typography>
+          {deleteDialog.content && (
+            <Box
+              sx={{
+                mt: 2,
+                p: 2,
+                bgcolor: "background.default",
+                borderRadius: 1,
+              }}
+            >
+              <Typography variant="body2" fontWeight="bold">
+                {deleteDialog.content.title}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {deleteDialog.content.masjid_name}
+              </Typography>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setDeleteDialog({ open: false, content: null })}
+          >
+            {t("myContent.cancel")}
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleDeleteConfirm}
+            startIcon={<Delete />}
+          >
+            {t("myContent.delete_confirm_btn")}
           </Button>
         </DialogActions>
       </Dialog>
