@@ -1,4 +1,4 @@
-# Public SEO App - E-Masjid.My
+# Public SEO App - Iklan E-Masjid
 
 > **Public-facing, SEO-optimized website displaying approved masjid content nationwide**
 

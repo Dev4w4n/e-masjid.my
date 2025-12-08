@@ -20,7 +20,7 @@ export default function Header() {
             <div className="logo-container">
               <Image
                 src="/emasjid-500x500.png"
-                alt="E-Masjid.My Logo"
+                alt="Iklan E-Masjid Logo"
                 width={40}
                 height={40}
                 className="rounded-lg transition-transform duration-200 group-hover:scale-105"
@@ -29,7 +29,7 @@ export default function Header() {
               />
             </div>
             <span className="text-lg sm:text-xl font-bold logo-text whitespace-nowrap">
-              E-Masjid.My
+              Iklan E-Masjid
             </span>
           </Link>
 
