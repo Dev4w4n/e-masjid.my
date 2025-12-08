@@ -43,6 +43,7 @@ export default function ContentCard({
             loading={priority ? "eager" : "lazy"}
             priority={priority}
             quality={85}
+            unoptimized
           />
         ) : content.type === "youtube_video" ? (
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-600 to-secondary-600">

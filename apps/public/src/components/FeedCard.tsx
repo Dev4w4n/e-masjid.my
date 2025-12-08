@@ -99,6 +99,7 @@ export default function FeedCard({ content, priority = false }: FeedCardProps) {
               loading={priority ? "eager" : "lazy"}
               priority={priority}
               quality={85}
+              unoptimized
             />
           </div>
         ) : content.type === "youtube_video" ? (

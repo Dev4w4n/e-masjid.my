@@ -22,6 +22,10 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'api.e-masjid.my',
+      },
+      {
+        protocol: 'https',
         hostname: 'img.youtube.com',
       },
       {
