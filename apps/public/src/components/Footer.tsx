@@ -37,9 +37,9 @@ export default function Footer() {
           <div>
             <h3 className="footer-section-title">Hubungi Kami</h3>
             <ul className="space-y-2 text-sm">
-              <li>Email: info@emasjid.my</li>
-              <li>Tel: +60 3-xxxx xxxx</li>
-              <li>Malaysia</li>
+              <li>Email: support@4w4n.com</li>
+              <li>Tel: +60 12-406 2988</li>
+              <li>Penang, Malaysia</li>
             </ul>
           </div>
         </div>
