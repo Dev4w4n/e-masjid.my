@@ -7,9 +7,9 @@ export default function Footer() {
           <div>
             <h3 className="footer-section-title">Tentang Kami</h3>
             <p className="text-sm leading-relaxed">
-              E-Masjid.My adalah platform digital untuk menghubungkan komuniti
-              masjid dengan perniagaan dan perkhidmatan halal di seluruh
-              Malaysia.
+              Iklan E-Masjid adalah platform digital untuk menghubungkan
+              komuniti masjid dengan perniagaan dan perkhidmatan halal di
+              seluruh Malaysia.
             </p>
           </div>
 
@@ -37,9 +37,9 @@ export default function Footer() {
           <div>
             <h3 className="footer-section-title">Hubungi Kami</h3>
             <ul className="space-y-2 text-sm">
-              <li>Email: info@emasjid.my</li>
-              <li>Tel: +60 3-xxxx xxxx</li>
-              <li>Malaysia</li>
+              <li>Email: support@4w4n.com</li>
+              <li>Tel: +60 12-406 2988</li>
+              <li>Penang, Malaysia</li>
             </ul>
           </div>
         </div>
@@ -47,7 +47,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="border-t border-white/20 pt-6 text-center text-sm">
           <p>
-            © {new Date().getFullYear()} E-Masjid.My. Hak Cipta Terpelihara.
+            © {new Date().getFullYear()} Iklan E-Masjid. Hak Cipta Terpelihara.
           </p>
         </div>
       </div>

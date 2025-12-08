@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { ContentWithMasjid } from "@/services/contentService";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://emasjid.my";
-const SITE_NAME = "E-Masjid.My";
+const SITE_NAME = "Iklan E-Masjid";
 const DEFAULT_OG_IMAGE = `${SITE_URL}/emasjid-500x500.png`;
 
 /**
@@ -48,7 +48,7 @@ export function generateMetadata(
     keywords = [category, "masjid", "komuniti", "Muslim", "Malaysia"];
   } else {
     // Homepage
-    title = "E-Masjid.My - Platform Iklan Digital Masjid";
+    title = "Iklan E-Masjid - Platform Iklan Digital Masjid";
     description =
       "Temui perniagaan halal, perkhidmatan, dan produk dalam komuniti masjid seluruh Malaysia. Platform digital untuk menghubungkan jamaah dan peniaga.";
     keywords = [

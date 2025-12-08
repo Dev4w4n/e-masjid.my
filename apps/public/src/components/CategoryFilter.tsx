@@ -7,6 +7,7 @@ interface CategoryFilterProps {
   contentCounts: Record<string, number>;
   selectedCategory: string | null;
   onCategoryChange: (categoryId: string | null) => void;
+  totalItems?: number;
 }
 
 export default function CategoryFilter({
@@ -14,11 +15,11 @@ export default function CategoryFilter({
   contentCounts,
   selectedCategory,
   onCategoryChange,
+  totalItems,
 }: CategoryFilterProps) {
-  const totalCount = Object.values(contentCounts).reduce(
-    (sum, count) => sum + count,
-    0
-  );
+  const totalCount =
+    totalItems ??
+    Object.values(contentCounts).reduce((sum, count) => sum + count, 0);
 
   return (
     <div className="bg-white rounded shadow-sm p-4 border border-gray-200 mb-4 -mx-4 sm:mx-0">

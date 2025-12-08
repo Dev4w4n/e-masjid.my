@@ -49,6 +49,7 @@ export default function ContentGrid({
             contentCounts={contentCounts}
             selectedCategory={selectedCategory}
             onCategoryChange={setSelectedCategory}
+            totalItems={contents.length}
           />
         </div>
 

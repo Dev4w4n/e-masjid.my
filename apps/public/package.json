@@ -2,7 +2,7 @@
   "name": "@masjid-suite/public",
   "version": "0.1.0",
   "private": true,
-  "description": "Public SEO-friendly content display app for E-Masjid.My",
+  "description": "Public SEO-friendly content display app for Iklan E-Masjid",
   "scripts": {
     "dev": "next dev -p 3002",
     "build": "next build",
