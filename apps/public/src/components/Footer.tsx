@@ -7,9 +7,9 @@ export default function Footer() {
           <div>
             <h3 className="footer-section-title">Tentang Kami</h3>
             <p className="text-sm leading-relaxed">
-              Iklan E-Masjid adalah platform digital untuk menghubungkan komuniti
-              masjid dengan perniagaan dan perkhidmatan halal di seluruh
-              Malaysia.
+              Iklan E-Masjid adalah platform digital untuk menghubungkan
+              komuniti masjid dengan perniagaan dan perkhidmatan halal di
+              seluruh Malaysia.
             </p>
           </div>
 
