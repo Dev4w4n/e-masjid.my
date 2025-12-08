@@ -11,17 +11,15 @@ const __dirname = dirname(__filename);
 console.log('=== Hub App Environment Variables Validation ===\n');
 
 // Check if .env.local exists and has required variables
-const envPath = resolve(__dirname, '../../../.env.local');
+const envPath = resolve(__dirname, '../.env.local');
 try {
   const envContent = readFileSync(envPath, 'utf8');
   console.log('✅ .env.local file found');
   
   // Check for required variables
   const requiredVars = [
-    'VITE_SUPABASE_URL',
-    'VITE_SUPABASE_ANON_KEY',
-    'SUPABASE_URL',
-    'SUPABASE_ANON_KEY'
+    'NEXT_PUBLIC_SUPABASE_URL',
+    'NEXT_PUBLIC_SUPABASE_ANON_KEY'
   ];
   
   const foundVars = [];

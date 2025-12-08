@@ -35,13 +35,16 @@ beforeAll(() => {
 
 // Utility function to check if backend is available
 export async function isBackendAvailable(
-  url: string = "http://localhost:54321",
+  url: string = "http://localhost:54321"
 ): Promise<boolean> {
   try {
     const response = await fetch(`${url}/rest/v1/`, {
       method: "HEAD",
       headers: {
-        apikey: process.env.SUPABASE_ANON_KEY || "test-key",
+        apikey:
+          process.env.SUPABASE_ANON_KEY ||
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+          "test-key",
       },
     });
     return response.status !== 404;
