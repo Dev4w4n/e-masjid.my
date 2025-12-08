@@ -8,7 +8,7 @@ import { describe, beforeAll, it } from "vitest";
  * Check if the backend API server is available
  */
 export async function isBackendAvailable(
-  url: string = "http://localhost:54321",
+  url: string = "http://localhost:54321"
 ): Promise<boolean> {
   try {
     // Try to make a simple request to check if the server is responding
@@ -24,7 +24,10 @@ export async function isBackendAvailable(
       const response = await fetch(`${url}/rest/v1/`, {
         method: "HEAD",
         headers: {
-          apikey: process.env.SUPABASE_ANON_KEY || "test-key",
+          apikey:
+            process.env.SUPABASE_ANON_KEY ||
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+            "test-key",
         },
         signal: AbortSignal.timeout(2000),
       });
@@ -41,7 +44,7 @@ export async function isBackendAvailable(
 export function describeWithBackend(
   name: string,
   fn: () => void,
-  apiUrl?: string,
+  apiUrl?: string
 ) {
   return describe(name, () => {
     let backendAvailable = false;
@@ -51,7 +54,7 @@ export function describeWithBackend(
       if (!backendAvailable) {
         console.warn(`Skipping "${name}": Backend server is not available.`);
         console.warn(
-          "To run contract tests, start the Supabase server with: npm run supabase:start",
+          "To run contract tests, start the Supabase server with: npm run supabase:start"
         );
       }
     });
@@ -69,7 +72,7 @@ export function describeWithBackend(
 export function itWithBackend(
   name: string,
   fn: () => Promise<void> | void,
-  apiUrl?: string,
+  apiUrl?: string
 ) {
   return it(name, async () => {
     const backendAvailable = await isBackendAvailable(apiUrl);

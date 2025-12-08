@@ -29,8 +29,9 @@ function getEnvironmentVariables() {
     try {
       // @ts-expect-error Vite provides import.meta.env at build time
       const env = import.meta.env as Record<string, string | undefined>;
-      SUPABASE_URL = env?.VITE_SUPABASE_URL;
-      SUPABASE_ANON_KEY = env?.VITE_SUPABASE_ANON_KEY;
+      SUPABASE_URL = env?.VITE_SUPABASE_URL || env?.NEXT_PUBLIC_SUPABASE_URL;
+      SUPABASE_ANON_KEY =
+        env?.VITE_SUPABASE_ANON_KEY || env?.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     } catch {
       // ignore; fall back to process.env below (useful in tests/node)
     }

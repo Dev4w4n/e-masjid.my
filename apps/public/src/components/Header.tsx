@@ -25,6 +25,7 @@ export default function Header() {
                 height={40}
                 className="rounded-lg transition-transform duration-200 group-hover:scale-105"
                 priority
+                unoptimized
               />
             </div>
             <span className="text-lg sm:text-xl font-bold logo-text whitespace-nowrap">
