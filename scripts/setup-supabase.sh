@@ -454,12 +454,10 @@ create_env_files() {
 # ===========================================
 # SUPABASE CONFIGURATION
 # ===========================================
-SUPABASE_URL=$API_URL
-SUPABASE_ANON_KEY=$ANON_KEY
-
-# Client-side variables (VITE_ prefix for client-side access)
-VITE_SUPABASE_URL=$API_URL
-VITE_SUPABASE_ANON_KEY=$ANON_KEY
+# Next.js client-side variables (NEXT_PUBLIC_ prefix for Next.js client-side access)
+# Also used by Vite (configured in vite.config.ts envPrefix)
+NEXT_PUBLIC_SUPABASE_URL=$API_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY
 
 # ===========================================
 # APPLICATION CONFIGURATION
@@ -502,9 +500,6 @@ EOL
 # ===========================================
 # SUPABASE CONFIGURATION
 # ===========================================
-SUPABASE_URL=$API_URL
-SUPABASE_ANON_KEY=$ANON_KEY
-
 # Next.js client-side variables (NEXT_PUBLIC_ prefix for Next.js client-side access)
 NEXT_PUBLIC_SUPABASE_URL=$API_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY

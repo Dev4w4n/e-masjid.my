@@ -7,6 +7,8 @@ export default defineConfig({
   plugins: [react()],
   // Load env files from the app directory for app-specific configuration
   envDir: resolve(__dirname, "./"),
+  // Allow NEXT_PUBLIC_ prefix for compatibility with Next.js apps in monorepo
+  envPrefix: ["VITE_", "NEXT_PUBLIC_"],
 
   // Development server configuration
   server: {
@@ -95,7 +97,7 @@ export default defineConfig({
 
   // Environment variables
   // Only expose VITE_ to client to avoid leaking server-only secrets
-  envPrefix: ["VITE_"],
+  // envPrefix: ["VITE_"],
 
   // Define global constants
   define: {
