@@ -216,6 +216,20 @@ export type DisplayResolution =
   | "1366x768"
   | "2560x1440";
 
+// Black screen schedule types
+export type BlackScreenScheduleType = "daily" | "weekly";
+export type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6; // 0 = Sunday, 6 = Saturday
+
+export interface BlackScreenSchedule {
+  enabled: boolean;
+  schedule_type: BlackScreenScheduleType;
+  start_time: string | null; // HH:MM format (24-hour)
+  end_time: string | null; // HH:MM format (24-hour)
+  days: DayOfWeek[]; // Days of week when schedule applies (for weekly type)
+  message?: string | null; // Optional message to display during black screen
+  show_clock: boolean; // Show current time during black screen
+}
+
 export interface DisplayConfig {
   id: string;
   masjid_id: string;
@@ -257,6 +271,15 @@ export interface DisplayConfig {
 
   // Debug and development
   show_debug_info: boolean; // Controls visibility of debugging views (Display Status, Display Info, Configuration Updated, Offline Mode)
+
+  // Black screen schedule
+  black_screen_enabled: boolean;
+  black_screen_schedule_type: BlackScreenScheduleType;
+  black_screen_start_time?: string | null; // HH:MM format (24-hour)
+  black_screen_end_time?: string | null; // HH:MM format (24-hour)
+  black_screen_days: DayOfWeek[]; // Days of week when schedule applies
+  black_screen_message?: string | null; // Optional message during black screen
+  black_screen_show_clock: boolean; // Show current time during black screen
 
   // Status
   is_active: boolean;

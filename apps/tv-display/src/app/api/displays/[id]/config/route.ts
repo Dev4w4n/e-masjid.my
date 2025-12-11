@@ -105,6 +105,15 @@ export async function GET(
       // Debug and development
       show_debug_info: (display as any).show_debug_info ?? false,
       
+      // Black screen schedule
+      black_screen_enabled: (display as any).black_screen_enabled ?? false,
+      black_screen_schedule_type: (display as any).black_screen_schedule_type || 'daily',
+      black_screen_start_time: (display as any).black_screen_start_time || null,
+      black_screen_end_time: (display as any).black_screen_end_time || null,
+      black_screen_days: (display as any).black_screen_days || [],
+      black_screen_message: (display as any).black_screen_message || null,
+      black_screen_show_clock: (display as any).black_screen_show_clock ?? true,
+      
       // Hardware settings
       is_touch_enabled: display.is_touch_enabled,
       
@@ -212,7 +221,15 @@ export async function PUT(
       'offline_cache_duration',
       'max_retry_attempts',
       'retry_backoff_multiplier',
-      'is_touch_enabled'
+      'is_touch_enabled',
+      // Black screen schedule fields
+      'black_screen_enabled',
+      'black_screen_schedule_type',
+      'black_screen_start_time',
+      'black_screen_end_time',
+      'black_screen_days',
+      'black_screen_message',
+      'black_screen_show_clock'
     ];
 
     const updateData: any = {};
@@ -311,6 +328,15 @@ export async function PUT(
       
       // Debug and development
       show_debug_info: (updatedDisplay as any).show_debug_info ?? false,
+
+      // Black screen schedule
+      black_screen_enabled: (updatedDisplay as any).black_screen_enabled ?? false,
+      black_screen_schedule_type: (updatedDisplay as any).black_screen_schedule_type || 'daily',
+      black_screen_start_time: (updatedDisplay as any).black_screen_start_time || null,
+      black_screen_end_time: (updatedDisplay as any).black_screen_end_time || null,
+      black_screen_days: (updatedDisplay as any).black_screen_days || [],
+      black_screen_message: (updatedDisplay as any).black_screen_message || null,
+      black_screen_show_clock: (updatedDisplay as any).black_screen_show_clock ?? true,
       
       is_touch_enabled: updatedDisplay.is_touch_enabled,
       

@@ -20,6 +20,7 @@ import PrayerTimesOverlay from '../../../components/PrayerTimesOverlay';
 import OfflineHandler, { useOffline, FallbackContent } from '../../../components/OfflineHandler';
 import DisplayStatus from '../../../components/DisplayStatus';
 import ClientOnly from '../../../components/ClientOnly';
+import BlackScreenOverlay, { BlackScreenConfig } from '../../../components/BlackScreenOverlay';
 
 interface DisplayPageState {
   config: DisplayConfig | null;
@@ -353,6 +354,21 @@ function DisplayPageContent() {
             </div>
           </div>
         )}
+      </ClientOnly>
+
+      {/* Black Screen Overlay - highest z-index to cover everything when active */}
+      <ClientOnly fallback={null}>
+        <BlackScreenOverlay
+          config={{
+            enabled: state.config.black_screen_enabled ?? false,
+            scheduleType: (state.config.black_screen_schedule_type as 'daily' | 'weekly') || 'daily',
+            startTime: state.config.black_screen_start_time || null,
+            endTime: state.config.black_screen_end_time || null,
+            days: (state.config.black_screen_days || []) as (0 | 1 | 2 | 3 | 4 | 5 | 6)[],
+            message: state.config.black_screen_message || null,
+            showClock: state.config.black_screen_show_clock ?? true,
+          }}
+        />
       </ClientOnly>
     </div>
   );
