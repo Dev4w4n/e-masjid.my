@@ -77,7 +77,38 @@ if (!finalUrl || !finalKey) {
 }
 
 /**
+ * Custom lock function that bypasses the browser's LockManager API.
+ *
+ * The default Supabase auth uses navigator.locks.request() which can hang
+ * indefinitely in certain scenarios:
+ * - When a tab crashes without releasing its lock
+ * - When there are stale locks from previous sessions
+ * - On certain browser/OS combinations with LockManager bugs
+ *
+ * By providing a no-op lock, we trade off cross-tab coordination for reliability.
+ * This means:
+ * - Multiple tabs may occasionally both try to refresh tokens simultaneously
+ * - Supabase handles this gracefully (last one wins)
+ * - The app will never hang due to lock acquisition timeout
+ *
+ * @experimental - Using the experimental lock option from Supabase auth-js
+ */
+const noopLock = async <R>(
+  _name: string,
+  _acquireTimeout: number,
+  fn: () => Promise<R>
+): Promise<R> => {
+  // Simply execute the function without any locking
+  // This prevents hanging but may cause minor race conditions across tabs
+  return fn();
+};
+
+/**
  * Typed Supabase client for the Masjid Suite application
+ *
+ * Note: We configure a custom lock function to prevent the app from hanging
+ * indefinitely when there are lock contention issues (e.g., multiple tabs,
+ * browser bugs, or stale locks from crashed tabs).
  */
 export const supabase: SupabaseClient<Database> = createClient<Database>(
   finalUrl,
@@ -87,6 +118,9 @@ export const supabase: SupabaseClient<Database> = createClient<Database>(
       autoRefreshToken: true,
       persistSession: true,
       detectSessionInUrl: true,
+      // Use our no-op lock to prevent hanging on getSession/refreshSession calls
+      // This is an @experimental option - may need updating in future Supabase versions
+      lock: noopLock,
     },
     realtime: {
       params: {
