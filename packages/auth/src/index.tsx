@@ -2,7 +2,7 @@ import React, {
   createContext,
   useContext,
   useEffect,
-  useRef,
+  useState,
   ReactNode,
 } from "react";
 import { useStore } from "zustand";
@@ -20,15 +20,11 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const store = useCreateAuthStore();
-  const initialized = useRef(false);
+  const [store] = useState(() => useCreateAuthStore());
 
   useEffect(() => {
-    if (!initialized.current) {
-      const unsubscribe = store.getState().initialize();
-      initialized.current = true;
-      return unsubscribe; // Clean up subscription on unmount
-    }
+    const unsubscribe = store.getState().initialize();
+    return unsubscribe; // Clean up subscription on unmount
   }, [store]);
 
   return <AuthContext.Provider value={store}>{children}</AuthContext.Provider>;

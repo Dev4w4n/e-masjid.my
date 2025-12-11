@@ -71,9 +71,15 @@ import {
   ContentSettingsDialog,
   ContentSettings,
 } from "../../components/ContentSettingsDialog";
+import { BlackScreenScheduler } from "../../components/BlackScreenScheduler";
 import { getContentForAdmin } from "../../services/contentService";
 import { updateDisplay } from "../../services/displayService";
-import { DisplayContent, Tables } from "@masjid-suite/shared-types";
+import {
+  DisplayContent,
+  Tables,
+  DayOfWeek,
+  BlackScreenScheduleType,
+} from "@masjid-suite/shared-types";
 import { useUser } from "@masjid-suite/auth";
 
 type TvDisplay = Tables<"tv_displays">;
@@ -1131,6 +1137,31 @@ const DisplayManagement = () => {
                       </Typography>
                     </CardContent>
                   </Card>
+                </Grid>
+
+                {/* Black Screen Schedule */}
+                <Grid item xs={12}>
+                  <BlackScreenScheduler
+                    enabled={displaySettings.black_screen_enabled || false}
+                    scheduleType={
+                      (displaySettings.black_screen_schedule_type ||
+                        "daily") as BlackScreenScheduleType
+                    }
+                    startTime={displaySettings.black_screen_start_time || null}
+                    endTime={displaySettings.black_screen_end_time || null}
+                    days={
+                      (displaySettings.black_screen_days || []) as DayOfWeek[]
+                    }
+                    message={displaySettings.black_screen_message || null}
+                    showClock={displaySettings.black_screen_show_clock ?? true}
+                    onChange={(settings) => {
+                      setDisplaySettings({
+                        ...displaySettings,
+                        ...settings,
+                      });
+                    }}
+                    language="ms"
+                  />
                 </Grid>
               </Grid>
             )}
