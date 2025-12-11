@@ -44,51 +44,104 @@ const initialState: AuthState = {
   error: null,
 };
 
+const AUTH_TIMEOUT_MS = 10000; // 10 second timeout for auth initialization
+const GET_SESSION_TIMEOUT_MS = 5000; // 5 second timeout for getSession call
+
+/**
+ * Wrapper for getSession with timeout to prevent hanging
+ */
+async function getSessionWithTimeout() {
+  const timeoutPromise = new Promise<{
+    data: { session: null };
+    error: Error;
+  }>((_, reject) => {
+    setTimeout(() => {
+      reject(new Error("getSession timed out after 5 seconds"));
+    }, GET_SESSION_TIMEOUT_MS);
+  });
+
+  try {
+    const result = await Promise.race([
+      supabase.auth.getSession(),
+      timeoutPromise,
+    ]);
+    return result;
+  } catch (error) {
+    return {
+      data: { session: null },
+      error: error as Error,
+    };
+  }
+}
+
 const authStoreCreator: StateCreator<AuthStore> = (set, get) => ({
   ...initialState,
 
   initialize: () => {
     const { _setUserAndProfile } = get();
-    let mounted = true;
+    let isActive = true;
 
-    // Safety timeout to prevent infinite loading state
+    // Timeout to prevent indefinite loading state (backup safety net)
     const timeoutId = setTimeout(() => {
-      if (mounted) {
-        const state = get();
-        if (state.status === "initializing") {
-          console.warn(
-            "Auth initialization timed out, forcing unauthenticated state"
-          );
-          set({ ...initialState, status: "unauthenticated" });
-        }
+      if (isActive && get().status === "initializing") {
+        console.warn(
+          "Auth initialization timed out. Clearing invalid session and forcing unauthenticated state."
+        );
+        // Clear potentially corrupted auth storage
+        supabase.auth.signOut().catch(() => {
+          // Ignore signout errors, we're forcing unauthenticated anyway
+        });
+        set({ ...initialState, status: "unauthenticated" });
       }
-    }, 5000);
+    }, AUTH_TIMEOUT_MS);
 
-    // Run once on client mount
-    supabase.auth
-      .getSession()
-      .then(async ({ data: { session } }) => {
-        if (!mounted) return;
+    // Run once on client mount - with timeout protection
+    getSessionWithTimeout()
+      .then(async ({ data: { session }, error }) => {
+        if (!isActive) return;
+
+        // Handle session retrieval errors (expired/invalid token or timeout)
+        if (error) {
+          console.error("Session retrieval error:", error);
+          // Clear the invalid session
+          await supabase.auth.signOut().catch(() => {});
+          set({ ...initialState, status: "unauthenticated" });
+          return;
+        }
+
         await _setUserAndProfile(session?.user ?? null, session);
       })
       .catch((error) => {
-        if (!mounted) return;
+        if (!isActive) return;
         console.error("Get session error:", error);
+        // Clear potentially corrupted auth storage
+        supabase.auth.signOut().catch(() => {});
         set({ ...initialState, status: "unauthenticated" });
-      })
-      .finally(() => {
-        clearTimeout(timeoutId);
       });
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (!mounted) return;
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!isActive) return;
+
+      // Handle token refresh failures
+      if (event === "TOKEN_REFRESHED" && !session) {
+        console.warn("Token refresh failed, signing out");
+        set({ ...initialState, status: "unauthenticated" });
+        return;
+      }
+
+      // Handle sign out events
+      if (event === "SIGNED_OUT") {
+        set({ ...initialState, status: "unauthenticated" });
+        return;
+      }
+
       await _setUserAndProfile(session?.user ?? null, session);
     });
 
     return () => {
-      mounted = false;
+      isActive = false;
       clearTimeout(timeoutId);
       subscription.unsubscribe();
     };
@@ -103,8 +156,26 @@ const authStoreCreator: StateCreator<AuthStore> = (set, get) => ({
           .eq("user_id", user.id)
           .single();
 
-        if (profileError && profileError.code !== "PGRST116") {
-          throw profileError;
+        // Handle auth-related errors (JWT expired, invalid token, etc.)
+        if (profileError) {
+          // PGRST116 = "not found" - this is OK, means no profile yet
+          if (profileError.code === "PGRST116") {
+            // No profile found, continue without error
+          } else if (
+            profileError.message?.includes("JWT") ||
+            profileError.message?.includes("token") ||
+            profileError.message?.includes("expired") ||
+            profileError.code === "PGRST301" || // JWT error
+            profileError.code === "401" ||
+            (profileError as any).status === 401
+          ) {
+            console.error("Auth token error, signing out:", profileError);
+            await supabase.auth.signOut().catch(() => {});
+            set({ ...initialState, status: "unauthenticated" });
+            return;
+          } else {
+            throw profileError;
+          }
         }
 
         const { data: userData, error: userError } = await supabase
@@ -113,7 +184,23 @@ const authStoreCreator: StateCreator<AuthStore> = (set, get) => ({
           .eq("id", user.id)
           .single();
 
-        if (userError) throw userError;
+        // Handle auth-related errors for user query too
+        if (userError) {
+          if (
+            userError.message?.includes("JWT") ||
+            userError.message?.includes("token") ||
+            userError.message?.includes("expired") ||
+            userError.code === "PGRST301" ||
+            userError.code === "401" ||
+            (userError as any).status === 401
+          ) {
+            console.error("Auth token error, signing out:", userError);
+            await supabase.auth.signOut().catch(() => {});
+            set({ ...initialState, status: "unauthenticated" });
+            return;
+          }
+          throw userError;
+        }
 
         const role = (userData?.role as UserRole) || "public";
         const email = userData?.email || "";
