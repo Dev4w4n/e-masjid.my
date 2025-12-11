@@ -74,6 +74,45 @@ async function getSessionWithTimeout() {
   }
 }
 
+/**
+ * Force clear auth storage without waiting for signOut
+ * This is a last resort when signOut might also be hanging
+ */
+function forceClearAuthStorage() {
+  if (typeof window === "undefined" || typeof localStorage === "undefined") {
+    return;
+  }
+  try {
+    const keys = Object.keys(localStorage);
+    for (const key of keys) {
+      if (key.includes("-auth-token") || key.includes("supabase.auth")) {
+        localStorage.removeItem(key);
+        console.log(`Cleared corrupted auth storage: ${key}`);
+      }
+    }
+  } catch (e) {
+    console.error("Failed to clear auth storage:", e);
+  }
+}
+
+/**
+ * Safe signOut with timeout - if signOut hangs, force clear storage
+ */
+async function safeSignOut() {
+  const signOutPromise = supabase.auth.signOut();
+  const timeoutPromise = new Promise<void>((resolve) => {
+    setTimeout(() => {
+      console.warn("signOut timed out, force clearing auth storage");
+      forceClearAuthStorage();
+      resolve();
+    }, 2000); // 2 second timeout for signOut
+  });
+
+  await Promise.race([signOutPromise, timeoutPromise]).catch(() => {
+    forceClearAuthStorage();
+  });
+}
+
 const authStoreCreator: StateCreator<AuthStore> = (set, get) => ({
   ...initialState,
 
@@ -87,10 +126,8 @@ const authStoreCreator: StateCreator<AuthStore> = (set, get) => ({
         console.warn(
           "Auth initialization timed out. Clearing invalid session and forcing unauthenticated state."
         );
-        // Clear potentially corrupted auth storage
-        supabase.auth.signOut().catch(() => {
-          // Ignore signout errors, we're forcing unauthenticated anyway
-        });
+        // Clear potentially corrupted auth storage (don't await)
+        safeSignOut();
         set({ ...initialState, status: "unauthenticated" });
       }
     }, AUTH_TIMEOUT_MS);
@@ -103,19 +140,19 @@ const authStoreCreator: StateCreator<AuthStore> = (set, get) => ({
         // Handle session retrieval errors (expired/invalid token or timeout)
         if (error) {
           console.error("Session retrieval error:", error);
-          // Clear the invalid session
-          await supabase.auth.signOut().catch(() => {});
+          // Clear the invalid session with safe timeout
+          await safeSignOut();
           set({ ...initialState, status: "unauthenticated" });
           return;
         }
 
         await _setUserAndProfile(session?.user ?? null, session);
       })
-      .catch((error) => {
+      .catch(async (error) => {
         if (!isActive) return;
         console.error("Get session error:", error);
         // Clear potentially corrupted auth storage
-        supabase.auth.signOut().catch(() => {});
+        await safeSignOut();
         set({ ...initialState, status: "unauthenticated" });
       });
 
