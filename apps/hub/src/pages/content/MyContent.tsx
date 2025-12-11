@@ -38,6 +38,7 @@ import {
   CalendarToday,
   CheckCircle,
   Cancel,
+  CloudUpload,
   Pending,
   FilterList,
   QrCode2,
@@ -80,12 +81,32 @@ interface EditDialogState {
   qr_code_enabled: boolean;
   qr_code_url: string;
   qr_code_position: "top-left" | "top-right" | "bottom-left" | "bottom-right";
+  newFile: File | null;
+  previewUrl: string | null;
 }
 
 interface DeleteDialogState {
   open: boolean;
   content: UserContent | null;
 }
+
+// Helper to extract storage path from public URL
+const getStoragePathFromUrl = (url: string) => {
+  try {
+    const urlObj = new URL(url);
+    const pathParts = urlObj.pathname.split("/");
+    // URL structure: /storage/v1/object/public/bucket-name/path/to/file
+    const publicIndex = pathParts.indexOf("public");
+    if (publicIndex !== -1 && pathParts.length > publicIndex + 2) {
+      // Skip 'public' and bucket name ('content-images')
+      return pathParts.slice(publicIndex + 2).join("/");
+    }
+    return null;
+  } catch (e) {
+    console.error("Error parsing URL:", e);
+    return null;
+  }
+};
 
 /**
  * My Content page - shows user's submitted content with management options
@@ -110,6 +131,8 @@ const MyContent: React.FC = () => {
     qr_code_enabled: true,
     qr_code_url: "",
     qr_code_position: "bottom-right",
+    newFile: null,
+    previewUrl: null,
   });
   const [deleteDialog, setDeleteDialog] = useState<DeleteDialogState>({
     open: false,
@@ -222,6 +245,8 @@ const MyContent: React.FC = () => {
       qr_code_enabled: contentItem.qr_code_enabled ?? true,
       qr_code_url: contentItem.qr_code_url || "",
       qr_code_position: contentItem.qr_code_position || "bottom-right",
+      newFile: null,
+      previewUrl: null,
     });
   };
 
@@ -230,6 +255,32 @@ const MyContent: React.FC = () => {
     if (!editDialog.content) return;
 
     try {
+      let contentUrl = editDialog.content.url;
+
+      // Handle file upload if new file selected
+      if (editDialog.newFile) {
+        const fileExt = editDialog.newFile.name.split(".").pop() || "jpg";
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const filePath = `content-images/${editDialog.content.masjid_id}/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("content-images")
+          .upload(filePath, editDialog.newFile, {
+            cacheControl: "3600",
+            upsert: false,
+          });
+
+        if (uploadError) {
+          throw new Error(`Failed to upload image: ${uploadError.message}`);
+        }
+
+        const {
+          data: { publicUrl },
+        } = supabase.storage.from("content-images").getPublicUrl(filePath);
+
+        contentUrl = publicUrl;
+      }
+
       const { error: updateError } = await supabase
         .from("display_content")
         .update({
@@ -241,11 +292,27 @@ const MyContent: React.FC = () => {
           qr_code_enabled: editDialog.qr_code_enabled,
           qr_code_url: editDialog.qr_code_url || null,
           qr_code_position: editDialog.qr_code_position,
+          url: contentUrl,
         })
         .eq("id", editDialog.content.id)
         .eq("submitted_by", user!.id);
 
       if (updateError) throw updateError;
+
+      // Delete old image if new one was uploaded
+      if (editDialog.newFile && editDialog.content.type === "image") {
+        const oldPath = getStoragePathFromUrl(editDialog.content.url);
+        if (oldPath) {
+          const { error: deleteError } = await supabase.storage
+            .from("content-images")
+            .remove([oldPath]);
+
+          if (deleteError) {
+            console.error("Failed to delete old image:", deleteError);
+            // Don't throw here, as the update was successful
+          }
+        }
+      }
 
       // Reload content to show updated data
       await loadUserContent();
@@ -262,6 +329,8 @@ const MyContent: React.FC = () => {
         qr_code_enabled: true,
         qr_code_url: "",
         qr_code_position: "bottom-right",
+        newFile: null,
+        previewUrl: null,
       });
     } catch (err: any) {
       console.error("Failed to update content:", err);
@@ -289,6 +358,21 @@ const MyContent: React.FC = () => {
         .eq("submitted_by", user!.id);
 
       if (deleteError) throw deleteError;
+
+      // Delete image from storage if it exists
+      if (deleteDialog.content.type === "image" && deleteDialog.content.url) {
+        const storagePath = getStoragePathFromUrl(deleteDialog.content.url);
+        if (storagePath) {
+          const { error: storageError } = await supabase.storage
+            .from("content-images")
+            .remove([storagePath]);
+
+          if (storageError) {
+            console.error("Failed to delete image from storage:", storageError);
+            // Continue as the record is already deleted
+          }
+        }
+      }
 
       // Remove from local state
       setContent((prev) =>
@@ -582,6 +666,81 @@ const MyContent: React.FC = () => {
           </Typography>
 
           <Stack spacing={3}>
+            {/* Image Replacement Section */}
+            {editDialog.content?.type === "image" && (
+              <Box>
+                <Typography variant="subtitle2" gutterBottom>
+                  Content Image
+                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 2,
+                    p: 2,
+                    border: "1px dashed",
+                    borderColor: "divider",
+                    borderRadius: 1,
+                    bgcolor: "background.default",
+                  }}
+                >
+                  {/* Preview Area */}
+                  <Box
+                    component="img"
+                    src={editDialog.previewUrl || editDialog.content.url}
+                    alt="Content Preview"
+                    sx={{
+                      maxWidth: "100%",
+                      maxHeight: 200,
+                      objectFit: "contain",
+                      borderRadius: 1,
+                    }}
+                  />
+
+                  {/* Upload Button */}
+                  <Button
+                    component="label"
+                    variant="outlined"
+                    startIcon={<CloudUpload />}
+                  >
+                    Replace Image
+                    <input
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          // Validate file size (10MB)
+                          if (file.size > 10 * 1024 * 1024) {
+                            alert("File size must be less than 10MB");
+                            return;
+                          }
+
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setEditDialog({
+                              ...editDialog,
+                              newFile: file,
+                              previewUrl: reader.result as string,
+                            });
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                    />
+                  </Button>
+
+                  {editDialog.newFile && (
+                    <Typography variant="caption" color="success.main">
+                      New image selected: {editDialog.newFile.name}
+                    </Typography>
+                  )}
+                </Box>
+              </Box>
+            )}
+
             <TextField
               fullWidth
               required
