@@ -49,25 +49,47 @@ const authStoreCreator: StateCreator<AuthStore> = (set, get) => ({
 
   initialize: () => {
     const { _setUserAndProfile } = get();
+    let mounted = true;
+
+    // Safety timeout to prevent infinite loading state
+    const timeoutId = setTimeout(() => {
+      if (mounted) {
+        const state = get();
+        if (state.status === "initializing") {
+          console.warn(
+            "Auth initialization timed out, forcing unauthenticated state"
+          );
+          set({ ...initialState, status: "unauthenticated" });
+        }
+      }
+    }, 5000);
 
     // Run once on client mount
     supabase.auth
       .getSession()
-      .then(({ data: { session } }) => {
-        _setUserAndProfile(session?.user ?? null, session);
+      .then(async ({ data: { session } }) => {
+        if (!mounted) return;
+        await _setUserAndProfile(session?.user ?? null, session);
       })
       .catch((error) => {
+        if (!mounted) return;
         console.error("Get session error:", error);
         set({ ...initialState, status: "unauthenticated" });
+      })
+      .finally(() => {
+        clearTimeout(timeoutId);
       });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!mounted) return;
       await _setUserAndProfile(session?.user ?? null, session);
     });
 
     return () => {
+      mounted = false;
+      clearTimeout(timeoutId);
       subscription.unsubscribe();
     };
   },
