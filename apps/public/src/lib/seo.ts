@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { ContentWithMasjid } from "@/services/contentService";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://openemasjid.my";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://e-masjid.my";
 const SITE_NAME = "Open E Masjid";
 const DEFAULT_OG_IMAGE = `${SITE_URL}/emasjid-500x500.png`;
 
