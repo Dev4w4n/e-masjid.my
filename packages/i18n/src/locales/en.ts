@@ -1,5 +1,5 @@
 /**
- * English translations for E-Masjid.My
+ * English translations for Open E Masjid
  */
 
 export const en = {
@@ -180,7 +180,7 @@ export const en = {
   },
 
   home: {
-    welcome: "Welcome to E-Masjid.My",
+    welcome: "Welcome to Open E Masjid",
     subtitle: "Modern masjid management platform for Malaysian communities",
     quick_stats: "Quick Stats",
     quick_actions: "Quick Actions",

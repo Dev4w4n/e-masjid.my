@@ -20,8 +20,8 @@ interface MasjidPageProps {
   params: Promise<{ id: string }>;
 }
 
-const SITE_NAME = "Iklan E-Masjid";
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://emasjid.my";
+const SITE_NAME = "Open E Masjid";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://e-masjid.my";
 
 // Generate metadata for SEO
 export async function generateMetadata({

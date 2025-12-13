@@ -1,7 +1,7 @@
 /**
  * @masjid-suite/i18n
  *
- * Internationalization package for E-Masjid.My
+ * Internationalization package for Open E Masjid
  * Provides translations for Bahasa Malaysia (primary) and English (fallback)
  */
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Build script for E-Masjid.My monorepo
+# Build script for Open E Masjid monorepo
 # This script ensures packages are built in the correct dependency order
 
 set -e
