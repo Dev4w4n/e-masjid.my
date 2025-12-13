@@ -6,8 +6,11 @@
   <img src="https://i.postimg.cc/gcSyK8d6/logo.png" alt="E-Masjid.My" width="80" height="80"/>
 </p>
 
-<h2 align="center"><b>E-Masjid.My</b></h2>
+<h2 align="center"><b>Open E Masjid</b></h2>
 <p align="center"><b>Sistem masjid berasaskan SaaS</b></p>
+<p>
+    <a href="https://e-masjid.my"><strong>Explore the Demo »</strong></a>
+</p>
 
 # Falsafah
 
