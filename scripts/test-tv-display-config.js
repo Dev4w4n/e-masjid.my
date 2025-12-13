@@ -137,7 +137,7 @@ function testConfigurationAvailability() {
 
 // Main test execution
 function runTests() {
-  console.log('🚀 E-Masjid.My TV Display URL Configuration Tests\n');
+  console.log('🚀 Open E Masjid TV Display URL Configuration Tests\n');
   
   const availabilityTest = testConfigurationAvailability();
   if (!availabilityTest) {

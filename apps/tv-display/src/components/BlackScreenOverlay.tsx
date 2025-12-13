@@ -228,7 +228,7 @@ export const BlackScreenOverlay: React.FC<BlackScreenOverlayProps> = ({
 
       {/* Subtle branding */}
       <div className="absolute bottom-4 right-4 text-gray-800 text-xs">
-        e-Masjid.My
+        Open E Masjid
       </div>
     </div>
   );

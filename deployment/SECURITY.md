@@ -1,6 +1,6 @@
-# 🛡️ Security Guide for E-Masjid.My Deployment
+# 🛡️ Security Guide for Open E Masjid Deployment
 
-This document outlines critical security practices for deploying E-Masjid.My safely in production environments.
+This document outlines critical security practices for deploying Open E Masjid safely in production environments.
 
 ## 🚨 Critical Security Rules
 

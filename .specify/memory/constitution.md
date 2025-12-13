@@ -14,7 +14,7 @@ Templates requiring updates:
 Follow-up TODOs: Update build documentation in all packages
 -->
 
-# E-Masjid.My Constitution
+# Open E Masjid Constitution
 
 ## Core Principles
 

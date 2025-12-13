@@ -546,7 +546,7 @@ NEXT_PUBLIC_HUB_URL=http://localhost:3000
 # ===========================================
 # SEO CONFIGURATION
 # ===========================================
-NEXT_PUBLIC_SITE_NAME=E-Masjid.My
+NEXT_PUBLIC_SITE_NAME=Open E Masjid
 NEXT_PUBLIC_SITE_DESCRIPTION=Platform digital untuk komuniti masjid di Malaysia
 
 # ===========================================

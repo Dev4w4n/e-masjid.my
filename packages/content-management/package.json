@@ -2,7 +2,7 @@
   "name": "@masjid-suite/content-management",
   "version": "1.0.0",
   "private": true,
-  "description": "Content management and approval system for E-Masjid.My",
+  "description": "Content management and approval system for Open E Masjid",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

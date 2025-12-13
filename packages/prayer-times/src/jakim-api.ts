@@ -337,7 +337,7 @@ export class JakimApiService {
         signal: controller.signal,
         headers: {
           Accept: "application/json",
-          "User-Agent": "E-Masjid.My/1.0",
+          "User-Agent": "Open-E-Masjid/1.0",
         },
       });
 

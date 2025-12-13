@@ -31,10 +31,10 @@ declare module "@mui/material/Typography" {
 }
 
 /**
- * E-Masjid.My color palette (from https://e-masjid.my/)
+ * Open E Masjid color palette
  */
 export const EMASJID_COLORS = {
-  // Primary blue (matches e-masjid.my)
+  // Primary blue
   blue: "#338CF5",
   // Teal/Cyan accent
   teal: "#4FD1C5",

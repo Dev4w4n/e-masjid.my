@@ -1,7 +1,7 @@
 /**
  * @masjid-suite/content-management
  *
- * Content management and approval system for E-Masjid.My
+ * Content management and approval system for Open E Masjid
  * Provides components, hooks, and services for managing display content
  */
 

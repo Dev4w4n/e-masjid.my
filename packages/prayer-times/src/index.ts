@@ -1,7 +1,7 @@
 /**
  * @masjid-suite/prayer-times
  *
- * Shared prayer times service and React hooks for E-Masjid.My applications
+ * Shared prayer times service and React hooks for Open E Masjid applications
  */
 
 // Core API service

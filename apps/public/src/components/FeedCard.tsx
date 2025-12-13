@@ -84,7 +84,7 @@ export default function FeedCard({ content, priority = false }: FeedCardProps) {
 
       {/* Post Content */}
       <Link href={`/iklan/${slug}`} className="block group">
-        {/* Media Content - E-Masjid.My style: Image first */}
+        {/* Media Content - Open E Masjid style: Image first */}
         {content.type === "image" && imageUrl ? (
           <div
             className="relative w-full bg-gray-100"
@@ -128,7 +128,7 @@ export default function FeedCard({ content, priority = false }: FeedCardProps) {
         </div>
       </Link>
 
-      {/* Post Footer - E-Masjid.My style action button */}
+      {/* Post Footer - Open E Masjid style action button */}
       <div className="px-4 pb-4">
         <Link
           href={`/iklan/${slug}`}

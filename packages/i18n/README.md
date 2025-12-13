@@ -1,6 +1,6 @@
 # @masjid-suite/i18n
 
-Internationalization package for E-Masjid.My, providing Bahasa Malaysia (primary) and English (fallback) translations.
+Internationalization package for Open E Masjid, providing Bahasa Malaysia (primary) and English (fallback) translations.
 
 ## Features
 

@@ -1,5 +1,5 @@
 /**
- * Bahasa Malaysia translations for E-Masjid.My
+ * Bahasa Malaysia translations for Open E Masjid
  *
  * Note: Prayer time names use standard Bahasa Malaysia Islamic terminology:
  * - Subuh (not Fajr)
@@ -190,7 +190,7 @@ export const ms: TranslationKeys = {
   },
 
   home: {
-    welcome: "Selamat Datang ke E-Masjid.My",
+    welcome: "Selamat Datang ke Open E Masjid",
     subtitle: "Platform pengurusan masjid moden untuk komuniti Malaysia",
     quick_stats: "Statistik Pantas",
     quick_actions: "Tindakan Pantas",
