@@ -23,7 +23,7 @@ export default function CategoryFilter({
 
   return (
     <div className="bg-white rounded shadow-sm p-4 border border-gray-200 mb-4 -mx-4 sm:mx-0">
-      {/* Horizontal Scrollable Filters - E-Masjid.My style */}
+      {/* Horizontal Scrollable Filters - Open E Masjid style */}
       <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 px-4 sm:px-0 -mx-4 sm:mx-0">
         {/* All Categories Pill */}
         <button

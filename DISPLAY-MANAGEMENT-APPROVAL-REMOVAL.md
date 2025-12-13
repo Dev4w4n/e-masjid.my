@@ -140,7 +140,7 @@ The following files were cleaned in earlier phases of the simplification:
 
 ✅ **Project Simplification Complete**
 
-All approval workflows have been removed from the E-Masjid.My platform:
+All approval workflows have been removed from the Open E Masjid platform:
 
 - User registration approval → Removed
 - Content approval → Removed

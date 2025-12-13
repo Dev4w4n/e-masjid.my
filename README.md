@@ -3,10 +3,10 @@
 ![Github last-commit](https://img.shields.io/github/last-commit/Dev4w4n/e-masjid.my)
 
 <p align="center">
-  <img src="https://i.postimg.cc/gcSyK8d6/logo.png" alt="E-Masjid.My" width="80" height="80"/>
+  <img src="https://i.postimg.cc/gcSyK8d6/logo.png" alt="Open E Masjid" width="80" height="80"/>
 </p>
 
-<h2 align="center"><b>E-Masjid.My</b></h2>
+<h2 align="center"><b>Open E Masjid</b></h2>
 <p align="center"><b>Sistem masjid berasaskan SaaS</b></p>
 
 # Falsafah

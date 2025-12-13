@@ -40,7 +40,7 @@ export default function ContentGrid({
 
   return (
     <div className="flex justify-center w-full">
-      {/* Main Feed Container - E-Masjid.My style grid */}
+      {/* Main Feed Container - Open E Masjid style grid */}
       <div className="w-full max-w-6xl px-0">
         {/* Category Filter */}
         <div className="mb-8 w-full">

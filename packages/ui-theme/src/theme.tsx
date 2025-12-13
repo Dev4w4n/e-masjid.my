@@ -40,10 +40,10 @@ declare module "@mui/material/Typography" {
 }
 
 /**
- * E-Masjid.My color palette (from https://e-masjid.my/)
+ * Open E Masjid color palette
  */
 export const EMASJID_COLORS = {
-  // Primary blue (matches e-masjid.my)
+  // Primary blue
   blue: "#338CF5",
   // Teal/Cyan accent
   teal: "#4FD1C5",
@@ -189,7 +189,7 @@ export function createMasjidTheme(
       ].join(","),
       h1: {
         fontWeight: 800,
-        fontSize: "3.25rem", // 52px like e-masjid.my
+        fontSize: "3.25rem", // 52px
         lineHeight: 1.125,
         letterSpacing: "-0.02em",
       },
@@ -264,7 +264,7 @@ export function createMasjidTheme(
     },
     spacing: 8, // 8px base spacing (0.5rem)
     shape: {
-      borderRadius: 4, // 0.25rem like e-masjid.my
+      borderRadius: 4, // 0.25rem
     },
   });
 
@@ -311,7 +311,7 @@ export function createMasjidTheme(
       MuiCard: {
         styleOverrides: {
           root: {
-            borderRadius: 4, // 0.25rem like e-masjid.my
+            borderRadius: 4, // 0.25rem
             boxShadow:
               mode === "light"
                 ? "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)"
@@ -329,7 +329,7 @@ export function createMasjidTheme(
       MuiButton: {
         styleOverrides: {
           root: {
-            borderRadius: 4, // 0.25rem like e-masjid.my
+            borderRadius: 4, // 0.25rem
             textTransform: "none",
             fontWeight: 500,
             padding: "12px 32px", // 0.75rem 2rem

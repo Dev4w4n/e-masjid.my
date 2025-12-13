@@ -2,7 +2,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'E-Masjid TV Display',
+  title: 'Open E Masjid TV Display',
   description: 'Digital signage system for Malaysian mosques',
   keywords: 'mosque, masjid, digital signage, TV display, prayer times, sponsorship',
   robots: 'noindex, nofollow', // Prevent search engine indexing for TV displays

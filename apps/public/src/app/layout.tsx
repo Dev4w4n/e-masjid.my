@@ -32,7 +32,7 @@ export default function RootLayout({
 }) {
   // Generate Organization structured data
   const organizationData = generateStructuredData("Organization", {
-    name: "Iklan E-Masjid",
+    name: "Open E Masjid",
     description: "Platform digital untuk komuniti masjid di Malaysia",
     url: process.env.NEXT_PUBLIC_BASE_URL || "https://tv.masjid",
   });

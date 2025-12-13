@@ -35,7 +35,7 @@ export default async function HomePage() {
       />
 
       <div className="w-full max-w-full overflow-x-hidden">
-        {/* E-Masjid.My style Header */}
+        {/* Open E Masjid style Header */}
         <div className="text-center mb-10 px-4">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 text-gray-900">
             Iklan & Perkhidmatan Komuniti Masjid

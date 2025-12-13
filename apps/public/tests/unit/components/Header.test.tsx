@@ -8,10 +8,10 @@ describe("Header Component", () => {
     process.env.NEXT_PUBLIC_HUB_URL = "http://localhost:3000";
   });
 
-  it("should render E-Masjid.My branding", () => {
+  it("should render Open E Masjid branding", () => {
     render(<Header />);
 
-    const branding = screen.getByText(/E-Masjid\.My/i);
+    const branding = screen.getByText(/Open E Masjid/i);
     expect(branding).toBeInTheDocument();
   });
 

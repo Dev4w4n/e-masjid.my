@@ -71,8 +71,8 @@ describe("SEO Service Contract Tests", () => {
   describe("generateStructuredData()", () => {
     it("should return valid JSON-LD string", () => {
       const jsonLd = generateStructuredData("Organization", {
-        name: "E-Masjid.My",
-        url: "https://emasjid.my",
+        name: "Open E Masjid",
+        url: "https://openemasjid.my",
       });
 
       expect(typeof jsonLd).toBe("string");
@@ -84,8 +84,8 @@ describe("SEO Service Contract Tests", () => {
 
     it("should include @context in Organization schema", () => {
       const jsonLd = generateStructuredData("Organization", {
-        name: "E-Masjid.My",
-        url: "https://emasjid.my",
+        name: "Open E Masjid",
+        url: "https://openemasjid.my",
       });
 
       const parsed = JSON.parse(jsonLd);
@@ -95,15 +95,15 @@ describe("SEO Service Contract Tests", () => {
 
     it("should include required fields in Organization schema", () => {
       const jsonLd = generateStructuredData("Organization", {
-        name: "E-Masjid.My",
-        url: "https://emasjid.my",
-        logo: "https://emasjid.my/logo.png",
+        name: "Open E Masjid",
+        url: "https://openemasjid.my",
+        logo: "https://openemasjid.my/logo.png",
       });
 
       const parsed = JSON.parse(jsonLd);
-      expect(parsed.name).toBe("E-Masjid.My");
-      expect(parsed.url).toBe("https://emasjid.my");
-      expect(parsed.logo).toBe("https://emasjid.my/logo.png");
+      expect(parsed.name).toBe("Open E Masjid");
+      expect(parsed.url).toBe("https://openemasjid.my");
+      expect(parsed.logo).toBe("https://openemasjid.my/logo.png");
     });
 
     it("should include position field in ItemList schema", () => {
@@ -140,9 +140,9 @@ describe("SEO Service Contract Tests", () => {
 
     it("should use absolute URLs", () => {
       const jsonLd = generateStructuredData("Organization", {
-        name: "E-Masjid.My",
-        url: "https://emasjid.my",
-        logo: "https://emasjid.my/logo.png",
+        name: "Open E Masjid",
+        url: "https://openemasjid.my",
+        logo: "https://openemasjid.my/logo.png",
       });
 
       const parsed = JSON.parse(jsonLd);

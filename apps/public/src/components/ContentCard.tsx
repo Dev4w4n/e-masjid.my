@@ -31,7 +31,7 @@ export default function ContentCard({
 
   return (
     <article className="bg-white rounded shadow-sm hover:shadow transition-shadow duration-200 overflow-hidden border border-gray-200 flex flex-col h-full">
-      {/* Image - E-Masjid.My style */}
+      {/* Image - Open E Masjid style */}
       <div className="relative h-48 bg-gray-100">
         {content.type === "image" && imageUrl ? (
           <Image
@@ -103,7 +103,7 @@ export default function ContentCard({
         </div>
       </div>
 
-      {/* Action Button - E-Masjid.My style */}
+      {/* Action Button - Open E Masjid style */}
       <div className="px-4 pb-4">
         <Link
           href={`/iklan/${slug}`}

@@ -6,14 +6,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // E-Masjid.My primary colors
+        // Open E Masjid primary colors
         'primary': {
           50: '#e6f4ff',
           100: '#bae0ff',
           200: '#91ccff',
           300: '#6bb8ff',
           400: '#5aa8f7',
-          500: '#338CF5', // Main primary blue from e-masjid.my
+          500: '#338CF5', // Main primary blue
           600: '#2b7acc',
           700: '#0070F4', // Button blue
           800: '#154179',
@@ -26,7 +26,7 @@ module.exports = {
           200: '#80eed7',
           300: '#6eecce',
           400: '#5de3c3',
-          500: '#4FD1C5', // Main teal from e-masjid.my
+          500: '#4FD1C5', // Main teal
           600: '#3bb8ad',
           700: '#2ba68e',
           800: '#1d7a6f',
@@ -85,7 +85,7 @@ module.exports = {
         '128': '32rem',
       },
       borderRadius: {
-        'islamic': '0.25rem', // 4px like e-masjid.my
+        'islamic': '0.25rem', // 4px
       },
       boxShadow: {
         'sm': '0 1px 3px 0 rgb(0 0 0 / 0.1)',

@@ -1,6 +1,6 @@
-# E-Masjid.My Deployment Guide
+# Open E Masjid Deployment Guide
 
-This guide covers deploying E-Masjid.My to production and staging environments using Cloudflare Pages and Supabase.
+This guide covers deploying Open E Masjid to production and staging environments using Cloudflare Pages and Supabase.
 
 ## 🏗️ Architecture Overview
 

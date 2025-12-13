@@ -188,7 +188,7 @@ function Layout() {
         <Box
           component="img"
           src="/emasjid-500x500.png"
-          alt="E-Masjid.My Logo"
+          alt="Open E Masjid Logo"
           sx={{
             width: 40,
             height: 40,
@@ -203,7 +203,7 @@ function Layout() {
             component="div"
             sx={{ fontWeight: "bold", color: "text.primary" }}
           >
-            E-Masjid.My
+            Open E Masjid
           </Typography>
         )}
       </Toolbar>

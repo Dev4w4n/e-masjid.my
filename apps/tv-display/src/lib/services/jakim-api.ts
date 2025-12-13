@@ -295,7 +295,7 @@ export class JakimApiService {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
-          'User-Agent': 'e-masjid.my/1.0'
+          'User-Agent': 'Open-E-Masjid/1.0'
         },
         signal: controller.signal
       });
