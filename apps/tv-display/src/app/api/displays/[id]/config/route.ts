@@ -150,7 +150,9 @@ export async function GET(
 
     return NextResponse.json(response, {
       headers: {
-        'Cache-Control': 'private, max-age=300', // 5 minutes cache
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
         'X-Display-Status': display.is_active ? 'active' : 'inactive',
         'X-Last-Heartbeat': display.last_heartbeat || 'never',
       }
