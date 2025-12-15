@@ -65,7 +65,10 @@ export function ContentCarousel({
     try {
       setState(prev => ({ ...prev, isLoading: true, error: null }));
       
-      const response = await fetch(`/api/displays/${displayId}/content?status=active&limit=${config.maxContentItems}`);
+      // Add cache-busting timestamp to ensure fresh data
+      const response = await fetch(`/api/displays/${displayId}/content?status=active&limit=${config.maxContentItems}&t=${Date.now()}`, {
+        cache: 'no-store'
+      });
       
       if (!response.ok) {
         throw new Error(`Failed to fetch content: ${response.statusText}`);

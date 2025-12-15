@@ -246,8 +246,9 @@ export async function GET(
 
     return NextResponse.json(response, {
       headers: {
-        'Cache-Control': filters.status?.includes('pending') ? 
-          'no-cache' : `public, max-age=${Math.min(display.carousel_interval, 300)}`,
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
         'X-Total-Count': (count || 0).toString(),
         'X-Current-Page': page.toString(),
         'X-Total-Pages': totalPages.toString(),
