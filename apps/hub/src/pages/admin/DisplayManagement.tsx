@@ -37,6 +37,8 @@ import {
   DragIndicator,
   Settings,
   Animation,
+  Refresh,
+  CachedOutlined,
 } from "@mui/icons-material";
 import {
   DndContext,
@@ -74,6 +76,11 @@ import {
 import { BlackScreenScheduler } from "../../components/BlackScreenScheduler";
 import { getContentForAdmin } from "../../services/contentService";
 import { updateDisplay } from "../../services/displayService";
+import {
+  forceReloadDisplay,
+  softReloadDisplay,
+  clearDisplayCache,
+} from "../../services/displayCommandService";
 import {
   DisplayContent,
   Tables,
@@ -696,6 +703,106 @@ const DisplayManagement = () => {
             </Button>
           </Grid>
         </Grid>
+
+        {/* Display Remote Control */}
+        {selectedDisplayId && (
+          <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: "divider" }}>
+            <Typography
+              variant="subtitle2"
+              color="text.secondary"
+              sx={{ mb: 1 }}
+            >
+              Remote Control
+            </Typography>
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Tooltip title="Force the TV display to perform a full page refresh">
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<Refresh />}
+                  onClick={async () => {
+                    try {
+                      const success =
+                        await forceReloadDisplay(selectedDisplayId);
+                      if (success) {
+                        enqueueSnackbar("Hard reload command sent to display", {
+                          variant: "success",
+                        });
+                      } else {
+                        enqueueSnackbar("Failed to send reload command", {
+                          variant: "warning",
+                        });
+                      }
+                    } catch (error: any) {
+                      enqueueSnackbar(`Error: ${error.message}`, {
+                        variant: "error",
+                      });
+                    }
+                  }}
+                >
+                  Hard Reload
+                </Button>
+              </Tooltip>
+              <Tooltip title="Refresh content without full page reload">
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<Refresh />}
+                  onClick={async () => {
+                    try {
+                      const success =
+                        await softReloadDisplay(selectedDisplayId);
+                      if (success) {
+                        enqueueSnackbar("Soft reload command sent to display", {
+                          variant: "success",
+                        });
+                      } else {
+                        enqueueSnackbar("Failed to send reload command", {
+                          variant: "warning",
+                        });
+                      }
+                    } catch (error: any) {
+                      enqueueSnackbar(`Error: ${error.message}`, {
+                        variant: "error",
+                      });
+                    }
+                  }}
+                >
+                  Soft Reload
+                </Button>
+              </Tooltip>
+              <Tooltip title="Clear cached data on the TV display">
+                <Button
+                  variant="outlined"
+                  size="small"
+                  color="warning"
+                  startIcon={<CachedOutlined />}
+                  onClick={async () => {
+                    try {
+                      const success =
+                        await clearDisplayCache(selectedDisplayId);
+                      if (success) {
+                        enqueueSnackbar("Clear cache command sent to display", {
+                          variant: "success",
+                        });
+                      } else {
+                        enqueueSnackbar("Failed to send clear cache command", {
+                          variant: "warning",
+                        });
+                      }
+                    } catch (error: any) {
+                      enqueueSnackbar(`Error: ${error.message}`, {
+                        variant: "error",
+                      });
+                    }
+                  }}
+                >
+                  Clear Cache
+                </Button>
+              </Tooltip>
+            </Box>
+          </Box>
+        )}
       </Paper>
 
       {selectedMasjidId && displays.length === 0 && (

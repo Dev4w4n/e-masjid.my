@@ -64,7 +64,9 @@ function DisplayPageContent() {
       // Load display configuration
       if (offlineState.networkStatus.isOnline) {
         promises.push(
-          fetch(`/api/displays/${displayId}/config`)
+          fetch(`/api/displays/${displayId}/config?t=${Date.now()}`, {
+            cache: 'no-store'
+          })
             .then(res => res.json())
             .then(data => {
               const config = data.data;
@@ -122,9 +124,9 @@ function DisplayPageContent() {
 
       const results = await Promise.allSettled(promises);
       
-      let newConfig = state.config;
-      let newPrayerTimes = state.prayerTimes;
-      let newPrayerTimeConfig = state.prayerTimeConfig;
+      let newConfig: DisplayConfig | null = null;
+      let newPrayerTimes: PrayerTimes | null = null;
+      let newPrayerTimeConfig: any | null = null;
 
       results.forEach(result => {
         if (result.status === 'fulfilled') {
@@ -141,9 +143,9 @@ function DisplayPageContent() {
 
       setState(prev => ({
         ...prev,
-        config: newConfig,
-        prayerTimes: newPrayerTimes,
-        prayerTimeConfig: newPrayerTimeConfig,
+        config: newConfig || prev.config,
+        prayerTimes: newPrayerTimes || prev.prayerTimes,
+        prayerTimeConfig: newPrayerTimeConfig || prev.prayerTimeConfig,
         isLoading: false,
         error: null,
         lastConfigUpdate: new Date()
@@ -157,7 +159,7 @@ function DisplayPageContent() {
         isLoading: false
       }));
     }
-  }, [displayId, offlineState.networkStatus.isOnline, offlineActions, state.config, state.prayerTimes, state.prayerTimeConfig]);
+  }, [displayId, offlineState.networkStatus.isOnline, offlineActions]);
 
   // Real-time subscriptions for immediate updates
   useEffect(() => {
@@ -186,17 +188,53 @@ function DisplayPageContent() {
           loadDisplayData(true); // Silent refresh
         }
       );
+
+      // Subscribe to display commands (hard_reload, soft_reload, clear_cache)
+      const unsubscribeCommands = supabaseService.subscribeToDisplayCommands(
+        displayId,
+        (command, payload) => {
+          console.log('[DisplayPage] Received command:', command, payload);
+          
+          switch (command) {
+            case 'hard_reload':
+              console.log('[DisplayPage] Executing hard reload...');
+              // Clear all caches before reloading
+              supabaseService.clearAllCaches();
+              offlineActions.setCachedData('config', null);
+              offlineActions.setCachedData('prayerTimes', null);
+              offlineActions.setCachedData('prayerTimeConfig', null);
+              // Force a hard reload with cache bypass
+              window.location.reload();
+              break;
+            case 'soft_reload':
+              console.log('[DisplayPage] Executing soft reload...');
+              loadDisplayData(true);
+              break;
+            case 'clear_cache':
+              console.log('[DisplayPage] Clearing cache...');
+              supabaseService.clearAllCaches();
+              offlineActions.setCachedData('config', null);
+              offlineActions.setCachedData('prayerTimes', null);
+              offlineActions.setCachedData('prayerTimeConfig', null);
+              loadDisplayData(false); // Full reload after cache clear
+              break;
+            default:
+              console.warn('[DisplayPage] Unknown command:', command);
+          }
+        }
+      );
       
       // Cleanup subscriptions on unmount
       return () => {
         console.log('[DisplayPage] Cleaning up real-time subscriptions');
         unsubscribeDisplay();
         unsubscribeContent();
+        unsubscribeCommands();
       };
     }).catch(error => {
       console.error('[DisplayPage] Failed to setup real-time subscriptions:', error);
     });
-  }, [displayId, loadDisplayData]);
+  }, [displayId, loadDisplayData, offlineActions]);
 
   // Auto-refresh configuration periodically as fallback
   useEffect(() => {
@@ -303,6 +341,7 @@ function DisplayPageContent() {
       {/* Prayer times overlay */}
       {state.prayerTimes && state.prayerTimeConfig && state.config.prayer_time_position !== 'hidden' && (
         <PrayerTimesOverlay
+          key={`prayer-times-${state.config.prayer_time_position}-${state.config.prayer_time_layout}-${state.config.prayer_time_font_size}`}
           prayerTimes={state.prayerTimes}
           config={state.prayerTimeConfig}
           position={state.config.prayer_time_position}

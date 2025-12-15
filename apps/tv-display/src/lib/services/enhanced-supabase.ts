@@ -732,6 +732,55 @@ export class EnhancedSupabaseService {
     this.subscriptions.clear();
     console.log('[EnhancedSupabase] All subscriptions cleaned up');
   }
+
+  /**
+   * Get the Supabase client instance for direct access
+   * Used for broadcast channels and other direct client operations
+   */
+  getClient(): SupabaseClient<Database> {
+    return this.client;
+  }
+
+  /**
+   * Subscribe to display commands via Supabase Broadcast
+   * Used for receiving remote commands like hard_reload, soft_reload, clear_cache
+   */
+  subscribeToDisplayCommands(
+    displayId: string,
+    callback: (command: string, payload: any) => void
+  ): () => void {
+    const subscriptionKey = `commands_${displayId}`;
+    
+    // Remove existing subscription if any
+    const existingUnsub = this.subscriptions.get(subscriptionKey);
+    if (existingUnsub) {
+      existingUnsub();
+    }
+
+    console.log(`[EnhancedSupabase] Setting up command channel for display ${displayId}`);
+
+    const channel = this.client
+      .channel(`display-commands-${displayId}`)
+      .on('broadcast', { event: 'command' }, (payload) => {
+        console.log(`[EnhancedSupabase] Received command for display ${displayId}:`, payload);
+        const command = payload.payload?.command as string;
+        if (command) {
+          callback(command, payload.payload);
+        }
+      })
+      .subscribe((status) => {
+        console.log(`[EnhancedSupabase] Command channel status for ${displayId}:`, status);
+      });
+
+    const unsubscribe = () => {
+      this.client.removeChannel(channel);
+      this.subscriptions.delete(subscriptionKey);
+      console.log(`[EnhancedSupabase] Command channel unsubscribed for ${displayId}`);
+    };
+
+    this.subscriptions.set(subscriptionKey, unsubscribe);
+    return unsubscribe;
+  }
 }
 
 // Create and export singleton instance
