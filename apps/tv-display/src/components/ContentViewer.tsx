@@ -168,6 +168,7 @@ export function ContentViewer({
           className="w-full h-full"
           frameBorder="0"
           allow="autoplay; encrypted-media"
+          sandbox="allow-scripts allow-same-origin allow-presentation"
           allowFullScreen
           onLoad={handleLoadComplete}
           onError={() => {
