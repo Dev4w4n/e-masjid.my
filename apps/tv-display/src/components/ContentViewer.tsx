@@ -163,12 +163,22 @@ export function ContentViewer({
           </div>
         )}
         <iframe
-          src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&enablejsapi=1`}
+          // Use nocookie to prevent tracking/ads from trying to access user data
+          src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&enablejsapi=1`}
           title={content.title}
           className="w-full h-full"
           frameBorder="0"
-          allow="autoplay; encrypted-media"
-          sandbox="allow-scripts allow-same-origin allow-presentation"
+          
+          // 1. Explicitly define what is allowed. 
+          // Notice 'camera' and 'microphone' are MISSING, so they are blocked.
+          allow="autoplay; encrypted-media; fullscreen; accelerometer; gyroscope"
+          
+          // 2. SANDBOX UPDATE:
+          // Removed 'allow-same-origin'.
+          // 'allow-scripts' is needed for the player to work.
+          // 'allow-presentation' is needed for fullscreen/casting features.
+          sandbox="allow-scripts allow-presentation"
+          
           allowFullScreen
           onLoad={handleLoadComplete}
           onError={() => {
