@@ -174,12 +174,11 @@ export function ContentViewer({
           allow="autoplay; encrypted-media; fullscreen; accelerometer; gyroscope"
           
           // 2. SANDBOX UPDATE:
-          // Removed 'allow-same-origin'.
           // 'allow-scripts' is needed for the player to work.
+          // 'allow-same-origin' is needed for YouTube player to access local storage/cache.
           // 'allow-presentation' is needed for fullscreen/casting features.
-          sandbox="allow-scripts allow-presentation"
+          sandbox="allow-scripts allow-same-origin allow-presentation"
           
-          allowFullScreen
           onLoad={handleLoadComplete}
           onError={() => {
             setState(prev => ({ ...prev, videoError: true }));
