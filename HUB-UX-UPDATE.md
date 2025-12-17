@@ -3,6 +3,7 @@
 ## Changes Made
 
 ### 1. **Layout Simplification**
+
 - ✅ Created new `LayoutSimple.tsx` component
 - ✅ Removed sidebar navigation (matching e-masjid.my public site)
 - ✅ Implemented clean top navigation bar with:
@@ -12,6 +13,7 @@
   - Mobile responsive hamburger menu
 
 ### 2. **Updated Theme**
+
 - ✅ Updated color palette to match modern design:
   - Primary blue: `#2563EB` (Tailwind blue-600)
   - Secondary teal: `#0D9488` (Tailwind teal-600)
@@ -21,6 +23,7 @@
 - ✅ Enhanced button gradients and hover effects
 
 ### 3. **Bento Grid Component**
+
 - ✅ Created reusable `BentoGrid.tsx` component
 - ✅ Supports responsive grid layout
 - ✅ Items can span multiple columns/rows
@@ -28,6 +31,7 @@
 - ✅ Color-coded cards (primary, secondary, info, etc.)
 
 ### 4. **Home Page Updates**
+
 - ✅ Removed chatbot references (as requested)
 - ✅ Clean, centered welcome section with gradient text
 - ✅ Card-based quick actions grid:
@@ -41,6 +45,7 @@
 - ✅ Better spacing and typography
 
 ### 5. **Footer Component**
+
 - ✅ Created comprehensive footer with:
   - Brand description
   - Social media links (GitHub, Facebook, Email)
@@ -51,11 +56,13 @@
 ## File Changes
 
 ### New Files:
+
 - `apps/hub/src/components/LayoutSimple.tsx` - Clean top navigation layout
 - `apps/hub/src/components/BentoGrid.tsx` - Reusable grid component
 - `apps/hub/src/components/Footer.tsx` - Footer with links and branding
 
 ### Modified Files:
+
 - `apps/hub/src/ui/theme/theme.tsx` - Updated colors, fonts, and spacing
 - `apps/hub/src/pages/Home.tsx` - Redesigned dashboard with better UX
 - `apps/hub/src/App.tsx` - Now uses LayoutSimple instead of Layout
@@ -63,6 +70,7 @@
 ## Design References
 
 Styling inspired by https://e-masjid.my:
+
 - ✅ Clean, modern top navigation (no sidebar)
 - ✅ Inter font family
 - ✅ Modern color palette
