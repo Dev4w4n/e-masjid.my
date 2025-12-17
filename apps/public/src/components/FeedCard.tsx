@@ -46,7 +46,7 @@ export default function FeedCard({ content, priority = false }: FeedCardProps) {
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-3 min-w-0 flex-1">
             {/* Masjid Avatar */}
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-lg flex-shrink-0">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-teal-400 flex items-center justify-center text-white text-lg flex-shrink-0">
               🕌
             </div>
 
@@ -56,7 +56,7 @@ export default function FeedCard({ content, priority = false }: FeedCardProps) {
                 href={`/masjid/${content.masjids.id}`}
                 className="hover:underline"
               >
-                <h3 className="font-semibold text-sm text-gray-900 truncate hover:text-primary-600 transition-colors">
+                <h3 className="font-semibold text-sm text-gray-900 truncate hover:text-blue-600 transition-colors">
                   {content.masjids.name}
                 </h3>
               </Link>
@@ -104,7 +104,7 @@ export default function FeedCard({ content, priority = false }: FeedCardProps) {
           </div>
         ) : content.type === "youtube_video" ? (
           <div
-            className="relative w-full bg-gradient-to-br from-primary-600 to-secondary-600 flex items-center justify-center"
+            className="relative w-full bg-gradient-to-br from-blue-600 to-teal-400 flex items-center justify-center"
             style={{ aspectRatio: "16/9" }}
           >
             <div className="text-center">
@@ -116,7 +116,7 @@ export default function FeedCard({ content, priority = false }: FeedCardProps) {
 
         {/* Text Content */}
         <div className="p-4">
-          <h2 className="font-bold text-lg text-gray-900 mb-2 group-hover:text-primary-600 transition-colors leading-snug">
+          <h2 className="font-bold text-lg text-gray-900 mb-2 group-hover:text-blue-600 transition-colors leading-snug">
             {content.title}
           </h2>
 
@@ -132,7 +132,7 @@ export default function FeedCard({ content, priority = false }: FeedCardProps) {
       <div className="px-4 pb-4">
         <Link
           href={`/iklan/${slug}`}
-          className="inline-flex items-center justify-center w-full px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded transition-colors duration-200"
+          className="inline-flex items-center justify-center w-full px-4 py-2.5 bg-primary hover:bg-blue-700 text-white text-sm font-semibold rounded-full transition-all duration-200 shadow-sm hover:shadow-md"
         >
           <span>Lihat Butiran</span>
           <svg

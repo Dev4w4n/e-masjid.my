@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
+import { Outlet, useNavigate, Link } from "react-router-dom";
 import {
   AppBar,
   Box,
@@ -20,7 +20,6 @@ import {
   Badge,
   Tooltip,
   useTheme,
-  useMediaQuery,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -44,34 +43,35 @@ import {
   usePermissions,
   UserRole,
 } from "@masjid-suite/auth";
-import { useTranslation } from "@masjid-suite/i18n";
 
-const drawerWidth = 240;
-
+// Navigation item type
 interface NavigationItem {
   text: string;
-  icon: React.ReactElement;
+  icon: React.ReactNode;
   path: string;
   roles?: UserRole[];
   badge?: number;
 }
+import { useTranslation } from "@masjid-suite/i18n";
+
+import { Footer } from "./Footer";
+
+const drawerWidth = 240;
 
 /**
- * Main layout component with responsive navigation
+ * Main layout component with simple header navigation
  */
 function Layout() {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
-  const location = useLocation();
   const user = useUser();
   const profile = useProfile();
-  const { signOut } = useAuthActions();
   const permissions = usePermissions();
+  const { signOut } = useAuthActions();
   const { t } = useTranslation();
 
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(!isMobile);
+  const [drawerOpen, setDrawerOpen] = useState(true);
   const [profileMenuAnchor, setProfileMenuAnchor] =
     useState<null | HTMLElement>(null);
 
@@ -542,10 +542,15 @@ function Layout() {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
           }),
+          display: "flex",
+          flexDirection: "column",
         }}
       >
         <Toolbar />
-        <Outlet />
+        <Box sx={{ flexGrow: 1 }}>
+          <Outlet />
+        </Box>
+        <Footer />
       </Box>
     </Box>
   );

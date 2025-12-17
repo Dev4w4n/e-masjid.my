@@ -1,52 +1,45 @@
+/* Global application styles - Open E Masjid Public App */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* Open E Masjid theme colors */
-  --color-primary: #338cf5;
-  --color-primary-light: #99c5fa;
-  --color-primary-dark: #0070f4;
-  --color-secondary: #4fd1c5;
-  --color-secondary-light: #79e1d1;
-  --color-secondary-dark: #2ba68e;
-  --color-button-blue: #0070f4;
-  --color-text-primary: #191919;
-  --color-text-secondary: #666666;
-  --color-background: #ffffff;
-  --color-background-gray: #fbfbfb;
-  --color-border: #eaeaea;
-  --color-border-dark: #dfdfdf;
-
-  /* Typography - Inter font */
-  --font-inter:
-    var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Roboto", sans-serif;
-  --font-arabic: var(--font-amiri), "Amiri", serif;
-
-  /* Spacing */
-  --content-max-width: 1280px;
-  --content-padding: 1rem;
-}
-
 @layer base {
-  * {
-    box-sizing: border-box;
-  }
-
   html {
+    scroll-behavior: smooth;
     overflow-x: hidden;
     width: 100%;
   }
 
   body {
-    @apply antialiased;
-    font-family: var(--font-inter);
-    background-color: #ffffff;
-    color: var(--color-text-primary);
+    @apply antialiased bg-white text-gray-900 font-inter;
+    font-feature-settings: "kern" 1;
+    text-rendering: optimizeLegibility;
     overflow-x: hidden;
     width: 100%;
     max-width: 100vw;
+  }
+}
+
+@layer components {
+  /* Typography utilities */
+  .text-arabic {
+    font-family: "Amiri", "Noto Sans Arabic", serif;
+    font-feature-settings:
+      "liga" 1,
+      "calt" 1;
+  }
+
+  .text-quranic {
+    font-family: "Amiri", serif;
+    font-size: 1.2em;
+    line-height: 1.8;
+    text-align: center;
+  }
+
+  .text-rtl {
+    direction: rtl;
+    text-align: right;
   }
 
   h1 {
@@ -90,6 +83,7 @@
 }
 
 @layer components {
+  /* Container */
   .container-custom {
     @apply max-w-7xl mx-auto;
     padding-left: 1rem;
@@ -110,33 +104,49 @@
     }
   }
 
+  /* Buttons - Legacy Design */
   .btn-primary {
-    @apply bg-primary-700 hover:bg-primary-800 text-white font-semibold py-3 px-8 rounded transition-all duration-150;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
-  }
-
-  .btn-primary:hover {
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08);
+    @apply inline-flex items-center justify-center px-6 py-2.5 rounded-full font-semibold text-white bg-blue-500 hover:bg-blue-600 transition-all duration-200 shadow-sm hover:shadow-md;
   }
 
   .btn-secondary {
-    @apply bg-secondary-500 hover:bg-secondary-600 text-white font-semibold py-3 px-8 rounded transition-all duration-150;
-    box-shadow: 0 2px 8px rgba(79, 209, 197, 0.2);
+    @apply inline-flex items-center justify-center px-6 py-2.5 rounded-full font-semibold text-white bg-teal-400 hover:bg-teal-500 transition-all duration-200 shadow-sm hover:shadow-md;
   }
 
-  .btn-secondary:hover {
-    box-shadow: 0 4px 12px rgba(79, 209, 197, 0.3);
-    transform: translateY(-1px);
-  }
-
-  /* Mobile button adjustments */
-  @media (max-width: 640px) {
-    .btn-secondary {
-      @apply py-2.5 px-6 text-sm;
-    }
-  }
+  /* Cards */
   .card-islamic {
-    @apply bg-white rounded shadow-sm hover:shadow-md transition-shadow duration-150 border border-gray-100;
+    @apply bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 hover:-translate-y-1;
+  }
+
+  /* Header Styles - Legacy Design */
+  .header-islamic {
+    @apply bg-gradient-to-r from-blue-500 to-teal-400 text-white backdrop-blur-sm;
+  }
+
+  .header-logo {
+    @apply transition-all duration-200;
+  }
+
+  .header-nav-link {
+    @apply text-white/90 hover:text-white transition-colors duration-200 font-medium;
+  }
+
+  /* Footer Styles - Legacy Design */
+  .footer-islamic {
+    @apply bg-gray-900 border-t border-gray-800 text-gray-400 py-12;
+  }
+
+  .footer-section-title {
+    @apply text-white font-semibold mb-4;
+  }
+
+  .footer-link {
+    @apply text-gray-400 hover:text-white text-sm transition-colors duration-200;
+  }
+
+  /* Gradient Text */
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400;
   }
 }
 

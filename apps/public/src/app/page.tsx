@@ -35,14 +35,24 @@ export default async function HomePage() {
       />
 
       <div className="w-full max-w-full overflow-x-hidden">
-        {/* Open E Masjid style Header */}
-        <div className="text-center mb-10 px-4">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 text-gray-900">
-            Iklan & Perkhidmatan Komuniti Masjid
-          </h1>
-          <p className="text-gray-600 text-sm sm:text-base md:text-lg max-w-3xl mx-auto">
+        {/* Hero Section - E-Masjid Modern Style */}
+        <div className="text-center mb-12 px-4">
+          <div className="mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 leading-tight">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-400">
+                Open E Masjid
+              </span>
+            </h1>
+            <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-3">
+              Iklan & Perkhidmatan Komuniti Masjid
+            </h2>
+          </div>
+          <p className="text-gray-600 text-base sm:text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
             Senarai iklan dan perkhidmatan daripada masjid-masjid di seluruh
-            Malaysia
+            Malaysia.
+            <span className="block mt-2 text-sm text-gray-500">
+              Platform digital bersepadu untuk komuniti masjid
+            </span>
           </p>
         </div>
 

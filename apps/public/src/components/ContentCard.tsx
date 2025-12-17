@@ -46,7 +46,7 @@ export default function ContentCard({
             unoptimized
           />
         ) : content.type === "youtube_video" ? (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-600 to-secondary-600">
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-600 to-teal-400">
             <div className="text-center">
               <span className="text-5xl" role="img" aria-label="Video">
                 ▶️
@@ -84,7 +84,7 @@ export default function ContentCard({
             <span className="mr-1.5">🕌</span>
             <Link
               href={`/masjid/${content.masjids.id}`}
-              className="font-semibold truncate hover:text-primary-600 hover:underline transition-colors"
+              className="font-semibold truncate hover:text-blue-600 hover:underline transition-colors"
             >
               {content.masjids.name}
             </Link>
@@ -107,7 +107,7 @@ export default function ContentCard({
       <div className="px-4 pb-4">
         <Link
           href={`/iklan/${slug}`}
-          className="block w-full text-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded transition-colors duration-200"
+          className="block w-full text-center px-4 py-2 bg-primary hover:bg-blue-700 text-white text-sm font-semibold rounded-full transition-all duration-200 shadow-sm hover:shadow-md"
         >
           Lihat Butiran
         </Link>
