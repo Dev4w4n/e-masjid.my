@@ -169,16 +169,7 @@ export function ContentViewer({
           className="w-full h-full"
           frameBorder="0"
           
-          // 1. Explicitly define what is allowed. 
-          // Notice 'camera' and 'microphone' are MISSING, so they are blocked.
-          allow="autoplay; encrypted-media; fullscreen; accelerometer; gyroscope"
-          
-          // 2. SANDBOX UPDATE:
-          // 'allow-scripts' is needed for the player to work.
-          // 'allow-same-origin' is needed for YouTube player to access local storage/cache.
-          // 'allow-presentation' is needed for fullscreen/casting features.
-          sandbox="allow-scripts allow-same-origin allow-presentation"
-          
+          allow="autoplay; encrypted-media"
           onLoad={handleLoadComplete}
           onError={() => {
             setState(prev => ({ ...prev, videoError: true }));
