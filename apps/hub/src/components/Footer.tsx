@@ -1,7 +1,8 @@
-import Link from "next/link";
+import React from "react";
+import { Link } from "react-router-dom";
 import { Github, Facebook, Mail, MessageCircle } from "lucide-react";
 
-export default function Footer() {
+export const Footer: React.FC = () => {
   return (
     <footer className="bg-gray-900 border-t border-gray-800 py-12 mt-auto">
       <div className="max-w-7xl mx-auto px-6">
@@ -9,7 +10,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <Link
-              href="/"
+              to="/"
               className="text-2xl font-bold tracking-tighter mb-4 inline-block"
             >
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400">
@@ -60,7 +61,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="/"
+                  to="/admin/display-management"
                   className="text-gray-400 hover:text-white text-sm transition-colors"
                 >
                   Paparan TV Masjid
@@ -68,7 +69,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/"
+                  to="/"
                   className="text-gray-400 hover:text-white text-sm transition-colors"
                 >
                   Chatbot AI Masjid
@@ -145,4 +146,4 @@ export default function Footer() {
       </div>
     </footer>
   );
-}
+};

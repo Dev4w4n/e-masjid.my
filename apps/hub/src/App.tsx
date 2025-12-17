@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Box, CircularProgress } from "@mui/material";
 import { useAuthStatus, useUser, WithRole } from "@masjid-suite/auth";
-import Layout from "./components/Layout";
+import LayoutSimple from "./components/LayoutSimple";
 import PublicRoute from "./components/PublicRoute";
 import SignIn from "./pages/auth/SignIn";
 import SignUp from "./pages/auth/SignUp";
@@ -78,7 +78,7 @@ function App() {
       />
 
       {/* Main application routes (with layout) */}
-      <Route path="/" element={<Layout />}>
+      <Route path="/" element={<LayoutSimple />}>
         {/* Public routes */}
         <Route index element={<Home />} />
         <Route path="masjids" element={<MasjidList />} />

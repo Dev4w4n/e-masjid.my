@@ -3,35 +3,55 @@ module.exports = {
   content: [
     './src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  safelist: [
+    'backdrop-blur-sm',
+    'backdrop-blur-lg',
+    'backdrop-blur-xl',
+    'shadow-lg',
+    'shadow-2xl',
+    'animate-fade-in',
+    'animate-slide-up',
+  ],
   theme: {
     extend: {
       colors: {
-        // Open E Masjid primary colors
-        'primary': {
-          50: '#e6f4ff',
-          100: '#bae0ff',
-          200: '#91ccff',
-          300: '#6bb8ff',
-          400: '#5aa8f7',
-          500: '#338CF5', // Main primary blue
-          600: '#2b7acc',
-          700: '#0070F4', // Button blue
-          800: '#154179',
-          900: '#0d2a52',
-          950: '#051426',
+        // Light theme colors using e-masjid brand colors
+        background: '#ffffff',
+        surface: '#f8fafc',
+        primary: '#0070F4',
+        secondary: '#3ABAB4',
+        gray: {
+          100: '#FBFBFB',
+          200: '#EAEAEA',
+          300: '#DFDFDF',
+          400: '#999999',
+          500: '#7F7F7F',
+          600: '#666666',
+          700: '#4C4C4C',
+          800: '#333333',
+          900: '#191919',
         },
-        'secondary': {
-          50: '#e6fcf9',
-          100: '#b3f5e8',
-          200: '#80eed7',
-          300: '#6eecce',
-          400: '#5de3c3',
-          500: '#4FD1C5', // Main teal
-          600: '#3bb8ad',
-          700: '#2ba68e',
-          800: '#1d7a6f',
-          900: '#0f4e47',
-          950: '#062220',
+        blue: {
+          100: '#E6F0FD',
+          200: '#CCE2FC',
+          300: '#99C5FA',
+          400: '#66A9F7',
+          500: '#338CF5',
+          600: '#0070F4',
+          700: '#0064DA',
+          800: '#0059C2',
+          900: '#004391',
+        },
+        teal: {
+          100: '#E6FFFA',
+          200: '#B2F5EA',
+          300: '#81E6D9',
+          400: '#4FD1C5',
+          500: '#3ABAB4',
+          600: '#319795',
+          700: '#2C7A7B',
+          800: '#285E61',
+          900: '#234E52',
         },
         // Legacy Islamic theme colors (kept for backwards compatibility)
         'islamic-green': {
@@ -75,26 +95,46 @@ module.exports = {
         },
       },
       fontFamily: {
+        inter: ['Inter', 'Noto Sans Arabic', 'sans-serif'],
+        sans: ['Inter', 'Noto Sans Arabic', 'sans-serif'],
         arabic: ['Amiri', 'serif'],
-        sans: ['var(--font-inter)', 'Inter', 'system-ui', 'sans-serif'],
-      },
-      spacing: {
-        '18': '4.5rem',
-        '88': '22rem',
-        '112': '28rem',
-        '128': '32rem',
       },
       borderRadius: {
-        'islamic': '0.25rem', // 4px
+        '4xl': '2rem',
       },
       boxShadow: {
-        'sm': '0 1px 3px 0 rgb(0 0 0 / 0.1)',
-        'DEFAULT': '0 1px 3px 0 rgb(0 0 0 / 0.1)',
-        'md': '0 4px 6px -1px rgba(0,0,0,0.04)',
-        'lg': '0 10px 15px -3px rgba(0,0,0,0.04)',
-        'xl': '0 20px 25px -5px rgba(0,0,0,0.04)',
+        xs: '0 0 0 1px rgba(0, 0, 0, 0.16)',
+        sm: '0 1px 2px 0 rgba(0, 0, 0, 0.16)',
+        default: '0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.03)',
+        md: '0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+        lg: '0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02)',
+        xl: '0 20px 25px -5px rgba(0, 0, 0, 0.12), 0 10px 10px -5px rgba(0, 0, 0, 0.02)',
+        '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.3s ease-in',
+        'slide-up': 'slideUp 0.3s ease-out',
+      },
+      keyframes: {
+        blob: {
+          '0%': { transform: 'translate(0px, 0px) scale(1)' },
+          '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+          '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+          '100%': { transform: 'translate(0px, 0px) scale(1)' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { transform: 'translateY(20px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
       },
     },
   },
-  plugins: [require('@tailwindcss/typography')],
+  plugins: [
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/forms'),
+  ],
 };

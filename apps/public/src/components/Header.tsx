@@ -1,103 +1,98 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Menu, X } from "lucide-react";
 
 export default function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const hubUrl = process.env.NEXT_PUBLIC_HUB_URL || "http://localhost:3000";
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const navLinks = [
+    { label: "Laman Utama", path: "/" },
+    { label: "Tentang Kami", path: "/about" },
+    { label: "Hubungi", path: "/contact" },
+  ];
+
   return (
-    <header className="header-islamic sticky top-0 z-50">
-      <div className="container-custom">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo/Branding */}
-          <Link
-            href="/"
-            className="header-logo flex items-center gap-2 sm:gap-3 group"
-          >
-            <div className="logo-container">
-              <Image
-                src="/emasjid-500x500.png"
-                alt="Open E Masjid Logo"
-                width={40}
-                height={40}
-                className="rounded-lg transition-transform duration-200 group-hover:scale-105"
-                priority
-                unoptimized
-              />
-            </div>
-            <span className="text-lg sm:text-xl font-bold logo-text whitespace-nowrap">
-              Open E Masjid
-            </span>
-          </Link>
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled || isMobileMenuOpen
+          ? "bg-white/90 backdrop-blur-lg border-b border-gray-200 shadow-sm"
+          : "bg-transparent border-b border-transparent"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        {/* Logo */}
+        <Link href="/" className="text-2xl font-bold tracking-tighter">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400">
+            Open E Masjid
+          </span>
+        </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            <Link href="/" className="header-nav-link">
-              Laman Utama
-            </Link>
-            <Link href={`${hubUrl}/register`} className="btn-secondary">
-              Tambah Iklan
-            </Link>
-          </nav>
-
-          {/* Mobile Menu Button */}
-          <button
-            type="button"
-            className="md:hidden text-white p-2 rounded-lg hover:bg-white/10 transition-colors duration-200 flex-shrink-0"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Menu"
-            aria-expanded={mobileMenuOpen}
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+        {/* Desktop Nav */}
+        <div className="hidden md:flex gap-8 items-center">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              href={link.path}
+              className="text-sm font-medium text-gray-600 hover:text-primary transition-colors"
             >
-              {mobileMenuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
-          </button>
+              {link.label}
+            </Link>
+          ))}
+
+          <Link
+            href={`${hubUrl}/register`}
+            className="px-6 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-full transition-colors text-sm"
+          >
+            Tambah Iklan
+          </Link>
         </div>
 
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <nav className="md:hidden py-4 border-t border-white/20">
-            <div className="flex flex-col space-y-3 px-2">
-              <Link
-                href="/"
-                className="header-nav-link text-center block"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Laman Utama
-              </Link>
-              <Link
-                href={`${hubUrl}/register`}
-                className="btn-secondary text-center block py-2.5 px-6"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Tambah Iklan
-              </Link>
-            </div>
-          </nav>
-        )}
+        {/* Mobile Toggle */}
+        <button
+          className="md:hidden text-gray-700"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Menu"
+          aria-expanded={isMobileMenuOpen}
+        >
+          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
-    </header>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden absolute top-20 left-0 w-full bg-white/95 backdrop-blur-xl border-b border-gray-200 shadow-lg p-6 flex flex-col gap-6 animate-fade-in">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              href={link.path}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-lg font-medium text-gray-700 hover:text-primary text-left"
+            >
+              {link.label}
+            </Link>
+          ))}
+
+          <Link
+            href={`${hubUrl}/register`}
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="px-6 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-full transition-colors text-center"
+          >
+            Tambah Iklan
+          </Link>
+        </div>
+      )}
+    </nav>
   );
 }
