@@ -25,11 +25,7 @@ import {
   Home,
   Mosque,
 } from "@mui/icons-material";
-import {
-  useUser,
-  useProfile,
-  useAuthActions,
-} from "@masjid-suite/auth";
+import { useUser, useProfile, useAuthActions } from "@masjid-suite/auth";
 import { useTranslation } from "@masjid-suite/i18n";
 import { Footer } from "./Footer";
 
@@ -150,9 +146,7 @@ function Layout() {
                 <IconButton
                   onClick={handleProfileMenuOpen}
                   size="small"
-                  aria-controls={
-                    profileMenuAnchor ? "account-menu" : undefined
-                  }
+                  aria-controls={profileMenuAnchor ? "account-menu" : undefined}
                   aria-haspopup="true"
                   aria-expanded={profileMenuAnchor ? "true" : undefined}
                 >
@@ -228,7 +222,9 @@ function Layout() {
 
           {/* Mobile Menu */}
           {mobileMenuOpen && isMobile && (
-            <Box sx={{ py: 2, borderTop: 1, borderColor: "rgba(255,255,255,0.2)" }}>
+            <Box
+              sx={{ py: 2, borderTop: 1, borderColor: "rgba(255,255,255,0.2)" }}
+            >
               <Button
                 component={Link}
                 to="/"
@@ -249,7 +245,9 @@ function Layout() {
               </Button>
               {user ? (
                 <>
-                  <Divider sx={{ my: 1, borderColor: "rgba(255,255,255,0.2)" }} />
+                  <Divider
+                    sx={{ my: 1, borderColor: "rgba(255,255,255,0.2)" }}
+                  />
                   <Button
                     component={Link}
                     to="/profile"
@@ -272,7 +270,9 @@ function Layout() {
                 </>
               ) : (
                 <>
-                  <Divider sx={{ my: 1, borderColor: "rgba(255,255,255,0.2)" }} />
+                  <Divider
+                    sx={{ my: 1, borderColor: "rgba(255,255,255,0.2)" }}
+                  />
                   <Button
                     component={Link}
                     to="/auth/signin"
