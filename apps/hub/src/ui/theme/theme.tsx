@@ -34,22 +34,22 @@ declare module "@mui/material/Typography" {
  * Open E Masjid color palette
  */
 export const EMASJID_COLORS = {
-  // Primary blue
-  blue: "#338CF5",
-  // Teal/Cyan accent
-  teal: "#4FD1C5",
+  // Primary blue - Updated to be more vibrant
+  blue: "#2563EB", // Tailwind blue-600
+  // Teal/Cyan accent - Updated
+  teal: "#0D9488", // Tailwind teal-600
   // Button blue
-  buttonBlue: "#0070F4",
+  buttonBlue: "#3B82F6", // Tailwind blue-500
   // Text colors
-  textPrimary: "#191919",
-  textSecondary: "#666666",
-  textTertiary: "#999999",
+  textPrimary: "#111827", // Tailwind gray-900
+  textSecondary: "#4B5563", // Tailwind gray-600
+  textTertiary: "#9CA3AF", // Tailwind gray-400
   // Background
   background: "#FFFFFF",
-  backgroundGray: "#FBFBFB",
+  backgroundGray: "#F3F4F6", // Tailwind gray-100
   // Borders
-  border: "#EAEAEA",
-  borderDark: "#DFDFDF",
+  border: "#E5E7EB", // Tailwind gray-200
+  borderDark: "#D1D5DB", // Tailwind gray-300
 } as const;
 
 /**
@@ -109,19 +109,19 @@ export function createMasjidTheme(
       mode,
       primary: {
         main: customColors?.primary?.main || EMASJID_COLORS.blue,
-        light: customColors?.primary?.light || "#6BB8FF",
-        dark: customColors?.primary?.dark || "#2B7ACC",
+        light: customColors?.primary?.light || "#60A5FA",
+        dark: customColors?.primary?.dark || "#1D4ED8",
         contrastText: "#FFFFFF",
       },
       secondary: {
         main: customColors?.secondary?.main || EMASJID_COLORS.teal,
-        light: customColors?.secondary?.light || "#6EECBB",
-        dark: customColors?.secondary?.dark || "#2DB885",
+        light: customColors?.secondary?.light || "#2DD4BF",
+        dark: customColors?.secondary?.dark || "#0F766E",
         contrastText: "#FFFFFF",
       },
       background: {
-        default: mode === "light" ? "#FAFAFA" : "#121212",
-        paper: mode === "light" ? "#FFFFFF" : "#1E1E1E",
+        default: mode === "light" ? "#F9FAFB" : "#111827",
+        paper: mode === "light" ? "#FFFFFF" : "#1F2937",
       },
       text: {
         primary:
@@ -164,6 +164,7 @@ export function createMasjidTheme(
     },
     typography: {
       fontFamily: [
+        '"Inter"',
         '"Roboto"',
         '"Noto Sans Arabic"',
         '"Helvetica Neue"',
@@ -248,7 +249,7 @@ export function createMasjidTheme(
     },
     spacing: 8, // 8px base spacing
     shape: {
-      borderRadius: 8, // Subtle rounded corners
+      borderRadius: 12, // Modern rounded corners
     },
   });
 

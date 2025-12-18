@@ -163,12 +163,13 @@ export function ContentViewer({
           </div>
         )}
         <iframe
-          src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&enablejsapi=1`}
+          // Use nocookie to prevent tracking/ads from trying to access user data
+          src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&enablejsapi=1`}
           title={content.title}
           className="w-full h-full"
           frameBorder="0"
+          
           allow="autoplay; encrypted-media"
-          allowFullScreen
           onLoad={handleLoadComplete}
           onError={() => {
             setState(prev => ({ ...prev, videoError: true }));

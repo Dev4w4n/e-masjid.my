@@ -77,7 +77,7 @@ export default function ContentGrid({
             {selectedCategory && (
               <button
                 onClick={() => setSelectedCategory(null)}
-                className="mt-2 px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded transition-colors"
+                className="mt-2 px-6 py-2.5 bg-primary hover:bg-blue-700 text-white font-semibold rounded-full transition-all shadow-sm hover:shadow-md"
               >
                 Paparkan Semua Iklan
               </button>

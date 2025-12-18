@@ -12,10 +12,11 @@ import {
 import {
   Person,
   Mosque,
-  AdminPanelSettings,
   Dashboard,
-  TrendingUp,
   LocationOn,
+  Add,
+  ViewList,
+  Tv,
 } from "@mui/icons-material";
 import { useUser, useProfile, usePermissions } from "@masjid-suite/auth";
 import { useTranslation } from "@masjid-suite/i18n";
@@ -46,14 +47,34 @@ function Home() {
     },
   ];
 
+  // Add content creation actions
+  if (user) {
+    quickActions.push(
+      {
+        title: t("nav.create_content"),
+        description: "Cipta kandungan baru untuk paparan",
+        icon: <Add />,
+        link: "/content/create",
+        color: "primary" as const,
+      },
+      {
+        title: t("nav.my_content"),
+        description: "Lihat kandungan saya",
+        icon: <ViewList />,
+        link: "/content/my-content",
+        color: "secondary" as const,
+      }
+    );
+  }
+
   // Add admin-specific actions
   if (permissions.hasAdminPrivileges()) {
     quickActions.push({
-      title: t("admin.admin_dashboard"),
-      description: t("home.manage_apps_users"),
-      icon: <AdminPanelSettings />,
-      link: "/admin/dashboard",
-      color: "secondary" as const,
+      title: t("nav.manage_displays"),
+      description: "Uruskan paparan TV masjid",
+      icon: <Tv />,
+      link: "/admin/display-management",
+      color: "primary" as const,
     });
   }
 
@@ -64,19 +85,33 @@ function Home() {
       description: t("home.add_new_masjid"),
       icon: <Mosque />,
       link: "/masjids/new",
-      color: "primary" as const,
+      color: "secondary" as const,
     });
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 6 }}>
       {/* Welcome Section */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
+      <Box sx={{ mb: 6, textAlign: "center" }}>
+        <Typography variant="h3" component="h1" gutterBottom fontWeight="bold">
           {t("common.welcome")},{" "}
-          {profile?.full_name || user?.email?.split("@")[0] || "User"}!
+          <Box
+            component="span"
+            sx={{
+              background: "linear-gradient(135deg, #2563EB 0%, #0D9488 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
+            {profile?.full_name || user?.email?.split("@")[0] || "User"}
+          </Box>
         </Typography>
-        <Typography variant="body1" color="text.secondary">
+        <Typography
+          variant="h6"
+          color="text.secondary"
+          sx={{ maxWidth: 800, mx: "auto" }}
+        >
           {t("home.subtitle")}
         </Typography>
       </Box>
@@ -87,7 +122,7 @@ function Home() {
           variant="h5"
           component="h2"
           gutterBottom
-          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+          sx={{ display: "flex", alignItems: "center", gap: 1, mb: 3 }}
         >
           <Dashboard color="primary" />
           {t("home.quick_actions")}
@@ -101,10 +136,10 @@ function Home() {
                   height: "100%",
                   display: "flex",
                   flexDirection: "column",
-                  transition: "transform 0.2s ease-in-out",
+                  transition: "all 0.3s ease",
                   "&:hover": {
-                    transform: "translateY(-4px)",
-                    boxShadow: 4,
+                    transform: "translateY(-8px)",
+                    boxShadow: 8,
                   },
                 }}
               >
@@ -114,16 +149,21 @@ function Home() {
                       sx={{
                         bgcolor: `${action.color}.main`,
                         mr: 2,
-                        width: 48,
-                        height: 48,
+                        width: 56,
+                        height: 56,
                       }}
                     >
                       {action.icon}
                     </Avatar>
-                    <Typography variant="h6" component="h3">
-                      {action.title}
-                    </Typography>
                   </Box>
+                  <Typography
+                    variant="h6"
+                    component="h3"
+                    gutterBottom
+                    fontWeight="bold"
+                  >
+                    {action.title}
+                  </Typography>
                   <Typography
                     variant="body2"
                     color="text.secondary"
@@ -137,6 +177,7 @@ function Home() {
                     variant="contained"
                     color={action.color}
                     fullWidth
+                    sx={{ mt: "auto" }}
                   >
                     {action.title}
                   </Button>
@@ -145,64 +186,6 @@ function Home() {
             </Grid>
           ))}
         </Grid>
-      </Box>
-
-      {/* Profile Completion Reminder */}
-      {profile && !profile.is_complete && (
-        <Card
-          sx={{
-            bgcolor: "warning.50",
-            border: "1px solid",
-            borderColor: "warning.main",
-          }}
-        >
-          <CardContent>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <Avatar sx={{ bgcolor: "warning.main" }}>
-                <TrendingUp />
-              </Avatar>
-              <Box sx={{ flex: 1 }}>
-                <Typography variant="h6" gutterBottom>
-                  {t("home.complete_profile")}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ mb: 2 }}
-                >
-                  {t("home.complete_profile_desc")}
-                </Typography>
-                <Button
-                  component={Link}
-                  to="/profile"
-                  variant="contained"
-                  color="warning"
-                  startIcon={<Person />}
-                >
-                  {t("home.complete_profile")}
-                </Button>
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Recent Activity */}
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" component="h2" gutterBottom>
-          {t("home.recent_activity")}
-        </Typography>
-        <Card>
-          <CardContent>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ textAlign: "center", py: 4 }}
-            >
-              {t("home.no_activity")}
-            </Typography>
-          </CardContent>
-        </Card>
       </Box>
     </Container>
   );

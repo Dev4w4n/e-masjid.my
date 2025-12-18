@@ -76,7 +76,7 @@ export default function RootLayout({
       </head>
       <body className="bg-gray-50 min-h-screen flex flex-col font-sans overflow-x-hidden">
         <Header />
-        <main className="flex-1 w-full">
+        <main className="flex-1 w-full pt-20">
           <div className="container-custom py-8">{children}</div>
         </main>
         <Footer />
