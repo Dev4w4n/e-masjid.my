@@ -3,6 +3,9 @@ import { getAllCategories, type Category } from "@/services/categoryService";
 import ContentGrid from "@/components/ContentGrid";
 import { generateStructuredData } from "@/lib/seo";
 
+// Force edge runtime for Cloudflare Pages
+export const runtime = "edge";
+
 // ISR - Revalidate every hour
 export const revalidate = 3600;
 

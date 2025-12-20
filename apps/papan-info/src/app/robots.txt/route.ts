@@ -1,3 +1,6 @@
+// Force edge runtime for Cloudflare Pages
+export const runtime = "edge";
+
 export async function GET() {
   const robotsTxt = `# https://www.robotstxt.org/robotstxt.html
 User-agent: *

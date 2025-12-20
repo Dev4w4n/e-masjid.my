@@ -1,6 +1,9 @@
 import { getAllActiveContent } from "@/services/contentService";
 import { generateSitemap } from "@/lib/seo";
 
+// Force edge runtime for Cloudflare Pages
+export const runtime = "edge";
+
 // Force dynamic rendering for sitemap
 export const dynamic = "force-dynamic";
 
