@@ -163,7 +163,7 @@ max_rows = 1000
 site_url = "https://hub-emasjid-staging.pages.dev"
 additional_redirect_urls = [
   "https://hub-emasjid-staging.pages.dev",
-  "https://public-emasjid-staging.pages.dev",
+  "https://papan-info-emasjid-staging.pages.dev",
   "https://tv-emasjid-staging.pages.dev",
   "http://localhost:3000",
   "http://localhost:3001",

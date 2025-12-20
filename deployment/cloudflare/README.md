@@ -9,7 +9,7 @@ We're deploying 3 applications × 2 environments = 6 Cloudflare Pages projects:
 | Application | Production Project          | Staging Project          | Framework    |
 | ----------- | --------------------------- | ------------------------ | ------------ |
 | Hub App     | `hub-emasjid-production`    | `hub-emasjid-staging`    | Vite (React) |
-| Public App  | `public-emasjid-production` | `public-emasjid-staging` | Next.js      |
+| Papan Info App  | `papan-info-emasjid-production` | `papan-info-emasjid-staging` | Next.js      |
 | TV Display  | `tv-emasjid-production`     | `tv-emasjid-staging`     | Next.js      |
 
 ## 🔧 Quick Setup Guide
@@ -31,7 +31,7 @@ Choose the correct framework preset during project creation:
 | Application | Framework Preset | Why                                    |
 | ----------- | ---------------- | -------------------------------------- |
 | Hub App     | **None**         | Vite + React (custom build to `/dist`) |
-| Public App  | **Next.js**      | Next.js with SSR for SEO               |
+| Papan Info App  | **Next.js**      | Next.js with SSR for SEO               |
 | TV Display  | **Next.js**      | Next.js with real-time updates         |
 
 > **Note**: For Hub app, if "None" isn't available, select "Create React App" then customize the build settings as shown below.
@@ -91,30 +91,30 @@ Build Settings:
 Environment Variables: [See environment section below]
 ```
 
-### 3. Public App Configuration
+### 3. Papan Info App Configuration
 
-#### Production: `public-emasjid-production`
+#### Production: `papan-info-emasjid-production`
 
 ```
-Project Name: public-emasjid-production
+Project Name: papan-info-emasjid-production
 Production Branch: main
 Build Settings:
   Framework Preset: Next.js
-  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build && VERCEL_PROJECT_DIR=. pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
-  Build Output Directory: apps/public/.vercel/output/static
+  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/papan-info && pnpm build && VERCEL_PROJECT_DIR=. pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
+  Build Output Directory: apps/papan-info/.vercel/output/static
   Root Directory: /
 Environment Variables: [See environment section below]
 ```
 
-#### Staging: `public-emasjid-staging`
+#### Staging: `papan-info-emasjid-staging`
 
 ```
-Project Name: public-emasjid-staging
+Project Name: papan-info-emasjid-staging
 Production Branch: dev
 Build Settings:
   Framework Preset: Next.js
-  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build && VERCEL_PROJECT_DIR=. pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
-  Build Output Directory: apps/public/.vercel/output/static
+  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/papan-info && pnpm build && VERCEL_PROJECT_DIR=. pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
+  Build Output Directory: apps/papan-info/.vercel/output/static
   Root Directory: /
 Environment Variables: [See environment section below]
 ```
@@ -162,7 +162,7 @@ VITE_ENABLE_DEV_TOOLS=false
 VITE_SHOW_LOGGER=false
 ```
 
-### Public App Projects (Next.js)
+### Papan Info App Projects (Next.js)
 
 **Both Production & Staging:**
 

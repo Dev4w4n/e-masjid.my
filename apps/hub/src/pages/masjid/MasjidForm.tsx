@@ -317,588 +317,613 @@ export const MasjidForm: React.FC = () => {
   }
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Box sx={{ mb: 4 }}>
-        <Button
-          startIcon={<ArrowBack />}
-          onClick={() => navigate("/masjids")}
-          sx={{ mb: 2 }}
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-teal-50/30">
+      <Container maxWidth="md" sx={{ py: { xs: 3, md: 4 } }}>
+        <Box sx={{ mb: { xs: 3, md: 4 } }}>
+          <Button
+            startIcon={<ArrowBack />}
+            onClick={() => navigate("/masjids")}
+            sx={{ mb: 2, fontSize: { xs: "0.875rem", md: "0.9375rem" } }}
+          >
+            Kembali ke Senarai Masjid
+          </Button>
+
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-2">
+            {isEditMode ? "Edit" : "Tambah"}{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-500">
+              Masjid
+            </span>
+          </h1>
+          <p className="text-base md:text-lg text-gray-600 leading-relaxed">
+            {isEditMode
+              ? "Kemaskini maklumat dan tetapan masjid."
+              : "Cipta profil masjid baru untuk pengurusan komuniti."}
+          </p>
+        </Box>
+
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
+        )}
+
+        <Card
+          elevation={0}
+          sx={{
+            borderRadius: 2,
+            border: "1px solid",
+            borderColor: "divider",
+          }}
         >
-          Back to Masjids
-        </Button>
-
-        <Typography variant="h4" component="h1" gutterBottom>
-          {isEditMode ? "Edit Masjid" : "Add New Masjid"}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {isEditMode
-            ? "Update masjid information and settings."
-            : "Create a new masjid profile for community management."}
-        </Typography>
-      </Box>
-
-      {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
-        </Alert>
-      )}
-
-      <Card>
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Basic Information
-            </Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={8}>
-                <Controller
-                  name="name"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Masjid Name"
-                      fullWidth
-                      required
-                      error={!!errors.name}
-                      helperText={errors.name?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Controller
-                  name="registration_number"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Registration Number"
-                      fullWidth
-                      error={!!errors.registration_number}
-                      helperText={errors.registration_number?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Email Address"
-                      fullWidth
-                      error={!!errors.email}
-                      helperText={errors.email?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="phone_number"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Phone Number"
-                      fullWidth
-                      error={!!errors.phone_number}
-                      helperText={errors.phone_number?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Controller
-                  name="website_url"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Website URL"
-                      fullWidth
-                      error={!!errors.website_url}
-                      helperText={errors.website_url?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Controller
-                  name="description"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Description"
-                      fullWidth
-                      multiline
-                      rows={4}
-                      error={!!errors.description}
-                      helperText={errors.description?.message}
-                    />
-                  )}
-                />
-              </Grid>
-            </Grid>
-
-            <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
-              Address
-            </Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Controller
-                  name="address.address_line_1"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Address Line 1"
-                      fullWidth
-                      required
-                      error={!!errors.address?.address_line_1}
-                      helperText={errors.address?.address_line_1?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Controller
-                  name="address.address_line_2"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Address Line 2"
-                      fullWidth
-                      error={!!errors.address?.address_line_2}
-                      helperText={errors.address?.address_line_2?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Controller
-                  name="address.city"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="City"
-                      fullWidth
-                      required
-                      error={!!errors.address?.city}
-                      helperText={errors.address?.city?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Controller
-                  name="address.state"
-                  control={control}
-                  render={({ field }) => (
-                    <FormControl fullWidth error={!!errors.address?.state}>
-                      <InputLabel>State</InputLabel>
-                      <Select {...field} label="State" required>
-                        {malaysianStates.map((state: string) => (
-                          <MenuItem key={state} value={state}>
-                            {state}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      {errors.address?.state && (
-                        <FormHelperText>
-                          {errors.address.state.message}
-                        </FormHelperText>
-                      )}
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Controller
-                  name="address.postcode"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Postcode"
-                      fullWidth
-                      required
-                      error={!!errors.address?.postcode}
-                      helperText={errors.address?.postcode?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Controller
-                  name="address.country"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Country"
-                      fullWidth
-                      disabled
-                      error={!!errors.address?.country}
-                      helperText={errors.address?.country?.message}
-                    />
-                  )}
-                />
-              </Grid>
-            </Grid>
-
-            <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
-              Configuration
-            </Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="capacity"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Capacity"
-                      type="number"
-                      fullWidth
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        field.onChange(
-                          e.target.value === ""
-                            ? undefined
-                            : Number(e.target.value)
-                        )
-                      }
-                      error={!!errors.capacity}
-                      helperText={errors.capacity?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="status"
-                  control={control}
-                  render={({ field }) => (
-                    <FormControl fullWidth error={!!errors.status}>
-                      <InputLabel>Status</InputLabel>
-                      <Select {...field} label="Status">
-                        {statusOptions.map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      {errors.status && (
-                        <FormHelperText>{errors.status.message}</FormHelperText>
-                      )}
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-            </Grid>
-
-            <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
-              Prayer Time Settings
-            </Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="prayer_times_source"
-                  control={control}
-                  render={({ field }) => (
-                    <FormControl fullWidth error={!!errors.prayer_times_source}>
-                      <InputLabel>Prayer Times Source</InputLabel>
-                      <Select {...field} label="Prayer Times Source">
-                        {prayerTimeSources.map((source) => (
-                          <MenuItem key={source.value} value={source.value}>
-                            {source.label}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      {errors.prayer_times_source && (
-                        <FormHelperText>
-                          {errors.prayer_times_source.message}
-                        </FormHelperText>
-                      )}
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-              {prayerSource === "jakim" && (
-                <Grid item xs={12} md={6}>
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            <CardContent sx={{ p: { xs: 2, md: 3 } }}>
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{
+                  fontSize: { xs: "1.125rem", md: "1.25rem" },
+                  fontWeight: 600,
+                }}
+              >
+                Maklumat Asas
+              </Typography>
+              <Grid container spacing={{ xs: 2, md: 2 }}>
+                <Grid item xs={12} md={8}>
                   <Controller
-                    name="jakim_zone_code"
+                    name="name"
                     control={control}
                     render={({ field }) => (
-                      <FormControl
+                      <TextField
+                        {...field}
+                        label="Nama Masjid"
                         fullWidth
-                        error={!!errors.jakim_zone_code}
-                        disabled={filteredJakimZones.length === 0}
-                      >
-                        <InputLabel>JAKIM Zone</InputLabel>
-                        <Select {...field} label="JAKIM Zone">
-                          {filteredJakimZones.map((zone) => (
-                            <MenuItem key={zone.value} value={zone.value}>
-                              {zone.label}
+                        required
+                        size="small"
+                        error={!!errors.name}
+                        helperText={errors.name?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Controller
+                    name="registration_number"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Registration Number"
+                        fullWidth
+                        error={!!errors.registration_number}
+                        helperText={errors.registration_number?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Controller
+                    name="email"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Email Address"
+                        fullWidth
+                        error={!!errors.email}
+                        helperText={errors.email?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Controller
+                    name="phone_number"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Phone Number"
+                        fullWidth
+                        error={!!errors.phone_number}
+                        helperText={errors.phone_number?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Controller
+                    name="website_url"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Website URL"
+                        fullWidth
+                        error={!!errors.website_url}
+                        helperText={errors.website_url?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Controller
+                    name="description"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Description"
+                        fullWidth
+                        multiline
+                        rows={4}
+                        error={!!errors.description}
+                        helperText={errors.description?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
+
+              <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
+                Address
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Controller
+                    name="address.address_line_1"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Address Line 1"
+                        fullWidth
+                        required
+                        error={!!errors.address?.address_line_1}
+                        helperText={errors.address?.address_line_1?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Controller
+                    name="address.address_line_2"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Address Line 2"
+                        fullWidth
+                        error={!!errors.address?.address_line_2}
+                        helperText={errors.address?.address_line_2?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Controller
+                    name="address.city"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="City"
+                        fullWidth
+                        required
+                        error={!!errors.address?.city}
+                        helperText={errors.address?.city?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Controller
+                    name="address.state"
+                    control={control}
+                    render={({ field }) => (
+                      <FormControl fullWidth error={!!errors.address?.state}>
+                        <InputLabel>State</InputLabel>
+                        <Select {...field} label="State" required>
+                          {malaysianStates.map((state: string) => (
+                            <MenuItem key={state} value={state}>
+                              {state}
                             </MenuItem>
                           ))}
                         </Select>
-                        {errors.jakim_zone_code && (
+                        {errors.address?.state && (
                           <FormHelperText>
-                            {errors.jakim_zone_code.message}
-                          </FormHelperText>
-                        )}
-                        {filteredJakimZones.length === 0 && (
-                          <FormHelperText>
-                            Select a state to see available zones.
+                            {errors.address.state.message}
                           </FormHelperText>
                         )}
                       </FormControl>
                     )}
                   />
                 </Grid>
-              )}
-            </Grid>
+                <Grid item xs={12} md={4}>
+                  <Controller
+                    name="address.postcode"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Postcode"
+                        fullWidth
+                        required
+                        error={!!errors.address?.postcode}
+                        helperText={errors.address?.postcode?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Controller
+                    name="address.country"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Country"
+                        fullWidth
+                        disabled
+                        error={!!errors.address?.country}
+                        helperText={errors.address?.country?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
 
-            {/* Admin Management Section - Only in Edit Mode for Super Admin */}
-            {isEditMode && isSuperAdmin() && (
-              <>
-                <Divider sx={{ my: 4 }} />
-                <Typography variant="h6" gutterBottom>
-                  Masjid Administrators
-                </Typography>
-                <Box sx={{ mb: 2 }}>
-                  <Button
-                    variant="contained"
-                    startIcon={<PersonAdd />}
-                    onClick={() => setAssignDialogOpen(true)}
-                  >
-                    Assign Admin
-                  </Button>
-                </Box>
-                {adminsLoading ? (
-                  <CircularProgress size={24} />
-                ) : admins.length > 0 ? (
-                  <List>
-                    {admins.map((admin) => (
-                      <ListItem key={admin.user_id}>
-                        <ListItemText
-                          primary={admin.full_name}
-                          secondary={`${admin.email}${admin.phone_number ? ` — ${admin.phone_number}` : ""}`}
-                        />
-                        <ListItemSecondaryAction>
-                          <IconButton
-                            edge="end"
-                            color="error"
-                            onClick={() => {
-                              setSelectedAdmin(admin);
-                              setRevokeDialogOpen(true);
-                            }}
-                          >
-                            <Delete />
-                          </IconButton>
-                        </ListItemSecondaryAction>
-                      </ListItem>
-                    ))}
-                  </List>
-                ) : (
-                  <Typography variant="body2" color="text.secondary">
-                    No administrators assigned to this masjid.
-                  </Typography>
+              <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
+                Configuration
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <Controller
+                    name="capacity"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Capacity"
+                        type="number"
+                        fullWidth
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          field.onChange(
+                            e.target.value === ""
+                              ? undefined
+                              : Number(e.target.value)
+                          )
+                        }
+                        error={!!errors.capacity}
+                        helperText={errors.capacity?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Controller
+                    name="status"
+                    control={control}
+                    render={({ field }) => (
+                      <FormControl fullWidth error={!!errors.status}>
+                        <InputLabel>Status</InputLabel>
+                        <Select {...field} label="Status">
+                          {statusOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {errors.status && (
+                          <FormHelperText>
+                            {errors.status.message}
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                    )}
+                  />
+                </Grid>
+              </Grid>
+
+              <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
+                Prayer Time Settings
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <Controller
+                    name="prayer_times_source"
+                    control={control}
+                    render={({ field }) => (
+                      <FormControl
+                        fullWidth
+                        error={!!errors.prayer_times_source}
+                      >
+                        <InputLabel>Prayer Times Source</InputLabel>
+                        <Select {...field} label="Prayer Times Source">
+                          {prayerTimeSources.map((source) => (
+                            <MenuItem key={source.value} value={source.value}>
+                              {source.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {errors.prayer_times_source && (
+                          <FormHelperText>
+                            {errors.prayer_times_source.message}
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                    )}
+                  />
+                </Grid>
+                {prayerSource === "jakim" && (
+                  <Grid item xs={12} md={6}>
+                    <Controller
+                      name="jakim_zone_code"
+                      control={control}
+                      render={({ field }) => (
+                        <FormControl
+                          fullWidth
+                          error={!!errors.jakim_zone_code}
+                          disabled={filteredJakimZones.length === 0}
+                        >
+                          <InputLabel>JAKIM Zone</InputLabel>
+                          <Select {...field} label="JAKIM Zone">
+                            {filteredJakimZones.map((zone) => (
+                              <MenuItem key={zone.value} value={zone.value}>
+                                {zone.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                          {errors.jakim_zone_code && (
+                            <FormHelperText>
+                              {errors.jakim_zone_code.message}
+                            </FormHelperText>
+                          )}
+                          {filteredJakimZones.length === 0 && (
+                            <FormHelperText>
+                              Select a state to see available zones.
+                            </FormHelperText>
+                          )}
+                        </FormControl>
+                      )}
+                    />
+                  </Grid>
                 )}
-              </>
-            )}
+              </Grid>
 
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                mt: 4,
+              {/* Admin Management Section - Only in Edit Mode for Super Admin */}
+              {isEditMode && isSuperAdmin() && (
+                <>
+                  <Divider sx={{ my: 4 }} />
+                  <Typography variant="h6" gutterBottom>
+                    Masjid Administrators
+                  </Typography>
+                  <Box sx={{ mb: 2 }}>
+                    <Button
+                      variant="contained"
+                      startIcon={<PersonAdd />}
+                      onClick={() => setAssignDialogOpen(true)}
+                    >
+                      Assign Admin
+                    </Button>
+                  </Box>
+                  {adminsLoading ? (
+                    <CircularProgress size={24} />
+                  ) : admins.length > 0 ? (
+                    <List>
+                      {admins.map((admin) => (
+                        <ListItem key={admin.user_id}>
+                          <ListItemText
+                            primary={admin.full_name}
+                            secondary={`${admin.email}${admin.phone_number ? ` — ${admin.phone_number}` : ""}`}
+                          />
+                          <ListItemSecondaryAction>
+                            <IconButton
+                              edge="end"
+                              color="error"
+                              onClick={() => {
+                                setSelectedAdmin(admin);
+                                setRevokeDialogOpen(true);
+                              }}
+                            >
+                              <Delete />
+                            </IconButton>
+                          </ListItemSecondaryAction>
+                        </ListItem>
+                      ))}
+                    </List>
+                  ) : (
+                    <Typography variant="body2" color="text.secondary">
+                      No administrators assigned to this masjid.
+                    </Typography>
+                  )}
+                </>
+              )}
+
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  mt: 4,
+                }}
+              >
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<ArrowBack />}
+                  onClick={() => navigate("/masjids")}
+                >
+                  Back to List
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  startIcon={<Save />}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting
+                    ? "Saving..."
+                    : isEditMode
+                      ? "Save Changes"
+                      : "Create Masjid"}
+                </Button>
+              </Box>
+            </CardContent>
+          </form>
+        </Card>
+
+        {/* Assign Admin Dialog */}
+        <Dialog
+          open={assignDialogOpen}
+          onClose={() => {
+            setAssignDialogOpen(false);
+            setAssignEmail("");
+            setAssignError(null);
+            setAssignSuccess(null);
+          }}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle>Assign Masjid Admin</DialogTitle>
+          <DialogContent>
+            {assignError && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {assignError}
+              </Alert>
+            )}
+            {assignSuccess && (
+              <Alert severity="success" sx={{ mb: 2 }}>
+                {assignSuccess}
+              </Alert>
+            )}
+            <Typography variant="body2" sx={{ mb: 2, mt: 1 }}>
+              Enter the user's email to assign them as an admin for this masjid.
+            </Typography>
+            <TextField
+              label="User Email"
+              type="email"
+              value={assignEmail}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setAssignEmail(e.target.value)
+              }
+              fullWidth
+              autoFocus
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => {
+                setAssignDialogOpen(false);
+                setAssignEmail("");
+                setAssignError(null);
+                setAssignSuccess(null);
               }}
             >
-              <Button
-                variant="outlined"
-                color="secondary"
-                startIcon={<ArrowBack />}
-                onClick={() => navigate("/masjids")}
-              >
-                Back to List
-              </Button>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                startIcon={<Save />}
-                disabled={isSubmitting}
-              >
-                {isSubmitting
-                  ? "Saving..."
-                  : isEditMode
-                    ? "Save Changes"
-                    : "Create Masjid"}
-              </Button>
-            </Box>
-          </CardContent>
-        </form>
-      </Card>
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              disabled={assignSubmitting || !assignEmail}
+              onClick={async () => {
+                if (!id) return;
+                setAssignSubmitting(true);
+                setAssignError(null);
+                setAssignSuccess(null);
+                try {
+                  // Lookup user by email in users table
+                  const { data: users, error: lookupError } = await (
+                    masjidService as any
+                  ).db.client
+                    .from("users")
+                    .select("id,email")
+                    .eq("email", assignEmail)
+                    .limit(1);
 
-      {/* Assign Admin Dialog */}
-      <Dialog
-        open={assignDialogOpen}
-        onClose={() => {
-          setAssignDialogOpen(false);
-          setAssignEmail("");
-          setAssignError(null);
-          setAssignSuccess(null);
-        }}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Assign Masjid Admin</DialogTitle>
-        <DialogContent>
-          {assignError && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {assignError}
-            </Alert>
-          )}
-          {assignSuccess && (
-            <Alert severity="success" sx={{ mb: 2 }}>
-              {assignSuccess}
-            </Alert>
-          )}
-          <Typography variant="body2" sx={{ mb: 2, mt: 1 }}>
-            Enter the user's email to assign them as an admin for this masjid.
-          </Typography>
-          <TextField
-            label="User Email"
-            type="email"
-            value={assignEmail}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setAssignEmail(e.target.value)
-            }
-            fullWidth
-            autoFocus
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              setAssignDialogOpen(false);
-              setAssignEmail("");
-              setAssignError(null);
-              setAssignSuccess(null);
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            disabled={assignSubmitting || !assignEmail}
-            onClick={async () => {
-              if (!id) return;
-              setAssignSubmitting(true);
-              setAssignError(null);
-              setAssignSuccess(null);
-              try {
-                // Lookup user by email in users table
-                const { data: users, error: lookupError } = await (
-                  masjidService as any
-                ).db.client
-                  .from("users")
-                  .select("id,email")
-                  .eq("email", assignEmail)
-                  .limit(1);
+                  if (lookupError) throw new Error(lookupError.message);
+                  const found = users?.[0];
+                  if (!found) throw new Error("User not found with that email");
 
-                if (lookupError) throw new Error(lookupError.message);
-                const found = users?.[0];
-                if (!found) throw new Error("User not found with that email");
+                  await masjidService.assignAdmin({
+                    masjid_id: id,
+                    user_id: found.id,
+                    status: "active",
+                    approved_by:
+                      (await (masjidService as any).db.client.auth.getUser())
+                        .data.user?.id ?? undefined,
+                    approved_at: new Date().toISOString(),
+                  } as any);
 
-                await masjidService.assignAdmin({
-                  masjid_id: id,
-                  user_id: found.id,
-                  status: "active",
-                  approved_by:
-                    (await (masjidService as any).db.client.auth.getUser()).data
-                      .user?.id ?? undefined,
-                  approved_at: new Date().toISOString(),
-                } as any);
+                  setAssignSuccess("Admin assigned successfully");
+                  setAssignEmail("");
+                  const adminData = await masjidService.getMasjidAdmins(id);
+                  setAdmins(adminData);
+                  setTimeout(() => setAssignDialogOpen(false), 1500);
+                } catch (err: any) {
+                  setAssignError(err.message || String(err));
+                } finally {
+                  setAssignSubmitting(false);
+                }
+              }}
+            >
+              {assignSubmitting ? "Assigning..." : "Assign"}
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-                setAssignSuccess("Admin assigned successfully");
-                setAssignEmail("");
-                const adminData = await masjidService.getMasjidAdmins(id);
-                setAdmins(adminData);
-                setTimeout(() => setAssignDialogOpen(false), 1500);
-              } catch (err: any) {
-                setAssignError(err.message || String(err));
-              } finally {
-                setAssignSubmitting(false);
-              }
-            }}
-          >
-            {assignSubmitting ? "Assigning..." : "Assign"}
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Revoke Admin Dialog */}
-      <Dialog
-        open={revokeDialogOpen}
-        onClose={() => {
-          setRevokeDialogOpen(false);
-          setSelectedAdmin(null);
-        }}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Revoke Admin Access</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Are you sure you want to revoke admin access for{" "}
-            <strong>{selectedAdmin?.full_name}</strong>?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              setRevokeDialogOpen(false);
-              setSelectedAdmin(null);
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={async () => {
-              if (!id || !selectedAdmin) return;
-              try {
-                await (masjidService as any).db.client
-                  .from("masjid_admins")
-                  .delete()
-                  .eq("masjid_id", id)
-                  .eq("user_id", selectedAdmin.user_id);
-
-                const adminData = await masjidService.getMasjidAdmins(id);
-                setAdmins(adminData);
+        {/* Revoke Admin Dialog */}
+        <Dialog
+          open={revokeDialogOpen}
+          onClose={() => {
+            setRevokeDialogOpen(false);
+            setSelectedAdmin(null);
+          }}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle>Revoke Admin Access</DialogTitle>
+          <DialogContent>
+            <Typography>
+              Are you sure you want to revoke admin access for{" "}
+              <strong>{selectedAdmin?.full_name}</strong>?
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => {
                 setRevokeDialogOpen(false);
                 setSelectedAdmin(null);
-              } catch (err: any) {
-                console.error("Failed to revoke admin:", err);
-                setError(err.message || "Failed to revoke admin access");
-              }
-            }}
-          >
-            Revoke
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Container>
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={async () => {
+                if (!id || !selectedAdmin) return;
+                try {
+                  await (masjidService as any).db.client
+                    .from("masjid_admins")
+                    .delete()
+                    .eq("masjid_id", id)
+                    .eq("user_id", selectedAdmin.user_id);
+
+                  const adminData = await masjidService.getMasjidAdmins(id);
+                  setAdmins(adminData);
+                  setRevokeDialogOpen(false);
+                  setSelectedAdmin(null);
+                } catch (err: any) {
+                  console.error("Failed to revoke admin:", err);
+                  setError(err.message || "Failed to revoke admin access");
+                }
+              }}
+            >
+              Revoke
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Container>
+    </div>
   );
 };
 

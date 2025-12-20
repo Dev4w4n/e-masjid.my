@@ -44,11 +44,11 @@ export default async function HomePage() {
               </span>
             </h1>
             <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-3">
-              Iklan & Perkhidmatan Komuniti Masjid
+              Info & Perkhidmatan Komuniti Masjid
             </h2>
           </div>
           <p className="text-gray-600 text-base sm:text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
-            Senarai iklan dan perkhidmatan daripada masjid-masjid di seluruh
+            Senarai info dan perkhidmatan daripada masjid-masjid di seluruh
             Malaysia.
             <span className="block mt-2 text-sm text-gray-500">
               Platform digital bersepadu untuk komuniti masjid

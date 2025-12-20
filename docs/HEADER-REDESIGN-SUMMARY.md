@@ -1,4 +1,4 @@
-# Public App Header Redesign - UI/UX Improvements
+# Papan Info App Header Redesign - UI/UX Improvements
 
 ## Problem Statement
 
@@ -105,13 +105,13 @@ The title bar (header) of the public app had visual overlap issues where the ico
 
 ### Files Modified:
 
-1. **`apps/public/src/components/Header.tsx`**
+1. **`apps/papan-info/src/components/Header.tsx`**
    - Added `logo-container` div wrapper
    - Added `group` class for parent hover state
    - Enhanced image with transition and hover scale
    - Updated text span with `logo-text` class
 
-2. **`apps/public/src/styles/islamic-theme.css`**
+2. **`apps/papan-info/src/styles/islamic-theme.css`**
    - Added `.logo-container` styles
    - Enhanced `.header-logo` with hover states
    - Added `.logo-text` styling
@@ -119,11 +119,11 @@ The title bar (header) of the public app had visual overlap issues where the ico
    - Enhanced `.header-islamic` shadow
    - Added responsive breakpoints
 
-3. **`apps/public/src/styles/globals.css`**
+3. **`apps/papan-info/src/styles/globals.css`**
    - Enhanced `.btn-secondary` with shadow effects
    - Added hover transform and shadow
 
-4. **`apps/public/tests/unit/components/Header.test.tsx`**
+4. **`apps/papan-info/tests/unit/components/Header.test.tsx`**
    - Updated test from "masjidbro.my" to "E-Masjid.My"
 
 ## Design Principles Applied

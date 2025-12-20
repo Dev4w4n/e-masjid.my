@@ -1,8 +1,8 @@
 {
-  "name": "@masjid-suite/public",
+  "name": "@masjid-suite/papan-info",
   "version": "0.1.0",
   "private": true,
-  "description": "Public SEO-friendly content display app for Open E Masjid",
+  "description": "Public SEO-friendly Papan Info (Info Board) display app for Open E Masjid",
   "scripts": {
     "dev": "next dev -p 3002",
     "build": "next build",

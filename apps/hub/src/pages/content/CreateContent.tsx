@@ -315,421 +315,444 @@ const CreateContent: React.FC = () => {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        Create Content
-      </Typography>
-      <Typography variant="body1" color="text.secondary" gutterBottom>
-        Create new content for display on masjid TV screens. Upload your own
-        images or create beautiful text designs with Islamic-themed backgrounds.
-        Content will be active immediately.
-      </Typography>
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-teal-50/30">
+      <Box sx={{ p: { xs: 2, md: 3 } }}>
+        {/* Page Header */}
+        <div className="mb-6">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-2">
+            Cipta{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-500">
+              Kandungan
+            </span>
+          </h1>
+          <p className="text-base md:text-lg text-gray-600 leading-relaxed">
+            Cipta kandungan baru untuk paparan TV masjid. Muat naik imej sendiri
+            atau cipta reka bentuk teks dengan latar bertema Islam. Kandungan
+            akan aktif serta-merta.
+          </p>
+        </div>
 
-      <Divider sx={{ my: 3 }} />
+        <Divider sx={{ my: { xs: 2, md: 3 } }} />
 
-      <Paper sx={{ p: 4 }}>
-        {loadingMasjids ? (
-          <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
-            <CircularProgress />
-            <Typography variant="body1" sx={{ ml: 2 }}>
-              Loading your masjids...
-            </Typography>
-          </Box>
-        ) : (
-          <form onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
-              {/* Masjid Selection */}
-              <Grid item xs={12}>
-                <FormControl fullWidth required>
-                  <InputLabel>Select Masjid to Submit Content To</InputLabel>
-                  <Select
-                    value={formData.masjid_id}
-                    onChange={handleChange("masjid_id")}
-                    disabled={availableMasjids.length === 0}
-                  >
-                    {availableMasjids.map((masjid: MasjidOption) => (
-                      <MenuItem key={masjid.id} value={masjid.id}>
-                        {masjid.name}{" "}
-                        {masjid.city && `- ${masjid.city}, ${masjid.state}`}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                {availableMasjids.length === 0 && (
-                  <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-                    No active masjids available for content submission.
-                  </Typography>
-                )}
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ mt: 1 }}
-                >
-                  Your content will be reviewed by the admin(s) of the selected
-                  masjid
-                </Typography>
-              </Grid>
-
-              {/* Content Type Selection */}
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Content Type</InputLabel>
-                  <Select
-                    value={formData.type}
-                    onChange={(e) => {
-                      handleChange("type")(e);
-                      // Reset states when switching types
-                      setSelectedFile(null);
-                      setImagePreview("");
-                      setGeneratedCanvas(null);
-                      setImageCreationMode("upload");
-                    }}
-                  >
-                    <MenuItem value="image">Image/Text Design</MenuItem>
-                    <MenuItem value="youtube_video">YouTube Video</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-
-              {/* Title */}
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Content Title"
-                  value={formData.title}
-                  onChange={handleChange("title")}
-                  required
-                />
-              </Grid>
-
-              {/* Description */}
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  multiline
-                  rows={3}
-                  label="Description (optional)"
-                  value={formData.description}
-                  onChange={handleChange("description")}
-                />
-              </Grid>
-
-              {/* Image Creation - Upload or Text Overlay */}
-              {formData.type === "image" && (
+        <Paper
+          elevation={0}
+          sx={{
+            p: { xs: 2, md: 4 },
+            borderRadius: 2,
+            border: "1px solid",
+            borderColor: "divider",
+            background: "white",
+          }}
+        >
+          {loadingMasjids ? (
+            <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+              <CircularProgress />
+              <Typography variant="body1" sx={{ ml: 2 }}>
+                Loading your masjids...
+              </Typography>
+            </Box>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <Grid container spacing={{ xs: 2, md: 3 }}>
+                {/* Masjid Selection */}
                 <Grid item xs={12}>
-                  <Paper variant="outlined" sx={{ p: 2 }}>
-                    <Typography variant="h6" gutterBottom>
-                      Create Image Content
-                    </Typography>
-
-                    {/* Mode Selection Tabs */}
-                    <Tabs
-                      value={imageCreationMode}
-                      onChange={(_, newValue) => {
-                        setImageCreationMode(newValue);
-                        // Clear previous selections
-                        setSelectedFile(null);
-                        setImagePreview("");
-                        setGeneratedCanvas(null);
-                      }}
-                      sx={{ mb: 3, borderBottom: 1, borderColor: "divider" }}
+                  <FormControl fullWidth required size="small">
+                    <InputLabel>Pilih Masjid untuk Hantar Kandungan</InputLabel>
+                    <Select
+                      value={formData.masjid_id}
+                      onChange={handleChange("masjid_id")}
+                      disabled={availableMasjids.length === 0}
                     >
-                      <Tab
-                        value="upload"
-                        label="Upload Image"
-                        icon={<ImageIcon />}
-                        iconPosition="start"
-                      />
-                      <Tab
-                        value="text-overlay"
-                        label="Create Text Design"
-                        icon={<TextFields />}
-                        iconPosition="start"
-                      />
-                    </Tabs>
-
-                    {/* Upload Mode */}
-                    {imageCreationMode === "upload" && (
-                      <Box>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          gutterBottom
-                        >
-                          Supported formats: JPG, PNG, GIF, WebP (Max 10MB)
-                        </Typography>
-
-                        {!selectedFile ? (
-                          <>
-                            <input
-                              accept="image/*"
-                              style={{ display: "none" }}
-                              id="image-upload"
-                              type="file"
-                              onChange={handleFileSelect}
-                            />
-                            <label htmlFor="image-upload">
-                              <Button
-                                variant="outlined"
-                                component="span"
-                                startIcon={<CloudUpload />}
-                                size="large"
-                                sx={{ mt: 1 }}
-                              >
-                                Choose Image
-                              </Button>
-                            </label>
-                          </>
-                        ) : (
-                          <Box sx={{ mt: 2 }}>
-                            {/* Image Preview */}
-                            {imagePreview && (
-                              <Box
-                                sx={{
-                                  mb: 2,
-                                  border: "1px solid",
-                                  borderColor: "divider",
-                                  borderRadius: 1,
-                                  p: 2,
-                                  bgcolor: "background.default",
-                                }}
-                              >
-                                <img
-                                  src={imagePreview}
-                                  alt="Preview"
-                                  style={{
-                                    maxWidth: "100%",
-                                    maxHeight: "400px",
-                                    display: "block",
-                                    margin: "0 auto",
-                                    borderRadius: "4px",
-                                  }}
-                                />
-                              </Box>
-                            )}
-
-                            {/* File Info */}
-                            <Box
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                p: 2,
-                                bgcolor: "action.hover",
-                                borderRadius: 1,
-                              }}
-                            >
-                              <Box>
-                                <Typography variant="body2" fontWeight="medium">
-                                  {selectedFile.name}
-                                </Typography>
-                                <Typography
-                                  variant="caption"
-                                  color="text.secondary"
-                                >
-                                  {(selectedFile.size / 1024).toFixed(2)} KB •{" "}
-                                  {selectedFile.type}
-                                </Typography>
-                              </Box>
-                              <Button
-                                variant="outlined"
-                                size="small"
-                                color="error"
-                                onClick={handleClearImage}
-                              >
-                                Remove
-                              </Button>
-                            </Box>
-                          </Box>
-                        )}
-                      </Box>
-                    )}
-
-                    {/* Text Overlay Mode */}
-                    {imageCreationMode === "text-overlay" && (
-                      <Box>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          gutterBottom
-                          sx={{ mb: 2 }}
-                        >
-                          Create a professional text announcement with
-                          Islamic-themed backgrounds or solid colors. Perfect
-                          for announcements, quotes, and reminders.
-                        </Typography>
-
-                        <TextOverlayEditor
-                          onGenerate={(canvas) => {
-                            setGeneratedCanvas(canvas);
-                            // Show success message
-                            const preview = canvas.toDataURL("image/png");
-                            setImagePreview(preview);
-                          }}
-                        />
-
-                        {generatedCanvas && (
-                          <Alert severity="success" sx={{ mt: 2 }}>
-                            ✓ Text design created! You can now submit this
-                            content.
-                          </Alert>
-                        )}
-                      </Box>
-                    )}
-                  </Paper>
-                </Grid>
-              )}
-
-              {/* YouTube URL */}
-              {formData.type === "youtube_video" && (
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="YouTube URL"
-                    placeholder="https://www.youtube.com/watch?v=..."
-                    value={formData.url}
-                    onChange={handleChange("url")}
-                    required
-                  />
-                </Grid>
-              )}
-
-              {/* QR Code Settings */}
-              <Grid item xs={12}>
-                <Paper variant="outlined" sx={{ p: 2 }}>
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                    <QrCode2 sx={{ mr: 1, color: "primary.main" }} />
-                    <Typography variant="h6">QR Code Settings</Typography>
-                  </Box>
-
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formData.qr_code_enabled}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            qr_code_enabled: e.target.checked,
-                          }))
-                        }
-                      />
-                    }
-                    label="Enable QR Code on TV Display"
-                  />
-
+                      {availableMasjids.map((masjid: MasjidOption) => (
+                        <MenuItem key={masjid.id} value={masjid.id}>
+                          {masjid.name}{" "}
+                          {masjid.city && `- ${masjid.city}, ${masjid.state}`}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  {availableMasjids.length === 0 && (
+                    <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                      Tiada masjid aktif tersedia untuk penghantaran kandungan.
+                    </Typography>
+                  )}
                   <Typography
                     variant="body2"
                     color="text.secondary"
-                    sx={{ mt: 1, mb: 2 }}
+                    sx={{ mt: 1, fontSize: { xs: "0.75rem", md: "0.875rem" } }}
                   >
-                    When enabled, a QR code will appear on the TV display. By
-                    default, it links to this content's public detail page where
-                    viewers can get more information.
+                    Kandungan anda akan disemak oleh pentadbir masjid yang
+                    dipilih
                   </Typography>
+                </Grid>
 
-                  <Collapse in={formData.qr_code_enabled}>
-                    <Grid container spacing={2}>
-                      {/* Custom URL */}
-                      <Grid item xs={12}>
-                        <TextField
-                          fullWidth
-                          label="Custom QR Code URL (Optional)"
-                          placeholder="https://example.com/your-link"
-                          value={formData.qr_code_url}
+                {/* Content Type Selection */}
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth size="small">
+                    <InputLabel>Jenis Kandungan</InputLabel>
+                    <Select
+                      value={formData.type}
+                      onChange={(e) => {
+                        handleChange("type")(e);
+                        // Reset states when switching types
+                        setSelectedFile(null);
+                        setImagePreview("");
+                        setGeneratedCanvas(null);
+                        setImageCreationMode("upload");
+                      }}
+                    >
+                      <MenuItem value="image">Imej/Reka Bentuk Teks</MenuItem>
+                      <MenuItem value="youtube_video">Video YouTube</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                {/* Title */}
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    label="Tajuk Kandungan"
+                    value={formData.title}
+                    onChange={handleChange("title")}
+                    required
+                  />
+                </Grid>
+
+                {/* Description */}
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    multiline
+                    rows={3}
+                    label="Description (optional)"
+                    value={formData.description}
+                    onChange={handleChange("description")}
+                  />
+                </Grid>
+
+                {/* Image Creation - Upload or Text Overlay */}
+                {formData.type === "image" && (
+                  <Grid item xs={12}>
+                    <Paper variant="outlined" sx={{ p: 2 }}>
+                      <Typography variant="h6" gutterBottom>
+                        Create Image Content
+                      </Typography>
+
+                      {/* Mode Selection Tabs */}
+                      <Tabs
+                        value={imageCreationMode}
+                        onChange={(_, newValue) => {
+                          setImageCreationMode(newValue);
+                          // Clear previous selections
+                          setSelectedFile(null);
+                          setImagePreview("");
+                          setGeneratedCanvas(null);
+                        }}
+                        sx={{ mb: 3, borderBottom: 1, borderColor: "divider" }}
+                      >
+                        <Tab
+                          value="upload"
+                          label="Upload Image"
+                          icon={<ImageIcon />}
+                          iconPosition="start"
+                        />
+                        <Tab
+                          value="text-overlay"
+                          label="Create Text Design"
+                          icon={<TextFields />}
+                          iconPosition="start"
+                        />
+                      </Tabs>
+
+                      {/* Upload Mode */}
+                      {imageCreationMode === "upload" && (
+                        <Box>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            gutterBottom
+                          >
+                            Supported formats: JPG, PNG, GIF, WebP (Max 10MB)
+                          </Typography>
+
+                          {!selectedFile ? (
+                            <>
+                              <input
+                                accept="image/*"
+                                style={{ display: "none" }}
+                                id="image-upload"
+                                type="file"
+                                onChange={handleFileSelect}
+                              />
+                              <label htmlFor="image-upload">
+                                <Button
+                                  variant="outlined"
+                                  component="span"
+                                  startIcon={<CloudUpload />}
+                                  size="large"
+                                  sx={{ mt: 1 }}
+                                >
+                                  Choose Image
+                                </Button>
+                              </label>
+                            </>
+                          ) : (
+                            <Box sx={{ mt: 2 }}>
+                              {/* Image Preview */}
+                              {imagePreview && (
+                                <Box
+                                  sx={{
+                                    mb: 2,
+                                    border: "1px solid",
+                                    borderColor: "divider",
+                                    borderRadius: 1,
+                                    p: 2,
+                                    bgcolor: "background.default",
+                                  }}
+                                >
+                                  <img
+                                    src={imagePreview}
+                                    alt="Preview"
+                                    style={{
+                                      maxWidth: "100%",
+                                      maxHeight: "400px",
+                                      display: "block",
+                                      margin: "0 auto",
+                                      borderRadius: "4px",
+                                    }}
+                                  />
+                                </Box>
+                              )}
+
+                              {/* File Info */}
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                  p: 2,
+                                  bgcolor: "action.hover",
+                                  borderRadius: 1,
+                                }}
+                              >
+                                <Box>
+                                  <Typography
+                                    variant="body2"
+                                    fontWeight="medium"
+                                  >
+                                    {selectedFile.name}
+                                  </Typography>
+                                  <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                  >
+                                    {(selectedFile.size / 1024).toFixed(2)} KB •{" "}
+                                    {selectedFile.type}
+                                  </Typography>
+                                </Box>
+                                <Button
+                                  variant="outlined"
+                                  size="small"
+                                  color="error"
+                                  onClick={handleClearImage}
+                                >
+                                  Remove
+                                </Button>
+                              </Box>
+                            </Box>
+                          )}
+                        </Box>
+                      )}
+
+                      {/* Text Overlay Mode */}
+                      {imageCreationMode === "text-overlay" && (
+                        <Box>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            gutterBottom
+                            sx={{ mb: 2 }}
+                          >
+                            Create a professional text announcement with
+                            Islamic-themed backgrounds or solid colors. Perfect
+                            for announcements, quotes, and reminders.
+                          </Typography>
+
+                          <TextOverlayEditor
+                            onGenerate={(canvas) => {
+                              setGeneratedCanvas(canvas);
+                              // Show success message
+                              const preview = canvas.toDataURL("image/png");
+                              setImagePreview(preview);
+                            }}
+                          />
+
+                          {generatedCanvas && (
+                            <Alert severity="success" sx={{ mt: 2 }}>
+                              ✓ Text design created! You can now submit this
+                              content.
+                            </Alert>
+                          )}
+                        </Box>
+                      )}
+                    </Paper>
+                  </Grid>
+                )}
+
+                {/* YouTube URL */}
+                {formData.type === "youtube_video" && (
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      label="YouTube URL"
+                      placeholder="https://www.youtube.com/watch?v=..."
+                      value={formData.url}
+                      onChange={handleChange("url")}
+                      required
+                    />
+                  </Grid>
+                )}
+
+                {/* QR Code Settings */}
+                <Grid item xs={12}>
+                  <Paper variant="outlined" sx={{ p: 2 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                      <QrCode2 sx={{ mr: 1, color: "primary.main" }} />
+                      <Typography variant="h6">QR Code Settings</Typography>
+                    </Box>
+
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={formData.qr_code_enabled}
                           onChange={(e) =>
                             setFormData((prev) => ({
                               ...prev,
-                              qr_code_url: e.target.value,
+                              qr_code_enabled: e.target.checked,
                             }))
                           }
-                          helperText="Leave empty to use default public content page. Enter a custom URL to link to your website, registration form, donation page, etc."
                         />
-                      </Grid>
+                      }
+                      label="Enable QR Code on TV Display"
+                    />
 
-                      {/* Position */}
-                      <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                          <InputLabel>QR Code Position</InputLabel>
-                          <Select
-                            value={formData.qr_code_position}
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mt: 1, mb: 2 }}
+                    >
+                      When enabled, a QR code will appear on the TV display. By
+                      default, it links to this content's public detail page
+                      where viewers can get more information.
+                    </Typography>
+
+                    <Collapse in={formData.qr_code_enabled}>
+                      <Grid container spacing={2}>
+                        {/* Custom URL */}
+                        <Grid item xs={12}>
+                          <TextField
+                            fullWidth
+                            label="Custom QR Code URL (Optional)"
+                            placeholder="https://example.com/your-link"
+                            value={formData.qr_code_url}
                             onChange={(e) =>
                               setFormData((prev) => ({
                                 ...prev,
-                                qr_code_position: e.target.value as any,
+                                qr_code_url: e.target.value,
                               }))
                             }
-                            label="QR Code Position"
-                          >
-                            <MenuItem value="top-left">Top Left</MenuItem>
-                            <MenuItem value="top-right">Top Right</MenuItem>
-                            <MenuItem value="bottom-left">Bottom Left</MenuItem>
-                            <MenuItem value="bottom-right">
-                              Bottom Right (Default)
-                            </MenuItem>
-                          </Select>
-                        </FormControl>
-                      </Grid>
+                            helperText="Leave empty to use default public content page. Enter a custom URL to link to your website, registration form, donation page, etc."
+                          />
+                        </Grid>
 
-                      {/* Preview Note */}
-                      <Grid item xs={12}>
-                        <Alert severity="info" icon={<QrCode2 />}>
-                          <Typography variant="body2">
-                            <strong>QR Code Preview:</strong> The QR code will
-                            be generated and displayed on the TV screen when
-                            your content is approved and shown. Viewers can scan
-                            it with their phones to{" "}
-                            {formData.qr_code_url
-                              ? "visit your custom link"
-                              : "view detailed information about this content"}
-                            .
-                          </Typography>
-                        </Alert>
-                      </Grid>
-                    </Grid>
-                  </Collapse>
-                </Paper>
-              </Grid>
+                        {/* Position */}
+                        <Grid item xs={12} sm={6}>
+                          <FormControl fullWidth>
+                            <InputLabel>QR Code Position</InputLabel>
+                            <Select
+                              value={formData.qr_code_position}
+                              onChange={(e) =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  qr_code_position: e.target.value as any,
+                                }))
+                              }
+                              label="QR Code Position"
+                            >
+                              <MenuItem value="top-left">Top Left</MenuItem>
+                              <MenuItem value="top-right">Top Right</MenuItem>
+                              <MenuItem value="bottom-left">
+                                Bottom Left
+                              </MenuItem>
+                              <MenuItem value="bottom-right">
+                                Bottom Right (Default)
+                              </MenuItem>
+                            </Select>
+                          </FormControl>
+                        </Grid>
 
-              {/* Error Display */}
-              {error && (
-                <Grid item xs={12}>
-                  <Alert severity="error">{error}</Alert>
+                        {/* Preview Note */}
+                        <Grid item xs={12}>
+                          <Alert severity="info" icon={<QrCode2 />}>
+                            <Typography variant="body2">
+                              <strong>QR Code Preview:</strong> The QR code will
+                              be generated and displayed on the TV screen when
+                              your content is approved and shown. Viewers can
+                              scan it with their phones to{" "}
+                              {formData.qr_code_url
+                                ? "visit your custom link"
+                                : "view detailed information about this content"}
+                              .
+                            </Typography>
+                          </Alert>
+                        </Grid>
+                      </Grid>
+                    </Collapse>
+                  </Paper>
                 </Grid>
-              )}
 
-              {/* Action Buttons */}
-              <Grid item xs={12}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    gap: 2,
-                  }}
-                >
-                  {/* Submit Button */}
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    startIcon={
-                      loading ? <CircularProgress size={20} /> : <Send />
-                    }
-                    disabled={loading || uploading}
-                    sx={{ minWidth: 150 }}
+                {/* Error Display */}
+                {error && (
+                  <Grid item xs={12}>
+                    <Alert severity="error">{error}</Alert>
+                  </Grid>
+                )}
+
+                {/* Action Buttons */}
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: 2,
+                    }}
                   >
-                    {uploading
-                      ? "Uploading Image..."
-                      : loading
-                        ? "Creating..."
-                        : "Create Content"}
-                  </Button>
-                </Box>
+                    {/* Submit Button */}
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      startIcon={
+                        loading ? <CircularProgress size={20} /> : <Send />
+                      }
+                      disabled={loading || uploading}
+                      sx={{ minWidth: 150 }}
+                    >
+                      {uploading
+                        ? "Uploading Image..."
+                        : loading
+                          ? "Creating..."
+                          : "Create Content"}
+                    </Button>
+                  </Box>
+                </Grid>
               </Grid>
-            </Grid>
-          </form>
-        )}
-      </Paper>
-    </Box>
+            </form>
+          )}
+        </Paper>
+      </Box>
+    </div>
   );
 };
 

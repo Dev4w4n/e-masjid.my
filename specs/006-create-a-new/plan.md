@@ -60,7 +60,7 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 ### II. Monorepo Architecture ✅
 
-- New app will be created in `apps/public/` following monorepo structure
+- New app will be created in `apps/papan-info/` following monorepo structure
 - Using pnpm workspaces exclusively
 - Consuming existing packages: @masjid-suite/supabase-client, @masjid-suite/shared-types, @masjid-suite/i18n
 - TypeScript Build Protocol: Will use `pnpm run build:clean` after clean operations
@@ -90,7 +90,7 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 ### VI. Package-First Feature Development ⚠️ DEVIATION
 
-**Deviation**: Creating new application `apps/public/` instead of package-first
+**Deviation**: Creating new application `apps/papan-info/` instead of package-first
 **Justification**: This is a standalone public-facing application that:
 
 - Consumes existing packages (@masjid-suite/supabase-client, @masjid-suite/shared-types, @masjid-suite/i18n)
@@ -116,7 +116,7 @@ specs/[###-feature]/
 ### Source Code (repository root)
 
 ```
-apps/public/                          # New Next.js public app
+apps/papan-info/                          # New Next.js public app
 ├── src/
 │   ├── app/                         # Next.js 15 App Router
 │   │   ├── layout.tsx               # Root layout with SEO meta, Islamic theme
@@ -172,7 +172,7 @@ packages/                             # Existing packages (consumed)
 └── i18n/                            # Internationalization
 ```
 
-**Structure Decision**: Web application structure following Next.js 15 App Router conventions with SSR for SEO. New app created at `apps/public/` following existing monorepo pattern (similar to `apps/hub/` and `apps/tv-display/`). Consumes existing packages for data access and shared types.
+**Structure Decision**: Web application structure following Next.js 15 App Router conventions with SSR for SEO. New app created at `apps/papan-info/` following existing monorepo pattern (similar to `apps/hub/` and `apps/tv-display/`). Consumes existing packages for data access and shared types.
 
 ## Phase 0: Outline & Research ✅ COMPLETE
 

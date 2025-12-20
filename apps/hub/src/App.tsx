@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Box, CircularProgress } from "@mui/material";
 import { useAuthStatus, useUser, WithRole } from "@masjid-suite/auth";
 import LayoutSimple from "./components/LayoutSimple";
 import PublicRoute from "./components/PublicRoute";
@@ -14,21 +13,24 @@ import MyContent from "./pages/content/MyContent";
 import DisplayManagement from "./pages/admin/DisplayManagement";
 import Home from "./pages/Home";
 
+// Legacy-inspired loading component
+const LoadingScreen = () => (
+  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-blue-50/30 to-teal-50/30">
+    <div className="text-center">
+      <div className="inline-block relative">
+        <div className="w-16 h-16 border-4 border-gray-200 border-t-primary rounded-full animate-spin"></div>
+      </div>
+      <p className="mt-4 text-gray-600 font-medium">Memuatkan...</p>
+    </div>
+  </div>
+);
+
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const user = useUser();
   const status = useAuthStatus();
 
   if (status === "initializing") {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="100vh"
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <LoadingScreen />;
   }
 
   if (!user) {
@@ -45,16 +47,7 @@ function App() {
   const status = useAuthStatus();
 
   if (status === "initializing") {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="100vh"
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <LoadingScreen />;
   }
 
   return (
@@ -82,7 +75,7 @@ function App() {
         {/* Public routes */}
         <Route index element={<Home />} />
         <Route path="masjids" element={<MasjidList />} />
-        {/* Masjid details page moved to public app (/apps/public/src/app/masjid/[id]/page.tsx) */}
+        {/* Masjid details page moved to papan-info app (/apps/papan-info/src/app/masjid/[id]/page.tsx) */}
 
         {/* Protected routes */}
         <Route

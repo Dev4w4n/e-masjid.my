@@ -55,7 +55,7 @@ export default function Header() {
             href={`${hubUrl}/register`}
             className="px-6 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-full transition-colors text-sm"
           >
-            Tambah Iklan
+            Tambah Info
           </Link>
         </div>
 
@@ -89,7 +89,7 @@ export default function Header() {
             onClick={() => setIsMobileMenuOpen(false)}
             className="px-6 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-full transition-colors text-center"
           >
-            Tambah Iklan
+            Tambah Info
           </Link>
         </div>
       )}

@@ -10,7 +10,7 @@
 
 ## 🎯 What Was Built
 
-### **Next.js 15 Application** (`apps/public/`)
+### **Next.js 15 Application** (`apps/papan-info/`)
 
 A production-ready, SEO-first public website that:
 
@@ -325,7 +325,7 @@ NEXT_PUBLIC_HUB_URL=http://localhost:3000
 ### **1. Set Up Environment** (5 minutes)
 
 ```bash
-cd apps/public
+cd apps/papan-info
 cp .env.local.example .env.local
 # Edit .env.local with real Supabase credentials
 ```
@@ -380,7 +380,7 @@ WCAG 2.1 AA compliance:
 ## 📁 File Structure
 
 ```
-apps/public/
+apps/papan-info/
 ├── src/
 │   ├── app/
 │   │   ├── layout.tsx              ← Root layout with Header/Footer
