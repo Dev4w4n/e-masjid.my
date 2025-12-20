@@ -49,7 +49,7 @@ Generated on Tue Dec 2 17:17:28 +08 2025
 ### Environment Variables
 
 - [ ] Hub app variables configured in Cloudflare Pages
-- [ ] Public app variables configured in Cloudflare Pages
+- [ ] Papan Info app variables configured in Cloudflare Pages
 - [ ] TV Display variables configured in Cloudflare Pages
 - [ ] Super admin credentials set in Supabase
 - [ ] OAuth providers configured (if needed)

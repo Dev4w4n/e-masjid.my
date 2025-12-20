@@ -106,10 +106,10 @@ Same steps but:
 4. Framework preset: **Next.js**
 5. Build settings:
    ```
-   Build command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/papan-info && pnpm build && mkdir -p apps/papan-info && cp -r .next apps/papan-info/.next && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
+   Build command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/papan-info && pnpm build && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
    Build output: apps/papan-info/.vercel/output/static
    ```
-   > **Note**: Papan Info app uses Next.js for SEO-friendly server-side rendering. The `build:packages` step compiles shared packages, then `@cloudflare/next-on-pages` adapts Next.js for Cloudflare Pages (avoiding 25 MiB file size limits). The `mkdir -p` and `cp -r` commands work around Vercel CLI's monorepo path detection bug.
+   > **Note**: Papan Info app uses Next.js for SEO-friendly server-side rendering. The `build:packages` step compiles shared packages, then `@cloudflare/next-on-pages` adapts Next.js for Cloudflare Pages (avoiding 25 MiB file size limits).
 6. **Functions configuration** (in Settings → Functions):
    - Compatibility flags: `nodejs_compat`
    - Compatibility date: `2024-01-01`
@@ -135,10 +135,10 @@ Same steps but use `dev` branch and staging environment variables.
 4. Framework preset: **Next.js**
 5. Build settings:
    ```
-   Build command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && mkdir -p apps/tv-display && cp -r .next apps/tv-display/.next && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
+   Build command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
    Build output: apps/tv-display/.vercel/output/static
    ```
-   > **Note**: TV Display app uses Next.js for real-time content updates and SSR. The `build:packages` step compiles shared packages, then `@cloudflare/next-on-pages` adapts Next.js for Cloudflare Pages. The `mkdir -p` and `cp -r` commands work around Vercel CLI's monorepo path detection bug.
+   > **Note**: TV Display app uses Next.js for real-time content updates and SSR. The `build:packages` step compiles shared packages, then `@cloudflare/next-on-pages` adapts Next.js for Cloudflare Pages.
 6. **Functions configuration** (in Settings → Functions):
    - Compatibility flags: `nodejs_compat`
    - Compatibility date: `2024-01-01`
