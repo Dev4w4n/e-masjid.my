@@ -64,8 +64,6 @@ export const TvDisplayList = () => {
                     aria-label="open"
                     component="a"
                     href={getTvDisplayUrlForDisplay(display.id)}
-                    target="_blank"
-                    rel="noopener noreferrer"
                   >
                     <OpenInNew />
                   </IconButton>

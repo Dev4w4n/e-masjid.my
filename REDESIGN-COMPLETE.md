@@ -123,9 +123,9 @@ Following e-masjid.my's subtle shadow approach:
 ### Apps
 
 ✅ `/apps/hub/src/ui/theme/theme.tsx` - Updated color constants  
-✅ `/apps/public/src/styles/globals.css` - New CSS variables and typography  
-✅ `/apps/public/src/styles/islamic-theme.css` - Updated gradients and colors  
-✅ `/apps/public/tailwind.config.js` - New color scales
+✅ `/apps/papan-info/src/styles/globals.css` - New CSS variables and typography  
+✅ `/apps/papan-info/src/styles/islamic-theme.css` - Updated gradients and colors  
+✅ `/apps/papan-info/tailwind.config.js` - New color scales
 
 ### Documentation
 

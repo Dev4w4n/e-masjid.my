@@ -28,13 +28,13 @@ Generated on Tue Dec 2 17:17:28 +08 2025
 - [ ] Set build output: `apps/hub/dist`
 - [ ] Add environment variables from template
 
-#### Public App: `public-emasjid-staging`
+#### Papan Info App: `papan-info-emasjid-staging`
 
 - [ ] Create Cloudflare Pages project
 - [ ] Connect to GitHub: `Dev4w4n/e-masjid.my`
 - [ ] Set production branch: `dev`
-- [ ] Configure build command: `cd apps/public && pnpm install --frozen-lockfile && pnpm build`
-- [ ] Set build output: `apps/public/.next`
+- [ ] Configure build command: `cd apps/papan-info && pnpm install --frozen-lockfile && pnpm build`
+- [ ] Set build output: `apps/papan-info/.next`
 - [ ] Add environment variables from template
 
 #### TV Display App: `tv-emasjid-staging`

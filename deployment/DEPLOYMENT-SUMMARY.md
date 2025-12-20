@@ -58,15 +58,15 @@ deployment/
 | Application    | Purpose              | Framework    | Build Output            |
 | -------------- | -------------------- | ------------ | ----------------------- |
 | **Hub App**    | Management interface | Vite (React) | `apps/hub/dist`         |
-| **Public App** | SEO-friendly content | Next.js      | `apps/public/.next`     |
+| **Papan Info App** | SEO-friendly content | Next.js      | `apps/papan-info/.next`     |
 | **TV Display** | Kiosk interface      | Next.js      | `apps/tv-display/.next` |
 
 ## 🌍 Deployment Matrix
 
 | Environment    | Branch | Supabase Setup             | Cloudflare Projects                                                                |
 | -------------- | ------ | -------------------------- | ---------------------------------------------------------------------------------- |
-| **Production** | `main` | Main project branch        | `hub-emasjid-production`<br>`public-emasjid-production`<br>`tv-emasjid-production` |
-| **Staging**    | `dev`  | Preview branch (`staging`) | `hub-emasjid-staging`<br>`public-emasjid-staging`<br>`tv-emasjid-staging`          |
+| **Production** | `main` | Main project branch        | `hub-emasjid-production`<br>`papan-info-emasjid-production`<br>`tv-emasjid-production` |
+| **Staging**    | `dev`  | Preview branch (`staging`) | `hub-emasjid-staging`<br>`papan-info-emasjid-staging`<br>`tv-emasjid-staging`          |
 
 ## 🔐 Security Features Implemented
 
@@ -165,13 +165,13 @@ deployment/
 ### Production URLs
 
 - **Hub Management**: `https://hub-emasjid-production.pages.dev`
-- **Public Content**: `https://public-emasjid-production.pages.dev`
+- **Public Content**: `https://papan-info-emasjid-production.pages.dev`
 - **TV Display**: `https://tv-emasjid-production.pages.dev`
 
 ### Staging URLs
 
 - **Hub Management**: `https://hub-emasjid-staging.pages.dev`
-- **Public Content**: `https://public-emasjid-staging.pages.dev`
+- **Public Content**: `https://papan-info-emasjid-staging.pages.dev`
 - **TV Display**: `https://tv-emasjid-staging.pages.dev`
 
 ## 📞 Support & Troubleshooting

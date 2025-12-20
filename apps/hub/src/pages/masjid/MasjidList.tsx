@@ -137,342 +137,370 @@ function MasjidList() {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* Header */}
-      <Box
-        sx={{
-          mb: 4,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Box>
-          <Typography variant="h4" component="h1" gutterBottom>
-            {t("masjidList.title")}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {t("masjidList.subtitle")}
-          </Typography>
-        </Box>
-
-        {permissions.canManageMasjids() && (
-          <Button
-            variant="contained"
-            startIcon={<Add />}
-            onClick={() => navigate("/masjids/new")}
-          >
-            {t("masjidList.add_masjid")}
-          </Button>
-        )}
-      </Box>
-
-      {/* Error Display */}
-      {error && (
-        <Alert severity="error" sx={{ mb: 4 }}>
-          {error}
-        </Alert>
-      )}
-
-      {/* Search and Filters */}
-      <Card sx={{ mb: 4 }}>
-        <CardContent>
-          <Grid container spacing={2} alignItems="center">
-            {/* Search */}
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label={t("masjidList.search_label")}
-                placeholder={t("masjidList.search_placeholder")}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Search />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Grid>
-
-            {/* State Filter */}
-            <Grid item xs={12} md={4}>
-              <FormControl fullWidth>
-                <InputLabel>{t("masjidList.filter_state")}</InputLabel>
-                <Select
-                  value={selectedState}
-                  label={t("masjidList.filter_state")}
-                  onChange={(e) => setSelectedState(e.target.value)}
-                >
-                  <MenuItem value="">{t("masjidList.all_states")}</MenuItem>
-                  {malaysianStates.map((state) => (
-                    <MenuItem key={state} value={state}>
-                      {state}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-
-            {/* Filter Toggle */}
-            <Grid item xs={12} md={2}>
-              <Button
-                fullWidth
-                variant="outlined"
-                startIcon={<FilterList />}
-                onClick={() => setShowFilters(!showFilters)}
-              >
-                {t("common.filters")}
-              </Button>
-            </Grid>
-          </Grid>
-
-          {/* Results Count */}
-          <Box
-            sx={{
-              mt: 2,
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Typography variant="body2" color="text.secondary">
-              {t("masjidList.showing_count", {
-                filtered: filteredMasjids.length,
-                total: masjids.length,
-              })}
-            </Typography>
-            {(searchTerm || selectedState) && (
-              <Button
-                size="small"
-                onClick={() => {
-                  setSearchTerm("");
-                  setSelectedState("");
-                }}
-              >
-                {t("masjidList.clear_filters")}
-              </Button>
-            )}
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-teal-50/30">
+      <Container maxWidth="lg" sx={{ py: { xs: 3, md: 4 } }}>
+        {/* Header */}
+        <Box
+          sx={{
+            mb: { xs: 3, md: 4 },
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            justifyContent: "space-between",
+            alignItems: { xs: "flex-start", sm: "center" },
+            gap: 2,
+          }}
+        >
+          <Box>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-2">
+              Senarai{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-500">
+                Masjid
+              </span>
+            </h1>
+            <p className="text-base md:text-lg text-gray-600 leading-relaxed">
+              Jelajah dan hubungi masjid di seluruh Malaysia
+            </p>
           </Box>
-        </CardContent>
-      </Card>
 
-      {/* Masjid Grid */}
-      {loading ? (
-        <Grid container spacing={3}>
-          {[1, 2, 3, 4, 5, 6].map((n) => (
-            <Grid item xs={12} md={6} key={n}>
-              <Card>
-                <CardContent>
-                  <Skeleton variant="text" width="60%" height={32} />
-                  <Skeleton
-                    variant="text"
-                    width="40%"
-                    height={20}
-                    sx={{ mb: 1 }}
-                  />
-                  <Skeleton variant="text" width="100%" height={60} />
-                  <Skeleton variant="text" width="80%" height={20} />
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      ) : filteredMasjids.length === 0 ? (
-        <Card>
-          <CardContent sx={{ textAlign: "center", py: 6 }}>
-            <Avatar
+          {permissions.canManageMasjids() && (
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={() => navigate("/masjids/new")}
               sx={{
-                mx: "auto",
-                mb: 2,
-                bgcolor: "grey.100",
-                width: 64,
-                height: 64,
+                whiteSpace: "nowrap",
+                fontSize: { xs: "0.875rem", md: "0.9375rem" },
               }}
             >
-              <Mosque sx={{ fontSize: "2rem", color: "grey.400" }} />
-            </Avatar>
-            <Typography variant="h6" gutterBottom>
-              {t("masjidList.no_masjids")}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              {searchTerm || selectedState
-                ? t("masjidList.no_results_desc")
-                : t("masjidList.no_masjids_desc")}
-            </Typography>
-            {permissions.canManageMasjids() && (
-              <Button
-                variant="contained"
-                startIcon={<Add />}
-                onClick={() => navigate("/masjids/new")}
-              >
-                {t("masjidList.add_first")}
-              </Button>
-            )}
+              {t("masjidList.add_masjid")}
+            </Button>
+          )}
+        </Box>
+
+        {/* Error Display */}
+        {error && (
+          <Alert severity="error" sx={{ mb: { xs: 2, md: 4 } }}>
+            {error}
+          </Alert>
+        )}
+
+        {/* Search and Filters */}
+        <Card
+          elevation={0}
+          sx={{
+            mb: { xs: 2, md: 4 },
+            borderRadius: 2,
+            border: "1px solid",
+            borderColor: "divider",
+          }}
+        >
+          <CardContent sx={{ p: { xs: 2, md: 3 } }}>
+            <Grid container spacing={{ xs: 2, md: 2 }} alignItems="center">
+              {/* Search */}
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  label={t("masjidList.search_label")}
+                  placeholder={t("masjidList.search_placeholder")}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+
+              {/* State Filter */}
+              <Grid item xs={12} md={4}>
+                <FormControl fullWidth>
+                  <InputLabel>{t("masjidList.filter_state")}</InputLabel>
+                  <Select
+                    value={selectedState}
+                    label={t("masjidList.filter_state")}
+                    onChange={(e) => setSelectedState(e.target.value)}
+                  >
+                    <MenuItem value="">{t("masjidList.all_states")}</MenuItem>
+                    {malaysianStates.map((state) => (
+                      <MenuItem key={state} value={state}>
+                        {state}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              {/* Filter Toggle */}
+              <Grid item xs={12} md={2}>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  startIcon={<FilterList />}
+                  onClick={() => setShowFilters(!showFilters)}
+                >
+                  {t("common.filters")}
+                </Button>
+              </Grid>
+            </Grid>
+
+            {/* Results Count */}
+            <Box
+              sx={{
+                mt: 2,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="body2" color="text.secondary">
+                {t("masjidList.showing_count", {
+                  filtered: filteredMasjids.length,
+                  total: masjids.length,
+                })}
+              </Typography>
+              {(searchTerm || selectedState) && (
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setSearchTerm("");
+                    setSelectedState("");
+                  }}
+                >
+                  {t("masjidList.clear_filters")}
+                </Button>
+              )}
+            </Box>
           </CardContent>
         </Card>
-      ) : (
-        <Grid container spacing={3}>
-          {filteredMasjids.map((masjid) => (
-            <Grid item xs={12} md={6} key={masjid.id}>
-              <Card
+
+        {/* Masjid Grid */}
+        {loading ? (
+          <Grid container spacing={3}>
+            {[1, 2, 3, 4, 5, 6].map((n) => (
+              <Grid item xs={12} md={6} key={n}>
+                <Card>
+                  <CardContent>
+                    <Skeleton variant="text" width="60%" height={32} />
+                    <Skeleton
+                      variant="text"
+                      width="40%"
+                      height={20}
+                      sx={{ mb: 1 }}
+                    />
+                    <Skeleton variant="text" width="100%" height={60} />
+                    <Skeleton variant="text" width="80%" height={20} />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        ) : filteredMasjids.length === 0 ? (
+          <Card>
+            <CardContent sx={{ textAlign: "center", py: 6 }}>
+              <Avatar
                 sx={{
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  transition:
-                    "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
-                  "&:hover": {
-                    transform: "translateY(-2px)",
-                    boxShadow: 4,
-                  },
+                  mx: "auto",
+                  mb: 2,
+                  bgcolor: "grey.100",
+                  width: 64,
+                  height: 64,
                 }}
               >
-                <CardContent sx={{ flex: 1 }}>
-                  {/* Header */}
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "flex-start",
-                      mb: 2,
-                    }}
-                  >
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="h6" component="h3" gutterBottom>
-                        {masjid.name}
-                      </Typography>
-                      {masjid.registration_number && (
-                        <Typography
-                          variant="caption"
-                          color="text.secondary"
-                          display="block"
-                        >
-                          {masjid.registration_number}
+                <Mosque sx={{ fontSize: "2rem", color: "grey.400" }} />
+              </Avatar>
+              <Typography variant="h6" gutterBottom>
+                {t("masjidList.no_masjids")}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                {searchTerm || selectedState
+                  ? t("masjidList.no_results_desc")
+                  : t("masjidList.no_masjids_desc")}
+              </Typography>
+              {permissions.canManageMasjids() && (
+                <Button
+                  variant="contained"
+                  startIcon={<Add />}
+                  onClick={() => navigate("/masjids/new")}
+                >
+                  {t("masjidList.add_first")}
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        ) : (
+          <Grid container spacing={3}>
+            {filteredMasjids.map((masjid) => (
+              <Grid item xs={12} md={6} key={masjid.id}>
+                <Card
+                  sx={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    transition:
+                      "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+                    "&:hover": {
+                      transform: "translateY(-2px)",
+                      boxShadow: 4,
+                    },
+                  }}
+                >
+                  <CardContent sx={{ flex: 1 }}>
+                    {/* Header */}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                        mb: 2,
+                      }}
+                    >
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="h6" component="h3" gutterBottom>
+                          {masjid.name}
                         </Typography>
-                      )}
+                        {masjid.registration_number && (
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            display="block"
+                          >
+                            {masjid.registration_number}
+                          </Typography>
+                        )}
+                      </Box>
+                      <Chip
+                        label={masjid.status}
+                        color={getStatusColor(masjid.status) as any}
+                        size="small"
+                      />
                     </Box>
-                    <Chip
-                      label={masjid.status}
-                      color={getStatusColor(masjid.status) as any}
-                      size="small"
-                    />
-                  </Box>
 
-                  {/* Description */}
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 2 }}
-                  >
-                    {masjid.description && masjid.description.length > 120
-                      ? `${masjid.description.substring(0, 120)}...`
-                      : masjid.description || t("masjidList.no_description")}
-                  </Typography>
-
-                  {/* Address */}
-                  <Box
-                    sx={{ display: "flex", alignItems: "flex-start", mb: 1 }}
-                  >
-                    <LocationOn
-                      color="action"
-                      sx={{ mr: 1, mt: 0.5, fontSize: "1rem" }}
-                    />
-                    <Typography variant="body2" color="text.secondary">
-                      {formatAddress(masjid.address)}
+                    {/* Description */}
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 2 }}
+                    >
+                      {masjid.description && masjid.description.length > 120
+                        ? `${masjid.description.substring(0, 120)}...`
+                        : masjid.description || t("masjidList.no_description")}
                     </Typography>
-                  </Box>
 
-                  {/* Contact */}
-                  {masjid.phone_number && (
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                      <Phone color="action" sx={{ mr: 1, fontSize: "1rem" }} />
+                    {/* Address */}
+                    <Box
+                      sx={{ display: "flex", alignItems: "flex-start", mb: 1 }}
+                    >
+                      <LocationOn
+                        color="action"
+                        sx={{ mr: 1, mt: 0.5, fontSize: "1rem" }}
+                      />
                       <Typography variant="body2" color="text.secondary">
-                        {masjid.phone_number}
+                        {formatAddress(masjid.address)}
                       </Typography>
                     </Box>
-                  )}
 
-                  {masjid.email && (
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <Email color="action" sx={{ mr: 1, fontSize: "1rem" }} />
-                      <Typography variant="body2" color="text.secondary">
-                        {masjid.email}
-                      </Typography>
-                    </Box>
-                  )}
-
-                  {/* Admins */}
-                  {masjid.admins && masjid.admins.length > 0 && (
-                    <Box sx={{ mt: 2 }}>
-                      <Divider sx={{ mb: 1 }} />
-                      <Typography
-                        variant="subtitle2"
+                    {/* Contact */}
+                    {masjid.phone_number && (
+                      <Box
                         sx={{ display: "flex", alignItems: "center", mb: 1 }}
                       >
-                        <AdminPanelSettings
+                        <Phone
                           color="action"
-                          sx={{ mr: 0.5, fontSize: "1.1rem" }}
+                          sx={{ mr: 1, fontSize: "1rem" }}
                         />
-                        {t("masjidList.administrators")}
-                      </Typography>
-                      <List dense disablePadding>
-                        {masjid.admins.map((admin) => (
-                          <ListItem key={admin.user_id} disableGutters>
-                            <ListItemAvatar sx={{ minWidth: 32 }}>
-                              <Avatar
-                                sx={{
-                                  width: 24,
-                                  height: 24,
-                                  fontSize: "0.8rem",
+                        <Typography variant="body2" color="text.secondary">
+                          {masjid.phone_number}
+                        </Typography>
+                      </Box>
+                    )}
+
+                    {masjid.email && (
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <Email
+                          color="action"
+                          sx={{ mr: 1, fontSize: "1rem" }}
+                        />
+                        <Typography variant="body2" color="text.secondary">
+                          {masjid.email}
+                        </Typography>
+                      </Box>
+                    )}
+
+                    {/* Admins */}
+                    {masjid.admins && masjid.admins.length > 0 && (
+                      <Box sx={{ mt: 2 }}>
+                        <Divider sx={{ mb: 1 }} />
+                        <Typography
+                          variant="subtitle2"
+                          sx={{ display: "flex", alignItems: "center", mb: 1 }}
+                        >
+                          <AdminPanelSettings
+                            color="action"
+                            sx={{ mr: 0.5, fontSize: "1.1rem" }}
+                          />
+                          {t("masjidList.administrators")}
+                        </Typography>
+                        <List dense disablePadding>
+                          {masjid.admins.map((admin) => (
+                            <ListItem key={admin.user_id} disableGutters>
+                              <ListItemAvatar sx={{ minWidth: 32 }}>
+                                <Avatar
+                                  sx={{
+                                    width: 24,
+                                    height: 24,
+                                    fontSize: "0.8rem",
+                                  }}
+                                >
+                                  {admin.full_name?.[0]}
+                                </Avatar>
+                              </ListItemAvatar>
+                              <ListItemText
+                                primary={admin.full_name}
+                                secondary={admin.assignment_status}
+                                primaryTypographyProps={{ variant: "body2" }}
+                                secondaryTypographyProps={{
+                                  variant: "caption",
                                 }}
-                              >
-                                {admin.full_name?.[0]}
-                              </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText
-                              primary={admin.full_name}
-                              secondary={admin.assignment_status}
-                              primaryTypographyProps={{ variant: "body2" }}
-                              secondaryTypographyProps={{ variant: "caption" }}
-                            />
-                          </ListItem>
-                        ))}
-                      </List>
-                    </Box>
-                  )}
-                </CardContent>
+                              />
+                            </ListItem>
+                          ))}
+                        </List>
+                      </Box>
+                    )}
+                  </CardContent>
 
-                <CardActions sx={{ p: 2, pt: 0 }}>
-                  <Button
-                    component="a"
-                    href={`${getPublicUrl()}/masjid/${masjid.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    startIcon={<Visibility />}
-                    size="small"
-                  >
-                    {t("masjidList.view_details")}
-                  </Button>
-
-                  {permissions.canManageMasjids() && (
-                    <IconButton
-                      component={Link}
-                      to={`/masjids/${masjid.id}/edit`}
+                  <CardActions sx={{ p: 2, pt: 0 }}>
+                    <Button
+                      component="a"
+                      href={`${getPublicUrl()}/masjid/${masjid.id}`}
+                      startIcon={<Visibility />}
                       size="small"
-                      sx={{ ml: "auto" }}
                     >
-                      <Edit />
-                    </IconButton>
-                  )}
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      )}
-    </Container>
+                      {t("masjidList.view_details")}
+                    </Button>
+
+                    {permissions.canManageMasjids() && (
+                      <IconButton
+                        component={Link}
+                        to={`/masjids/${masjid.id}/edit`}
+                        size="small"
+                        sx={{ ml: "auto" }}
+                      >
+                        <Edit />
+                      </IconButton>
+                    )}
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        )}
+      </Container>
+    </div>
   );
 }
 

@@ -29,7 +29,7 @@ Successfully copied all brand assets from `/images/` folder to both apps:
 - `apple-touch-icon.png`
 - `logo192.png`
 
-### Public App (`apps/public/public/`)
+### Public App (`apps/papan-info/public/`)
 
 ✅ All 6 image files copied
 

@@ -374,8 +374,6 @@ export default async function MasjidPage({ params }: MasjidPageProps) {
                         )}
                         <a
                           href={getTvDisplayUrlForDisplay(display.id)}
-                          target="_blank"
-                          rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 mt-2 text-sm text-blue-600 hover:text-blue-800 hover:underline"
                         >
                           <span>Lihat Paparan</span>

@@ -55,6 +55,7 @@ apps/
 ├── hub/                    # Main web application
 │   ├── src/pages/content/  # NEW: Content management pages
 │   └── src/pages/admin/    # NEW: Approval dashboard
+├── papan-info/             # Public-facing info display app
 └── tv-display/             # Display-only application
 
 supabase/

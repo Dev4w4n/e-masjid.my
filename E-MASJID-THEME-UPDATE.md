@@ -208,7 +208,7 @@ Public app: 152kB first load JS
 ## File Structure
 
 ```
-apps/public/src/
+apps/papan-info/src/
 ├── components/
 │   ├── CategoryFilter.tsx ✅ Updated (blue theme)
 │   ├── ContentCard.tsx ✅ Updated (e-masjid.my theme)

@@ -89,7 +89,7 @@ All color constants properly updated across all apps:
 Inter font family configured in:
 
 - ✅ `packages/ui-theme/src/theme.tsx` - Material-UI theme
-- ✅ `apps/public/src/styles/globals.css` - CSS variables
+- ✅ `apps/papan-info/src/styles/globals.css` - CSS variables
 
 Heading styles match e-masjid.my:
 
@@ -131,16 +131,16 @@ All components updated with new design:
 
 ### Public App ✅
 
-3. `/apps/public/src/styles/globals.css`
+3. `/apps/papan-info/src/styles/globals.css`
    - ✅ CSS variables updated
    - ✅ Typography styles updated
    - ✅ Build successful
 
-4. `/apps/public/tailwind.config.js`
+4. `/apps/papan-info/tailwind.config.js`
    - ✅ Color scales updated
    - ✅ Build successful
 
-5. `/apps/public/src/styles/islamic-theme.css`
+5. `/apps/papan-info/src/styles/islamic-theme.css`
    - ✅ Component styles updated
    - ✅ Build successful
 

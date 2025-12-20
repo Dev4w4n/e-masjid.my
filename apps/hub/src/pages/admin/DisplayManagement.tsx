@@ -158,10 +158,22 @@ function SortableContentItem({
         mb: 1,
         bgcolor: "background.paper",
         cursor: isDragging ? "grabbing" : "grab",
+        flexDirection: { xs: "column", sm: "row" },
+        alignItems: { xs: "stretch", sm: "center" },
+        p: { xs: 1.5, sm: 2 },
       }}
       secondaryAction={
-        <Box sx={{ display: "flex", gap: 1 }}>
-          <Tooltip title="Edit Settings">
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1,
+            flexDirection: { xs: "row", sm: "row" },
+            width: { xs: "100%", sm: "auto" },
+            justifyContent: { xs: "flex-end", sm: "flex-start" },
+            mt: { xs: 1, sm: 0 },
+          }}
+        >
+          <Tooltip title="Edit Tetapan">
             <IconButton
               size="small"
               onClick={() => onEditSettings(content)}
@@ -175,8 +187,9 @@ function SortableContentItem({
             size="small"
             color="error"
             onClick={() => onRemove(content.id)}
+            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
           >
-            Remove
+            Buang
           </Button>
         </Box>
       }
@@ -185,17 +198,23 @@ function SortableContentItem({
         {...attributes}
         {...listeners}
         size="small"
-        sx={{ mr: 2, cursor: "grab" }}
+        sx={{
+          mr: { xs: 1, sm: 2 },
+          cursor: "grab",
+          touchAction: "none",
+          alignSelf: { xs: "flex-start", sm: "center" },
+        }}
       >
         <DragIndicator />
       </IconButton>
       <ListItemText
         primary={content.title}
         secondaryTypographyProps={{ component: "div" }}
+        sx={{ pr: { xs: 0, sm: 2 } }}
         secondary={
           <Box component="span">
             <Typography variant="body2" component="span" display="block">
-              {content.type} • Display:{" "}
+              {content.type} • Paparan:{" "}
               {content.carousel_duration || content.duration || 10}s
             </Typography>
             <Box sx={{ mt: 0.5, display: "flex", gap: 0.5, flexWrap: "wrap" }}>
@@ -203,14 +222,14 @@ function SortableContentItem({
                 size="small"
                 label={content.transition_type || "fade"}
                 icon={<Animation />}
-                sx={{ height: 20 }}
+                sx={{ height: 20, fontSize: "0.7rem" }}
               />
               {isImageContent && (
                 <Chip
                   size="small"
                   label={content.image_display_mode || "contain"}
                   icon={<ImageIcon />}
-                  sx={{ height: 20 }}
+                  sx={{ height: 20, fontSize: "0.7rem" }}
                 />
               )}
             </Box>
@@ -651,834 +670,1082 @@ const DisplayManagement = () => {
   }
 
   return (
-    <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Display Management
-      </Typography>
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-teal-50/30">
+      <Container maxWidth="xl" sx={{ py: { xs: 3, md: 6 } }}>
+        {/* Page Header with Legacy-inspired styling */}
+        <div className="mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight mb-3">
+            Pengurusan{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-500">
+              Paparan TV
+            </span>
+          </h1>
+          <p className="text-lg text-gray-600 leading-relaxed">
+            Uruskan paparan TV masjid, tetapan kandungan, dan jadual tayangan
+          </p>
+        </div>
 
-      {/* Masjid Selection */}
-      <Paper sx={{ p: 3, mb: 3 }}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
-            <FormControl fullWidth>
-              <InputLabel>Select Masjid</InputLabel>
-              <Select
-                value={selectedMasjidId}
-                label="Select Masjid"
-                onChange={handleMasjidChange}
+        {/* Masjid Selection - Mobile First */}
+        <Paper
+          elevation={0}
+          sx={{
+            p: { xs: 2, md: 3 },
+            mb: 3,
+            borderRadius: 2,
+            border: "1px solid",
+            borderColor: "divider",
+            background: "white",
+          }}
+        >
+          <Grid container spacing={{ xs: 2, md: 3 }}>
+            <Grid item xs={12} md={6}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Pilih Masjid</InputLabel>
+                <Select
+                  value={selectedMasjidId}
+                  label="Pilih Masjid"
+                  onChange={handleMasjidChange}
+                >
+                  {userMasjids.map((masjid) => (
+                    <MenuItem key={masjid.id} value={masjid.id}>
+                      {masjid.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} md={5}>
+              <FormControl fullWidth size="small" disabled={!selectedMasjidId}>
+                <InputLabel>Pilih Paparan</InputLabel>
+                <Select
+                  value={selectedDisplayId}
+                  label="Pilih Paparan"
+                  onChange={handleDisplayChange}
+                >
+                  {displays.map((display) => (
+                    <MenuItem key={display.id} value={display.id}>
+                      {display.display_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} md={1}>
+              <Button
+                variant="outlined"
+                fullWidth
+                disabled={!selectedMasjidId}
+                onClick={() => setCreateDisplayDialog(true)}
+                size="small"
+                sx={{
+                  height: { xs: 40, md: 40 },
+                  whiteSpace: { xs: "normal", md: "nowrap" },
+                }}
               >
-                {userMasjids.map((masjid) => (
-                  <MenuItem key={masjid.id} value={masjid.id}>
-                    {masjid.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+                Cipta Baru
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={5}>
-            <FormControl fullWidth disabled={!selectedMasjidId}>
-              <InputLabel>Select Display</InputLabel>
-              <Select
-                value={selectedDisplayId}
-                label="Select Display"
-                onChange={handleDisplayChange}
+
+          {/* Display Remote Control - Mobile Responsive */}
+          {selectedDisplayId && (
+            <Box
+              sx={{
+                mt: 2,
+                pt: 2,
+                borderTop: 1,
+                borderColor: "divider",
+              }}
+            >
+              <Typography
+                variant="subtitle2"
+                color="text.secondary"
+                sx={{ mb: 1, fontSize: { xs: "0.875rem", md: "0.875rem" } }}
               >
-                {displays.map((display) => (
-                  <MenuItem key={display.id} value={display.id}>
-                    {display.display_name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} md={1}>
-            <Button
-              variant="outlined"
-              fullWidth
-              disabled={!selectedMasjidId}
-              onClick={() => setCreateDisplayDialog(true)}
-              sx={{ height: 56 }}
-            >
-              Create New
-            </Button>
-          </Grid>
-        </Grid>
-
-        {/* Display Remote Control */}
-        {selectedDisplayId && (
-          <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: "divider" }}>
-            <Typography
-              variant="subtitle2"
-              color="text.secondary"
-              sx={{ mb: 1 }}
-            >
-              Remote Control
-            </Typography>
-            <Box sx={{ display: "flex", gap: 1 }}>
-              <Tooltip title="Force the TV display to perform a full page refresh">
-                <Button
-                  variant="outlined"
-                  size="small"
-                  startIcon={<Refresh />}
-                  onClick={async () => {
-                    try {
-                      const success =
-                        await forceReloadDisplay(selectedDisplayId);
-                      if (success) {
-                        enqueueSnackbar("Hard reload command sent to display", {
-                          variant: "success",
-                        });
-                      } else {
-                        enqueueSnackbar("Failed to send reload command", {
-                          variant: "warning",
-                        });
-                      }
-                    } catch (error: any) {
-                      enqueueSnackbar(`Error: ${error.message}`, {
-                        variant: "error",
-                      });
-                    }
-                  }}
-                >
-                  Hard Reload
-                </Button>
-              </Tooltip>
-              <Tooltip title="Refresh content without full page reload">
-                <Button
-                  variant="outlined"
-                  size="small"
-                  startIcon={<Refresh />}
-                  onClick={async () => {
-                    try {
-                      const success =
-                        await softReloadDisplay(selectedDisplayId);
-                      if (success) {
-                        enqueueSnackbar("Soft reload command sent to display", {
-                          variant: "success",
-                        });
-                      } else {
-                        enqueueSnackbar("Failed to send reload command", {
-                          variant: "warning",
-                        });
-                      }
-                    } catch (error: any) {
-                      enqueueSnackbar(`Error: ${error.message}`, {
-                        variant: "error",
-                      });
-                    }
-                  }}
-                >
-                  Soft Reload
-                </Button>
-              </Tooltip>
-              <Tooltip title="Clear cached data on the TV display">
-                <Button
-                  variant="outlined"
-                  size="small"
-                  color="warning"
-                  startIcon={<CachedOutlined />}
-                  onClick={async () => {
-                    try {
-                      const success =
-                        await clearDisplayCache(selectedDisplayId);
-                      if (success) {
-                        enqueueSnackbar("Clear cache command sent to display", {
-                          variant: "success",
-                        });
-                      } else {
-                        enqueueSnackbar("Failed to send clear cache command", {
-                          variant: "warning",
-                        });
-                      }
-                    } catch (error: any) {
-                      enqueueSnackbar(`Error: ${error.message}`, {
-                        variant: "error",
-                      });
-                    }
-                  }}
-                >
-                  Clear Cache
-                </Button>
-              </Tooltip>
-            </Box>
-          </Box>
-        )}
-      </Paper>
-
-      {selectedMasjidId && displays.length === 0 && (
-        <Alert severity="info" sx={{ mb: 3 }}>
-          No displays found for this masjid. Please create displays first.
-        </Alert>
-      )}
-
-      {selectedDisplayId && (
-        <>
-          {/* Tabs */}
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <Tabs
-              value={tabValue}
-              onChange={handleTabChange}
-              aria-label="display management tabs"
-            >
-              <Tab label="Display Settings" />
-              <Tab label="Content Assignment" />
-            </Tabs>
-          </Box>
-
-          {/* Display Settings Tab */}
-          <TabPanel value={tabValue} index={0}>
-            {displaySettings && (
-              <Grid container spacing={3}>
-                {/* General Settings */}
-                <Grid item xs={12} md={6}>
-                  <Card>
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        General Settings
-                      </Typography>
-                      <TextField
-                        name="display_name"
-                        label="Display Name"
-                        value={displaySettings.display_name || ""}
-                        onChange={handleSettingsChange}
-                        fullWidth
-                        margin="normal"
-                      />
-                      <TextField
-                        name="description"
-                        label="Description"
-                        value={displaySettings.description || ""}
-                        onChange={handleSettingsChange}
-                        fullWidth
-                        margin="normal"
-                        multiline
-                        rows={2}
-                      />
-                      <TextField
-                        name="location_description"
-                        label="Location"
-                        value={displaySettings.location_description || ""}
-                        onChange={handleSettingsChange}
-                        fullWidth
-                        margin="normal"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            name="is_active"
-                            checked={displaySettings.is_active || false}
-                            onChange={handleSettingsChange}
-                          />
-                        }
-                        label="Display Active"
-                      />
-                    </CardContent>
-                  </Card>
-                </Grid>
-
-                {/* Physical Display */}
-                <Grid item xs={12} md={6}>
-                  <Card>
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        Physical Display
-                      </Typography>
-                      <FormControl fullWidth margin="normal">
-                        <InputLabel>Resolution</InputLabel>
-                        <Select
-                          name="resolution"
-                          value={displaySettings.resolution || "1920x1080"}
-                          label="Resolution"
-                          onChange={handleSelectChange}
-                        >
-                          <MenuItem value="1920x1080">
-                            1920x1080 (Full HD)
-                          </MenuItem>
-                          <MenuItem value="3840x2160">
-                            3840x2160 (4K UHD)
-                          </MenuItem>
-                          <MenuItem value="1366x768">1366x768 (HD)</MenuItem>
-                        </Select>
-                      </FormControl>
-                      <FormControl fullWidth margin="normal">
-                        <InputLabel>Orientation</InputLabel>
-                        <Select
-                          name="orientation"
-                          value={displaySettings.orientation || "landscape"}
-                          label="Orientation"
-                          onChange={handleSelectChange}
-                        >
-                          <MenuItem value="landscape">Landscape</MenuItem>
-                          <MenuItem value="portrait">Portrait</MenuItem>
-                        </Select>
-                      </FormControl>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            name="is_touch_enabled"
-                            checked={displaySettings.is_touch_enabled || false}
-                            onChange={handleSettingsChange}
-                          />
-                        }
-                        label="Touch Enabled"
-                      />
-                    </CardContent>
-                  </Card>
-                </Grid>
-
-                {/* Content Carousel */}
-                <Grid item xs={12} md={6}>
-                  <Card>
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        Content Carousel
-                      </Typography>
-                      <TextField
-                        name="carousel_interval"
-                        label="Carousel Interval (seconds)"
-                        type="number"
-                        value={displaySettings.carousel_interval || 10}
-                        onChange={handleSettingsChange}
-                        fullWidth
-                        margin="normal"
-                      />
-                      <TextField
-                        name="max_content_items"
-                        label="Max Content Items"
-                        type="number"
-                        value={displaySettings.max_content_items || 10}
-                        onChange={handleSettingsChange}
-                        fullWidth
-                        margin="normal"
-                      />
-                      <FormControl fullWidth margin="normal">
-                        <InputLabel>Transition</InputLabel>
-                        <Select
-                          name="content_transition_type"
-                          value={
-                            displaySettings.content_transition_type || "fade"
-                          }
-                          label="Transition"
-                          onChange={handleSelectChange}
-                        >
-                          <MenuItem value="fade">Fade</MenuItem>
-                          <MenuItem value="slide">Slide</MenuItem>
-                          <MenuItem value="zoom">Zoom</MenuItem>
-                          <MenuItem value="none">None</MenuItem>
-                        </Select>
-                      </FormControl>
-                      <TextField
-                        name="auto_refresh_interval"
-                        label="Auto-Refresh Interval (minutes)"
-                        type="number"
-                        value={displaySettings.auto_refresh_interval || 60}
-                        onChange={handleSettingsChange}
-                        fullWidth
-                        margin="normal"
-                      />
-                    </CardContent>
-                  </Card>
-                </Grid>
-
-                {/* Prayer Times */}
-                <Grid item xs={12} md={6}>
-                  <Card>
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        Prayer Times Display
-                      </Typography>
-                      <FormControl fullWidth margin="normal">
-                        <InputLabel>Position</InputLabel>
-                        <Select
-                          name="prayer_time_position"
-                          value={displaySettings.prayer_time_position || "top"}
-                          label="Position"
-                          onChange={handleSelectChange}
-                        >
-                          <MenuItem value="top">Top</MenuItem>
-                          <MenuItem value="bottom">Bottom</MenuItem>
-                          <MenuItem value="left">Left</MenuItem>
-                          <MenuItem value="right">Right</MenuItem>
-                          <MenuItem value="hidden">Hidden</MenuItem>
-                        </Select>
-                      </FormControl>
-                      <FormControl fullWidth margin="normal">
-                        <InputLabel>Font Size</InputLabel>
-                        <Select
-                          name="prayer_time_font_size"
-                          value={
-                            displaySettings.prayer_time_font_size || "medium"
-                          }
-                          label="Font Size"
-                          onChange={handleSelectChange}
-                        >
-                          <MenuItem value="small">Small</MenuItem>
-                          <MenuItem value="medium">Medium</MenuItem>
-                          <MenuItem value="large">Large</MenuItem>
-                          <MenuItem value="extra_large">Extra Large</MenuItem>
-                        </Select>
-                      </FormControl>
-                      <FormControl fullWidth margin="normal">
-                        <InputLabel>Layout</InputLabel>
-                        <Select
-                          name="prayer_time_layout"
-                          value={
-                            displaySettings.prayer_time_layout || "horizontal"
-                          }
-                          label="Layout"
-                          onChange={handleSelectChange}
-                        >
-                          <MenuItem value="horizontal">
-                            Horizontal (Side by Side)
-                          </MenuItem>
-                          <MenuItem value="vertical">
-                            Vertical (Stacked)
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
-                      <FormControl fullWidth margin="normal">
-                        <InputLabel>Alignment</InputLabel>
-                        <Select
-                          name="prayer_time_alignment"
-                          value={
-                            displaySettings.prayer_time_alignment || "center"
-                          }
-                          label="Alignment"
-                          onChange={handleSelectChange}
-                        >
-                          <MenuItem value="left">Left</MenuItem>
-                          <MenuItem value="center">Center</MenuItem>
-                          <MenuItem value="right">Right</MenuItem>
-                          <MenuItem value="top">Top</MenuItem>
-                          <MenuItem value="bottom">Bottom</MenuItem>
-                          <MenuItem value="space-between">
-                            Space Between
-                          </MenuItem>
-                          <MenuItem value="space-around">Space Around</MenuItem>
-                        </Select>
-                      </FormControl>
-                      <TextField
-                        name="prayer_time_background_opacity"
-                        label="Background Opacity (0-1)"
-                        type="number"
-                        value={
-                          displaySettings.prayer_time_background_opacity || 0.8
-                        }
-                        onChange={handleSettingsChange}
-                        fullWidth
-                        margin="normal"
-                        inputProps={{ step: "0.1", min: 0, max: 1 }}
-                      />
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", mt: 2 }}
-                      >
-                        <Typography>Font Color:</Typography>
-                        <Chip
-                          label={displaySettings.prayer_time_color || "#FFFFFF"}
-                          onClick={() => setShowColorPicker(!showColorPicker)}
-                          style={{
-                            backgroundColor:
-                              displaySettings.prayer_time_color || "#FFFFFF",
-                            color: "#000",
-                            marginLeft: "10px",
-                          }}
-                        />
-                      </Box>
-                      {showColorPicker && (
-                        <Box sx={{ position: "relative", zIndex: 2 }}>
-                          <Box sx={{ position: "absolute", top: "10px" }}>
-                            <SketchPicker
-                              color={
-                                displaySettings.prayer_time_color || "#FFFFFF"
-                              }
-                              onChangeComplete={handleColorChange}
-                            />
-                          </Box>
-                        </Box>
-                      )}
-                    </CardContent>
-                  </Card>
-                </Grid>
-
-                {/* Image Display Settings */}
-                <Grid item xs={12} md={6}>
-                  <Card>
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        Image Display
-                      </Typography>
-                      <FormControl fullWidth margin="normal">
-                        <InputLabel>Display Mode</InputLabel>
-                        <Select
-                          name="image_display_mode"
-                          value={
-                            displaySettings.image_display_mode || "contain"
-                          }
-                          label="Display Mode"
-                          onChange={handleSelectChange}
-                        >
-                          <MenuItem value="contain">
-                            Fit (Maintain Aspect Ratio)
-                          </MenuItem>
-                          <MenuItem value="cover">Fill (May Crop)</MenuItem>
-                          <MenuItem value="fill">Stretch to Fill</MenuItem>
-                          <MenuItem value="none">Original Size</MenuItem>
-                        </Select>
-                      </FormControl>
-                      <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        display="block"
-                        sx={{ mb: 2 }}
-                      >
-                        {displaySettings.image_display_mode === "contain" &&
-                          "Images will fit within the screen while maintaining aspect ratio (recommended)"}
-                        {displaySettings.image_display_mode === "cover" &&
-                          "Images will fill the entire screen and may be cropped"}
-                        {displaySettings.image_display_mode === "fill" &&
-                          "Images will stretch to fill the screen (may distort)"}
-                        {displaySettings.image_display_mode === "none" &&
-                          "Images will display at their original size"}
-                      </Typography>
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", mt: 2 }}
-                      >
-                        <Typography>Background Color:</Typography>
-                        <Chip
-                          label={
-                            displaySettings.image_background_color || "#000000"
-                          }
-                          onClick={() =>
-                            setShowImageBgColorPicker(!showImageBgColorPicker)
-                          }
-                          style={{
-                            backgroundColor:
-                              displaySettings.image_background_color ||
-                              "#000000",
-                            color: "#FFFFFF",
-                            marginLeft: "10px",
-                            cursor: "pointer",
-                          }}
-                        />
-                      </Box>
-                      {showImageBgColorPicker && (
-                        <Box sx={{ mt: 2 }}>
-                          <SketchPicker
-                            color={
-                              displaySettings.image_background_color ||
-                              "#000000"
+                Kawalan Jauh
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 1,
+                  flexWrap: "wrap",
+                  "& .MuiButton-root": {
+                    fontSize: { xs: "0.75rem", md: "0.875rem" },
+                    minWidth: { xs: "auto", md: "auto" },
+                  },
+                }}
+              >
+                <Tooltip title="Muat semula penuh paparan TV">
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    startIcon={<Refresh />}
+                    onClick={async () => {
+                      try {
+                        const success =
+                          await forceReloadDisplay(selectedDisplayId);
+                        if (success) {
+                          enqueueSnackbar(
+                            "Arahan muat semula dihantar ke paparan",
+                            {
+                              variant: "success",
                             }
-                            onChangeComplete={(color) => {
-                              handleSelectChange({
-                                target: {
-                                  name: "image_background_color",
-                                  value: color.hex,
-                                },
-                              } as any);
-                              setShowImageBgColorPicker(false);
+                          );
+                        } else {
+                          enqueueSnackbar("Gagal menghantar arahan", {
+                            variant: "warning",
+                          });
+                        }
+                      } catch (error: any) {
+                        enqueueSnackbar(`Ralat: ${error.message}`, {
+                          variant: "error",
+                        });
+                      }
+                    }}
+                    sx={{ flex: { xs: "1 1 auto", sm: "0 1 auto" } }}
+                  >
+                    Hard Reload
+                  </Button>
+                </Tooltip>
+                <Tooltip title="Muat semula kandungan sahaja">
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    startIcon={<Refresh />}
+                    onClick={async () => {
+                      try {
+                        const success =
+                          await softReloadDisplay(selectedDisplayId);
+                        if (success) {
+                          enqueueSnackbar(
+                            "Arahan muat semula dihantar ke paparan",
+                            {
+                              variant: "success",
+                            }
+                          );
+                        } else {
+                          enqueueSnackbar("Gagal menghantar arahan", {
+                            variant: "warning",
+                          });
+                        }
+                      } catch (error: any) {
+                        enqueueSnackbar(`Ralat: ${error.message}`, {
+                          variant: "error",
+                        });
+                      }
+                    }}
+                    sx={{ flex: { xs: "1 1 auto", sm: "0 1 auto" } }}
+                  >
+                    Soft Reload
+                  </Button>
+                </Tooltip>
+                <Tooltip title="Kosongkan cache paparan TV">
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    color="warning"
+                    startIcon={<CachedOutlined />}
+                    onClick={async () => {
+                      try {
+                        const success =
+                          await clearDisplayCache(selectedDisplayId);
+                        if (success) {
+                          enqueueSnackbar(
+                            "Arahan kosongkan cache dihantar ke paparan",
+                            {
+                              variant: "success",
+                            }
+                          );
+                        } else {
+                          enqueueSnackbar("Gagal menghantar arahan", {
+                            variant: "warning",
+                          });
+                        }
+                      } catch (error: any) {
+                        enqueueSnackbar(`Ralat: ${error.message}`, {
+                          variant: "error",
+                        });
+                      }
+                    }}
+                    sx={{ flex: { xs: "1 1 auto", sm: "0 1 auto" } }}
+                  >
+                    Kosongkan Cache
+                  </Button>
+                </Tooltip>
+              </Box>
+            </Box>
+          )}
+        </Paper>
+
+        {selectedMasjidId && displays.length === 0 && (
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              mb: 3,
+              borderRadius: 2,
+              border: "1px solid",
+              borderColor: "divider",
+              background: "white",
+            }}
+          >
+            <Alert severity="info">
+              Tiada paparan dijumpai untuk masjid ini. Sila cipta paparan
+              dahulu.
+            </Alert>
+          </Paper>
+        )}
+
+        {selectedDisplayId && (
+          <>
+            {/* Tabs - Mobile Scrollable */}
+            <Box
+              sx={{
+                borderBottom: 1,
+                borderColor: "divider",
+                mb: 2,
+                bgcolor: "white",
+                borderRadius: "8px 8px 0 0",
+                "& .MuiTabs-root": {
+                  minHeight: { xs: 48, md: 48 },
+                },
+                "& .MuiTab-root": {
+                  fontSize: { xs: "0.875rem", md: "0.9375rem" },
+                  minHeight: { xs: 48, md: 48 },
+                  textTransform: "none",
+                  fontWeight: 600,
+                },
+              }}
+            >
+              <Tabs
+                value={tabValue}
+                onChange={handleTabChange}
+                aria-label="tabs pengurusan paparan"
+                variant="scrollable"
+                scrollButtons="auto"
+                allowScrollButtonsMobile
+              >
+                <Tab label="Tetapan Paparan" />
+                <Tab label="Penugasan Kandungan" />
+              </Tabs>
+            </Box>
+
+            {/* Display Settings Tab */}
+            <TabPanel value={tabValue} index={0}>
+              {displaySettings && (
+                <Grid container spacing={{ xs: 2, md: 3 }}>
+                  {/* General Settings */}
+                  <Grid item xs={12} md={6}>
+                    <Card
+                      elevation={0}
+                      sx={{
+                        borderRadius: 2,
+                        border: "1px solid",
+                        borderColor: "divider",
+                        height: "100%",
+                      }}
+                    >
+                      <CardContent>
+                        <Typography
+                          variant="h6"
+                          gutterBottom
+                          sx={{
+                            fontSize: { xs: "1.125rem", md: "1.25rem" },
+                            fontWeight: 600,
+                          }}
+                        >
+                          Tetapan Umum
+                        </Typography>
+                        <TextField
+                          name="display_name"
+                          label="Nama Paparan"
+                          value={displaySettings.display_name || ""}
+                          onChange={handleSettingsChange}
+                          fullWidth
+                          margin="normal"
+                          size="small"
+                        />
+                        <TextField
+                          name="description"
+                          label="Penerangan"
+                          value={displaySettings.description || ""}
+                          onChange={handleSettingsChange}
+                          fullWidth
+                          margin="normal"
+                          multiline
+                          rows={2}
+                          size="small"
+                        />
+                        <TextField
+                          name="location_description"
+                          label="Lokasi"
+                          value={displaySettings.location_description || ""}
+                          onChange={handleSettingsChange}
+                          fullWidth
+                          margin="normal"
+                          size="small"
+                        />
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              name="is_active"
+                              checked={displaySettings.is_active || false}
+                              onChange={handleSettingsChange}
+                            />
+                          }
+                          label="Paparan Aktif"
+                        />
+                      </CardContent>
+                    </Card>
+                  </Grid>
+
+                  {/* Physical Display */}
+                  <Grid item xs={12} md={6}>
+                    <Card
+                      elevation={0}
+                      sx={{
+                        borderRadius: 2,
+                        border: "1px solid",
+                        borderColor: "divider",
+                        height: "100%",
+                      }}
+                    >
+                      <CardContent>
+                        <Typography
+                          variant="h6"
+                          gutterBottom
+                          sx={{
+                            fontSize: { xs: "1.125rem", md: "1.25rem" },
+                            fontWeight: 600,
+                          }}
+                        >
+                          Tetapan Skrin Fizikal
+                        </Typography>
+                        <FormControl fullWidth margin="normal" size="small">
+                          <InputLabel>Resolusi</InputLabel>
+                          <Select
+                            name="resolution"
+                            value={displaySettings.resolution || "1920x1080"}
+                            label="Resolusi"
+                            onChange={handleSelectChange}
+                          >
+                            <MenuItem value="1920x1080">
+                              1920x1080 (Full HD)
+                            </MenuItem>
+                            <MenuItem value="3840x2160">
+                              3840x2160 (4K UHD)
+                            </MenuItem>
+                            <MenuItem value="1366x768">1366x768 (HD)</MenuItem>
+                          </Select>
+                        </FormControl>
+                        <FormControl fullWidth margin="normal" size="small">
+                          <InputLabel>Orientasi</InputLabel>
+                          <Select
+                            name="orientation"
+                            value={displaySettings.orientation || "landscape"}
+                            label="Orientasi"
+                            onChange={handleSelectChange}
+                          >
+                            <MenuItem value="landscape">Landscape</MenuItem>
+                            <MenuItem value="portrait">Portrait</MenuItem>
+                          </Select>
+                        </FormControl>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              name="is_touch_enabled"
+                              checked={
+                                displaySettings.is_touch_enabled || false
+                              }
+                              onChange={handleSettingsChange}
+                            />
+                          }
+                          label="Skrin Sentuh Diaktifkan"
+                        />
+                      </CardContent>
+                    </Card>
+                  </Grid>
+
+                  {/* Content Carousel */}
+                  <Grid item xs={12} md={6}>
+                    <Card
+                      elevation={0}
+                      sx={{
+                        borderRadius: 2,
+                        border: "1px solid",
+                        borderColor: "divider",
+                        height: "100%",
+                      }}
+                    >
+                      <CardContent>
+                        <Typography
+                          variant="h6"
+                          gutterBottom
+                          sx={{
+                            fontSize: { xs: "1.125rem", md: "1.25rem" },
+                            fontWeight: 600,
+                          }}
+                        >
+                          Carousel Kandungan
+                        </Typography>
+                        <TextField
+                          name="carousel_interval"
+                          label="Selang Carousel (saat)"
+                          type="number"
+                          value={displaySettings.carousel_interval || 10}
+                          onChange={handleSettingsChange}
+                          fullWidth
+                          margin="normal"
+                          size="small"
+                        />
+                        <TextField
+                          name="max_content_items"
+                          label="Had Kandungan"
+                          type="number"
+                          value={displaySettings.max_content_items || 10}
+                          onChange={handleSettingsChange}
+                          fullWidth
+                          margin="normal"
+                          size="small"
+                        />
+                        <FormControl fullWidth margin="normal" size="small">
+                          <InputLabel>Transisi</InputLabel>
+                          <Select
+                            name="content_transition_type"
+                            value={
+                              displaySettings.content_transition_type || "fade"
+                            }
+                            label="Transisi"
+                            onChange={handleSelectChange}
+                          >
+                            <MenuItem value="fade">Fade</MenuItem>
+                            <MenuItem value="slide">Slide</MenuItem>
+                            <MenuItem value="zoom">Zoom</MenuItem>
+                            <MenuItem value="none">None</MenuItem>
+                          </Select>
+                        </FormControl>
+                        <TextField
+                          name="auto_refresh_interval"
+                          label="Selang Auto-Refresh (minit)"
+                          type="number"
+                          value={displaySettings.auto_refresh_interval || 60}
+                          onChange={handleSettingsChange}
+                          fullWidth
+                          margin="normal"
+                          size="small"
+                        />
+                      </CardContent>
+                    </Card>
+                  </Grid>
+
+                  {/* Prayer Times */}
+                  <Grid item xs={12} md={6}>
+                    <Card
+                      elevation={0}
+                      sx={{
+                        borderRadius: 2,
+                        border: "1px solid",
+                        borderColor: "divider",
+                        height: "100%",
+                      }}
+                    >
+                      <CardContent>
+                        <Typography
+                          variant="h6"
+                          gutterBottom
+                          sx={{
+                            fontSize: { xs: "1.125rem", md: "1.25rem" },
+                            fontWeight: 600,
+                          }}
+                        >
+                          Paparan Waktu Solat
+                        </Typography>
+                        <FormControl fullWidth margin="normal" size="small">
+                          <InputLabel>Posisi</InputLabel>
+                          <Select
+                            name="prayer_time_position"
+                            value={
+                              displaySettings.prayer_time_position || "top"
+                            }
+                            label="Posisi"
+                            onChange={handleSelectChange}
+                          >
+                            <MenuItem value="top">Atas</MenuItem>
+                            <MenuItem value="bottom">Bawah</MenuItem>
+                            <MenuItem value="left">Kiri</MenuItem>
+                            <MenuItem value="right">Kanan</MenuItem>
+                            <MenuItem value="hidden">Tersembunyi</MenuItem>
+                          </Select>
+                        </FormControl>
+                        <FormControl fullWidth margin="normal" size="small">
+                          <InputLabel>Saiz Fon</InputLabel>
+                          <Select
+                            name="prayer_time_font_size"
+                            value={
+                              displaySettings.prayer_time_font_size || "medium"
+                            }
+                            label="Saiz Fon"
+                            onChange={handleSelectChange}
+                          >
+                            <MenuItem value="small">Kecil</MenuItem>
+                            <MenuItem value="medium">Sederhana</MenuItem>
+                            <MenuItem value="large">Besar</MenuItem>
+                            <MenuItem value="extra_large">
+                              Sangat Besar
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
+                        <FormControl fullWidth margin="normal" size="small">
+                          <InputLabel>Susun Atur</InputLabel>
+                          <Select
+                            name="prayer_time_layout"
+                            value={
+                              displaySettings.prayer_time_layout || "horizontal"
+                            }
+                            label="Susun Atur"
+                            onChange={handleSelectChange}
+                          >
+                            <MenuItem value="horizontal">
+                              Mendatar (Sisi)
+                            </MenuItem>
+                            <MenuItem value="vertical">
+                              Menegak (Bertindan)
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
+                        <FormControl fullWidth margin="normal" size="small">
+                          <InputLabel>Penjajaran</InputLabel>
+                          <Select
+                            name="prayer_time_alignment"
+                            value={
+                              displaySettings.prayer_time_alignment || "center"
+                            }
+                            label="Penjajaran"
+                            onChange={handleSelectChange}
+                          >
+                            <MenuItem value="left">Kiri</MenuItem>
+                            <MenuItem value="center">Tengah</MenuItem>
+                            <MenuItem value="right">Kanan</MenuItem>
+                            <MenuItem value="top">Atas</MenuItem>
+                            <MenuItem value="bottom">Bawah</MenuItem>
+                            <MenuItem value="space-between">
+                              Jarak Antara
+                            </MenuItem>
+                            <MenuItem value="space-around">
+                              Jarak Sekeliling
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
+                        <TextField
+                          name="prayer_time_background_opacity"
+                          label="Kelegapan Latar (0-1)"
+                          type="number"
+                          value={
+                            displaySettings.prayer_time_background_opacity ||
+                            0.8
+                          }
+                          onChange={handleSettingsChange}
+                          fullWidth
+                          margin="normal"
+                          size="small"
+                          inputProps={{ step: "0.1", min: 0, max: 1 }}
+                        />
+                        <Box
+                          sx={{ display: "flex", alignItems: "center", mt: 2 }}
+                        >
+                          <Typography>Font Color:</Typography>
+                          <Chip
+                            label={
+                              displaySettings.prayer_time_color || "#FFFFFF"
+                            }
+                            onClick={() => setShowColorPicker(!showColorPicker)}
+                            style={{
+                              backgroundColor:
+                                displaySettings.prayer_time_color || "#FFFFFF",
+                              color: "#000",
+                              marginLeft: "10px",
                             }}
                           />
                         </Box>
-                      )}
-                      <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        display="block"
-                        sx={{ mt: 1 }}
-                      >
-                        Background color for letterboxed/pillarboxed images
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-
-                {/* Sponsorship */}
-                <Grid item xs={12} md={6}>
-                  <Card>
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        Sponsorship
-                      </Typography>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            name="show_sponsorship_amounts"
-                            checked={
-                              displaySettings.show_sponsorship_amounts || false
-                            }
-                            onChange={handleSettingsChange}
-                          />
-                        }
-                        label="Show Sponsorship Amounts"
-                      />
-                    </CardContent>
-                  </Card>
-                </Grid>
-
-                {/* Debug and Development */}
-                <Grid item xs={12} md={6}>
-                  <Card>
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        Debug & Development
-                      </Typography>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            name="show_debug_info"
-                            checked={displaySettings.show_debug_info || false}
-                            onChange={handleSettingsChange}
-                          />
-                        }
-                        label="Show Debug Information"
-                      />
-                      <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        display="block"
-                        sx={{ mt: 1 }}
-                      >
-                        Enable to show debugging views such as Display Status,
-                        Display Info, Configuration Updated notifications, and
-                        Offline Mode indicators on the TV display.
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-
-                {/* Black Screen Schedule */}
-                <Grid item xs={12}>
-                  <BlackScreenScheduler
-                    enabled={displaySettings.black_screen_enabled || false}
-                    scheduleType={
-                      (displaySettings.black_screen_schedule_type ||
-                        "daily") as BlackScreenScheduleType
-                    }
-                    startTime={displaySettings.black_screen_start_time || null}
-                    endTime={displaySettings.black_screen_end_time || null}
-                    days={
-                      (displaySettings.black_screen_days || []) as DayOfWeek[]
-                    }
-                    message={displaySettings.black_screen_message || null}
-                    showClock={displaySettings.black_screen_show_clock ?? true}
-                    onChange={(settings) => {
-                      setDisplaySettings({
-                        ...displaySettings,
-                        ...settings,
-                      });
-                    }}
-                    language="ms"
-                  />
-                </Grid>
-              </Grid>
-            )}
-
-            <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end" }}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleSaveDisplaySettings}
-                disabled={saving || !displaySettings}
-              >
-                {saving ? <CircularProgress size={24} /> : "Save Settings"}
-              </Button>
-            </Box>
-          </TabPanel>
-
-          {/* Content Assignment Tab */}
-          <TabPanel value={tabValue} index={1}>
-            {contentLoading ? (
-              <Box sx={{ display: "flex", justifyContent: "center", my: 3 }}>
-                <CircularProgress />
-              </Box>
-            ) : (
-              <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
-                  <Card>
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        Available Content
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        gutterBottom
-                      >
-                        Approved content from{" "}
-                        {
-                          userMasjids.find((m) => m.id === selectedMasjidId)
-                            ?.name
-                        }
-                      </Typography>
-                      <Divider sx={{ my: 2 }} />
-                      {unassignedContent.length === 0 ? (
-                        <Typography color="text.secondary">
-                          No available content to assign
-                        </Typography>
-                      ) : (
-                        <List>
-                          {unassignedContent.map((content) => (
-                            <ListItem
-                              key={content.id}
-                              secondaryAction={
-                                <Button
-                                  variant="outlined"
-                                  size="small"
-                                  onClick={() =>
-                                    handleOpenAssignDialog(content)
-                                  }
-                                >
-                                  Assign
-                                </Button>
-                              }
-                            >
-                              <ListItemText
-                                primary={content.title}
-                                secondary={`${content.type} • ${content.duration}s`}
+                        {showColorPicker && (
+                          <Box sx={{ position: "relative", zIndex: 2 }}>
+                            <Box sx={{ position: "absolute", top: "10px" }}>
+                              <SketchPicker
+                                color={
+                                  displaySettings.prayer_time_color || "#FFFFFF"
+                                }
+                                onChangeComplete={handleColorChange}
                               />
-                            </ListItem>
-                          ))}
-                        </List>
-                      )}
-                    </CardContent>
-                  </Card>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Card>
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        Assigned Content
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        gutterBottom
-                      >
-                        Content currently assigned to this display
-                      </Typography>
-                      <Divider sx={{ my: 2 }} />
-                      {assignedContent.length === 0 ? (
-                        <Typography color="text.secondary">
-                          No content assigned to this display
+                            </Box>
+                          </Box>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+
+                  {/* Image Display Settings */}
+                  <Grid item xs={12} md={6}>
+                    <Card>
+                      <CardContent>
+                        <Typography variant="h6" gutterBottom>
+                          Image Display
                         </Typography>
-                      ) : (
-                        <Box>
-                          <Typography
-                            variant="caption"
-                            color="text.secondary"
-                            sx={{ display: "block", mb: 2 }}
+                        <FormControl fullWidth margin="normal">
+                          <InputLabel>Display Mode</InputLabel>
+                          <Select
+                            name="image_display_mode"
+                            value={
+                              displaySettings.image_display_mode || "contain"
+                            }
+                            label="Display Mode"
+                            onChange={handleSelectChange}
                           >
-                            Drag and drop to reorder content
-                          </Typography>
-                          <DndContext
-                            sensors={sensors}
-                            collisionDetection={closestCenter}
-                            onDragEnd={handleDragEnd}
-                          >
-                            <SortableContext
-                              items={assignedContent.map((c) => c.id)}
-                              strategy={verticalListSortingStrategy}
-                            >
-                              <List>
-                                {assignedContent.map((content) => (
-                                  <SortableContentItem
-                                    key={content.id}
-                                    content={content}
-                                    onRemove={handleRemove}
-                                    onEditSettings={handleOpenEditDialog}
-                                  />
-                                ))}
-                              </List>
-                            </SortableContext>
-                          </DndContext>
+                            <MenuItem value="contain">
+                              Fit (Maintain Aspect Ratio)
+                            </MenuItem>
+                            <MenuItem value="cover">Fill (May Crop)</MenuItem>
+                            <MenuItem value="fill">Stretch to Fill</MenuItem>
+                            <MenuItem value="none">Original Size</MenuItem>
+                          </Select>
+                        </FormControl>
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          display="block"
+                          sx={{ mb: 2 }}
+                        >
+                          {displaySettings.image_display_mode === "contain" &&
+                            "Images will fit within the screen while maintaining aspect ratio (recommended)"}
+                          {displaySettings.image_display_mode === "cover" &&
+                            "Images will fill the entire screen and may be cropped"}
+                          {displaySettings.image_display_mode === "fill" &&
+                            "Images will stretch to fill the screen (may distort)"}
+                          {displaySettings.image_display_mode === "none" &&
+                            "Images will display at their original size"}
+                        </Typography>
+                        <Box
+                          sx={{ display: "flex", alignItems: "center", mt: 2 }}
+                        >
+                          <Typography>Background Color:</Typography>
+                          <Chip
+                            label={
+                              displaySettings.image_background_color ||
+                              "#000000"
+                            }
+                            onClick={() =>
+                              setShowImageBgColorPicker(!showImageBgColorPicker)
+                            }
+                            style={{
+                              backgroundColor:
+                                displaySettings.image_background_color ||
+                                "#000000",
+                              color: "#FFFFFF",
+                              marginLeft: "10px",
+                              cursor: "pointer",
+                            }}
+                          />
                         </Box>
-                      )}
-                    </CardContent>
-                  </Card>
+                        {showImageBgColorPicker && (
+                          <Box sx={{ mt: 2 }}>
+                            <SketchPicker
+                              color={
+                                displaySettings.image_background_color ||
+                                "#000000"
+                              }
+                              onChangeComplete={(color) => {
+                                handleSelectChange({
+                                  target: {
+                                    name: "image_background_color",
+                                    value: color.hex,
+                                  },
+                                } as any);
+                                setShowImageBgColorPicker(false);
+                              }}
+                            />
+                          </Box>
+                        )}
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          display="block"
+                          sx={{ mt: 1 }}
+                        >
+                          Background color for letterboxed/pillarboxed images
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+
+                  {/* Sponsorship */}
+                  <Grid item xs={12} md={6}>
+                    <Card>
+                      <CardContent>
+                        <Typography variant="h6" gutterBottom>
+                          Sponsorship
+                        </Typography>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              name="show_sponsorship_amounts"
+                              checked={
+                                displaySettings.show_sponsorship_amounts ||
+                                false
+                              }
+                              onChange={handleSettingsChange}
+                            />
+                          }
+                          label="Show Sponsorship Amounts"
+                        />
+                      </CardContent>
+                    </Card>
+                  </Grid>
+
+                  {/* Debug and Development */}
+                  <Grid item xs={12} md={6}>
+                    <Card>
+                      <CardContent>
+                        <Typography variant="h6" gutterBottom>
+                          Debug & Development
+                        </Typography>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              name="show_debug_info"
+                              checked={displaySettings.show_debug_info || false}
+                              onChange={handleSettingsChange}
+                            />
+                          }
+                          label="Show Debug Information"
+                        />
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          display="block"
+                          sx={{ mt: 1 }}
+                        >
+                          Enable to show debugging views such as Display Status,
+                          Display Info, Configuration Updated notifications, and
+                          Offline Mode indicators on the TV display.
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+
+                  {/* Black Screen Schedule */}
+                  <Grid item xs={12}>
+                    <BlackScreenScheduler
+                      enabled={displaySettings.black_screen_enabled || false}
+                      scheduleType={
+                        (displaySettings.black_screen_schedule_type ||
+                          "daily") as BlackScreenScheduleType
+                      }
+                      startTime={
+                        displaySettings.black_screen_start_time || null
+                      }
+                      endTime={displaySettings.black_screen_end_time || null}
+                      days={
+                        (displaySettings.black_screen_days || []) as DayOfWeek[]
+                      }
+                      message={displaySettings.black_screen_message || null}
+                      showClock={
+                        displaySettings.black_screen_show_clock ?? true
+                      }
+                      onChange={(settings) => {
+                        setDisplaySettings({
+                          ...displaySettings,
+                          ...settings,
+                        });
+                      }}
+                      language="ms"
+                    />
+                  </Grid>
                 </Grid>
-              </Grid>
-            )}
-          </TabPanel>
-        </>
-      )}
+              )}
 
-      {/* Create Display Dialog - Available even when no displays exist */}
-      <Dialog
-        open={createDisplayDialog}
-        onClose={() => {
-          setCreateDisplayDialog(false);
-          setNewDisplayName("");
-        }}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Create New TV Display</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Display Name"
-            fullWidth
-            variant="outlined"
-            value={newDisplayName}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setNewDisplayName(e.target.value)
-            }
-            disabled={createLoading}
-            placeholder="e.g., Main Hall Display, Entrance Screen"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              setCreateDisplayDialog(false);
-              setNewDisplayName("");
+              <Box
+                sx={{
+                  mt: 4,
+                  display: "flex",
+                  justifyContent: { xs: "stretch", sm: "flex-end" },
+                  px: { xs: 2, md: 0 },
+                }}
+              >
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSaveDisplaySettings}
+                  disabled={saving || !displaySettings}
+                  fullWidth={true}
+                  sx={{
+                    maxWidth: { xs: "100%", sm: 200 },
+                    py: { xs: 1.5, sm: 1 },
+                    fontSize: { xs: "1rem", sm: "0.875rem" },
+                    fontWeight: 600,
+                  }}
+                >
+                  {saving ? <CircularProgress size={24} /> : "Simpan Tetapan"}
+                </Button>
+              </Box>
+            </TabPanel>
+
+            {/* Content Assignment Tab - Mobile First */}
+            <TabPanel value={tabValue} index={1}>
+              {contentLoading ? (
+                <Box sx={{ display: "flex", justifyContent: "center", my: 3 }}>
+                  <CircularProgress />
+                </Box>
+              ) : (
+                <Grid container spacing={{ xs: 2, md: 3 }}>
+                  <Grid item xs={12} md={6}>
+                    <Card
+                      elevation={0}
+                      sx={{
+                        borderRadius: 2,
+                        border: "1px solid",
+                        borderColor: "divider",
+                      }}
+                    >
+                      <CardContent>
+                        <Typography
+                          variant="h6"
+                          gutterBottom
+                          sx={{ fontSize: { xs: "1.125rem", md: "1.25rem" } }}
+                        >
+                          Kandungan Tersedia
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          gutterBottom
+                        >
+                          Kandungan yang diluluskan dari{" "}
+                          {
+                            userMasjids.find((m) => m.id === selectedMasjidId)
+                              ?.name
+                          }
+                        </Typography>
+                        <Divider sx={{ my: 2 }} />
+                        {unassignedContent.length === 0 ? (
+                          <Typography color="text.secondary">
+                            Tiada kandungan tersedia untuk ditugaskan
+                          </Typography>
+                        ) : (
+                          <List
+                            sx={{
+                              "& .MuiListItem-root": { px: { xs: 1, md: 2 } },
+                            }}
+                          >
+                            {unassignedContent.map((content) => (
+                              <ListItem
+                                key={content.id}
+                                sx={{
+                                  flexDirection: { xs: "column", sm: "row" },
+                                  alignItems: { xs: "stretch", sm: "center" },
+                                  gap: { xs: 1, sm: 0 },
+                                }}
+                                secondaryAction={
+                                  <Button
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={() =>
+                                      handleOpenAssignDialog(content)
+                                    }
+                                    sx={{
+                                      fontSize: {
+                                        xs: "0.75rem",
+                                        sm: "0.875rem",
+                                      },
+                                      width: { xs: "100%", sm: "auto" },
+                                    }}
+                                  >
+                                    Tugaskan
+                                  </Button>
+                                }
+                              >
+                                <ListItemText
+                                  primary={content.title}
+                                  secondary={`${content.type} • ${content.duration}s`}
+                                  sx={{ pr: { xs: 0, sm: 2 } }}
+                                />
+                              </ListItem>
+                            ))}
+                          </List>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Card
+                      elevation={0}
+                      sx={{
+                        borderRadius: 2,
+                        border: "1px solid",
+                        borderColor: "divider",
+                      }}
+                    >
+                      <CardContent>
+                        <Typography
+                          variant="h6"
+                          gutterBottom
+                          sx={{ fontSize: { xs: "1.125rem", md: "1.25rem" } }}
+                        >
+                          Kandungan Ditugaskan
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          gutterBottom
+                        >
+                          Kandungan yang ditugaskan kepada paparan ini
+                        </Typography>
+                        <Divider sx={{ my: 2 }} />
+                        {assignedContent.length === 0 ? (
+                          <Typography color="text.secondary">
+                            Tiada kandungan ditugaskan kepada paparan ini
+                          </Typography>
+                        ) : (
+                          <Box>
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              sx={{
+                                display: "block",
+                                mb: 2,
+                                fontSize: { xs: "0.75rem", md: "0.75rem" },
+                              }}
+                            >
+                              Seret dan lepas untuk menyusun semula kandungan
+                            </Typography>
+                            <DndContext
+                              sensors={sensors}
+                              collisionDetection={closestCenter}
+                              onDragEnd={handleDragEnd}
+                            >
+                              <SortableContext
+                                items={assignedContent.map((c) => c.id)}
+                                strategy={verticalListSortingStrategy}
+                              >
+                                <List
+                                  sx={{
+                                    "& .MuiListItem-root": {
+                                      px: { xs: 0, md: 1 },
+                                    },
+                                  }}
+                                >
+                                  {assignedContent.map((content) => (
+                                    <SortableContentItem
+                                      key={content.id}
+                                      content={content}
+                                      onRemove={handleRemove}
+                                      onEditSettings={handleOpenEditDialog}
+                                    />
+                                  ))}
+                                </List>
+                              </SortableContext>
+                            </DndContext>
+                          </Box>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                </Grid>
+              )}
+            </TabPanel>
+          </>
+        )}
+
+        {/* Create Display Dialog - Mobile Optimized */}
+        <Dialog
+          open={createDisplayDialog}
+          onClose={() => {
+            setCreateDisplayDialog(false);
+            setNewDisplayName("");
+          }}
+          maxWidth="sm"
+          fullWidth
+          fullScreen={false}
+          PaperProps={{
+            sx: {
+              m: { xs: 2, sm: 3 },
+              maxWidth: { xs: "calc(100% - 32px)", sm: 600 },
+            },
+          }}
+        >
+          <DialogTitle sx={{ fontSize: { xs: "1.25rem", md: "1.5rem" } }}>
+            Cipta Paparan TV Baru
+          </DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Nama Paparan"
+              fullWidth
+              variant="outlined"
+              value={newDisplayName}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setNewDisplayName(e.target.value)
+              }
+              disabled={createLoading}
+              placeholder="cth: Paparan Dewan Utama, Skrin Pintu Masuk"
+              sx={{ mt: 2 }}
+            />
+          </DialogContent>
+          <DialogActions sx={{ p: { xs: 2, md: 3 }, gap: 1 }}>
+            <Button
+              onClick={() => {
+                setCreateDisplayDialog(false);
+                setNewDisplayName("");
+              }}
+              disabled={createLoading}
+              fullWidth={false}
+              sx={{ minWidth: { xs: 100, sm: 120 } }}
+            >
+              Batal
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleCreateDisplay}
+              disabled={createLoading || !newDisplayName.trim()}
+              fullWidth={false}
+              sx={{ minWidth: { xs: 100, sm: 120 } }}
+            >
+              {createLoading ? <CircularProgress size={20} /> : "Cipta"}
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Content Settings Dialog - For Assigning */}
+        {contentToAssign && (
+          <ContentSettingsDialog
+            open={assignDialogOpen}
+            onClose={() => {
+              setAssignDialogOpen(false);
+              setContentToAssign(null);
             }}
-            disabled={createLoading}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleCreateDisplay}
-            disabled={createLoading || !newDisplayName.trim()}
-          >
-            {createLoading ? <CircularProgress size={20} /> : "Create Display"}
-          </Button>
-        </DialogActions>
-      </Dialog>
+            onSave={handleAssignWithSettings}
+            contentType={contentToAssign.type as any}
+            contentTitle={contentToAssign.title}
+            mode="assign"
+          />
+        )}
 
-      {/* Content Settings Dialog - For Assigning */}
-      {contentToAssign && (
-        <ContentSettingsDialog
-          open={assignDialogOpen}
-          onClose={() => {
-            setAssignDialogOpen(false);
-            setContentToAssign(null);
-          }}
-          onSave={handleAssignWithSettings}
-          contentType={contentToAssign.type as any}
-          contentTitle={contentToAssign.title}
-          mode="assign"
-        />
-      )}
-
-      {/* Content Settings Dialog - For Editing */}
-      {contentToEdit && (
-        <ContentSettingsDialog
-          open={editDialogOpen}
-          onClose={() => {
-            setEditDialogOpen(false);
-            setContentToEdit(null);
-          }}
-          onSave={handleSaveContentSettings}
-          contentType={contentToEdit.type as any}
-          contentTitle={contentToEdit.title}
-          initialSettings={contentToEdit.currentSettings}
-          mode="edit"
-        />
-      )}
-    </Container>
+        {/* Content Settings Dialog - For Editing */}
+        {contentToEdit && (
+          <ContentSettingsDialog
+            open={editDialogOpen}
+            onClose={() => {
+              setEditDialogOpen(false);
+              setContentToEdit(null);
+            }}
+            onSave={handleSaveContentSettings}
+            contentType={contentToEdit.type as any}
+            contentTitle={contentToEdit.title}
+            initialSettings={contentToEdit.currentSettings}
+            mode="edit"
+          />
+        )}
+      </Container>
+    </div>
   );
 };
 
