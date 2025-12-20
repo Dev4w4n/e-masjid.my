@@ -6,11 +6,11 @@ This directory contains configuration files and guides for deploying E-Masjid.My
 
 We're deploying 3 applications × 2 environments = 6 Cloudflare Pages projects:
 
-| Application | Production Project          | Staging Project          | Framework    |
-| ----------- | --------------------------- | ------------------------ | ------------ |
-| Hub App     | `hub-emasjid-production`    | `hub-emasjid-staging`    | Vite (React) |
-| Papan Info App  | `papan-info-emasjid-production` | `papan-info-emasjid-staging` | Next.js      |
-| TV Display  | `tv-emasjid-production`     | `tv-emasjid-staging`     | Next.js      |
+| Application    | Production Project              | Staging Project              | Framework    |
+| -------------- | ------------------------------- | ---------------------------- | ------------ |
+| Hub App        | `hub-emasjid-production`        | `hub-emasjid-staging`        | Vite (React) |
+| Papan Info App | `papan-info-emasjid-production` | `papan-info-emasjid-staging` | Next.js      |
+| TV Display     | `tv-emasjid-production`         | `tv-emasjid-staging`         | Next.js      |
 
 ## 🔧 Quick Setup Guide
 
@@ -28,11 +28,11 @@ For each application:
 
 Choose the correct framework preset during project creation:
 
-| Application | Framework Preset | Why                                    |
-| ----------- | ---------------- | -------------------------------------- |
-| Hub App     | **None**         | Vite + React (custom build to `/dist`) |
-| Papan Info App  | **Next.js**      | Next.js with SSR for SEO               |
-| TV Display  | **Next.js**      | Next.js with real-time updates         |
+| Application    | Framework Preset | Why                                    |
+| -------------- | ---------------- | -------------------------------------- |
+| Hub App        | **None**         | Vite + React (custom build to `/dist`) |
+| Papan Info App | **Next.js**      | Next.js with SSR for SEO               |
+| TV Display     | **Next.js**      | Next.js with real-time updates         |
 
 > **Note**: For Hub app, if "None" isn't available, select "Create React App" then customize the build settings as shown below.
 
@@ -100,7 +100,7 @@ Project Name: papan-info-emasjid-production
 Production Branch: main
 Build Settings:
   Framework Preset: Next.js
-  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/papan-info && pnpm build && VERCEL_PROJECT_DIR=. pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
+  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/papan-info && pnpm build && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
   Build Output Directory: apps/papan-info/.vercel/output/static
   Root Directory: /
 Environment Variables: [See environment section below]
@@ -113,7 +113,7 @@ Project Name: papan-info-emasjid-staging
 Production Branch: dev
 Build Settings:
   Framework Preset: Next.js
-  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/papan-info && pnpm build && VERCEL_PROJECT_DIR=. pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
+  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/papan-info && pnpm build && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
   Build Output Directory: apps/papan-info/.vercel/output/static
   Root Directory: /
 Environment Variables: [See environment section below]

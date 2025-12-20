@@ -1,0 +1,62 @@
+# Papan Info App - Staging Configuration
+# Cloudflare Pages Project: papan-info-emasjid-staging
+# GitHub Branch: dev
+# Framework: Next.js
+
+[build]
+command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/papan-info && pnpm build && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify"
+publish = "apps/papan-info/.vercel/output/static"
+
+# Cloudflare Pages Functions configuration
+[functions]
+compatibility_flags = ["nodejs_compat"]
+compatibility_date = "2024-01-01"
+
+[build.environment]
+NODE_ENV = "staging"
+NEXT_PUBLIC_SUPABASE_URL = "https://YOUR_STAGING_SUPABASE_PROJECT_ID.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY = "YOUR_STAGING_SUPABASE_ANON_KEY"
+NEXT_PUBLIC_BASE_URL = "https://papan-info-emasjid-staging.pages.dev"
+
+# Server-side environment variables (sensitive - set in dashboard only)
+# SUPABASE_SERVICE_ROLE_KEY = "set-in-cloudflare-dashboard"
+
+# Cross-app integration (staging)
+NEXT_PUBLIC_HUB_URL = "https://hub-emasjid-staging.pages.dev"
+NEXT_PUBLIC_TV_DISPLAY_URL = "https://tv-emasjid-staging.pages.dev"
+
+# Development features for staging
+NEXT_PUBLIC_APP_ENV = "staging"
+NEXT_PUBLIC_ENABLE_ANALYTICS = "false"
+NEXT_PUBLIC_ENABLE_DEV_TOOLS = "true"
+
+# Papan Info specific settings
+NEXT_PUBLIC_DISPLAY_NAME = "Papan Info Masjid"
+
+# Optional: Override refresh intervals for staging testing
+# NEXT_PUBLIC_AUTO_REFRESH = "true"
+# NEXT_PUBLIC_REFRESH_INTERVAL = "30000"
+# NEXT_PUBLIC_CONTENT_REFRESH_INTERVAL = "15000"
+
+# Deployment tracking
+# Build timestamp: Automatically set by Cloudflare
+# Last deployment: Check Cloudflare dashboard
+
+# Security headers (configured in Cloudflare dashboard)
+# Content-Security-Policy, X-Frame-Options, etc.
+
+# Performance optimizations
+# Node.js compatibility for Edge Functions
+# Automatic minification enabled via @cloudflare/next-on-pages
+
+# Notes:
+# - This configuration is for the Papan Info staging environment
+# - Sensitive keys should be set in Cloudflare dashboard, not committed
+# - Update SUPABASE_URL and ANON_KEY before first deployment
+# - Coordinate URL changes with hub and tv-display apps for cross-app features
+# - Test thoroughly before promoting to production
+
+# Troubleshooting:
+# - If build fails with "cp: cannot stat '.next'": Remove any manual copy commands
+# - If build exceeds 25 MiB: Ensure @cloudflare/next-on-pages is used with --experimental-minify
+# - For monorepo path issues: Ensure build runs from workspace root, not app directory

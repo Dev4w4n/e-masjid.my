@@ -43,10 +43,10 @@ site_url = "https://hub.emasjid.my"
 # Production redirect URLs - add your actual domains
 additional_redirect_urls = [
   "https://hub.emasjid.my",
-  "https://public.emasjid.my", 
+  "https://papan-info.emasjid.my", 
   "https://tv.emasjid.my",
   "https://hub-emasjid-production.pages.dev",
-  "https://public-emasjid-production.pages.dev",
+  "https://papan-info-emasjid-production.pages.dev",
   "https://tv-emasjid-production.pages.dev"
 ]
 
