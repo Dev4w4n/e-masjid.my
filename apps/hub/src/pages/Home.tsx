@@ -197,8 +197,9 @@ function Home() {
                     Paparan TV Masjid
                   </h3>
                   <p className="text-gray-100 mb-4 line-clamp-2">
-                    Paparan digital untuk TV masjid dengan pengumuman, jadual solat
-                    dan info komuniti. Sistem paparan yang moden dan mudah diurus.
+                    Paparan digital untuk TV masjid dengan pengumuman, jadual
+                    solat dan info komuniti. Sistem paparan yang moden dan mudah
+                    diurus.
                   </p>
                 </div>
               </div>
@@ -233,7 +234,8 @@ function Home() {
                     Chatbot AI Masjid
                   </h3>
                   <p className="text-gray-100 text-sm line-clamp-2">
-                    Pembantu AI pintar untuk menjawab soalan jemaah tentang masjid.
+                    Pembantu AI pintar untuk menjawab soalan jemaah tentang
+                    masjid.
                   </p>
                 </div>
               </div>
@@ -336,7 +338,11 @@ function Home() {
                     {action.description}
                   </p>
                   <div className="flex items-center text-primary font-medium text-sm group-hover:gap-2 transition-all">
-                    Pergi <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    Pergi{" "}
+                    <ArrowRight
+                      size={16}
+                      className="group-hover:translate-x-1 transition-transform"
+                    />
                   </div>
                 </Link>
               );
