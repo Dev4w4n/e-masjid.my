@@ -40,7 +40,7 @@ This guide covers deploying Open E Masjid to production and staging environments
 ## 🚀 Applications to Deploy
 
 1. **Hub App** (`apps/hub`) - Main management interface (Vite React app)
-2. **Public App** (`apps/public`) - SEO-friendly public content (Next.js app)
+2. **Papan Info App** (`apps/papan-info`) - SEO-friendly public content (Next.js app)
 3. **TV Display App** (`apps/tv-display`) - Kiosk display interface (Next.js app)
 
 ## 📁 Directory Structure

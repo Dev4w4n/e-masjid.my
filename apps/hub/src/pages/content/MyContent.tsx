@@ -404,555 +404,601 @@ const MyContent: React.FC = () => {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 3,
-        }}
-      >
-        <Box>
-          <Typography variant="h4" gutterBottom>
-            {t("myContent.title")}
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            {t("myContent.subtitle")}
-          </Typography>
-        </Box>
-        <Button
-          variant="contained"
-          onClick={() => navigate("/content/create")}
-          sx={{ height: "fit-content" }}
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-teal-50/30">
+      <Box sx={{ p: { xs: 2, md: 3 } }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            justifyContent: "space-between",
+            alignItems: { xs: "flex-start", sm: "center" },
+            mb: { xs: 2, md: 3 },
+            gap: 2,
+          }}
         >
-          {t("myContent.create_new")}
-        </Button>
-      </Box>
-
-      <Divider sx={{ my: 3 }} />
-
-      {/* Filters and Actions */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 3,
-        }}
-      >
-        <FormControl sx={{ minWidth: 150 }}>
-          <InputLabel>{t("myContent.filter_status")}</InputLabel>
-          <Select
-            value={statusFilter}
-            label={t("myContent.filter_status")}
-            onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-            startAdornment={<FilterList sx={{ mr: 1 }} />}
+          <Box>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-2">
+              Kandungan{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-500">
+                Saya
+              </span>
+            </h1>
+            <p className="text-base md:text-lg text-gray-600 leading-relaxed">
+              {t("myContent.subtitle")}
+            </p>
+          </Box>
+          <Button
+            variant="contained"
+            onClick={() => navigate("/content/create")}
+            sx={{
+              height: "fit-content",
+              whiteSpace: "nowrap",
+              fontSize: { xs: "0.875rem", md: "0.9375rem" },
+            }}
           >
-            <MenuItem value="all">{t("myContent.all_status")}</MenuItem>
-            <MenuItem value="pending">{t("myContent.status_pending")}</MenuItem>
-            <MenuItem value="active">
-              {t("myContent.status_active_label")}
-            </MenuItem>
-            <MenuItem value="rejected">
-              {t("myContent.status_rejected_label")}
-            </MenuItem>
-            <MenuItem value="expired">{t("myContent.status_expired")}</MenuItem>
-          </Select>
-        </FormControl>
+            {t("myContent.create_new")}
+          </Button>
+        </Box>
 
-        <Tooltip title={t("myContent.refresh")}>
-          <IconButton onClick={loadUserContent}>
-            <Refresh />
-          </IconButton>
-        </Tooltip>
-      </Box>
+        <Divider sx={{ my: { xs: 2, md: 3 } }} />
 
-      {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
-        </Alert>
-      )}
-
-      {filteredContent.length === 0 ? (
-        <Paper sx={{ p: 4, textAlign: "center" }}>
-          <Typography variant="h6" color="text.secondary">
-            {statusFilter === "all"
-              ? t("myContent.no_content")
-              : t("myContent.no_filtered_content", { status: statusFilter })}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            {statusFilter === "all"
-              ? t("myContent.no_content_desc")
-              : t("myContent.no_filtered_desc")}
-          </Typography>
-          {statusFilter === "all" && (
-            <Button
-              variant="contained"
-              onClick={() => navigate("/content/create")}
-              sx={{ mt: 2 }}
+        {/* Filters and Actions */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            justifyContent: "space-between",
+            alignItems: { xs: "stretch", sm: "center" },
+            mb: { xs: 2, md: 3 },
+            gap: 2,
+          }}
+        >
+          <FormControl sx={{ minWidth: { xs: "100%", sm: 150 } }} size="small">
+            <InputLabel>{t("myContent.filter_status")}</InputLabel>
+            <Select
+              value={statusFilter}
+              label={t("myContent.filter_status")}
+              onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+              startAdornment={
+                <FilterList sx={{ mr: 1, fontSize: "1.25rem" }} />
+              }
             >
-              {t("myContent.create_content")}
-            </Button>
-          )}
-        </Paper>
-      ) : (
-        <Grid container spacing={3}>
-          {filteredContent.map((item) => {
-            const statusProps = getStatusChipProps(item.status);
+              <MenuItem value="all">{t("myContent.all_status")}</MenuItem>
+              <MenuItem value="pending">
+                {t("myContent.status_pending")}
+              </MenuItem>
+              <MenuItem value="active">
+                {t("myContent.status_active_label")}
+              </MenuItem>
+              <MenuItem value="rejected">
+                {t("myContent.status_rejected_label")}
+              </MenuItem>
+              <MenuItem value="expired">
+                {t("myContent.status_expired")}
+              </MenuItem>
+            </Select>
+          </FormControl>
 
-            return (
-              <Grid item xs={12} md={6} lg={4} key={item.id}>
-                <Card
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    {/* Status and Type */}
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        mb: 2,
-                      }}
-                    >
-                      <Chip
-                        {...statusProps}
-                        label={
-                          item.status.charAt(0).toUpperCase() +
-                          item.status.slice(1)
-                        }
-                        size="small"
-                      />
-                      <Chip
-                        icon={
-                          item.type === "image" ? <ImageIcon /> : <YouTube />
-                        }
-                        label={
-                          item.type === "image"
-                            ? t("myContent.type_image")
-                            : t("myContent.type_youtube")
-                        }
-                        size="small"
-                        variant="outlined"
-                      />
-                    </Box>
+          <Tooltip title={t("myContent.refresh")}>
+            <IconButton onClick={loadUserContent}>
+              <Refresh />
+            </IconButton>
+          </Tooltip>
+        </Box>
 
-                    {/* Title and Description */}
-                    <Typography variant="h6" gutterBottom noWrap>
-                      {item.title}
-                    </Typography>
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
+        )}
 
-                    {item.description && (
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
+        {filteredContent.length === 0 ? (
+          <Paper
+            elevation={0}
+            sx={{
+              p: { xs: 3, md: 4 },
+              textAlign: "center",
+              borderRadius: 2,
+              border: "1px solid",
+              borderColor: "divider",
+            }}
+          >
+            <Typography
+              variant="h6"
+              color="text.secondary"
+              sx={{ fontSize: { xs: "1rem", md: "1.25rem" } }}
+            >
+              {statusFilter === "all"
+                ? t("myContent.no_content")
+                : t("myContent.no_filtered_content", { status: statusFilter })}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ mt: 1, fontSize: { xs: "0.875rem", md: "0.9375rem" } }}
+            >
+              {statusFilter === "all"
+                ? t("myContent.no_content_desc")
+                : t("myContent.no_filtered_desc")}
+            </Typography>
+            {statusFilter === "all" && (
+              <Button
+                variant="contained"
+                onClick={() => navigate("/content/create")}
+                sx={{ mt: 2 }}
+              >
+                {t("myContent.create_content")}
+              </Button>
+            )}
+          </Paper>
+        ) : (
+          <Grid container spacing={{ xs: 2, md: 3 }}>
+            {filteredContent.map((item) => {
+              const statusProps = getStatusChipProps(item.status);
+
+              return (
+                <Grid item xs={12} md={6} lg={4} key={item.id}>
+                  <Card
+                    elevation={0}
+                    sx={{
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      borderRadius: 2,
+                      border: "1px solid",
+                      borderColor: "divider",
+                    }}
+                  >
+                    <CardContent sx={{ flexGrow: 1, p: { xs: 2, md: 2 } }}>
+                      {/* Status and Type */}
+                      <Box
                         sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
                           mb: 2,
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
+                          gap: 1,
+                          flexWrap: "wrap",
                         }}
                       >
-                        {item.description}
-                      </Typography>
-                    )}
-
-                    {/* Metadata */}
-                    <Stack spacing={1} sx={{ mb: 2 }}>
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                      >
-                        <Schedule fontSize="small" color="action" />
-                        <Typography variant="caption">
-                          {t("myContent.duration_label", {
-                            duration: item.duration,
-                          })}
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                      >
-                        <CalendarToday fontSize="small" color="action" />
-                        <Typography variant="caption">
-                          {t("myContent.date_range", {
-                            start: formatDate(item.start_date),
-                            end: formatDate(item.end_date),
-                          })}
-                        </Typography>
-                      </Box>
-                      <Typography variant="caption" color="text.secondary">
-                        {t("myContent.submitted_to", {
-                          masjid: item.masjid_name || "-",
-                        })}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {t("myContent.submitted_on", {
-                          date: formatDate(item.submitted_at),
-                        })}
-                      </Typography>
-                    </Stack>
-
-                    {/* Approval/Rejection Notes - Simplified for now */}
-                    {item.status === "rejected" && (
-                      <Alert severity="error" sx={{ mt: 2, mb: 1 }}>
-                        <Typography variant="body2">
-                          {t("myContent.status_rejected")}
-                        </Typography>
-                      </Alert>
-                    )}
-
-                    {item.status === "active" && (
-                      <Alert severity="success" sx={{ mt: 2, mb: 1 }}>
-                        <Typography variant="body2">
-                          {t("myContent.status_active")}
-                        </Typography>
-                      </Alert>
-                    )}
-                  </CardContent>
-
-                  <CardActions sx={{ justifyContent: "space-between", p: 2 }}>
-                    <Tooltip title={t("myContent.preview_content")}>
-                      <IconButton
-                        size="small"
-                        onClick={() => window.open(item.url, "_blank")}
-                      >
-                        <Visibility />
-                      </IconButton>
-                    </Tooltip>
-
-                    <Box sx={{ display: "flex", gap: 1 }}>
-                      <Button
-                        size="small"
-                        variant="outlined"
-                        startIcon={<Edit />}
-                        onClick={() => handleEdit(item)}
-                      >
-                        {t("myContent.edit")}
-                      </Button>
-                      <Button
-                        size="small"
-                        variant="outlined"
-                        color="error"
-                        startIcon={<Delete />}
-                        onClick={() => handleDelete(item)}
-                      >
-                        {t("myContent.delete")}
-                      </Button>
-                    </Box>
-                  </CardActions>
-                </Card>
-              </Grid>
-            );
-          })}
-        </Grid>
-      )}
-
-      {/* Edit Dialog */}
-      <Dialog
-        open={editDialog.open}
-        onClose={() => setEditDialog({ ...editDialog, open: false })}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle>{t("myContent.edit_title")}</DialogTitle>
-        <DialogContent>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            {t("myContent.edit_desc")}
-          </Typography>
-
-          <Stack spacing={3}>
-            {/* Image Replacement Section */}
-            {editDialog.content?.type === "image" && (
-              <Box>
-                <Typography variant="subtitle2" gutterBottom>
-                  Content Image
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: 2,
-                    p: 2,
-                    border: "1px dashed",
-                    borderColor: "divider",
-                    borderRadius: 1,
-                    bgcolor: "background.default",
-                  }}
-                >
-                  {/* Preview Area */}
-                  <Box
-                    component="img"
-                    src={editDialog.previewUrl || editDialog.content.url}
-                    alt="Content Preview"
-                    sx={{
-                      maxWidth: "100%",
-                      maxHeight: 200,
-                      objectFit: "contain",
-                      borderRadius: 1,
-                    }}
-                  />
-
-                  {/* Upload Button */}
-                  <Button
-                    component="label"
-                    variant="outlined"
-                    startIcon={<CloudUpload />}
-                  >
-                    Replace Image
-                    <input
-                      type="file"
-                      hidden
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          // Validate file size (10MB)
-                          if (file.size > 10 * 1024 * 1024) {
-                            alert("File size must be less than 10MB");
-                            return;
+                        <Chip
+                          {...statusProps}
+                          label={
+                            item.status.charAt(0).toUpperCase() +
+                            item.status.slice(1)
                           }
+                          size="small"
+                          sx={{ fontSize: "0.75rem" }}
+                        />
+                        <Chip
+                          icon={
+                            item.type === "image" ? <ImageIcon /> : <YouTube />
+                          }
+                          label={
+                            item.type === "image"
+                              ? t("myContent.type_image")
+                              : t("myContent.type_youtube")
+                          }
+                          size="small"
+                          variant="outlined"
+                          sx={{ fontSize: "0.75rem" }}
+                        />
+                      </Box>
 
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            setEditDialog({
-                              ...editDialog,
-                              newFile: file,
-                              previewUrl: reader.result as string,
-                            });
-                          };
-                          reader.readAsDataURL(file);
-                        }
+                      {/* Title and Description */}
+                      <Typography variant="h6" gutterBottom noWrap>
+                        {item.title}
+                      </Typography>
+
+                      {item.description && (
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{
+                            mb: 2,
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                          }}
+                        >
+                          {item.description}
+                        </Typography>
+                      )}
+
+                      {/* Metadata */}
+                      <Stack spacing={1} sx={{ mb: 2 }}>
+                        <Box
+                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                        >
+                          <Schedule fontSize="small" color="action" />
+                          <Typography variant="caption">
+                            {t("myContent.duration_label", {
+                              duration: item.duration,
+                            })}
+                          </Typography>
+                        </Box>
+                        <Box
+                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                        >
+                          <CalendarToday fontSize="small" color="action" />
+                          <Typography variant="caption">
+                            {t("myContent.date_range", {
+                              start: formatDate(item.start_date),
+                              end: formatDate(item.end_date),
+                            })}
+                          </Typography>
+                        </Box>
+                        <Typography variant="caption" color="text.secondary">
+                          {t("myContent.submitted_to", {
+                            masjid: item.masjid_name || "-",
+                          })}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {t("myContent.submitted_on", {
+                            date: formatDate(item.submitted_at),
+                          })}
+                        </Typography>
+                      </Stack>
+
+                      {/* Approval/Rejection Notes - Simplified for now */}
+                      {item.status === "rejected" && (
+                        <Alert severity="error" sx={{ mt: 2, mb: 1 }}>
+                          <Typography variant="body2">
+                            {t("myContent.status_rejected")}
+                          </Typography>
+                        </Alert>
+                      )}
+
+                      {item.status === "active" && (
+                        <Alert severity="success" sx={{ mt: 2, mb: 1 }}>
+                          <Typography variant="body2">
+                            {t("myContent.status_active")}
+                          </Typography>
+                        </Alert>
+                      )}
+                    </CardContent>
+
+                    <CardActions sx={{ justifyContent: "space-between", p: 2 }}>
+                      <Tooltip title={t("myContent.preview_content")}>
+                        <IconButton
+                          size="small"
+                          onClick={() => window.open(item.url, "_blank")}
+                        >
+                          <Visibility />
+                        </IconButton>
+                      </Tooltip>
+
+                      <Box sx={{ display: "flex", gap: 1 }}>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          startIcon={<Edit />}
+                          onClick={() => handleEdit(item)}
+                        >
+                          {t("myContent.edit")}
+                        </Button>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          color="error"
+                          startIcon={<Delete />}
+                          onClick={() => handleDelete(item)}
+                        >
+                          {t("myContent.delete")}
+                        </Button>
+                      </Box>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              );
+            })}
+          </Grid>
+        )}
+
+        {/* Edit Dialog */}
+        <Dialog
+          open={editDialog.open}
+          onClose={() => setEditDialog({ ...editDialog, open: false })}
+          maxWidth="md"
+          fullWidth
+        >
+          <DialogTitle>{t("myContent.edit_title")}</DialogTitle>
+          <DialogContent>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              {t("myContent.edit_desc")}
+            </Typography>
+
+            <Stack spacing={3}>
+              {/* Image Replacement Section */}
+              {editDialog.content?.type === "image" && (
+                <Box>
+                  <Typography variant="subtitle2" gutterBottom>
+                    Content Image
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: 2,
+                      p: 2,
+                      border: "1px dashed",
+                      borderColor: "divider",
+                      borderRadius: 1,
+                      bgcolor: "background.default",
+                    }}
+                  >
+                    {/* Preview Area */}
+                    <Box
+                      component="img"
+                      src={editDialog.previewUrl || editDialog.content.url}
+                      alt="Content Preview"
+                      sx={{
+                        maxWidth: "100%",
+                        maxHeight: 200,
+                        objectFit: "contain",
+                        borderRadius: 1,
                       }}
                     />
-                  </Button>
 
-                  {editDialog.newFile && (
-                    <Typography variant="caption" color="success.main">
-                      New image selected: {editDialog.newFile.name}
-                    </Typography>
-                  )}
+                    {/* Upload Button */}
+                    <Button
+                      component="label"
+                      variant="outlined"
+                      startIcon={<CloudUpload />}
+                    >
+                      Replace Image
+                      <input
+                        type="file"
+                        hidden
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            // Validate file size (10MB)
+                            if (file.size > 10 * 1024 * 1024) {
+                              alert("File size must be less than 10MB");
+                              return;
+                            }
+
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setEditDialog({
+                                ...editDialog,
+                                newFile: file,
+                                previewUrl: reader.result as string,
+                              });
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                    </Button>
+
+                    {editDialog.newFile && (
+                      <Typography variant="caption" color="success.main">
+                        New image selected: {editDialog.newFile.name}
+                      </Typography>
+                    )}
+                  </Box>
                 </Box>
-              </Box>
-            )}
+              )}
 
-            <TextField
-              fullWidth
-              required
-              label={t("myContent.title_field")}
-              value={editDialog.title}
-              onChange={(e) =>
-                setEditDialog({ ...editDialog, title: e.target.value })
-              }
-            />
-
-            <TextField
-              fullWidth
-              multiline
-              rows={3}
-              label={t("myContent.description_field")}
-              value={editDialog.description}
-              onChange={(e) =>
-                setEditDialog({
-                  ...editDialog,
-                  description: e.target.value,
-                })
-              }
-            />
-
-            <TextField
-              fullWidth
-              type="number"
-              required
-              label={t("myContent.duration_field")}
-              helperText={t("myContent.duration_help")}
-              inputProps={{ min: 5, max: 300 }}
-              value={editDialog.duration}
-              onChange={(e) =>
-                setEditDialog({
-                  ...editDialog,
-                  duration: parseInt(e.target.value) || 10,
-                })
-              }
-            />
-
-            <Box sx={{ display: "flex", gap: 2 }}>
               <TextField
                 fullWidth
                 required
-                type="date"
-                label={t("myContent.start_date")}
-                InputLabelProps={{ shrink: true }}
-                value={editDialog.start_date}
+                label={t("myContent.title_field")}
+                value={editDialog.title}
                 onChange={(e) =>
-                  setEditDialog({
-                    ...editDialog,
-                    start_date: e.target.value,
-                  })
+                  setEditDialog({ ...editDialog, title: e.target.value })
                 }
               />
+
               <TextField
                 fullWidth
-                required
-                type="date"
-                label={t("myContent.end_date")}
-                InputLabelProps={{ shrink: true }}
-                value={editDialog.end_date}
+                multiline
+                rows={3}
+                label={t("myContent.description_field")}
+                value={editDialog.description}
                 onChange={(e) =>
                   setEditDialog({
                     ...editDialog,
-                    end_date: e.target.value,
+                    description: e.target.value,
                   })
                 }
               />
-            </Box>
 
-            <Divider />
-
-            {/* QR Code Settings */}
-            <Box>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                <QrCode2 sx={{ mr: 1, color: "primary.main" }} />
-                <Typography variant="h6">
-                  {t("myContent.qr_code_title")}
-                </Typography>
-              </Box>
-
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={editDialog.qr_code_enabled}
-                    onChange={(e) =>
-                      setEditDialog({
-                        ...editDialog,
-                        qr_code_enabled: e.target.checked,
-                      })
-                    }
-                  />
+              <TextField
+                fullWidth
+                type="number"
+                required
+                label={t("myContent.duration_field")}
+                helperText={t("myContent.duration_help")}
+                inputProps={{ min: 5, max: 300 }}
+                value={editDialog.duration}
+                onChange={(e) =>
+                  setEditDialog({
+                    ...editDialog,
+                    duration: parseInt(e.target.value) || 10,
+                  })
                 }
-                label={t("myContent.qr_code_enabled")}
               />
 
-              <Collapse in={editDialog.qr_code_enabled}>
-                <Stack spacing={2} sx={{ mt: 2 }}>
-                  <TextField
-                    fullWidth
-                    label={t("myContent.qr_code_url")}
-                    helperText={t("myContent.qr_code_url_help")}
-                    value={editDialog.qr_code_url}
-                    onChange={(e) =>
-                      setEditDialog({
-                        ...editDialog,
-                        qr_code_url: e.target.value,
-                      })
-                    }
-                  />
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <TextField
+                  fullWidth
+                  required
+                  type="date"
+                  label={t("myContent.start_date")}
+                  InputLabelProps={{ shrink: true }}
+                  value={editDialog.start_date}
+                  onChange={(e) =>
+                    setEditDialog({
+                      ...editDialog,
+                      start_date: e.target.value,
+                    })
+                  }
+                />
+                <TextField
+                  fullWidth
+                  required
+                  type="date"
+                  label={t("myContent.end_date")}
+                  InputLabelProps={{ shrink: true }}
+                  value={editDialog.end_date}
+                  onChange={(e) =>
+                    setEditDialog({
+                      ...editDialog,
+                      end_date: e.target.value,
+                    })
+                  }
+                />
+              </Box>
 
-                  <FormControl fullWidth>
-                    <InputLabel>{t("myContent.qr_code_position")}</InputLabel>
-                    <Select
-                      value={editDialog.qr_code_position}
-                      label={t("myContent.qr_code_position")}
+              <Divider />
+
+              {/* QR Code Settings */}
+              <Box>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <QrCode2 sx={{ mr: 1, color: "primary.main" }} />
+                  <Typography variant="h6">
+                    {t("myContent.qr_code_title")}
+                  </Typography>
+                </Box>
+
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={editDialog.qr_code_enabled}
                       onChange={(e) =>
                         setEditDialog({
                           ...editDialog,
-                          qr_code_position: e.target.value as any,
+                          qr_code_enabled: e.target.checked,
                         })
                       }
-                    >
-                      <MenuItem value="top-left">
-                        {t("myContent.qr_position_tl")}
-                      </MenuItem>
-                      <MenuItem value="top-right">
-                        {t("myContent.qr_position_tr")}
-                      </MenuItem>
-                      <MenuItem value="bottom-left">
-                        {t("myContent.qr_position_bl")}
-                      </MenuItem>
-                      <MenuItem value="bottom-right">
-                        {t("myContent.qr_position_br")}
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
-                </Stack>
-              </Collapse>
-            </Box>
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setEditDialog({ ...editDialog, open: false })}>
-            {t("myContent.cancel")}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleEditSubmit}
-            disabled={
-              !editDialog.title.trim() ||
-              editDialog.duration < 5 ||
-              editDialog.duration > 300 ||
-              !editDialog.start_date ||
-              !editDialog.end_date
-            }
-          >
-            {t("myContent.save_changes")}
-          </Button>
-        </DialogActions>
-      </Dialog>
+                    />
+                  }
+                  label={t("myContent.qr_code_enabled")}
+                />
 
-      {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={deleteDialog.open}
-        onClose={() => setDeleteDialog({ open: false, content: null })}
-        maxWidth="sm"
-      >
-        <DialogTitle>{t("myContent.delete_title")}</DialogTitle>
-        <DialogContent>
-          <Alert severity="warning" sx={{ mb: 2 }}>
-            {t("myContent.delete_warning")}
-          </Alert>
-          <Typography variant="body1">
-            {t("myContent.delete_confirm")}
-          </Typography>
-          {deleteDialog.content && (
-            <Box
-              sx={{
-                mt: 2,
-                p: 2,
-                bgcolor: "background.default",
-                borderRadius: 1,
-              }}
+                <Collapse in={editDialog.qr_code_enabled}>
+                  <Stack spacing={2} sx={{ mt: 2 }}>
+                    <TextField
+                      fullWidth
+                      label={t("myContent.qr_code_url")}
+                      helperText={t("myContent.qr_code_url_help")}
+                      value={editDialog.qr_code_url}
+                      onChange={(e) =>
+                        setEditDialog({
+                          ...editDialog,
+                          qr_code_url: e.target.value,
+                        })
+                      }
+                    />
+
+                    <FormControl fullWidth>
+                      <InputLabel>{t("myContent.qr_code_position")}</InputLabel>
+                      <Select
+                        value={editDialog.qr_code_position}
+                        label={t("myContent.qr_code_position")}
+                        onChange={(e) =>
+                          setEditDialog({
+                            ...editDialog,
+                            qr_code_position: e.target.value as any,
+                          })
+                        }
+                      >
+                        <MenuItem value="top-left">
+                          {t("myContent.qr_position_tl")}
+                        </MenuItem>
+                        <MenuItem value="top-right">
+                          {t("myContent.qr_position_tr")}
+                        </MenuItem>
+                        <MenuItem value="bottom-left">
+                          {t("myContent.qr_position_bl")}
+                        </MenuItem>
+                        <MenuItem value="bottom-right">
+                          {t("myContent.qr_position_br")}
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Stack>
+                </Collapse>
+              </Box>
+            </Stack>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => setEditDialog({ ...editDialog, open: false })}
             >
-              <Typography variant="body2" fontWeight="bold">
-                {deleteDialog.content.title}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                {deleteDialog.content.masjid_name}
-              </Typography>
-            </Box>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setDeleteDialog({ open: false, content: null })}
-          >
-            {t("myContent.cancel")}
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={handleDeleteConfirm}
-            startIcon={<Delete />}
-          >
-            {t("myContent.delete_confirm_btn")}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+              {t("myContent.cancel")}
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleEditSubmit}
+              disabled={
+                !editDialog.title.trim() ||
+                editDialog.duration < 5 ||
+                editDialog.duration > 300 ||
+                !editDialog.start_date ||
+                !editDialog.end_date
+              }
+            >
+              {t("myContent.save_changes")}
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog
+          open={deleteDialog.open}
+          onClose={() => setDeleteDialog({ open: false, content: null })}
+          maxWidth="sm"
+        >
+          <DialogTitle>{t("myContent.delete_title")}</DialogTitle>
+          <DialogContent>
+            <Alert severity="warning" sx={{ mb: 2 }}>
+              {t("myContent.delete_warning")}
+            </Alert>
+            <Typography variant="body1">
+              {t("myContent.delete_confirm")}
+            </Typography>
+            {deleteDialog.content && (
+              <Box
+                sx={{
+                  mt: 2,
+                  p: 2,
+                  bgcolor: "background.default",
+                  borderRadius: 1,
+                }}
+              >
+                <Typography variant="body2" fontWeight="bold">
+                  {deleteDialog.content.title}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {deleteDialog.content.masjid_name}
+                </Typography>
+              </Box>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => setDeleteDialog({ open: false, content: null })}
+            >
+              {t("myContent.cancel")}
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleDeleteConfirm}
+              startIcon={<Delete />}
+            >
+              {t("myContent.delete_confirm_btn")}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
+    </div>
   );
 };
 

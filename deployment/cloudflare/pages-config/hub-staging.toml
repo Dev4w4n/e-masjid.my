@@ -21,7 +21,7 @@ VITE_SHOW_LOGGER = "true"
 
 # Cross-app integration URLs (staging)
 VITE_TV_DISPLAY_BASE_URL = "https://tv-emasjid-staging.pages.dev/display"
-VITE_PUBLIC_BASE_URL = "https://public-emasjid-staging.pages.dev"
+VITE_PUBLIC_BASE_URL = "https://papan-info-emasjid-staging.pages.dev"
 
 # Development features enabled for staging
 VITE_BUILD_TARGET = "staging"

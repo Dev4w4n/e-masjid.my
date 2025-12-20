@@ -23,7 +23,7 @@ export const Header: React.FC = () => {
   const handleSignOut = async () => {
     try {
       await signOut();
-      navigate("/login");
+      navigate("/auth/signin");
     } catch (error) {
       console.error("Error signing out:", error);
     }
@@ -113,7 +113,7 @@ export const Header: React.FC = () => {
             </div>
           ) : (
             <Link
-              to="/login"
+              to="/auth/signin"
               className="px-6 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-full transition-colors text-sm"
             >
               Log Masuk
@@ -165,7 +165,7 @@ export const Header: React.FC = () => {
             </>
           ) : (
             <Link
-              to="/login"
+              to="/auth/signin"
               onClick={() => setIsMobileMenuOpen(false)}
               className="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-full transition-colors text-center"
             >

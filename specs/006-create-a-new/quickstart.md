@@ -37,7 +37,7 @@ pnpm run build:clean
 ### 2. Configure Environment
 
 ```bash
-cd apps/public
+cd apps/papan-info
 
 # Create environment file
 cp .env.example .env.local
@@ -67,7 +67,7 @@ NEXT_PUBLIC_GA_ID=  # Leave empty for development
 ### 3. Run Development Server
 
 ```bash
-cd apps/public
+cd apps/papan-info
 
 # Start Next.js dev server
 pnpm dev
@@ -449,7 +449,7 @@ curl -I http://localhost:3002
 
 ```bash
 # Start development
-cd apps/public && pnpm dev
+cd apps/papan-info && pnpm dev
 
 # Run tests
 pnpm test                  # Unit tests

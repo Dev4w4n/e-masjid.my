@@ -4,7 +4,7 @@
 # Framework: Next.js
 
 [build]
-command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && mkdir -p apps/tv-display && cp -r .next apps/tv-display/.next && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify"
+command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify"
 publish = "apps/tv-display/.vercel/output/static"
 
 # Cloudflare Pages Functions configuration
@@ -23,7 +23,7 @@ NEXT_PUBLIC_APP_URL = "https://YOUR_PRODUCTION_TV_DOMAIN"
 
 # Cross-app integration
 NEXT_PUBLIC_HUB_URL = "https://hub-emasjid-production.pages.dev"
-NEXT_PUBLIC_BASE_URL = "https://public-emasjid-production.pages.dev"
+NEXT_PUBLIC_BASE_URL = "https://papan-info.emasjid.my"
 
 # TV Display specific configuration
 NEXT_PUBLIC_AUTO_REFRESH = "true"

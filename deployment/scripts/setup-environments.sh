@@ -114,10 +114,10 @@ VITE_APP_URL=https://hub-emasjid-${environment}.pages.dev
 VITE_ENABLE_DEV_TOOLS=$( [ "$environment" = "staging" ] && echo "true" || echo "false" )
 VITE_SHOW_LOGGER=$( [ "$environment" = "staging" ] && echo "true" || echo "false" )
 
-# Public App (Next.js) - Client and server variables  
+# Papan Info App (Next.js) - Client and server variables  
 NEXT_PUBLIC_SUPABASE_URL=${supabase_url_placeholder}
 NEXT_PUBLIC_SUPABASE_ANON_KEY=${anon_key_placeholder}
-NEXT_PUBLIC_BASE_URL=https://public-emasjid-${environment}.pages.dev
+NEXT_PUBLIC_BASE_URL=https://papan-info-emasjid-${environment}.pages.dev
 
 # TV Display App (Next.js) - Client and server variables
 NEXT_PUBLIC_APP_URL=https://tv-emasjid-${environment}.pages.dev
@@ -189,12 +189,12 @@ STAGING
 - [ ] Set build output: \`apps/hub/dist\`
 - [ ] Add environment variables from template
 
-#### Public App: \`public-emasjid-${environment}\`  
+#### Papan Info App: \`papan-info-emasjid-${environment}\`  
 - [ ] Create Cloudflare Pages project
 - [ ] Connect to GitHub: \`${GITHUB_REPO}\`
 - [ ] Set production branch: \`$( [ "$environment" = "production" ] && echo "$MAIN_BRANCH" || echo "$DEV_BRANCH" )\`
-- [ ] Configure build command: \`cd apps/public && pnpm install --frozen-lockfile && pnpm build\`
-- [ ] Set build output: \`apps/public/.next\`
+- [ ] Configure build command: \`cd apps/papan-info && pnpm install --frozen-lockfile && pnpm build\`
+- [ ] Set build output: \`apps/papan-info/.next\`
 - [ ] Add environment variables from template
 
 #### TV Display App: \`tv-emasjid-${environment}\`
@@ -207,7 +207,7 @@ STAGING
 
 ### Environment Variables
 - [ ] Hub app variables configured in Cloudflare Pages
-- [ ] Public app variables configured in Cloudflare Pages  
+- [ ] Papan Info app variables configured in Cloudflare Pages  
 - [ ] TV Display variables configured in Cloudflare Pages
 - [ ] Super admin credentials set in Supabase
 - [ ] OAuth providers configured (if needed)
@@ -293,7 +293,7 @@ validate_setup() {
     fi
     
     # Check if required directories exist
-    if [ -d "apps/hub" ] && [ -d "apps/public" ] && [ -d "apps/tv-display" ]; then
+    if [ -d "apps/hub" ] && [ -d "apps/papan-info" ] && [ -d "apps/tv-display" ]; then
         log_success "All application directories exist"
     else
         log_error "Missing application directories"
@@ -301,7 +301,7 @@ validate_setup() {
     fi
     
     # Check if package.json files exist
-    for app in hub public tv-display; do
+    for app in hub papan-info tv-display; do
         if [ -f "apps/${app}/package.json" ]; then
             log_success "apps/${app}/package.json exists"
         else

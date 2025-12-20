@@ -4,8 +4,8 @@
 # Framework: Next.js
 
 [build]
-command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/public && pnpm build && mkdir -p apps/public && cp -r .next apps/public/.next && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify"
-publish = "apps/public/.vercel/output/static"
+command = "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/papan-info && pnpm build && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify"
+publish = "apps/papan-info/.vercel/output/static"
 
 # Cloudflare Pages Functions configuration
 [functions]

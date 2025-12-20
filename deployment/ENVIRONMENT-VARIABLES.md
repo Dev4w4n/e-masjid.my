@@ -41,7 +41,7 @@ VITE_ENABLE_DEV_TOOLS=false
 VITE_SHOW_LOGGER=false
 ```
 
-### Public App (Next.js)
+### Papan Info App (Next.js)
 
 Uses `NEXT_PUBLIC_` prefix for client-side variables:
 
@@ -56,7 +56,7 @@ SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_ANON_KEY=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
 ```
 
-> 🔒 **Security Note:** Public App uses only the anon key with RLS policies. Service role key is not needed.
+> 🔒 **Security Note:** Papan Info App uses only the anon key with RLS policies. Service role key is not needed.
 
 ### TV Display App (Next.js)
 

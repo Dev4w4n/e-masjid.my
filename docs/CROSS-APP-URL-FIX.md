@@ -23,7 +23,7 @@ Missing environment variables for cross-app navigation:
 VITE_PUBLIC_APP_URL=https://public-emasjid-staging.pages.dev
 VITE_TV_DISPLAY_BASE_URL=https://tv-emasjid-staging.pages.dev/display
 
-# Public App - Added cross-app URLs
+# Papan Info App - Added cross-app URLs
 NEXT_PUBLIC_HUB_URL=https://hub-emasjid-staging.pages.dev
 NEXT_PUBLIC_TV_DISPLAY_URL=https://tv-emasjid-staging.pages.dev/display
 ```
@@ -35,7 +35,7 @@ NEXT_PUBLIC_TV_DISPLAY_URL=https://tv-emasjid-staging.pages.dev/display
 VITE_PUBLIC_APP_URL=https://public-emasjid-production.pages.dev
 VITE_TV_DISPLAY_BASE_URL=https://tv-emasjid-production.pages.dev/display
 
-# Public App - Added cross-app URLs
+# Papan Info App - Added cross-app URLs
 NEXT_PUBLIC_HUB_URL=https://hub-emasjid-production.pages.dev
 NEXT_PUBLIC_TV_DISPLAY_URL=https://tv-emasjid-production.pages.dev/display
 ```
@@ -108,7 +108,7 @@ href={`${getPublicUrl()}/masjid/${masjid.id}`}
    VITE_TV_DISPLAY_BASE_URL=https://tv-emasjid-staging.pages.dev/display
    ```
 
-2. **Cloudflare Pages - Public App** (public-emasjid-staging.pages.dev):
+2. **Cloudflare Pages - Papan Info App** (public-emasjid-staging.pages.dev):
 
    ```bash
    NEXT_PUBLIC_HUB_URL=https://hub-emasjid-staging.pages.dev
@@ -129,7 +129,7 @@ href={`${getPublicUrl()}/masjid/${masjid.id}`}
    VITE_TV_DISPLAY_BASE_URL=https://tv.emasjid.my/display
    ```
 
-2. **Cloudflare Pages - Public App** (emasjid.my):
+2. **Cloudflare Pages - Papan Info App** (emasjid.my):
 
    ```bash
    NEXT_PUBLIC_HUB_URL=https://hub.emasjid.my
@@ -147,9 +147,9 @@ href={`${getPublicUrl()}/masjid/${masjid.id}`}
 
 1. Go to "Senarai Masjid" page
 2. Click "Lihat Butiran" on any masjid card
-3. Should open Public App URL with correct domain (not localhost)
+3. Should open Papan Info App URL with correct domain (not localhost)
 
-### Public App (localhost:3002 or public-emasjid-staging.pages.dev)
+### Papan Info App (localhost:3002 or public-emasjid-staging.pages.dev)
 
 1. Go to any masjid detail page `/masjid/[id]`
 2. Scroll to "Paparan TV" section

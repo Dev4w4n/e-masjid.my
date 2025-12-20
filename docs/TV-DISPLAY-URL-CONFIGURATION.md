@@ -40,7 +40,7 @@ Created a unified configuration system that automatically detects the environmen
 - **Change**: Replaced hardcoded `tvDisplayBaseUrl` with `getTvDisplayUrlForDisplay(display.id)`
 - **Environment Variable**: `VITE_TV_DISPLAY_BASE_URL=http://localhost:3001/display`
 
-#### Public App (`apps/public`)
+#### Papan Info App (`apps/papan-info`)
 
 - **File**: `src/app/masjid/[id]/page.tsx`
 - **Change**: Replaced hardcoded URL with `getTvDisplayUrlForDisplay(display.id)`
@@ -54,7 +54,7 @@ Created a unified configuration system that automatically detects the environmen
 # Hub App (.env.local)
 VITE_TV_DISPLAY_BASE_URL=http://localhost:3001/display
 
-# Public App (.env.local)
+# Papan Info App (.env.local)
 NEXT_PUBLIC_TV_DISPLAY_URL=http://localhost:3001/display
 
 # Cross-app integration
@@ -115,10 +115,10 @@ const displayUrl = getTvDisplayUrlForDisplay(display.id);
 
 - `packages/shared-types/src/index.ts` - Export new config functions
 - `apps/hub/src/pages/masjid/tv-display/TvDisplayList.tsx` - Use shared config
-- `apps/public/src/app/masjid/[id]/page.tsx` - Use shared config
-- `apps/public/.env.local` - Add NEXT_PUBLIC_TV_DISPLAY_URL
-- `apps/public/.env.example` - Document new variable
-- `apps/public/.env.local.example` - Document new variable
+- `apps/papan-info/src/app/masjid/[id]/page.tsx` - Use shared config
+- `apps/papan-info/.env.local` - Add NEXT_PUBLIC_TV_DISPLAY_URL
+- `apps/papan-info/.env.example` - Document new variable
+- `apps/papan-info/.env.local.example` - Document new variable
 - `.env.local.template` - Add cross-app integration variables
 
 ### Troubleshooting

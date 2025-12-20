@@ -176,10 +176,10 @@ text-shadow: rgba(0, 0, 0, 0.15); /* Depth shadow */
 
 ## 📝 Files Modified
 
-1. `apps/public/src/components/Header.tsx`
-2. `apps/public/src/styles/islamic-theme.css`
-3. `apps/public/src/styles/globals.css`
-4. `apps/public/tests/unit/components/Header.test.tsx`
+1. `apps/papan-info/src/components/Header.tsx`
+2. `apps/papan-info/src/styles/islamic-theme.css`
+3. `apps/papan-info/src/styles/globals.css`
+4. `apps/papan-info/tests/unit/components/Header.test.tsx`
 
 ## 📖 Documentation Created
 
