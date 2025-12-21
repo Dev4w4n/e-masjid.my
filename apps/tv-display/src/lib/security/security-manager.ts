@@ -67,7 +67,7 @@ class SecurityManager {
     };
 
     this.suspiciousPatterns = [
-      /<script[^>]*>.*?<\/script>/gi,
+      /<script\b[^>]*>[\s\S]*?<\/script[^>]*>/gi,
       /javascript:/gi,
       /on\w+\s*=/gi,
       /eval\s*\(/gi,
