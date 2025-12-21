@@ -7,6 +7,7 @@
  */
 
 import { cacheManager } from '../performance/cache-manager';
+import sanitizeHtml from 'sanitize-html';
 
 // Security configuration
 export interface SecurityConfig {
@@ -526,25 +527,22 @@ class SecurityManager {
   }
 
   private sanitizeHTML(html: string): string {
-    // Basic HTML sanitization - remove dangerous tags and attributes
-    let sanitized = html;
-
-    // Remove script tags and their content
-    sanitized = sanitized.replace(/<script[^>]*>.*?<\/script>/gi, '');
-    
-    // Remove dangerous attributes
-    sanitized = sanitized.replace(/\son\w+\s*=\s*["'][^"']*["']/gi, '');
-    sanitized = sanitized.replace(/\sjavascript:/gi, '');
-    sanitized = sanitized.replace(/\svbscript:/gi, '');
-    
-    // Remove dangerous tags
-    const dangerousTags = ['iframe', 'object', 'embed', 'form', 'input', 'button'];
-    for (const tag of dangerousTags) {
-      const regex = new RegExp(`<${tag}[^>]*>.*?</${tag}>`, 'gi');
-      sanitized = sanitized.replace(regex, '');
-    }
-
-    return sanitized;
+    // Use a robust HTML sanitizer to remove dangerous tags and attributes
+    return sanitizeHtml(html, {
+      allowedTags: sanitizeHtml.defaults.allowedTags.filter(
+        (tag) => !['script', 'iframe', 'object', 'embed', 'form', 'input', 'button'].includes(tag)
+      ),
+      allowedAttributes: {
+        // Start from the defaults but explicitly disallow event handlers
+        '*': (sanitizeHtml.defaults.allowedAttributes['*'] || []).filter(
+          (attr: string) => !/^on/i.test(attr)
+        ),
+      },
+      allowedSchemes: sanitizeHtml.defaults.allowedSchemes.filter(
+        (scheme) => !['javascript', 'vbscript'].includes(scheme.toLowerCase())
+      ),
+      allowProtocolRelative: false,
+    });
   }
 
   private sanitizeRequestBody(body: any): any {
