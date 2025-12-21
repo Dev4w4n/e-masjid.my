@@ -8,6 +8,7 @@
 
 import { cacheManager } from '../performance/cache-manager';
 import sanitizeHtml from 'sanitize-html';
+
 // Security configuration
 export interface SecurityConfig {
   enableCSRFProtection: boolean;
