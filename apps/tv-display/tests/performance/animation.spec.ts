@@ -391,7 +391,15 @@ test.describe('TV Display Performance - 60fps Animation Tests', () => {
 
         videoElements.forEach(iframe => {
           const src = (iframe as HTMLIFrameElement).src;
-          if (src.includes('youtube-nocookie.com')) optimizations.hasNoCookie = true;
+          try {
+            const url = new URL(src, window.location.href);
+            const hostname = url.hostname;
+            if (hostname === 'youtube-nocookie.com' || hostname.endsWith('.youtube-nocookie.com')) {
+              optimizations.hasNoCookie = true;
+            }
+          } catch {
+            // Ignore invalid URLs
+          }
           if (src.includes('autoplay=1')) optimizations.hasAutoplay = true;
           if (src.includes('modestbranding=1')) optimizations.hasModestBranding = true;
           if (src.includes('hd=1') || src.includes('quality=hd')) optimizations.hasHdQuality = true;
