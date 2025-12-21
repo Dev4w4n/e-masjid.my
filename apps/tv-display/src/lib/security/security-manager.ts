@@ -643,11 +643,18 @@ class SecurityManager {
       const target = event.target as HTMLElement;
       
       // Check for suspicious JavaScript execution attempts
-      if (target.getAttribute('onclick') || target.getAttribute('href')?.startsWith('javascript:')) {
+      const href = target.getAttribute('href');
+      const normalizedHref = href ? href.trim().toLowerCase() : '';
+      if (
+        target.getAttribute('onclick') ||
+        normalizedHref.startsWith('javascript:') ||
+        normalizedHref.startsWith('data:') ||
+        normalizedHref.startsWith('vbscript:')
+      ) {
         this.logSecurityEvent('xss_attempt', 'high', 'suspicious_click', {
           tagName: target.tagName,
           onclick: target.getAttribute('onclick'),
-          href: target.getAttribute('href')
+          href: href
         }, true);
         
         event.preventDefault();
