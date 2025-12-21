@@ -216,7 +216,7 @@ export const CONTENT_VALIDATION = {
 export const URL_PATTERNS = {
   youtube:
     /^https:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]+(\&[\w=]*)*$/,
-  image: /^https?:\/\/.*\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i,
+  image: /^https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp)(?:\?[^\s]*)?$/i,
   general: /^https?:\/\/[^\s/$.?#].[^\s]*$/,
 } as const;
 
