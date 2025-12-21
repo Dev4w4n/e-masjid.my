@@ -100,6 +100,7 @@ export async function GET(
     // Build content query with filters
     // Use the new display_content_assignments join table to get content for this display
     // Include per-content settings: carousel_duration, transition_type, image_display_mode, sort_order
+    // Note: We can't order by joined table fields in PostgREST, so we'll sort in JavaScript after fetching
     let query = supabase
       .from('display_content')
       .select(`
@@ -112,8 +113,7 @@ export async function GET(
           display_order
         )
       `)
-      .eq('display_content_assignments.display_id', displayId)
-      .order('created_at', { ascending: false });
+      .eq('display_content_assignments.display_id', displayId);
 
     // Apply filters
     if (filters.status?.length) {
@@ -147,6 +147,10 @@ export async function GET(
         { status: 500 }
       );
     }
+
+    // Log the raw content for debugging
+    console.log('[Content API] Raw content from DB:', JSON.stringify(content, null, 2));
+    console.log('[Content API] Content count:', content?.length || 0);
 
     // Transform content to match DisplayContent interface
     // Include per-content settings from display_content_assignments
