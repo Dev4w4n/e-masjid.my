@@ -28,6 +28,7 @@ import {
 } from "@mui/icons-material";
 import { useUser } from "@masjid-suite/auth";
 import supabase, { masjidService } from "@masjid-suite/supabase-client";
+import { isValidYouTubeUrl } from "@masjid-suite/shared-types";
 import { TextOverlayEditor } from "../../components/content/TextOverlayEditor";
 
 // Simple form state interface
@@ -184,6 +185,16 @@ const CreateContent: React.FC = () => {
 
       if (formData.type === "youtube_video" && !formData.url.trim()) {
         throw new Error("YouTube URL is required");
+      }
+
+      // Validate YouTube URL format
+      if (
+        formData.type === "youtube_video" &&
+        !isValidYouTubeUrl(formData.url.trim())
+      ) {
+        throw new Error(
+          "Invalid YouTube URL format. Please use a valid YouTube video URL (e.g., https://www.youtube.com/watch?v=VIDEO_ID or https://youtu.be/VIDEO_ID)"
+        );
       }
 
       let contentUrl = formData.url;
