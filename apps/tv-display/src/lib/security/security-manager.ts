@@ -7,6 +7,7 @@
  */
 
 import { cacheManager } from '../performance/cache-manager';
+import sanitizeHtml from 'sanitize-html';
 
 // Security configuration
 export interface SecurityConfig {
@@ -67,7 +68,7 @@ class SecurityManager {
     };
 
     this.suspiciousPatterns = [
-      /<script[^>]*>.*?<\/script>/gi,
+      /<script\b[^>]*>[\s\S]*?<\/script[^>]*>/gi,
       /javascript:/gi,
       /on\w+\s*=/gi,
       /eval\s*\(/gi,
@@ -526,23 +527,30 @@ class SecurityManager {
   }
 
   private sanitizeHTML(html: string): string {
-    // Basic HTML sanitization - remove dangerous tags and attributes
-    let sanitized = html;
-
-    // Remove script tags and their content
-    sanitized = sanitized.replace(/<script[^>]*>.*?<\/script>/gi, '');
-    
-    // Remove dangerous attributes
-    sanitized = sanitized.replace(/\son\w+\s*=\s*["'][^"']*["']/gi, '');
-    sanitized = sanitized.replace(/\sjavascript:/gi, '');
-    sanitized = sanitized.replace(/\svbscript:/gi, '');
-    
-    // Remove dangerous tags
-    const dangerousTags = ['iframe', 'object', 'embed', 'form', 'input', 'button'];
-    for (const tag of dangerousTags) {
-      const regex = new RegExp(`<${tag}[^>]*>.*?</${tag}>`, 'gi');
-      sanitized = sanitized.replace(regex, '');
-    }
+    // Robust HTML sanitization - remove dangerous tags and attributes using a well-tested library
+    const sanitized = sanitizeHtml(html, {
+      // By default, disallow script and other executable content. We explicitly list
+      // tags we want removed that were previously stripped by regexes.
+      disallowedTagsMode: 'discard',
+      allowedTags: sanitizeHtml.defaults.allowedTags.filter(
+        (tag) => !['script', 'iframe', 'object', 'embed', 'form', 'input', 'button'].includes(tag)
+      ),
+      // Remove event-handler attributes and potentially dangerous attributes while
+      // preserving common safe attributes from the default configuration.
+      allowedAttributes: Object.fromEntries(
+        Object.entries(sanitizeHtml.defaults.allowedAttributes).map(([tag, attrs]) => [
+          tag,
+          (attrs as string[]).filter(
+            (attr) =>
+              !/^on/i.test(attr) && // Remove on* handlers
+              attr !== 'style'      // Optionally strip inline styles which may contain URLs
+          )
+        ])
+      ),
+      // Only allow safe URL schemes to prevent javascript:/vbscript: URIs.
+      allowedSchemes: ['http', 'https', 'mailto', 'tel'],
+      allowProtocolRelative: false
+    });
 
     return sanitized;
   }
@@ -635,11 +643,18 @@ class SecurityManager {
       const target = event.target as HTMLElement;
       
       // Check for suspicious JavaScript execution attempts
-      if (target.getAttribute('onclick') || target.getAttribute('href')?.startsWith('javascript:')) {
+      const href = target.getAttribute('href');
+      const normalizedHref = href ? href.trim().toLowerCase() : '';
+      if (
+        target.getAttribute('onclick') ||
+        normalizedHref.startsWith('javascript:') ||
+        normalizedHref.startsWith('data:') ||
+        normalizedHref.startsWith('vbscript:')
+      ) {
         this.logSecurityEvent('xss_attempt', 'high', 'suspicious_click', {
           tagName: target.tagName,
           onclick: target.getAttribute('onclick'),
-          href: target.getAttribute('href')
+          href: href
         }, true);
         
         event.preventDefault();

@@ -35,7 +35,8 @@
     "react-dom": "^19.0.0",
     "react-player": "^2.13.0",
     "tailwind-merge": "^2.0.0",
-    "zustand": "^4.4.7"
+    "zustand": "^4.4.7",
+    "sanitize-html": "^2.17.0"
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.13.5",
@@ -47,6 +48,7 @@
     "@types/qrcode.react": "^3.0.0",
     "@types/react": "^18.2.33",
     "@types/react-dom": "^18.2.14",
+    "@types/sanitize-html": "^2.11.0",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "@vitejs/plugin-react": "^4.1.1",

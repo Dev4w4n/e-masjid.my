@@ -323,16 +323,19 @@ BEGIN
   -- Insert display content assignments using the new many-to-many table
   -- Assign content_1 to all displays (available for all)
   INSERT INTO display_content_assignments (display_id, content_id, assigned_by) VALUES 
+    ('550e8400-e29b-41d4-a716-446655440000'::uuid, content_1_id, masjid_admin_id),
     (display_1_id, content_1_id, masjid_admin_id),
     (display_2_id, content_1_id, masjid_admin_id);
 
   -- Assign content_2 to all displays
   INSERT INTO display_content_assignments (display_id, content_id, assigned_by) VALUES 
+    ('550e8400-e29b-41d4-a716-446655440000'::uuid, content_2_id, masjid_admin_id),
     (display_1_id, content_2_id, masjid_admin_id),
     (display_2_id, content_2_id, masjid_admin_id);
 
-  -- Assign content_3 only to main hall display
+  -- Assign content_3 to contract test display and main hall display
   INSERT INTO display_content_assignments (display_id, content_id, assigned_by) VALUES 
+    ('550e8400-e29b-41d4-a716-446655440000'::uuid, content_3_id, test_user_id),
     (display_1_id, content_3_id, test_user_id);
 
   -- Insert test prayer times

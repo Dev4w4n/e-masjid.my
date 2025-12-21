@@ -123,13 +123,25 @@ export const contentOptimizations = {
    */
   optimizeVideo: (src: string) => {
     // For YouTube videos, use high quality and disable related videos
-    if (src.includes('youtube.com') || src.includes('youtu.be')) {
+    try {
       const url = new URL(src);
-      url.searchParams.set('quality', 'hd1080');
-      url.searchParams.set('rel', '0');
-      url.searchParams.set('modestbranding', '1');
-      url.searchParams.set('controls', '0');
-      return url.toString();
+      const hostname = url.hostname.toLowerCase();
+      const allowedYouTubeHosts = [
+        'youtube.com',
+        'www.youtube.com',
+        'm.youtube.com',
+        'youtu.be'
+      ];
+
+      if (allowedYouTubeHosts.includes(hostname)) {
+        url.searchParams.set('quality', 'hd1080');
+        url.searchParams.set('rel', '0');
+        url.searchParams.set('modestbranding', '1');
+        url.searchParams.set('controls', '0');
+        return url.toString();
+      }
+    } catch {
+      // If the URL is invalid, fall through and return the original src
     }
     
     return src;
