@@ -68,7 +68,7 @@ class SecurityManager {
     };
 
     this.suspiciousPatterns = [
-      /<script[^>]*>.*?<\/script>/gi,
+      /<script\b[^>]*>[\s\S]*?<\/script[^>]*>/gi,
       /javascript:/gi,
       /on\w+\s*=/gi,
       /eval\s*\(/gi,
@@ -527,25 +527,29 @@ class SecurityManager {
   }
 
   private sanitizeHTML(html: string): string {
-    // HTML sanitization - remove dangerous tags and attributes using a robust library
+    // Robust HTML sanitization - remove dangerous tags and attributes using a well-tested library
     const sanitized = sanitizeHtml(html, {
-      // Allow a safe subset of tags; scripts and other dangerous tags are excluded by default
-      allowedTags: sanitizeHtml.defaults.allowedTags.filter(tag =>
-        !['script', 'iframe', 'object', 'embed', 'form', 'input', 'button'].includes(tag)
+      // By default, disallow script and other executable content. We explicitly list
+      // tags we want removed that were previously stripped by regexes.
+      disallowedTagsMode: 'discard',
+      allowedTags: sanitizeHtml.defaults.allowedTags.filter(
+        (tag) => !['script', 'iframe', 'object', 'embed', 'form', 'input', 'button'].includes(tag)
       ),
-      // Disallow all event handler and script-related attributes
-      allowedAttributes: {
-        '*': (sanitizeHtml.defaults.allowedAttributes['*'] || []).filter(attr =>
-          !/^on/i.test(attr) && attr !== 'srcset'
-        )
-      },
-      allowedSchemes: sanitizeHtml.defaults.allowedSchemes.filter(
-        scheme => scheme !== 'javascript' && scheme !== 'vbscript'
+      // Remove event-handler attributes and potentially dangerous attributes while
+      // preserving common safe attributes from the default configuration.
+      allowedAttributes: Object.fromEntries(
+        Object.entries(sanitizeHtml.defaults.allowedAttributes).map(([tag, attrs]) => [
+          tag,
+          (attrs as string[]).filter(
+            (attr) =>
+              !/^on/i.test(attr) && // Remove on* handlers
+              attr !== 'style'      // Optionally strip inline styles which may contain URLs
+          )
+        ])
       ),
-      // Ensure URLs with dangerous schemes are stripped
-      allowProtocolRelative: false,
-      // Remove comments and unknown tags
-      parser: { lowerCaseAttributeNames: true }
+      // Only allow safe URL schemes to prevent javascript:/vbscript: URIs.
+      allowedSchemes: ['http', 'https', 'mailto', 'tel'],
+      allowProtocolRelative: false
     });
 
     return sanitized;
