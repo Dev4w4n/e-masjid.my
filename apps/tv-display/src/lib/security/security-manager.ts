@@ -7,6 +7,7 @@
  */
 
 import { cacheManager } from '../performance/cache-manager';
+import sanitizeHtml from 'sanitize-html';
 
 // Security configuration
 export interface SecurityConfig {
@@ -526,23 +527,26 @@ class SecurityManager {
   }
 
   private sanitizeHTML(html: string): string {
-    // Basic HTML sanitization - remove dangerous tags and attributes
-    let sanitized = html;
-
-    // Remove script tags and their content
-    sanitized = sanitized.replace(/<script[^>]*>.*?<\/script>/gi, '');
-    
-    // Remove dangerous attributes
-    sanitized = sanitized.replace(/\son\w+\s*=\s*["'][^"']*["']/gi, '');
-    sanitized = sanitized.replace(/\sjavascript:/gi, '');
-    sanitized = sanitized.replace(/\svbscript:/gi, '');
-    
-    // Remove dangerous tags
-    const dangerousTags = ['iframe', 'object', 'embed', 'form', 'input', 'button'];
-    for (const tag of dangerousTags) {
-      const regex = new RegExp(`<${tag}[^>]*>.*?</${tag}>`, 'gi');
-      sanitized = sanitized.replace(regex, '');
-    }
+    // HTML sanitization - remove dangerous tags and attributes using a robust library
+    const sanitized = sanitizeHtml(html, {
+      // Allow a safe subset of tags; scripts and other dangerous tags are excluded by default
+      allowedTags: sanitizeHtml.defaults.allowedTags.filter(tag =>
+        !['script', 'iframe', 'object', 'embed', 'form', 'input', 'button'].includes(tag)
+      ),
+      // Disallow all event handler and script-related attributes
+      allowedAttributes: {
+        '*': (sanitizeHtml.defaults.allowedAttributes['*'] || []).filter(attr =>
+          !/^on/i.test(attr) && attr !== 'srcset'
+        )
+      },
+      allowedSchemes: sanitizeHtml.defaults.allowedSchemes.filter(
+        scheme => scheme !== 'javascript' && scheme !== 'vbscript'
+      ),
+      // Ensure URLs with dangerous schemes are stripped
+      allowProtocolRelative: false,
+      // Remove comments and unknown tags
+      parser: { lowerCaseAttributeNames: true }
+    });
 
     return sanitized;
   }
