@@ -58,7 +58,7 @@
     "react-color": "^2.19.3",
     "react-is": "18.3.1",
     "zod": "^3.25.76",
-    "zustand": "^4.4.7"
+    "zustand": "^5.0.9"
   },
   "pnpm": {
     "overrides": {
