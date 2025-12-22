@@ -31,7 +31,7 @@
     "typescript": "^5.2.0"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.10.2",
+    "@axe-core/playwright": "^4.11.0",
     "@cloudflare/next-on-pages": "^1.13.5",
     "@playwright/test": "^1.45.0",
     "@tailwindcss/forms": "^0.5.7",
