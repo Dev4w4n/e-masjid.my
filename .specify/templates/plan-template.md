@@ -27,7 +27,7 @@
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - [ ] **Package-First Architecture**: Is business logic in `packages/`, not `apps/`?
 - [ ] **Test-First Development**: Is TDD approach planned (tests written first)?
@@ -37,7 +37,7 @@
 - [ ] **Multilingual Support**: Is Bahasa Malaysia/English support planned?
 - [ ] **Documentation**: Is `/docs` documentation planned for this feature?
 
-*Any violations MUST be justified in Complexity Tracking section below*
+_Any violations MUST be justified in Complexity Tracking section below_
 
 ## Project Structure
 
@@ -54,11 +54,12 @@ specs/[###-feature]/
 ```
 
 ### Source Code (repository root)
+
 <!--
   ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
   for this feature. Delete unused options and expand the chosen structure with
   real paths (e.g., apps/hub, packages/content-management).
-  
+
   IMPORTANT: Follow Package-First Architecture - business logic MUST be in packages/
 -->
 
@@ -98,7 +99,7 @@ are affected, and reference real directories above]
 
 > **Fill ONLY if Constitution Check has violations that must be justified**
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+| Violation                  | Why Needed         | Simpler Alternative Rejected Because |
+| -------------------------- | ------------------ | ------------------------------------ |
+| [e.g., 4th project]        | [current need]     | [why 3 projects insufficient]        |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient]  |

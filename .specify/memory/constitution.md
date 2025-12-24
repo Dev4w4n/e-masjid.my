@@ -1,22 +1,23 @@
-<!--
-============================================================================
-SYNC IMPACT REPORT
-============================================================================
+# <!--
+
+# SYNC IMPACT REPORT
+
 Version Change: None → 1.0.0 (Initial constitution)
 Modified Principles: N/A (Initial version)
 Added Sections:
-  - All core principles (Package-First Architecture through Database-First Development)
-  - Technology Constraints
-  - Development Workflow
-  - Governance
-Removed Sections: N/A (Initial version)
-Templates Requiring Updates:
+
+- All core principles (Package-First Architecture through Database-First Development)
+- Technology Constraints
+- Development Workflow
+- Governance
+  Removed Sections: N/A (Initial version)
+  Templates Requiring Updates:
   ✅ plan-template.md - Constitution Check section aligned
   ✅ spec-template.md - Requirements align with principles
   ✅ tasks-template.md - Task organization reflects package-first approach
-Follow-up TODOs: None - all placeholders filled
-============================================================================
--->
+  Follow-up TODOs: None - all placeholders filled
+  ============================================================================
+  -->
 
 # Open E Masjid Constitution
 
@@ -110,6 +111,7 @@ Transparency and traceability in development:
 ## Technology Constraints
 
 **Frontend Stack** (MANDATORY):
+
 - React 18+ with TypeScript 5.2+
 - Material-UI v6 components (consistent design system)
 - Vite build system
@@ -117,12 +119,14 @@ Transparency and traceability in development:
 - Zustand for state management
 
 **Backend & Data** (MANDATORY):
+
 - Supabase (PostgreSQL, Auth, Storage, Real-time)
 - Row Level Security (RLS) policies for multi-tenant security
 - Supabase Edge Functions for server-side logic
 - Real-time subscriptions for live updates
 
 **Testing & Quality** (MANDATORY):
+
 - Vitest (unit tests)
 - Playwright (E2E tests)
 - React Testing Library (component tests)
@@ -130,6 +134,7 @@ Transparency and traceability in development:
 - TDD approach enforced
 
 **Build & Development** (MANDATORY):
+
 - Turborepo monorepo orchestration
 - pnpm package manager (version >=8.0.0)
 - ESLint + Prettier for code quality
@@ -137,6 +142,7 @@ Transparency and traceability in development:
 - Node.js >=18.0.0
 
 **Compliance**:
+
 - WCAG 2.1 AA accessibility standards
 - MIT License (open source)
 
@@ -203,6 +209,7 @@ This constitution supersedes all other development practices. Any deviation MUST
 - Include migration plan if affecting existing code
 
 **Amendment Procedure**:
+
 - Amendments require consensus from core maintainers
 - Version increment follows semantic versioning:
   - MAJOR: Backward incompatible governance/principle removals
@@ -211,12 +218,14 @@ This constitution supersedes all other development practices. Any deviation MUST
 - All amendments MUST update dependent templates and documentation
 
 **Compliance Review**:
+
 - All PRs/reviews MUST verify compliance with core principles
 - Constitution Check section in plan-template.md enforces validation
 - Complexity MUST be justified against simplicity principle
 - Runtime development guidance available in `.github/copilot-instructions.md`
 
 **Documentation Requirements**:
+
 - All features MUST have documentation in `/docs`
 - Migration guides MUST be provided for breaking changes
 - Quick reference guides encouraged for complex features
