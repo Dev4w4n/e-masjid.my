@@ -1,216 +1,225 @@
 <!--
-Sync Impact Report - Constitution v1.3.0
-Version change: 1.2.0 → 1.3.0 (MINOR: Added TypeScript Build Protocol for monorepo clean operations)
-Modified principles:
-- II. Monorepo Architecture: Enhanced with TypeScript Build Protocol for clean builds
-- Technology Standards: Added Clean Build Protocol requirement
-Added sections:
-- TypeScript Build Protocol: Mandatory use of build:clean after clean operations
-- Clean Build Requirements: Systematic build process for TypeScript composite projects
-Removed sections: N/A
-Templates requiring updates:
-- .specify/templates/plan-template.md (should validate build protocol compliance)
-- .specify/templates/tasks-template.md (should include clean build tasks)
-Follow-up TODOs: Update build documentation in all packages
+============================================================================
+SYNC IMPACT REPORT
+============================================================================
+Version Change: None → 1.0.0 (Initial constitution)
+Modified Principles: N/A (Initial version)
+Added Sections:
+  - All core principles (Package-First Architecture through Database-First Development)
+  - Technology Constraints
+  - Development Workflow
+  - Governance
+Removed Sections: N/A (Initial version)
+Templates Requiring Updates:
+  ✅ plan-template.md - Constitution Check section aligned
+  ✅ spec-template.md - Requirements align with principles
+  ✅ tasks-template.md - Task organization reflects package-first approach
+Follow-up TODOs: None - all placeholders filled
+============================================================================
 -->
 
 # Open E Masjid Constitution
 
 ## Core Principles
 
-### I. React-First UI Development
+### I. Package-First Architecture (NON-NEGOTIABLE)
 
-All user interfaces MUST be built using React 18+ with TypeScript for type safety and modern development practices.
-Components MUST be reusable, well-documented, and follow functional programming patterns with hooks.
-State management MUST use React's built-in state management or proven libraries (Zustand/Redux Toolkit).
-UI components MUST be accessible, responsive, and optimized for both desktop and mobile experiences.
-All UI interactions MUST be validated with Playwright end-to-end tests before production deployment.
+ALL business logic MUST reside in `packages/`, never directly in `apps/`. Applications consume packages only. Before implementing any feature in an app:
 
-**Rationale**: React 18 provides the latest features for optimal user experience and developer productivity in the modern web ecosystem.
+- Create or extend appropriate package in `packages/` directory
+- Packages MUST be self-contained, independently testable, and documented
+- Clear purpose required - no organizational-only packages
+- Package structure: `auth/`, `content-management/`, `supabase-client/`, `shared-types/`, `ui-components/`, `ui-theme/`
 
-### II. Monorepo Architecture (NON-NEGOTIABLE)
+**Rationale**: Enforces separation of concerns, enables code reuse across multiple apps (hub, papan-info, tv-display), and maintains clean architecture in a monorepo. Prevents duplication and ensures testability.
 
-Every feature MUST be developed within the established Turborepo monorepo structure using pnpm workspaces.
-All package management MUST use pnpm exclusively - no npm or yarn commands permitted.
-Build orchestration MUST use Turborepo for caching, parallelization, and dependency management.
-Packages MUST be self-contained with clear boundaries and minimal cross-dependencies.
-Shared code MUST be extracted into dedicated packages under ./packages directory.
-New applications MUST follow the apps/\* structure and integrate with existing workspace configuration.
+### II. Test-First Development (NON-NEGOTIABLE)
 
-**TypeScript Build Protocol**:
-After clean operations (`pnpm clean && pnpm install`), projects MUST use the systematic build process:
+Test-Driven Development (TDD) is mandatory for all features:
 
-- Use `pnpm run build:clean` or `./scripts/build-packages.sh` for clean builds
-- NEVER use `pnpm build` immediately after clean operations
-- TypeScript composite projects require dependency-ordered compilation
-- Declaration files (.d.ts) MUST be generated in correct sequence: shared-types → dependents
+- Tests MUST be written FIRST, they MUST fail initially
+- Red-Green-Refactor cycle strictly enforced
+- Mock data MUST be synced with Supabase schema
+- End-to-end tests MUST retrieve real IDs from database
+- Use Vitest for unit tests, Playwright for E2E tests, React Testing Library for component tests
 
-**Rationale**: pnpm and Turborepo provide superior performance, disk efficiency, and build caching for large monorepo development. TypeScript composite projects with incremental compilation require proper build sequencing to generate declaration files correctly.
+**Rationale**: TDD ensures code quality, prevents regressions, and validates that features work as specified. Given the multi-tenant nature with RLS policies, comprehensive testing is critical for security and data isolation.
 
-### III. Test-First Development (NON-NEGOTIABLE)
+### III. Database-First Development
 
-TDD mandatory: Tests written → User approved → Tests fail → Then implement.
-Unit tests MUST cover all business logic with minimum 80% coverage using Vitest.
-Integration tests MUST validate API contracts and database operations.
-All UI components and user flows MUST be validated with Playwright end-to-end tests.
-Red-Green-Refactor cycle strictly enforced for all feature development.
-No UI feature is considered complete without corresponding Playwright test coverage.
+All database operations MUST reference `./supabase/` directory and follow strict migration practices:
 
-**Mock Data Requirements**:
-All unit tests MUST use mock data that is synchronized with the current Supabase schema.
-Mock data MUST be generated from actual database schema definitions and kept in sync.
-Mock data MUST include realistic relationships, constraints, and data types matching production.
-Mock data generators MUST be updated whenever database migrations change schema.
+- Database schema changes MUST use Supabase migration files (numbered sequentially)
+- Migration files ensure synchronization across local, staging, and production environments
+- Never modify database schema directly - always create new migration
+- Row Level Security (RLS) policies MUST enforce multi-tenant security
+- Use real-time subscriptions for notifications and live updates
+- All data operations use existing Supabase functions (e.g., `get_user_admin_masjids()`)
 
-**E2E Testing Protocol**:
-E2E tests MUST retrieve required IDs from live Supabase database before each test execution.
-Test setup MUST use ./scripts/setup-supabase.sh to ensure consistent test data state.
-E2E tests MUST NOT rely on hardcoded IDs unless they are guaranteed stable test fixtures.
-Test cleanup MUST be performed after each E2E test to maintain database state integrity.
+**Rationale**: Ensures data consistency across all environments (local, staging, production). Migration files provide audit trail and enable rollback. RLS policies are critical for multi-tenant data security.
 
-**Rationale**: Testing ensures reliability and maintainability of Islamic community management features where data integrity is critical. Playwright validation prevents UI regressions. Schema-synced mock data prevents test brittleness while E2E ID retrieval ensures test accuracy against live data.
+### IV. Monorepo Discipline
 
-### IV. Supabase-First Data Strategy
+Strict adherence to monorepo architecture and tooling:
 
-All data persistence MUST use Supabase with Row Level Security (RLS) policies.
-Database schemas MUST be managed through Supabase migrations stored in ./supabase directory.
-All database operations MUST reference ./supabase for configuration, migrations, and seed data.
-Real-time features MUST leverage Supabase subscriptions where applicable.
-Authentication MUST use Supabase Auth with role-based access control.
-TypeScript types MUST be auto-generated from database schema using supabase gen types.
-Seed data MUST be managed through ./scripts/setup-supabase.sh for consistent development environments.
+- Use `pnpm` ONLY (never npm or yarn)
+- Turborepo for build orchestration
+- Workspace dependencies properly configured in `pnpm-workspace.yaml`
+- After `pnpm clean && pnpm install`, ALWAYS use `pnpm run build:clean` (not `pnpm build`)
+- TypeScript composite projects build in correct dependency order
+- `shared-types` MUST build first before other packages can import
 
-**Test Data Management Protocol**:
-Production seed data MUST be maintained in ./supabase/seed.sql for static reference data.
-Development test data MUST be generated via ./scripts/setup-supabase.sh for dynamic relationships.
-Mock data for unit tests MUST be generated from current schema and stored in ./packages/\*/tests/mocks/.
-Schema changes MUST trigger mock data regeneration to maintain synchronization.
-E2E test setup MUST query live Supabase for current IDs and entities before test execution.
+**Rationale**: Ensures consistent dependency resolution, proper build ordering, and prevents subtle TypeScript compilation issues. Build discipline prevents CI/CD failures.
 
-**Rationale**: Supabase provides comprehensive backend-as-a-service aligned with open-source values and rapid development needs. Centralized ./supabase management ensures consistency. Proper test data management prevents flaky tests and maintains schema accuracy.
+### V. Environment-Based Deployment
 
-### V. Community-Centric Design
+Three-tier environment strategy with automated deployment:
 
-User experience MUST prioritize non-technical users (mosque administrators, community members).
-Interface text MUST support Bahasa Malaysia as primary language with English fallback.
-Features MUST serve the Islamic community without commercial exploitation.
-Design MUST respect Islamic values and cultural sensitivities.
-Accessibility MUST comply with WCAG 2.1 AA standards for inclusive access.
+- **Local**: Development with local Supabase instance
+- **Staging**: Cloudflare deployment from `dev` branch (automatic)
+- **Production**: Cloudflare deployment from `main` branch (automatic)
+- Environment-specific configurations MUST be managed through `.env` files
+- Never commit secrets or API keys to repository
+- Staging MUST be validated before merging to main
 
-**Rationale**: The system serves diverse Islamic communities and must be accessible regardless of technical expertise or physical abilities.
+**Rationale**: Provides safe testing environment before production. Automated deployments reduce human error. Cloudflare provides global CDN and edge computing capabilities.
 
-### VI. Package-First Feature Development (NON-NEGOTIABLE)
+### VI. Multilingual Support
 
-All new features MUST be developed as packages in the ./packages directory first.
-Features MUST be library-first: create reusable packages before application integration.
-Cross-cutting concerns (auth, types, UI components) MUST reside in dedicated packages.
-Applications in ./apps MUST consume functionality through workspace packages only.
-No direct feature implementation in applications - all logic MUST go through packages.
+Application MUST support Bahasa Malaysia as primary language with English fallback:
 
-**Rationale**: Package-first development ensures modularity, reusability, and maintains clear separation of concerns across the monorepo.
+- All UI text MUST be internationalized using i18n package
+- Database content MUST support language fields where applicable
+- Documentation MUST be maintained in both languages
+- Error messages and user feedback MUST be localized
 
-## Mandatory Directory Structure
+**Rationale**: Serves Malaysian mosques where Bahasa Malaysia is primary language. Accessibility to non-technical users requires native language support.
 
-**Database Management**: All database-related operations MUST reference ./supabase directory
+### VII. Observability & Documentation
 
-- Migrations: ./supabase/migrations/
-- Seed scripts: ./supabase/seed.sql
-- Configuration: ./supabase/config.toml
-- Setup automation: ./scripts/setup-supabase.sh
+Transparency and traceability in development:
 
-**Package Organization**: All features MUST be developed in ./packages
+- All features MUST be documented in `/docs` directory
+- Significant changes MUST have summary documents
+- Real-time operations MUST have structured logging
+- Performance metrics tracked for upload (<2s), notifications (<1s)
+- Document all architectural decisions and patterns
 
-- Feature packages: ./packages/feature-name/
-- Shared utilities: ./packages/shared-\*/
-- UI components: ./packages/ui-\*/
+**Rationale**: Enables knowledge transfer, troubleshooting, and onboarding. Critical for open-source community project where contributors may change.
 
-**Application Structure**: Consumer applications in ./apps
+## Technology Constraints
 
-- Web apps: ./apps/app-name/
-- Applications consume packages, never implement core logic
+**Frontend Stack** (MANDATORY):
+- React 18+ with TypeScript 5.2+
+- Material-UI v6 components (consistent design system)
+- Vite build system
+- React Router v6
+- Zustand for state management
 
-## Testing Data Management Protocol
+**Backend & Data** (MANDATORY):
+- Supabase (PostgreSQL, Auth, Storage, Real-time)
+- Row Level Security (RLS) policies for multi-tenant security
+- Supabase Edge Functions for server-side logic
+- Real-time subscriptions for live updates
 
-**Mock Data Generation**:
+**Testing & Quality** (MANDATORY):
+- Vitest (unit tests)
+- Playwright (E2E tests)
+- React Testing Library (component tests)
+- Schema-synced mock data
+- TDD approach enforced
 
-- Mock data MUST be generated programmatically from Supabase schema definitions
-- Mock generators MUST be located in ./packages/shared-types/src/test-fixtures/
-- Mock data MUST include all required fields, relationships, and realistic constraints
-- Mock data MUST be regenerated automatically when schema changes via migration hooks
+**Build & Development** (MANDATORY):
+- Turborepo monorepo orchestration
+- pnpm package manager (version >=8.0.0)
+- ESLint + Prettier for code quality
+- TypeScript strict mode enabled
+- Node.js >=18.0.0
 
-**E2E Test Data Strategy**:
+**Compliance**:
+- WCAG 2.1 AA accessibility standards
+- MIT License (open source)
 
-- E2E tests MUST use beforeEach hooks to retrieve current IDs from live Supabase database
-- Test setup MUST query actual entities rather than assume hardcoded IDs exist
-- Test teardown MUST clean up any created entities to maintain database state
-- Flaky tests due to missing IDs indicate violation of this protocol
+## Development Workflow
 
-**Unit vs Integration Test Data**:
+### Branch Strategy
 
-- Unit tests: Use generated mock data that matches schema but doesn't touch database
-- Integration tests: Use ./scripts/setup-supabase.sh to establish known test state
-- E2E tests: Query live database for IDs and entities, clean up after execution
-- Contract tests: Use schema-generated fixtures with realistic data relationships
+- `main` branch: Production-ready code (auto-deploys to production)
+- `dev` branch: Development integration (auto-deploys to staging)
+- Feature branches: `###-feature-name` format (e.g., `003-content-management`)
 
-## Database Management Protocol
+### Feature Development Process
 
-**Seed Data Management**:
+1. **Specification Phase**:
+   - Create feature spec in `/specs/###-feature-name/spec.md`
+   - Define user stories with priorities (P1, P2, P3)
+   - Identify required packages and database changes
 
-- All seed data creation MUST update ./scripts/setup-supabase.sh
-- Development environment setup MUST be reproducible through this script
-- Database resets MUST include seed data regeneration
+2. **Planning Phase**:
+   - Generate implementation plan in `/specs/###-feature-name/plan.md`
+   - Validate against Constitution Check section
+   - Review database migration requirements
 
-**Migration Discipline**:
+3. **Implementation Phase**:
+   - Create database migrations FIRST if needed
+   - Develop packages BEFORE app integration
+   - Write tests FIRST (TDD)
+   - Implement features incrementally by user story priority
 
-- Schema changes MUST go through ./supabase/migrations/
-- No direct database modifications outside migration system
-- TypeScript types MUST be regenerated after schema changes
+4. **Validation Phase**:
+   - Run all tests: `pnpm test`
+   - E2E tests: `pnpm test:e2e`
+   - Type check: `pnpm type-check`
+   - Lint: `pnpm lint`
 
-**Test Data Synchronization**:
+5. **Deployment Phase**:
+   - Merge to `dev` → auto-deploy to staging
+   - Validate in staging environment
+   - Merge to `main` → auto-deploy to production
 
-- Mock data generators MUST be updated when migrations change schema
-- E2E test fixtures MUST be refreshed when reference data changes
-- Test database state MUST be reset via ./scripts/setup-supabase.sh --test before test suites
+### Database Change Protocol
 
-## Technology Standards
+1. Create numbered migration file in `supabase/migrations/`
+2. Test migration locally: `pnpm supabase:reset`
+3. Generate TypeScript types: `pnpm supabase:types`
+4. Update mock data if schema changed
+5. Migration applies automatically on deployment
 
-**Package Management**: pnpm exclusively (no npm/yarn commands)
-**Build System**: Turborepo with pnpm workspaces
-**Clean Build Protocol**: Use `pnpm run build:clean` after clean operations, never `pnpm build`
-**Frontend Stack**: React 18+, TypeScript, Vite, Material-UI v6, React Router v6
-**Backend Stack**: Supabase (PostgreSQL, Auth, Storage, Edge Functions)
-**Testing Stack**: Vitest (unit), Playwright (E2E), React Testing Library
-**Code Quality**: ESLint, Prettier, TypeScript strict mode
-**Performance**: Web Vitals compliance, progressive enhancement
+### Code Review Gates
 
-All applications MUST use the approved technology stack for consistency and maintainability.
-Deviations require constitutional amendment through the governance process.
-All UI features MUST have corresponding Playwright test validation.
-
-## Security & Compliance
-
-**Data Protection**: All user data MUST be protected with appropriate RLS policies and encryption.
-**Authentication**: Multi-factor authentication SHOULD be available for administrative roles.
-**API Security**: All API endpoints MUST validate permissions and sanitize inputs.
-**Privacy**: Data collection MUST be minimal and transparent with clear consent mechanisms.
-**Audit Trail**: Administrative actions MUST be logged for accountability.
+- All PRs MUST pass constitution compliance check
+- Tests MUST pass (no exceptions)
+- TypeScript MUST compile without errors
+- Linting MUST pass
+- Package-first architecture validated
+- Database migrations reviewed for data integrity
 
 ## Governance
 
-This constitution supersedes all other development practices and guidelines.
-All pull requests MUST verify compliance with these principles during code review.
-Complexity MUST be justified against business value and community benefit.
+This constitution supersedes all other development practices. Any deviation MUST be:
 
-**Amendment Process**:
+- Explicitly documented with justification
+- Approved by project maintainers
+- Include migration plan if affecting existing code
 
-- Proposed changes MUST be documented with rationale and impact analysis
-- Breaking changes require migration plan and backward compatibility strategy
-- Version increments follow semantic versioning (MAJOR.MINOR.PATCH)
+**Amendment Procedure**:
+- Amendments require consensus from core maintainers
+- Version increment follows semantic versioning:
+  - MAJOR: Backward incompatible governance/principle removals
+  - MINOR: New principle/section added
+  - PATCH: Clarifications, wording fixes
+- All amendments MUST update dependent templates and documentation
 
 **Compliance Review**:
+- All PRs/reviews MUST verify compliance with core principles
+- Constitution Check section in plan-template.md enforces validation
+- Complexity MUST be justified against simplicity principle
+- Runtime development guidance available in `.github/copilot-instructions.md`
 
-- Weekly architecture reviews ensure adherence to principles
-- Quarterly retrospectives evaluate principle effectiveness
-- Annual constitutional review for major updates
+**Documentation Requirements**:
+- All features MUST have documentation in `/docs`
+- Migration guides MUST be provided for breaking changes
+- Quick reference guides encouraged for complex features
+- Visual guides recommended for UI changes
 
-**Version**: 1.3.0 | **Ratified**: 2025-09-22 | **Last Amended**: 2025-09-26
+**Version**: 1.0.0 | **Ratified**: 2024-12-24 | **Last Amended**: 2024-12-24
