@@ -79,31 +79,31 @@ export class PermissionService {
   }
 
   /**
-   * Check if user is super_admin
+   * Check if user is super-admin
    */
   static isSuperAdmin(profile: ProfileWithRole | null): boolean {
-    return this.hasRole(profile, "super_admin");
+    return this.hasRole(profile, "super-admin");
   }
 
   /**
-   * Check if user is masjid_admin
+   * Check if user is masjid-admin
    */
   static isMasjidAdmin(profile: ProfileWithRole | null): boolean {
-    return this.hasRole(profile, "masjid_admin");
+    return this.hasRole(profile, "masjid-admin");
   }
 
   /**
-   * Check if user is registered
+   * Check if user is local-admin
    */
-  static isRegistered(profile: ProfileWithRole | null): boolean {
-    return this.hasRole(profile, "registered");
+  static isLocalAdmin(profile: ProfileWithRole | null): boolean {
+    return this.hasRole(profile, "local-admin");
   }
 
   /**
-   * Check if user is public
+   * Check if user is public-user
    */
-  static isPublic(profile: ProfileWithRole | null): boolean {
-    return this.hasRole(profile, "public");
+  static isPublicUser(profile: ProfileWithRole | null): boolean {
+    return this.hasRole(profile, "public-user");
   }
 
   /**
@@ -128,8 +128,8 @@ export function usePermissions() {
       PermissionService.hasRole(profile, role),
     isSuperAdmin: () => PermissionService.isSuperAdmin(profile),
     isMasjidAdmin: () => PermissionService.isMasjidAdmin(profile),
-    isRegistered: () => PermissionService.isRegistered(profile),
-    isPublic: () => PermissionService.isPublic(profile),
+    isLocalAdmin: () => PermissionService.isLocalAdmin(profile),
+    isPublicUser: () => PermissionService.isPublicUser(profile),
     hasAdminPrivileges: () => PermissionService.hasAdminPrivileges(profile),
     canManageMasjids: () => PermissionService.canManageMasjids(profile),
   };

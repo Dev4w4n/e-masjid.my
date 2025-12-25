@@ -82,13 +82,13 @@ function Layout() {
         text: t("nav.home"),
         icon: <Home />,
         path: "/",
-        roles: ["public", "registered", "masjid_admin", "super_admin"],
+        roles: ["public-user", "local-admin", "masjid-admin", "super-admin"],
       },
       {
         text: t("nav.masjids"),
         icon: <Mosque />,
         path: "/masjids",
-        roles: ["public", "registered", "masjid_admin", "super_admin"],
+        roles: ["public-user", "local-admin", "masjid-admin", "super-admin"],
       },
     ];
 
@@ -99,19 +99,19 @@ function Layout() {
           text: t("nav.my_profile"),
           icon: <Person />,
           path: "/profile",
-          roles: ["registered", "masjid_admin", "super_admin"],
+          roles: ["local-admin", "masjid-admin", "super-admin"],
         },
         {
           text: t("nav.create_content"),
           icon: <Add />,
           path: "/content/create",
-          roles: ["registered", "masjid_admin", "super_admin"],
+          roles: ["local-admin", "masjid-admin", "super-admin"],
         },
         {
           text: t("nav.my_content"),
           icon: <ViewList />,
           path: "/content/my-content",
-          roles: ["registered", "masjid_admin", "super_admin"],
+          roles: ["local-admin", "masjid-admin", "super-admin"],
         }
       );
     }
@@ -122,7 +122,7 @@ function Layout() {
         text: t("nav.manage_displays"),
         icon: <Tv />,
         path: "/admin/display-management",
-        roles: ["masjid_admin", "super_admin"],
+        roles: ["masjid-admin", "super-admin"],
       });
     }
 

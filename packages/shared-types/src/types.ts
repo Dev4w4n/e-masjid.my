@@ -155,10 +155,10 @@ export type RequiredFields<T, K extends keyof T> = T & Required<Pick<T, K>>;
 
 // Constants
 export const USER_ROLES: UserRole[] = [
-  "super_admin",
-  "masjid_admin",
-  "registered",
-  "public",
+  "super-admin",
+  "masjid-admin",
+  "local-admin",
+  "public-user",
 ];
 export const LANGUAGE_CODES: LanguageCode[] = ["en", "ms", "zh", "ta"];
 export const ADDRESS_TYPES: AddressType[] = ["home", "work", "other"];

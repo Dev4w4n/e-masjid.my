@@ -2,19 +2,17 @@
 
 # SYNC IMPACT REPORT
 
-Version Change: None → 1.0.0 (Initial constitution)
-Modified Principles: N/A (Initial version)
-Added Sections:
+Version Change: 1.0.0 → 1.0.1 (PATCH: Clarification of migration naming)
+Modified Principles:
 
-- All core principles (Package-First Architecture through Database-First Development)
-- Technology Constraints
-- Development Workflow
-- Governance
-  Removed Sections: N/A (Initial version)
+- III. Database-First Development: Added strict migration naming convention
+- Database Change Protocol: Added timestamp format and setup script requirement
+  Added Sections: N/A
+  Removed Sections: N/A
   Templates Requiring Updates:
-  ✅ plan-template.md - Constitution Check section aligned
-  ✅ spec-template.md - Requirements align with principles
-  ✅ tasks-template.md - Task organization reflects package-first approach
+  ✅ plan-template.md - Constitution Check updated with migration naming
+  ✅ spec-template.md - Checklist updated with migration format
+  ✅ tasks-template.md - Database tasks updated with proper naming
   Follow-up TODOs: None - all placeholders filled
   ============================================================================
   -->
@@ -50,14 +48,15 @@ Test-Driven Development (TDD) is mandatory for all features:
 
 All database operations MUST reference `./supabase/` directory and follow strict migration practices:
 
-- Database schema changes MUST use Supabase migration files (numbered sequentially)
+- Database schema changes MUST use Supabase migration files with strict naming: `supabase/migrations/YYYYMMDDHHMMSS_descriptive_name.sql` (e.g., `20251211000001_add_black_screen_schedule.sql`)
 - Migration files ensure synchronization across local, staging, and production environments
 - Never modify database schema directly - always create new migration
+- `scripts/setup-supabase.sh` MUST be updated when database changes affect initial setup or seed data
 - Row Level Security (RLS) policies MUST enforce multi-tenant security
 - Use real-time subscriptions for notifications and live updates
 - All data operations use existing Supabase functions (e.g., `get_user_admin_masjids()`)
 
-**Rationale**: Ensures data consistency across all environments (local, staging, production). Migration files provide audit trail and enable rollback. RLS policies are critical for multi-tenant data security.
+**Rationale**: Ensures data consistency across all environments (local, staging, production). Strict naming convention prevents migration conflicts and maintains chronological order. Migration files provide audit trail and enable rollback. RLS policies are critical for multi-tenant data security.
 
 ### IV. Monorepo Discipline
 
@@ -185,11 +184,14 @@ Transparency and traceability in development:
 
 ### Database Change Protocol
 
-1. Create numbered migration file in `supabase/migrations/`
+1. Create migration file with strict naming: `supabase/migrations/YYYYMMDDHHMMSS_descriptive_name.sql`
+   - Use current timestamp in format: `YYYYMMDDHHMMSS` (e.g., `20251211000001`)
+   - Descriptive name in snake_case (e.g., `add_black_screen_schedule`)
 2. Test migration locally: `pnpm supabase:reset`
 3. Generate TypeScript types: `pnpm supabase:types`
-4. Update mock data if schema changed
-5. Migration applies automatically on deployment
+4. Update `scripts/setup-supabase.sh` if changes affect initial setup or seed data
+5. Update mock data if schema changed
+6. Migration applies automatically on deployment
 
 ### Code Review Gates
 
@@ -231,4 +233,4 @@ This constitution supersedes all other development practices. Any deviation MUST
 - Quick reference guides encouraged for complex features
 - Visual guides recommended for UI changes
 
-**Version**: 1.0.0 | **Ratified**: 2024-12-24 | **Last Amended**: 2024-12-24
+**Version**: 1.0.1 | **Ratified**: 2024-12-24 | **Last Amended**: 2024-12-24

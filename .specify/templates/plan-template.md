@@ -31,7 +31,7 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - [ ] **Package-First Architecture**: Is business logic in `packages/`, not `apps/`?
 - [ ] **Test-First Development**: Is TDD approach planned (tests written first)?
-- [ ] **Database-First Development**: Are Supabase migrations planned? Are RLS policies considered?
+- [ ] **Database-First Development**: Are Supabase migrations with proper naming (`YYYYMMDDHHMMSS_name.sql`) planned? Are RLS policies considered? Is `scripts/setup-supabase.sh` update needed?
 - [ ] **Monorepo Discipline**: Are pnpm and proper build order (`build:clean`) documented?
 - [ ] **Environment Strategy**: Are local/staging/production environments considered?
 - [ ] **Multilingual Support**: Is Bahasa Malaysia/English support planned?

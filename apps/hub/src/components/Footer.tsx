@@ -83,6 +83,22 @@ export const Footer: React.FC = () => {
             <h6 className="text-white font-semibold mb-4">Pautan</h6>
             <ul className="space-y-2">
               <li>
+                <Link
+                  to="/auth/signup"
+                  className="text-gray-400 hover:text-white text-sm transition-colors"
+                >
+                  Daftar Sekarang
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/auth/signin"
+                  className="text-gray-400 hover:text-white text-sm transition-colors"
+                >
+                  Log Masuk
+                </Link>
+              </li>
+              <li>
                 <a
                   href="https://github.com/Dev4w4n/e-masjid.my/graphs/contributors"
                   target="_blank"

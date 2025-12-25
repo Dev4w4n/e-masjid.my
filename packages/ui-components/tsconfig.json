@@ -20,6 +20,7 @@
   "references": [
     { "path": "../shared-types" },
     { "path": "../auth" },
+    { "path": "../tier-management" },
     { "path": "../ui-theme" }
   ]
 }

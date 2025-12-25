@@ -90,6 +90,11 @@ export const ms: TranslationKeys = {
     youtube: "YouTube",
     duration: "Tempoh",
     status: "Status",
+    auth_required_title: "Sila Daftar atau Log Masuk",
+    auth_required_message:
+      "Untuk mengurus kandungan masjid, anda perlu mendaftar akaun atau log masuk terlebih dahulu.",
+    auth_required_benefits:
+      "Dengan mendaftar, anda boleh mencipta kandungan, mengurus paparan, dan banyak lagi.",
   },
 
   profile: {
@@ -293,5 +298,39 @@ export const ms: TranslationKeys = {
     qr_position_tr: "Atas Kanan",
     qr_position_bl: "Bawah Kiri",
     qr_position_br: "Bawah Kanan",
+  },
+
+  // Landing Page (Task: T039 - User Story 1)
+  landing: {
+    hero_title: "Platform Pengurusan Masjid Bersepadu",
+    hero_subtitle:
+      "Sistem terkini untuk menguruskan masjid anda dengan mudah dan efisien",
+    hero_cta_primary: "Mula Percuma",
+    hero_cta_secondary: "Ketahui Lebih Lanjut",
+
+    benefits_title: "Kenapa Pilih E-Masjid?",
+    benefit_easy_title: "Mudah Digunakan",
+    benefit_easy_desc: "Antara muka yang intuitif memudahkan pengurusan masjid",
+    benefit_secure_title: "Selamat & Dipercayai",
+    benefit_secure_desc: "Keselamatan data anda adalah keutamaan kami",
+    benefit_fast_title: "Pantas & Responsif",
+    benefit_fast_desc:
+      "Akses maklumat masjid dengan cepat dari mana-mana sahaja",
+
+    pricing_title: "Pilih Pakej Yang Sesuai",
+    pricing_subtitle: "Pilihan yang fleksibel untuk setiap keperluan masjid",
+
+    tier_rakyat_name: "Rakyat",
+    tier_rakyat_desc: "Percuma Selamanya - Sesuai untuk Masjid Kecil",
+    tier_pro_name: "Pro",
+    tier_pro_desc: "RM30/bulan - Untuk Komuniti Berkembang",
+    tier_premium_name: "Premium",
+    tier_premium_desc:
+      "RM300-500/bulan - Perkhidmatan Penuh dengan Admin Tempatan",
+
+    cta_start_free: "Mula Percuma",
+    cta_choose_plan: "Pilih Pakej",
+
+    footer_copyright: "© 2025 E-Masjid. Hak Cipta Terpelihara.",
   },
 };

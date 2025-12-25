@@ -1,6 +1,7 @@
-![Github forks](https://badgen.net/github/forks/Dev4w4n/e-masjid.my?icon=github&label=forks)
-![Github issues](https://img.shields.io/github/issues/Dev4w4n/e-masjid.my)
-![Github last-commit](https://img.shields.io/github/last-commit/Dev4w4n/e-masjid.my)
+![Forks](https://badgen.net/github/forks/Dev4w4n/e-masjid.my?icon=github)
+![Issues](https://img.shields.io/github/issues/Dev4w4n/e-masjid.my)
+![Last Commit](https://img.shields.io/github/last-commit/Dev4w4n/e-masjid.my)
+![CodeQL](https://github.com/Dev4w4n/e-masjid.my/actions/workflows/codeql.yml/badge.svg)
 
 <p align="center">
   <img src="https://i.postimg.cc/gcSyK8d6/logo.png" alt="Open E Masjid" width="80" height="80"/>

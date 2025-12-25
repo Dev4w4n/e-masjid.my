@@ -795,6 +795,58 @@ export {
   type DashboardStatistics,
 } from "./services/statistics";
 
+// Export subscription management services (007-multi-tenant-saas)
+export {
+  getSubscription,
+  createSubscription,
+  updateSubscriptionStatus,
+  triggerGracePeriod,
+  triggerSoftLock,
+  getAllSubscriptions,
+  getSubscriptionsByTier,
+  getSubscriptionsByStatus,
+} from "./services/subscriptions";
+
+// Export payment transaction services (007-multi-tenant-saas)
+export {
+  createPaymentTransaction,
+  updatePaymentStatus,
+  getPaymentHistory,
+  recordSplitBilling,
+  getPaymentTransaction,
+  getPaymentByProviderId,
+  getPendingPayments,
+  getFailedPayments,
+} from "./services/payment-transactions";
+
+// Export local admin services (007-multi-tenant-saas)
+export {
+  getLocalAdmin,
+  createLocalAdmin,
+  updateEarnings,
+  getAvailableLocalAdmins,
+  assignLocalAdmin,
+  unassignLocalAdmin,
+  getLocalAdminWithMasjids,
+  updateLocalAdmin,
+  getAllLocalAdmins,
+} from "./services/local-admins";
+
+// Export user role services (007-multi-tenant-saas)
+export {
+  getUserRole,
+  getAllUserRoles,
+  assignRole,
+  removeRole,
+  checkSuperAdmin,
+  checkMasjidAdmin,
+  checkLocalAdmin,
+  getUsersByRole,
+  getMasjidAdmins,
+  getHighestRole,
+  bulkAssignRoles,
+} from "./services/user-roles";
+
 // Re-export types for convenience
 export type { Database } from "@masjid-suite/shared-types";
 export type { SupabaseClient, User, Session } from "@supabase/supabase-js";

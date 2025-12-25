@@ -29,6 +29,7 @@
     "react-hook-form": "^7.48.0",
     "@masjid-suite/auth": "workspace:*",
     "@masjid-suite/shared-types": "workspace:*",
+    "@masjid-suite/tier-management": "workspace:*",
     "@masjid-suite/ui-theme": "workspace:*"
   },
   "devDependencies": {

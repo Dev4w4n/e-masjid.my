@@ -61,16 +61,18 @@ description: "Task list template for feature implementation"
 **Purpose**: Core infrastructure that MUST be complete before ANY user story can be implemented
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
-for Open E Masjid (adjust based on your feature):
 
-- [ ] T005 Create Supabase migration file in `supabase/migrations/0XX_feature.sql`
+Examples of foundational tasks for Open E Masjid (adjust based on your feature):
+
+- [ ] T005 Create Supabase migration file: `supabase/migrations/YYYYMMDDHHMMSS_descriptive_name.sql` (use current timestamp)
 - [ ] T006 [P] Define TypeScript types in `packages/shared-types/src/` or feature package
 - [ ] T007 [P] Setup Supabase client methods in `packages/supabase-client/` or feature package
 - [ ] T008 [P] Create RLS policies for multi-tenant data security
-- [ ] T009 Implement base service layer in `packages/[feature]/src/services/`
-- [ ] T010 [P] Setup real-time subscription hooks if needed
-- [ ] T011 Generate TypeScript types from schema: `pnpm supabase:types`structure
-- [ ] T009 Setup environment configuration management
+- [ ] T009 Test migration locally with `pnpm supabase:reset`
+- [ ] T010 Generate TypeScript types from schema: `pnpm supabase:types`
+- [ ] T011 Update `scripts/setup-supabase.sh` if changes affect initial setup/seed data
+- [ ] T012 Implement base service layer in `packages/[feature]/src/services/`
+- [ ] T013 [P] Setup real-time subscription hooks if needed
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 

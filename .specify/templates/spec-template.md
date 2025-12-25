@@ -9,7 +9,8 @@
 
 - [ ] Package-first architecture (business logic in `packages/`)
 - [ ] TDD approach (tests written first)
-- [ ] Database migrations if schema changes needed
+- [ ] Database migrations if schema changes needed (format: `YYYYMMDDHHMMSS_name.sql`)
+- [ ] Update `scripts/setup-supabase.sh` if database changes affect setup
 - [ ] Multilingual support (Bahasa Malaysia/English)
 - [ ] Documentation plan for `/docs`
 

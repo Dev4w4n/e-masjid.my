@@ -1,0 +1,39 @@
+{
+  "name": "@masjid-suite/tier-management",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tier features and access control for Multi-Tenant SaaS",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix"
+  },
+  "dependencies": {
+    "@masjid-suite/shared-types": "workspace:*",
+    "@masjid-suite/supabase-client": "workspace:*",
+    "@supabase/supabase-js": "^2.39.0",
+    "date-fns": "^3.0.0",
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@masjid-suite/eslint-config": "workspace:*",
+    "@types/react": "^18.2.0",
+    "eslint": "^8.57.0",
+    "typescript": "^5.2.0",
+    "vitest": "^1.0.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
+  }
+}

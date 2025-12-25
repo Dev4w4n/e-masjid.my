@@ -10,6 +10,7 @@ import MasjidList from "./pages/masjid/MasjidList";
 import MasjidForm from "./pages/masjid/MasjidForm";
 import CreateContent from "./pages/content/CreateContent";
 import MyContent from "./pages/content/MyContent";
+import EditContent from "./pages/content/EditContent";
 import DisplayManagement from "./pages/admin/DisplayManagement";
 import Home from "./pages/Home";
 
@@ -116,7 +117,7 @@ function App() {
           path="admin/display-management"
           element={
             <ProtectedRoute>
-              <WithRole role={["super_admin", "masjid_admin"]}>
+              <WithRole role={["super-admin", "masjid-admin"]}>
                 <DisplayManagement />
               </WithRole>
             </ProtectedRoute>
@@ -140,6 +141,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="content/edit" element={<EditContent />} />
 
         {/* Catch all - redirect to home */}
         <Route path="*" element={<Navigate to="/" replace />} />

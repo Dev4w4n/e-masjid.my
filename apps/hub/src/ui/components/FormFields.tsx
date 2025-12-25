@@ -47,10 +47,10 @@ const ADDRESS_TYPES: Database["public"]["Enums"]["address_type"][] = [
 
 // User roles (for admin use)
 const USER_ROLES: Database["public"]["Enums"]["user_role"][] = [
-  "public",
-  "registered",
-  "masjid_admin",
-  "super_admin",
+  "public-user",
+  "local-admin",
+  "masjid-admin",
+  "super-admin",
 ];
 
 // Generic form field props

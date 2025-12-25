@@ -239,8 +239,8 @@ const authStoreCreator: StateCreator<AuthStore> = (set, get) => ({
           throw userError;
         }
 
-        const role = (userData?.role as UserRole) || "public";
-        const email = userData?.email || "";
+        const role = "public-user" as UserRole;
+        const email = "";
 
         const profile: ProfileWithRole | null = profileData
           ? { ...profileData, user_role: role, email, role }

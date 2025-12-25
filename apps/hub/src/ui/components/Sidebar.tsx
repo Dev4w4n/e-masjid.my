@@ -123,7 +123,7 @@ export function Sidebar({ open, onClose, width = 280 }: SidebarProps) {
       case "masjid_admin":
         return isMasjidAdmin();
       case "community_member":
-        return profile?.role !== "public" && profile?.role !== undefined;
+        return profile?.role !== "public-user" && profile?.role !== undefined;
       default:
         return true;
     }

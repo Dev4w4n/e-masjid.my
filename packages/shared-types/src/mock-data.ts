@@ -246,7 +246,6 @@ export class UserMockFactory {
     return {
       id: MockUtils.generateId(),
       email: MockUtils.randomEmail(),
-      role: MockUtils.randomElement(USER_ROLES),
       email_verified: MockUtils.randomBoolean(),
       last_sign_in_at: MockUtils.randomBoolean()
         ? MockUtils.randomRecentDate()
@@ -262,15 +261,15 @@ export class UserMockFactory {
   }
 
   static createSuperAdmin(overrides: Partial<User> = {}): User {
-    return this.create({ role: "super_admin", ...overrides });
+    return this.create({ ...overrides });
   }
 
   static createMasjidAdmin(overrides: Partial<User> = {}): User {
-    return this.create({ role: "masjid_admin", ...overrides });
+    return this.create({ ...overrides });
   }
 
   static createRegisteredUser(overrides: Partial<User> = {}): User {
-    return this.create({ role: "registered", ...overrides });
+    return this.create({ ...overrides });
   }
 }
 
@@ -396,11 +395,20 @@ export class MasjidMockFactory {
       status: "active",
       created_by: MockUtils.generateId(),
       created_at: MockUtils.randomDate(),
-      updated_at: MockUtils.randomRecentDate(),
+      updated_at: MockUtils.randomDate(),
       capacity: MockUtils.randomNumber(100, 2000),
       website_url: MockUtils.randomBoolean() ? "https://masjid.my" : null,
       jakim_zone_code: MockUtils.randomJakimZone(),
       prayer_times_source: MockUtils.randomElement(PRAYER_TIME_SOURCES),
+      branding_settings: null,
+      contact_email: MockUtils.randomBoolean() ? MockUtils.randomEmail() : null,
+      contact_phone: MockUtils.randomBoolean() ? MockUtils.randomPhone() : null,
+      db_instance_url: null,
+      location: null,
+      local_admin_id: null,
+      subscription_status: "active",
+      tier: "rakyat",
+      tier_activated_at: MockUtils.randomDate(),
     };
 
     return {
@@ -463,6 +471,14 @@ export class TvDisplayMockFactory {
         "none",
       ]),
       auto_refresh_interval: MockUtils.randomNumber(1, 10),
+      black_screen_days: null,
+      black_screen_enabled: false,
+      black_screen_end_time: null,
+      black_screen_message: null,
+      black_screen_schedule_type: "none",
+      black_screen_show_clock: true,
+      black_screen_start_time: null,
+      branding_settings: null,
       prayer_time_position: MockUtils.randomElement(PRAYER_TIME_POSITIONS),
       prayer_time_font_size: MockUtils.randomElement([
         "small",
@@ -557,6 +573,8 @@ export class DisplayContentMockFactory {
       status: MockUtils.randomElement(CONTENT_STATUSES),
       submitted_by: MockUtils.generateId(),
       submitted_at: MockUtils.randomDate(),
+      created_by: MockUtils.generateId(),
+      scheduled_at: MockUtils.randomBoolean() ? MockUtils.randomDate() : null,
       file_size: MockUtils.randomBoolean()
         ? MockUtils.randomNumber(1024, 10485760)
         : null,

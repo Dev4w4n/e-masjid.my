@@ -80,6 +80,11 @@ export const en = {
     youtube: "YouTube",
     duration: "Duration",
     status: "Status",
+    auth_required_title: "Please Register or Sign In",
+    auth_required_message:
+      "To manage masjid content, you need to register an account or sign in first.",
+    auth_required_benefits:
+      "By registering, you can create content, manage displays, and much more.",
   },
 
   profile: {
@@ -281,6 +286,37 @@ export const en = {
     qr_position_tr: "Top Right",
     qr_position_bl: "Bottom Left",
     qr_position_br: "Bottom Right",
+  },
+
+  // Landing Page (Task: T039 - User Story 1)
+  landing: {
+    hero_title: "Integrated Mosque Management Platform",
+    hero_subtitle: "Modern system to manage your mosque easily and efficiently",
+    hero_cta_primary: "Start Free",
+    hero_cta_secondary: "Learn More",
+
+    benefits_title: "Why Choose E-Masjid?",
+    benefit_easy_title: "Easy to Use",
+    benefit_easy_desc: "Intuitive interface makes mosque management simple",
+    benefit_secure_title: "Secure & Trusted",
+    benefit_secure_desc: "Your data security is our top priority",
+    benefit_fast_title: "Fast & Responsive",
+    benefit_fast_desc: "Access mosque information quickly from anywhere",
+
+    pricing_title: "Choose The Right Package",
+    pricing_subtitle: "Flexible options for every mosque need",
+
+    tier_rakyat_name: "Rakyat",
+    tier_rakyat_desc: "Free Forever - Perfect for Small Mosques",
+    tier_pro_name: "Pro",
+    tier_pro_desc: "RM30/month - For Growing Communities",
+    tier_premium_name: "Premium",
+    tier_premium_desc: "RM300-500/month - Full-Service with Local Admin",
+
+    cta_start_free: "Start Free",
+    cta_choose_plan: "Choose Plan",
+
+    footer_copyright: "© 2025 E-Masjid. All Rights Reserved.",
   },
 };
 
