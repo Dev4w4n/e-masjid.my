@@ -39,7 +39,7 @@ import {
   Mosque,
   AdminPanelSettings,
 } from "@mui/icons-material";
-import { usePermissions } from "@masjid-suite/auth";
+import { usePermissions, useUser } from "@masjid-suite/auth";
 import { useTranslation } from "@masjid-suite/i18n";
 import { MalaysianState, MasjidWithAdmins } from "@masjid-suite/shared-types";
 import { masjidService } from "@masjid-suite/supabase-client";
@@ -69,6 +69,7 @@ const malaysianStates: MalaysianState[] = [
 function MasjidList() {
   const navigate = useNavigate();
   const permissions = usePermissions();
+  const user = useUser();
   const { t } = useTranslation();
   const [masjids, setMasjids] = useState<MasjidWithAdmins[]>([]);
   const [loading, setLoading] = useState(true);
@@ -93,7 +94,7 @@ function MasjidList() {
     };
 
     fetchMasjids();
-  }, []);
+  }, [user]);
 
   // Filter masjids based on search and state
   const filteredMasjids = masjids.filter((masjid) => {

@@ -54,7 +54,7 @@ const profileSchema = z.object({
     .optional()
     .refine(
       (val) => !val || isValidMalaysianPhone(val),
-      "Please enter a valid Malaysian phone number"
+      "Please enter a valid Malaysian phone number",
     ),
   preferredLanguage: z.enum(["en", "ms", "zh", "ta"]),
   homeMasjidId: z.string().optional(),
@@ -70,7 +70,7 @@ const addressSchema = z.object({
     .min(1, "Postcode is required")
     .refine(
       (val) => isValidMalaysianPostcode(val),
-      "Please enter a valid Malaysian postcode"
+      "Please enter a valid Malaysian postcode",
     ),
   addressType: z.enum(["home", "work", "other"]),
 });
@@ -161,7 +161,7 @@ function Profile() {
     }
 
     loadMasjids();
-  }, []);
+  }, [profile?.id]);
 
   // Load profile addresses
   useEffect(() => {
@@ -210,7 +210,7 @@ function Profile() {
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to update profile. Please try again."
+          : "Failed to update profile. Please try again.",
       );
     } finally {
       setIsLoading(false);
@@ -241,7 +241,7 @@ function Profile() {
 
       // Reload addresses from database
       const updatedAddresses = await profileService.getProfileAddresses(
-        profile.id
+        profile.id,
       );
       const formattedAddresses = updatedAddresses.map((addr: any) => ({
         id: addr.id,
@@ -263,7 +263,7 @@ function Profile() {
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to save address. Please try again."
+          : "Failed to save address. Please try again.",
       );
     } finally {
       setIsLoading(false);
@@ -293,7 +293,7 @@ function Profile() {
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to remove address. Please try again."
+          : "Failed to remove address. Please try again.",
       );
     } finally {
       setIsLoading(false);
