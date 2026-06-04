@@ -166,7 +166,7 @@ const MyContent: React.FC = () => {
           masjids!inner(
             name
           )
-        `
+        `,
         )
         .eq("submitted_by", user!.id)
         .order("created_at", { ascending: false });
@@ -204,7 +204,7 @@ const MyContent: React.FC = () => {
 
   // Filter content by status
   const filteredContent = content.filter(
-    (item) => statusFilter === "all" || item.status === statusFilter
+    (item) => statusFilter === "all" || item.status === statusFilter,
   );
 
   // Get status chip properties
@@ -376,7 +376,7 @@ const MyContent: React.FC = () => {
 
       // Remove from local state
       setContent((prev) =>
-        prev.filter((item) => item.id !== deleteDialog.content!.id)
+        prev.filter((item) => item.id !== deleteDialog.content!.id),
       );
 
       // Close dialog
@@ -392,8 +392,10 @@ const MyContent: React.FC = () => {
 
   // Load data on mount
   useEffect(() => {
-    loadUserContent();
-  }, []);
+    if (user?.id) {
+      loadUserContent();
+    }
+  }, [user?.id]);
 
   if (loading) {
     return (
