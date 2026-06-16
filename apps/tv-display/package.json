@@ -34,7 +34,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-player": "^2.13.0",
-    "tailwind-merge": "^2.0.0",
+    "tailwind-merge": "^3.4.0",
     "zustand": "^4.4.7",
     "sanitize-html": "^2.17.0"
   },
