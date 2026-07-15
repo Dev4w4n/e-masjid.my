@@ -11,6 +11,7 @@ This quick start guide provides all the essential information needed to begin im
 ## What You'll Build
 
 A marketing-driven landing page for the TV Display app that:
+
 1. **Showcases 4 tier packages** (Asas/Maju/Gemilang/Istimewa) with clear feature comparison
 2. **Enables zone-based discovery** via a "Cari kawasan anda" modal that routes users to their local mosque display
 3. **Provides self-service FAQs** covering pricing, screens, support, and trial information
@@ -38,69 +39,74 @@ supabase/
 
 ## Key Design Decisions
 
-| Decision | Why | Implementation |
-|----------|-----|----------------|
-| **Tier data as static content** | No real-time changes; marketing-controlled | Define in shared-types + i18n JSON |
-| **Zone selection via Autocomplete modal** | Searchable, scalable to 50+ zones | Material-UI Autocomplete component |
-| **FAQs in i18n JSON** | Easy translation; content-driven; no code changes | i18n files + Accordion UI |
-| **Anonymous access for Asas tier** | Zero login friction | RLS policy allows anon read for tier='asas' |
-| **Prayer times from existing service** | Reuse hub app's prayer-times package | Import from packages/prayer-times |
-| **Display ID as immutable UUID** | Enables permanent bookmarking/sharing | `/display/[display_id]` is the public URL |
-| **Database seed migration** | Reproducible, auditable, off-deployable | SQL migration (0XX_auto_populate_jakim_zones.sql) |
+| Decision                                  | Why                                               | Implementation                                    |
+| ----------------------------------------- | ------------------------------------------------- | ------------------------------------------------- |
+| **Tier data as static content**           | No real-time changes; marketing-controlled        | Define in shared-types + i18n JSON                |
+| **Zone selection via Autocomplete modal** | Searchable, scalable to 50+ zones                 | Material-UI Autocomplete component                |
+| **FAQs in i18n JSON**                     | Easy translation; content-driven; no code changes | i18n files + Accordion UI                         |
+| **Anonymous access for Asas tier**        | Zero login friction                               | RLS policy allows anon read for tier='asas'       |
+| **Prayer times from existing service**    | Reuse hub app's prayer-times package              | Import from packages/prayer-times                 |
+| **Display ID as immutable UUID**          | Enables permanent bookmarking/sharing             | `/display/[display_id]` is the public URL         |
+| **Database seed migration**               | Reproducible, auditable, off-deployable           | SQL migration (0XX_auto_populate_jakim_zones.sql) |
 
 ## Data Models
 
 ### Tier Package
+
 ```typescript
 interface TierPackage {
-  id: 'asas' | 'maju' | 'gemilang' | 'istimewa';
+  id: "asas" | "maju" | "gemilang" | "istimewa";
   name_ms: string;
   description_ms: string;
   price_ms: string | null;
   max_screens: number | null;
   requires_login: boolean;
   features: string[];
-  cta_action: 'start_free' | 'contact_sales' | 'admin_login';
+  cta_action: "start_free" | "contact_sales" | "admin_login";
 }
 ```
 
 ### JAKIM Zone
+
 ```typescript
 interface JAKIMZone {
-  zone_code: string;        // "johor", "selangor", etc.
-  zone_name_ms: string;     // "Johor", "Selangor", etc.
-  region: 'peninsular' | 'sabah' | 'sarawak';
+  zone_code: string; // "johor", "selangor", etc.
+  zone_name_ms: string; // "Johor", "Selangor", etc.
+  region: "peninsular" | "sabah" | "sarawak";
   masjid_count: number;
 }
 ```
 
 ### Masjid
+
 ```typescript
 interface Masjid {
   id: UUID;
   name: string;
   zone_code: string;
   tier: TierId;
-  display_id: UUID;         // Public URL identifier
+  display_id: UUID; // Public URL identifier
   is_auto_populated: boolean;
 }
 ```
 
 ### Display
+
 ```typescript
 interface Display {
-  id: UUID;                 // Same as masjid.display_id
+  id: UUID; // Same as masjid.display_id
   masjid_id: UUID;
   zone_code: string;
   prayer_times: PrayerTimes;
   tier: TierId;
-  custom_content: JSON;     // For paid tiers
+  custom_content: JSON; // For paid tiers
 }
 ```
 
 ## API Contracts
 
 ### 1. Tier Package Service
+
 **File**: [contracts/tier-package.contract.ts](contracts/tier-package.contract.ts)
 
 ```typescript
@@ -109,11 +115,12 @@ const tiers = await tierService.fetchAllTiers();
 // Returns: { tiers: TierPackageDTO[] }
 
 // Fetch single tier
-const tier = await tierService.fetchTierById('gemilang');
+const tier = await tierService.fetchTierById("gemilang");
 // Returns: TierPackageDTO
 ```
 
 ### 2. Zone Selection Service
+
 **File**: [contracts/jakim-zone.contract.ts](contracts/jakim-zone.contract.ts)
 
 ```typescript
@@ -122,7 +129,7 @@ const zones = await zoneService.fetchAllZones();
 // Returns: { zones: JAKIMZoneDTO[], regions: { peninsular: [], sabah: [], sarawak: [] } }
 
 // Fetch mosques by zone
-const mosques = await zoneService.fetchMasjidsByZone('johor');
+const mosques = await zoneService.fetchMasjidsByZone("johor");
 // Returns: { zone_code: 'johor', masjids: MasjidDTO[], primary_display_id: UUID }
 
 // Route to display
@@ -131,11 +138,12 @@ const result = await zoneService.routeToDisplay(display_id);
 ```
 
 ### 3. Display Routing Service
+
 **File**: [contracts/display-routing.contract.ts](contracts/display-routing.contract.ts)
 
 ```typescript
 // Load landing page
-const landing = await routingService.loadLandingPage('ms');
+const landing = await routingService.loadLandingPage("ms");
 // Returns: { tiers, zones, faqs, page_metadata }
 
 // Navigate to display
@@ -143,13 +151,14 @@ const display = await routingService.navigateToDisplay(display_id);
 // Returns: { prayer_times, masjid_name, tier, can_upgrade, can_switch_zone }
 
 // Initiate upgrade
-const upgrade = await routingService.initiateUpgrade(display_id, 'gemilang');
+const upgrade = await routingService.initiateUpgrade(display_id, "gemilang");
 // Returns: { action: 'open_admin_signup', action_url: '...' }
 ```
 
 ## User Flows
 
 ### Flow 1: Discover Free Tier & View Local Mosque
+
 ```
 1. User lands on /display
    ↓
@@ -163,6 +172,7 @@ const upgrade = await routingService.initiateUpgrade(display_id, 'gemilang');
 ```
 
 ### Flow 2: Compare Tiers & Upgrade
+
 ```
 1. User on display page sees "Tukar Pelan" button
    ↓
@@ -176,6 +186,7 @@ const upgrade = await routingService.initiateUpgrade(display_id, 'gemilang');
 ```
 
 ### Flow 3: Answer FAQ Without Support
+
 ```
 1. User on landing page scrolls to FAQ section
    ↓
@@ -189,6 +200,7 @@ const upgrade = await routingService.initiateUpgrade(display_id, 'gemilang');
 ## Implementation Checklist
 
 ### Phase 1A: Database Setup
+
 - [ ] Create Supabase migration: `0XX_auto_populate_jakim_zones.sql`
   - [ ] Create `jakim_zones` table with all 18+ zones
   - [ ] Create `masjids` table with 1-3 mosques per zone (50-100 total)
@@ -196,6 +208,7 @@ const upgrade = await routingService.initiateUpgrade(display_id, 'gemilang');
   - [ ] Add RLS policy for owner write access (maju+ tiers)
 
 ### Phase 1B: Package Development
+
 - [ ] Extend `packages/shared-types/src/types/tier.ts`:
   - [ ] Add TierId enum, TierPackage interface
   - [ ] Add JAKIMZone, Masjid, Display interfaces
@@ -208,6 +221,7 @@ const upgrade = await routingService.initiateUpgrade(display_id, 'gemilang');
   - [ ] `fetchTierById(id)` - return single tier
 
 ### Phase 1C: Landing Page Components (TV Display App)
+
 - [ ] Create `apps/tv-display/src/app/landing/HeroSection.tsx`:
   - [ ] Hero image, headline, subheadline
   - [ ] "Mulai Percuma" primary CTA
@@ -230,6 +244,7 @@ const upgrade = await routingService.initiateUpgrade(display_id, 'gemilang');
   - [ ] Load landing page data from routing service
 
 ### Phase 1D: Zone Discovery Logic
+
 - [ ] Create `apps/tv-display/src/lib/zone-client.ts`:
   - [ ] `selectZone(zone_code)` - fetch first masjid in zone
   - [ ] `routeToDisplay(display_id)` - navigate to `/display/[display_id]`
@@ -241,6 +256,7 @@ const upgrade = await routingService.initiateUpgrade(display_id, 'gemilang');
   - [ ] Add "Upgrade" / "Tukar Pelan" button
 
 ### Phase 1E: Internationalization
+
 - [ ] Create i18n files:
   - [ ] `i18n/locales/ms/tiers.json` - Bahasa Malaysia tier descriptions
   - [ ] `i18n/locales/en/tiers.json` - English tier descriptions
@@ -250,6 +266,7 @@ const upgrade = await routingService.initiateUpgrade(display_id, 'gemilang');
 - [ ] Ensure language switcher exists on landing page
 
 ### Phase 1F: Testing (TDD)
+
 - [ ] Unit tests for zone-service (filtering, searching)
 - [ ] Unit tests for tier-service (data retrieval)
 - [ ] Component tests for TierSection, ZoneModal, FAQSection
@@ -269,7 +286,7 @@ BEGIN;
 
 -- Insert JAKIM zones (Peninsular Malaysia)
 INSERT INTO public.jakim_zones (zone_code, zone_name, state, region, is_active)
-VALUES 
+VALUES
   ('johor', 'Johor', 'Johor', 'peninsular', true),
   ('kedah', 'Kedah', 'Kedah', 'peninsular', true),
   ('kelantan', 'Kelantan', 'Kelantan', 'peninsular', true),
@@ -278,9 +295,9 @@ VALUES
   ('sarawak', 'Sarawak', 'Sarawak', 'sarawak', true);
 
 -- Insert representative mosques for Johor (example)
-INSERT INTO public.masjids 
+INSERT INTO public.masjids
   (name, zone_code, tier, prayer_times_source, is_auto_populated, status)
-VALUES 
+VALUES
   ('Masjid Al-Hana, Johor Bahru', 'johor', 'asas', 'jakim_api', true, 'active'),
   ('Surau Nur, Kota Tinggi', 'johor', 'asas', 'jakim_api', true, 'active'),
   ('Masjid Jame, Muar', 'johor', 'asas', 'jakim_api', true, 'active');
@@ -297,23 +314,25 @@ COMMIT;
 
 ## Performance Targets
 
-| Metric | Target | Technique |
-|--------|--------|-----------|
-| Landing page load (FCP) | <1.5s | Image lazy-loading, code splitting, static tier data |
-| Zone modal open | <500ms | Zones fetched on landing load (cached) + lazy-loaded modal |
-| Zone to display route | <1s | Display ID lookup (UUID index) + prayer times cache (24h) |
-| FAQ search | <100ms | In-memory search of JSON array |
-| Mobile responsiveness | 95%+ devices 320px+ | Material-UI responsive grid |
-| Accessibility (WCAG 2.1 AA) | 100% compliance | Semantic HTML, ARIA labels, keyboard navigation |
+| Metric                      | Target              | Technique                                                  |
+| --------------------------- | ------------------- | ---------------------------------------------------------- |
+| Landing page load (FCP)     | <1.5s               | Image lazy-loading, code splitting, static tier data       |
+| Zone modal open             | <500ms              | Zones fetched on landing load (cached) + lazy-loaded modal |
+| Zone to display route       | <1s                 | Display ID lookup (UUID index) + prayer times cache (24h)  |
+| FAQ search                  | <100ms              | In-memory search of JSON array                             |
+| Mobile responsiveness       | 95%+ devices 320px+ | Material-UI responsive grid                                |
+| Accessibility (WCAG 2.1 AA) | 100% compliance     | Semantic HTML, ARIA labels, keyboard navigation            |
 
 ## Dependencies
 
 ### External APIs
+
 - **JAKIM Prayer Times API** (via existing `packages/prayer-times`)
 - **Material-UI v6** (already in project)
 - **Supabase PostgreSQL + RLS** (already in project)
 
 ### Internal Packages
+
 - `packages/shared-types` (extend)
 - `packages/supabase-client` (extend)
 - `packages/ui-components` (reuse)

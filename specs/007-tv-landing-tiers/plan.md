@@ -98,7 +98,8 @@ docs/
 └── TV-LANDING-PAGE-TIERS.md      # NEW: Feature documentation
 ```
 
-**Structure Decision**: 
+**Structure Decision**:
+
 - **shared-types**: Add TierPackage, JAKIMZone enums and interfaces for zone codes (reference hub app JAKIM zone implementation)
 - **supabase-client**: Extend with zone-service (fetch all zones, get masjids by zone) and tier-service (fetch tier metadata)
 - **tv-display app**: Main implementation hub. Landing page redesign with TierCard components, ZoneModal for zone selection, FAQSection for FAQ accordion. Zone selection logic in lib/zone-client.ts. API route for `/api/zones` to support zone filtering if needed.
@@ -108,6 +109,6 @@ docs/
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 | --------- | ---------- | ------------------------------------ |
-| None      | N/A        | N/A                                 |
+| None      | N/A        | N/A                                  |
 
 _All constitutional requirements are met without exception._

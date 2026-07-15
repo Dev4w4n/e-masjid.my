@@ -405,6 +405,7 @@ This document contains all actionable implementation tasks for the TV landing pa
 ### Recommended Execution Order (MVP First)
 
 **MVP Scope** (Phases 0-3 + critical from Phase 4):
+
 1. Phase 0: Setup (T001-T003)
 2. Phase 1: Database (T004-T007)
 3. Phase 2: Packages (T008-T014)
@@ -415,6 +416,7 @@ This document contains all actionable implementation tasks for the TV landing pa
 **MVP Output**: Free tier landing page + zone discovery + tier comparison (ready for Asas users)
 
 **Post-MVP** (Phases 4-8):
+
 - Phase 6: US4 tier upgrade flow (T036-T039)
 - Phase 7: US5 FAQ section (T040-T044)
 - Phase 8: i18n + performance (T045-T049)
@@ -422,11 +424,13 @@ This document contains all actionable implementation tasks for the TV landing pa
 ### Parallelization Opportunities
 
 **Can execute in parallel** (independent files):
+
 - T003 + T004 + T008 + T010 + T012 + T015 + T017 + T027 (different files, no dependencies)
 - T011 + T013 + T019 + T023 + T029 + T039 + T043 (test files, parallel development)
 - T009 + T014 + T024 + T032 + T045 (config/setup, no code dependencies)
 
 **Should execute sequentially** (dependencies):
+
 - T004 → T005 → T006 (database migration, policies, tests)
 - T008 → T009 (types before exports)
 - T010 → T011 (service before tests)
@@ -437,6 +441,7 @@ This document contains all actionable implementation tasks for the TV landing pa
 ### Testing Strategy (TDD)
 
 **Tests written FIRST, code follows**:
+
 - T011: zone-service tests → T010 implementation
 - T013: tier-service tests → T012 implementation
 - T019: TierSection tests → T017 implementation
@@ -444,6 +449,7 @@ This document contains all actionable implementation tasks for the TV landing pa
 - T043: FAQSection tests → T040 implementation
 
 **E2E tests validate full flows**:
+
 - T021: Free tier discovery (landing → zone → display)
 - T026: Tier comparison (landing → compare → understand differences)
 - T035: Zone selection (click CTA → modal → zone select → display)
@@ -470,20 +476,20 @@ Phase 2 Packages (T008-T014)
 
 ## Success Criteria Validation
 
-| Success Criterion | Validation Task | Target |
-|-------------------|-----------------|--------|
-| SC-001: <2s load | T047 (Lighthouse) | FCP <1.5s, LCP <2.5s |
-| SC-002: 100% zones | T006 (test) | All 18 zones in DB |
-| SC-003: Zones have masjids | T006 (test) | 1-3 per zone (50-100 total) |
-| SC-004: 3-click journey | T035 (E2E) | Landing → Zone → Display |
-| SC-005: 90% success | T035 (E2E) | No dead ends, error handling |
-| SC-006: Anon access | T021, T035 (E2E) | No login required |
-| SC-007: 99% prayer times | T035 (E2E) | Verify accuracy vs. JAKIM |
-| SC-008: Tier scannable | T026 (E2E) | User identifies differences <30s |
-| SC-009: 6+ FAQs | T043 (test) | All 6 FAQs in JSON |
-| SC-010: Support reduction | Monitoring post-launch | 50% decrease in support tickets |
-| SC-011: 25% CTA CTR | Analytics post-launch | Click-through rate tracking |
-| SC-012: Mobile responsive | T047, T048 (tests) | 320px+ devices, 48px+ touch targets |
+| Success Criterion          | Validation Task        | Target                              |
+| -------------------------- | ---------------------- | ----------------------------------- |
+| SC-001: <2s load           | T047 (Lighthouse)      | FCP <1.5s, LCP <2.5s                |
+| SC-002: 100% zones         | T006 (test)            | All 18 zones in DB                  |
+| SC-003: Zones have masjids | T006 (test)            | 1-3 per zone (50-100 total)         |
+| SC-004: 3-click journey    | T035 (E2E)             | Landing → Zone → Display            |
+| SC-005: 90% success        | T035 (E2E)             | No dead ends, error handling        |
+| SC-006: Anon access        | T021, T035 (E2E)       | No login required                   |
+| SC-007: 99% prayer times   | T035 (E2E)             | Verify accuracy vs. JAKIM           |
+| SC-008: Tier scannable     | T026 (E2E)             | User identifies differences <30s    |
+| SC-009: 6+ FAQs            | T043 (test)            | All 6 FAQs in JSON                  |
+| SC-010: Support reduction  | Monitoring post-launch | 50% decrease in support tickets     |
+| SC-011: 25% CTA CTR        | Analytics post-launch  | Click-through rate tracking         |
+| SC-012: Mobile responsive  | T047, T048 (tests)     | 320px+ devices, 48px+ touch targets |
 
 ---
 

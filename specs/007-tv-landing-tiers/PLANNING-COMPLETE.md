@@ -9,9 +9,11 @@
 ## 📋 Completion Status
 
 ### Phase 0: Research ✅ COMPLETE
+
 **File**: [specs/007-tv-landing-tiers/research.md](research.md)
 
 **Unknowns Resolved**:
+
 1. ✅ JAKIM zone structure → Reference hub app's prayer-times package
 2. ✅ Landing page performance → Image optimization + code splitting + lazy-loading
 3. ✅ Material-UI patterns → Card + Grid + Autocomplete components
@@ -21,6 +23,7 @@
 7. ✅ Prayer times source → Existing prayer-times package from hub app
 
 **Key Findings**:
+
 - No blockers identified
 - All dependencies mapped to existing project utilities
 - Tier data can be static (marketing-controlled)
@@ -31,7 +34,9 @@
 ### Phase 1: Design & Contracts ✅ COMPLETE
 
 #### 1. Data Model [data-model.md](data-model.md)
+
 **Entities Defined**:
+
 - **JAKIMZone**: Prayer time zones in Malaysia (zone_code, zone_name, region, masjid_count)
 - **TierPackage**: 4 pricing tiers with features (asas/maju/gemilang/istimewa)
 - **Masjid**: Mosque records with auto-population flag and tier assignment
@@ -44,12 +49,14 @@
 #### 2. API Contracts
 
 **File 1**: [contracts/tier-package.contract.ts](contracts/tier-package.contract.ts)
+
 - `ITierPackageService` interface
 - `FetchTiersRequest/Response` contracts
 - `TierPackageDTO` with example data (all 4 tiers)
 - Error handling contracts
 
 **File 2**: [contracts/jakim-zone.contract.ts](contracts/jakim-zone.contract.ts)
+
 - `IZoneSelectionService` interface
 - `FetchZonesRequest/Response` contracts with region grouping
 - `FetchMasjidsByZoneRequest/Response` for zone-based discovery
@@ -58,6 +65,7 @@
 - Error handling contracts
 
 **File 3**: [contracts/display-routing.contract.ts](contracts/display-routing.contract.ts)
+
 - `IDisplayRoutingService` interface
 - `LoadLandingPageRequest/Response` (tiers + zones + FAQs)
 - `NavigateToDisplayRequest/Response` (prayer times + tier info)
@@ -67,6 +75,7 @@
 - Error handling contracts
 
 #### 3. Quick Start Guide [quickstart.md](quickstart.md)
+
 - Architecture overview with monorepo structure
 - Key design decisions table
 - User flow diagrams (3 primary flows)
@@ -87,12 +96,15 @@
 ## 🏗️ Architecture Summary
 
 ### Package-First Design
+
 - **packages/shared-types**: Add tier, zone, masjid, display types
 - **packages/supabase-client**: Add zone-service, tier-service
 - **apps/tv-display**: Landing page components + zone discovery
 
 ### Constitution Compliance
+
 ✅ All 7 constitutional requirements met:
+
 - [x] Package-First Architecture
 - [x] Test-First Development (TDD)
 - [x] Database-First Development (migrations)
@@ -105,21 +117,22 @@
 
 ## 📊 Key Metrics & Targets
 
-| Metric | Target | Implementation |
-|--------|--------|-----------------|
-| **Page Load (FCP)** | <1.5s | Image optimization, code splitting, lazy-loading |
-| **Zone Modal Open** | <500ms | Pre-fetched zones + cached modal |
-| **Prayer Times Accuracy** | 99%+ | JAKIM API source of truth + 24h cache |
-| **Zone Coverage** | 100% (18 zones) | Database seed migration |
-| **Accessibility** | WCAG 2.1 AA | Semantic HTML, ARIA, keyboard nav |
-| **Mobile Support** | 320px+ devices | Material-UI responsive grid |
-| **User Journey Time** | 3 clicks | Landing → Zone Selection → Display |
+| Metric                    | Target          | Implementation                                   |
+| ------------------------- | --------------- | ------------------------------------------------ |
+| **Page Load (FCP)**       | <1.5s           | Image optimization, code splitting, lazy-loading |
+| **Zone Modal Open**       | <500ms          | Pre-fetched zones + cached modal                 |
+| **Prayer Times Accuracy** | 99%+            | JAKIM API source of truth + 24h cache            |
+| **Zone Coverage**         | 100% (18 zones) | Database seed migration                          |
+| **Accessibility**         | WCAG 2.1 AA     | Semantic HTML, ARIA, keyboard nav                |
+| **Mobile Support**        | 320px+ devices  | Material-UI responsive grid                      |
+| **User Journey Time**     | 3 clicks        | Landing → Zone Selection → Display               |
 
 ---
 
 ## 📦 Deliverables
 
 ### Completed Documents
+
 1. ✅ **plan.md** - Implementation plan with constitution check
 2. ✅ **research.md** - All research tasks resolved
 3. ✅ **data-model.md** - Entity definitions + TypeScript interfaces + DB schema
@@ -131,6 +144,7 @@
 6. ✅ **Agent context updated** - Copilot informed of feature details
 
 ### Structure for Implementation
+
 - Feature branch: `007-tv-landing-tiers`
 - Spec directory: `specs/007-tv-landing-tiers/`
 - All artifacts in place for Phase 2 task generation
@@ -140,18 +154,22 @@
 ## 🚀 Next Steps
 
 ### Phase 2: Task Generation
+
 Run `/speckit.tasks` to generate actionable tasks from:
+
 - ✅ Feature specification (spec.md)
 - ✅ Implementation plan (plan.md)
 - ✅ Research findings (research.md)
 - ✅ Design & data model (data-model.md)
-- ✅ API contracts (contracts/*.ts)
+- ✅ API contracts (contracts/\*.ts)
 - ✅ Quick start (quickstart.md)
 
 **Expected Outcome**: `tasks.md` with dependency-ordered implementation tasks
 
 ### Phase 3: Implementation
+
 Execute tasks using TDD approach:
+
 1. Database: Create migration, run RLS policies
 2. Packages: Extend shared-types, supabase-client
 3. Components: Build landing page sections (Hero, Tier, Zone, FAQ)

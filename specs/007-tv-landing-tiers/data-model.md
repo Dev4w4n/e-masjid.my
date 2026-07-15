@@ -12,6 +12,7 @@
 **Purpose**: Represents official prayer time zones in Malaysia per JAKIM standards
 
 **Attributes**:
+
 - `zone_code` (string, PK): Official JAKIM zone identifier (e.g., "johor", "kedah", "negeri_sembilan")
 - `zone_name` (string): Display name in Bahasa Malaysia (e.g., "Johor", "Kedah")
 - `state` (string): State name in Bahasa Malaysia (e.g., "Johor", "Sabah")
@@ -22,15 +23,18 @@
 - `updated_at` (timestamp): Last update time
 
 **Relationships**:
+
 - One JAKIMZone → Many Masjids (one-to-many via `masjid.zone_code`)
 
 **Validation Rules**:
+
 - `zone_code` must be unique, lowercase, no spaces
 - `zone_name` and `state` must be non-empty Bahasa Malaysia strings
 - `region` must be one of the enum values
 - `masjid_count` >= 0
 
 **State Transitions**:
+
 - New zone created by admin (is_active = true)
 - Zone deactivated if JAKIM announces closure (is_active = false)
 - Masjid count auto-incremented/decremented when masjids are added/removed
@@ -42,6 +46,7 @@
 **Purpose**: Defines the 4 pricing tiers and their features (Asas/Maju/Gemilang/Istimewa)
 
 **Attributes**:
+
 - `id` (enum): 'asas' | 'maju' | 'gemilang' | 'istimewa'
 - `name_ms` (string): Bahasa Malaysia name (e.g., "Asas (Percuma)")
 - `name_en` (string): English name (e.g., "Asas (Free)")
@@ -57,6 +62,7 @@
 - `features` (array): List of feature keys (e.g., ["official_prayer_times", "default_background", "custom_messages_via_whatsapp"])
 
 **Example Data** (Asas tier):
+
 ```json
 {
   "id": "asas",
@@ -76,9 +82,11 @@
 ```
 
 **Relationships**:
+
 - TierPackage → Many Masjids (logical; not direct FK; determined by masjid.tier field)
 
 **Validation Rules**:
+
 - `id` must be unique and one of enum values
 - Descriptions must be non-empty
 - `max_screens`: null (unlimited) or integer >= 1
@@ -92,6 +100,7 @@
 **Purpose**: Represents a mosque with its tier level, display configuration, and prayer time schedule
 
 **Attributes**:
+
 - `id` (UUID, PK): Unique identifier for this masjid record
 - `name` (string): Name of the mosque in Bahasa Malaysia
 - `zone_code` (string, FK): Reference to JAKIMZone.zone_code
@@ -107,11 +116,13 @@
 - `updated_at` (timestamp): Last update time
 
 **Relationships**:
+
 - Masjid.zone_code → JAKIMZone.zone_code (foreign key)
 - Masjid.owner_id → auth.users.id (foreign key, optional)
 - Masjid → Display (one-to-one via display_id)
 
 **Validation Rules**:
+
 - `id` and `display_id` must be unique UUIDs
 - `name` must be non-empty
 - `zone_code` must exist in JAKIMZone table
@@ -121,6 +132,7 @@
 - `is_auto_populated` = true for all seed-migrated entries
 
 **State Transitions**:
+
 - On creation: status = 'active' (unless manually archived)
 - Tier upgrade: tier changes (e.g., 'asas' → 'maju'), features unlock
 - Tier downgrade: tier changes, custom content may be archived
@@ -132,6 +144,7 @@
 **Purpose**: Configuration and state for a live display on a TV screen
 
 **Attributes**:
+
 - `id` (UUID, PK): Same as masjid.display_id (one-to-one relationship)
 - `masjid_id` (UUID, FK): Reference to Masjid.id
 - `zone_code` (string, FK): Reference to JAKIMZone.zone_code (denormalized for query performance)
@@ -158,10 +171,12 @@
 - `updated_at` (timestamp): Last update time
 
 **Relationships**:
+
 - Display.masjid_id → Masjid.id (foreign key)
 - Display.zone_code → JAKIMZone.zone_code (foreign key, denormalized)
 
 **Validation Rules**:
+
 - `id` must be unique UUID
 - `masjid_id` must exist in Masjid table
 - `zone_code` must exist in JAKIMZone table and match masjid.zone_code
@@ -234,10 +249,10 @@ CREATE POLICY "Allow anonymous read for asas tier" ON displays
 
 ```typescript
 // packages/shared-types/src/tier.ts
-export type TierId = 'asas' | 'maju' | 'gemilang' | 'istimewa';
-export type CustomizationType = 'none' | 'managed_service' | 'self_service';
-export type SupportLevel = 'basic' | 'standard' | 'priority';
-export type Region = 'peninsular' | 'sabah' | 'sarawak';
+export type TierId = "asas" | "maju" | "gemilang" | "istimewa";
+export type CustomizationType = "none" | "managed_service" | "self_service";
+export type SupportLevel = "basic" | "standard" | "priority";
+export type Region = "peninsular" | "sabah" | "sarawak";
 
 export interface TierPackage {
   id: TierId;
@@ -277,7 +292,7 @@ export interface Masjid {
   custom_name_en?: string;
   is_auto_populated: boolean;
   owner_id?: string;
-  status: 'active' | 'inactive' | 'archived';
+  status: "active" | "inactive" | "archived";
   created_at: string;
   updated_at: string;
 }
@@ -299,9 +314,9 @@ export interface Display {
   tier: TierId;
   prayer_times: PrayerTimes | null;
   custom_content: Record<string, any> | null;
-  screen_orientation: 'portrait' | 'landscape';
+  screen_orientation: "portrait" | "landscape";
   refresh_interval_seconds: number;
-  status: 'active' | 'inactive' | 'error';
+  status: "active" | "inactive" | "error";
   last_accessed_at: string | null;
   last_prayer_times_refresh_at: string | null;
   created_at: string;
@@ -314,6 +329,7 @@ export interface Display {
 ## Data Flow
 
 ### User Zone Selection Flow
+
 ```
 User clicks "Cari kawasan anda"
   ↓
@@ -329,6 +345,7 @@ Prayer times rendered with zone's background + layout
 ```
 
 ### Prayer Times Update Flow
+
 ```
 Display page loads
   ↓
@@ -353,4 +370,3 @@ Render to user
 4. **Display IDs**: UUIDs are immutable; `/display/[display_id]` is the public URL that never changes (important for bookmarking).
 5. **RLS Policies**: All anonymous users can access Asas tier displays; no subscription/license checking required.
 6. **Scaling**: Initial seed = 1-3 mosques per zone (50-100 total). If growth exceeds 10k mosques, consider partitioning or caching strategies.
-
