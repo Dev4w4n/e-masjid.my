@@ -76,4 +76,11 @@ test.describe("Zone Selection Flow", () => {
     await page.getByRole("button", { name: /Pilih|Select/ }).click();
     await expect(page).toHaveURL(/\/display\//);
   });
+
+  test("display route exposes upgrade entry", async ({ page }) => {
+    await page.goto("/display/550e8400-e29b-41d4-a716-446655440000");
+    await expect(
+      page.getByRole("button", { name: /Tukar Pelan|Upgrade/ }),
+    ).toBeVisible();
+  });
 });

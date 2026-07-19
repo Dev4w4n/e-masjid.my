@@ -2,7 +2,7 @@
 
 **Feature Branch**: `007-tv-landing-tiers`  
 **Created**: 2026-07-16  
-**Status**: Draft  
+**Status**: Ready for Implementation  
 **Input**: Marketing-driven landing page redesign with tier packages (Asas/Maju/Gemilang/Istimewa) and auto-populated JAKIM zone discovery
 
 **Constitutional Requirements Checklist**:
@@ -57,12 +57,12 @@ A user (mosque staff or visitor) knows their mosque's JAKIM zone but may not kno
 
 **Why this priority**: Discoverability is core; if users can't find their mosque, the app fails. This is the primary conversion path from landing to live display.
 
-**Independent Test**: Zone selection modal populates with all Malaysia JAKIM zones (Peninsular + Sabah/Sarawak). User can select a zone and see at least one pre-populated masjid for that zone. Selection routes to that masjid's display page.
+**Independent Test**: Zone selection modal populates with all Malaysia JAKIM zones (Peninsular + Sabah/Sarawak). User can select a zone using localized display labels while the system resolves and submits canonical `zone_code`, then see at least one pre-populated masjid for that zone. Selection routes to that masjid's display page.
 
 **Acceptance Scenarios**:
 
-1. **Given** a user clicks "Cari kawasan anda" CTA, **When** a zone modal opens, **Then** they see a dropdown or list of all Malaysia JAKIM zones (e.g., "Johor", "Kedah", "Negeri Sembilan", etc.)
-2. **Given** they select a zone (e.g., "Terengganu"), **When** the modal confirms their selection, **Then** they are routed to `/display/[display-id]` where that zone's first auto-populated masjid is displayed
+1. **Given** a user clicks "Cari kawasan anda" CTA, **When** a zone modal opens, **Then** they see a dropdown or list of all Malaysia JAKIM zones with localized labels (e.g., state/zone names) mapped to canonical `zone_code`
+2. **Given** they select a zone label (e.g., Terengganu zone label), **When** the modal confirms their selection, **Then** the submitted lookup key is canonical `zone_code` and they are routed to `/display/[display-id]` where that zone's first auto-populated masjid is displayed
 3. **Given** the display page loads, **When** the zone's prayer times are shown, **Then** the times match the JAKIM official schedule for that zone
 4. **Given** they want to explore other masjids, **When** they return to the landing page, **Then** they can select a different zone and repeat the flow
 5. **Given** they are on the display page, **When** they want to compare with another zone, **Then** a "switch zone" option is available (e.g., via floating button or menu)
@@ -118,30 +118,30 @@ A visitor has questions about pricing, screens, support, or free trial. They fin
 
 **Landing Page & Marketing**:
 
-- **FR-001**: Landing page MUST prominently display 4 tier packages (Asas, Maju, Gemilang, Istimewa) with descriptions, key features, and pricing
+- **FR-001**: Landing page MUST display all 4 tier packages (Asas, Maju, Gemilang, Istimewa) in the main tier section, and each package MUST show its description, key features, and pricing without requiring horizontal scrolling
 - **FR-002**: Each tier MUST include a primary CTA (e.g., "Mulai Percuma", "Hubungi Kami", "Tukar Pelan")
 - **FR-003**: Landing page MUST include a "Cari kawasan anda" (Find Your Zone) CTA that opens a zone selection modal
-- **FR-004**: Zone selection modal MUST be pre-populated with all 58 canonical active Malaysia JAKIM zones (refer to `packages/prayer-times/src/jakim-api.ts` MALAYSIAN_ZONES constant as authoritative source; zone codes are official JAKIM administrative codes like JHR01-JHR04, not locale names like "johor")
+- **FR-004**: Zone selection modal MUST display all entries from the system's canonical active JAKIM zone registry (58 zones at current baseline), showing localized labels mapped to canonical `zone_code` values for selection
 - **FR-005**: Upon zone selection, user MUST be routed to `/display/[display-id]` for the first masjid in that zone
 - **FR-006**: Landing page MUST include an FAQ section (minimum 6 questions) covering common topics such as tier differences, pricing, screens, support, trial period, and payment. Topics are determined by content team; exact questions flexible (not prescriptive)
 - **FR-007**: All tier descriptions, CTAs, zone names, and FAQ content MUST be available in Bahasa Malaysia and English
-- **FR-008**: Landing page MUST display at least one "Upgrade Plan" or "Tukar Pelan" CTA from any display page, allowing users to switch tiers
+- **FR-008**: From any display page, the user MUST be able to access at least one visible "Upgrade Plan" or "Tukar Pelan" CTA that opens a tier-switching flow
 
 **Database & Data Population**:
 
 - **FR-009**: System MUST auto-populate a list of free masjids (Tier: Asas) for each Malaysia JAKIM zone on first deployment (SQL migration required)
 - **FR-010**: Each auto-populated masjid entry MUST include: name, JAKIM zone, prayer times source (JAKIM official), tier level (Asas), and a unique display ID
-- **FR-011**: Prayer times for auto-populated masjids MUST be sourced from official JAKIM API (no manual updates required for free tier). The system MUST serve cached prayer times immediately and refresh in the background on each display load (stale-while-revalidate). Cache rollover occurs at Asia/Kuala_Lumpur midnight each day.
-- **FR-012**: System MUST ensure all Malaysia states and their JAKIM zones are covered in the auto-population (reference `packages/prayer-times/src/jakim-api.ts` MALAYSIAN_ZONES canonical active set with 58 zones; zone code format: JHR01, KDH01, etc., not locale strings like "johor" or "kedah")
+- **FR-011**: Prayer times for auto-populated masjids MUST be sourced from the official JAKIM API (no manual updates required for free tier). On each display load, the system MUST serve cached prayer times immediately and refresh in the background (stale-while-revalidate), with cache rollover at Asia/Kuala_Lumpur midnight each day.
+- **FR-012**: Auto-population coverage MUST include every zone in the authoritative canonical active set defined by `packages/prayer-times/src/jakim-api.ts` `MALAYSIAN_ZONES` (58 zones at current baseline), using official JAKIM zone-code format (e.g., JHR01, KDH01) and not locale strings
 - **FR-012.1**: `zone_code` MUST be the canonical identifier for all routing, API queries, and lookups. `zone_name_ms` and `zone_name_en` are display-only fields and MUST NOT be used as primary keys.
-- **FR-013**: When a new JAKIM zone is added or prayer times are updated by JAKIM, auto-populated masjid data MUST refresh automatically (no manual intervention). Refresh strategy: prayer times use stale-while-revalidate on each display load with daily cache rollover at Asia/Kuala_Lumpur midnight; new zones are synchronized via scheduled sync and can be backfilled via SQL migration or admin import tool.
+- **FR-013**: Canonical-set drift MUST be reconciled automatically without manual intervention: when JAKIM adds a new zone or changes zone metadata in the canonical set, the system MUST synchronize and backfill auto-populated masjid coverage via scheduled sync and migration/admin import paths. Prayer-times refresh behavior for existing zones is governed by FR-011.
 
 **UI/UX Requirements**:
 
 - **FR-014**: Tier cards MUST render without functional or visual breakage at viewport widths 320, 375, 768, 1024, and 1280 pixels. At each width: no horizontal page overflow, all tier names and primary CTAs remain visible, and CTA touch target height is >=48px.
 - **FR-015**: Tier comparison MUST expose and label these 8 dimensions: `customization_type`, `max_screens`, `requires_login`, `support_level`, `prayer_times_display`, `prayer_times_sync`, `content_scheduling`, and `analytics`. On viewports <=768px, the comparison MUST remain readable via horizontal scroll or stacked layout without truncating labels or values.
-- **FR-016**: Zone selection modal MUST be accessible (keyboard navigation, screen reader support, WCAG 2.1 AA)
-- **FR-017**: Landing page MUST load in under 2 seconds (excluding image/video assets), measured with Lighthouse CI mobile profile over at least 30 runs per environment (local baseline and staging), with p95 LCP <= 2.0s
+- **FR-016**: Zone selection modal MUST satisfy WCAG 2.1 AA with explicit acceptance checks: full keyboard-only flow (open, navigate options, select, close) without keyboard trap; logical focus order with visible focus indicator; Escape closes modal and returns focus to trigger; semantic dialog roles/labels (`role="dialog"`, `aria-modal="true"`, labelled title, described instructions); screen readers announce open/close state and selected option. Validation MUST pass automated accessibility scan (axe) with zero critical violations and manual keyboard/screen-reader checklist in QA evidence.
+- **FR-017**: Landing page performance MUST meet p95 LCP <= 2.0s per environment (local baseline and staging) using Lighthouse CI mobile profile over >=30 successful runs each. Measurement protocol: cold-cache runs, fixed network/CPU profile, report median and p95; failures or invalid runs are excluded only when an execution error is recorded in logs. A run report artifact (raw JSON + summary table) MUST be stored in docs evidence before release approval.
 - **FR-018**: All CTAs MUST be clearly distinguished (color, size, hover/focus states) to encourage click-through. Minimum acceptance: CTA text/background contrast >= 4.5:1, visible hover/focus state change, and minimum touch target height of 48px
 
 **Integration & Routing**:
@@ -173,11 +173,11 @@ A visitor has questions about pricing, screens, support, or free trial. They fin
 - **SC-002**: Zone dropdown is pre-populated with 100% of Malaysia JAKIM zones (all 58 canonical active zones, using official zone codes from `jakim-api.ts` MALAYSIAN_ZONES active set) with zero missing entries
 - **SC-003**: Each JAKIM zone has exactly 1 auto-populated masjid entry (58 total, 1:1 zone-to-masjid mapping for Asas tier free discovery); all masjids are active, properly indexed by zone_code, and queryable for zone selection
 - **SC-004**: User can reach their mosque's display within 3 clicks from landing page: (1) Click "Cari kawasan anda", (2) Select zone, (3) View display
-- **SC-005**: 90%+ of users who click "Cari kawasan anda" successfully select a zone and reach a display page (no errors or dead ends)
+- **SC-005**: Zone-discovery completion rate MUST be >=90% over the first 28 days after release, where numerator = unique sessions with `zone_selection_success` and denominator = unique sessions with a `landing_cta_click` for "Cari kawasan anda". Exclusions: bot traffic and sessions with client-side telemetry disabled. Report cadence: weekly roll-up in docs evidence.
 - **SC-006**: Free tier (Asas) display is accessible without login/registration; 100% of anonymous users can view prayer times for their selected zone
-- **SC-007**: Prayer times accuracy: 99%+ of auto-populated masjids display correct prayer times matching JAKIM official schedule for their zone
-- **SC-008**: Tier comparison is scannable in under 30 seconds; 80%+ of users can identify key differences between tiers without additional help
-- **SC-009**: FAQ section answers 80%+ of pre-defined common questions (min. 6 questions/answers in Bahasa Malaysia and English)
+- **SC-007**: Prayer times accuracy MUST be >=99% when comparing rendered display prayer times against official JAKIM schedule for the same `zone_code` and prayer date. Sampling protocol: all 58 auto-populated Asas masjids, daily at 06:00 Asia/Kuala_Lumpur for 14 consecutive days post-release. A sample is pass when all six prayer fields match `HH:MM` after configured adjustments; overall pass rate = passed samples / total samples.
+- **SC-008**: Tier-comparison comprehension MUST reach >=80% in moderated usability validation: minimum 20 representative participants complete a timed task (<=30 seconds) to correctly identify differences for three prompts (Asas vs Maju, Maju vs Gemilang, Gemilang vs Istimewa) without facilitator hints. Score = participants passing all three prompts within time limit / total participants.
+- **SC-009**: FAQ coverage MUST be >=80% against a pre-defined corpus of at least 10 common support questions maintained in `/specs/007-tv-landing-tiers/plan.md` (SC-009 Canonical FAQ Corpus). Validation protocol: map each corpus question to a published FAQ answer (ms/en), mark "covered" only if answer is complete and actionable, and compute coverage = covered questions / total corpus questions. Minimum content requirement remains >=6 published FAQ entries in both languages. Release evidence is recorded in `/docs/TV-LANDING-PAGE-TIERS.md`.
 - **SC-010**: Within the first 14 days after release, support tickets about tier selection or free-tier understanding MUST decrease by >=50% versus baseline. Baseline is the average weekly count from the 4 full weeks before release, sourced from the official support ticket system using the same ticket tagging/filter rules. Attribution includes tickets tagged to tier-selection/free-tier confusion from users who accessed the landing flow within the prior 7 days
 - **SC-011**: Tier CTA click-through rate (CTR) from landing page MUST be >=25% during the first 28 days after release, where numerator = unique landing sessions with >=1 tier CTA click (`Mulai Percuma`, `Hubungi Kami`, or `Tukar Pelan`) and denominator = unique landing sessions in the same window
 - **SC-012**: Mobile users: Landing page renders correctly on devices 320px+ wide; touch targets for CTAs are 48px+ for easy tapping

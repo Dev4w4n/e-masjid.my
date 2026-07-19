@@ -8,8 +8,11 @@ import DisplayStatus from '@/components/DisplayStatus';
 import ClientOnly from '@/components/ClientOnly';
 import BlackScreenOverlay from '@/components/BlackScreenOverlay';
 import { jakimFallbackService } from '@masjid-suite/supabase-client/services/jakim-fallback';
+import type { TierId } from '@masjid-suite/shared-types';
 import { patchZoneSessionState, readZoneSessionState } from '@/lib/zone-session-state';
 import { EnhancedSupabaseService } from '@/lib/services/enhanced-supabase';
+import { getUpgradeNavigation } from '@/lib/upgrade-client';
+import { UpgradeModal } from '@/app/landing/UpgradeModal';
 
 interface DisplayPageState {
   config: DisplayConfig | null;
@@ -162,6 +165,7 @@ function DisplayPageContent() {
   });
 
   const { state: offlineState, actions: offlineActions } = useOffline();
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
 
   useEffect(() => {
     loadDisplayData();
@@ -473,6 +477,31 @@ function DisplayPageContent() {
       >
         Tukar Kawasan
       </button>
+
+      <button
+        type="button"
+        onClick={() => setUpgradeModalOpen(true)}
+        className="fixed top-16 right-4 bg-emerald-500 text-white px-3 py-1.5 rounded-md text-sm font-medium z-30 hover:bg-emerald-600"
+      >
+        Tukar Pelan
+      </button>
+
+      <UpgradeModal
+        open={upgradeModalOpen}
+        onClose={() => setUpgradeModalOpen(false)}
+        language={(state.config.language || 'ms') as 'ms' | 'en'}
+        currentTier={((state.config as any).tier || 'asas') as TierId}
+        onSelectTier={(targetTier) => {
+          const currentTier = (((state.config as any).tier || 'asas') as TierId);
+          const target = getUpgradeNavigation(currentTier, targetTier);
+          if (target.external) {
+            window.open(target.href, '_blank', 'noopener,noreferrer');
+          } else {
+            navigate(target.href);
+          }
+          setUpgradeModalOpen(false);
+        }}
+      />
 
       {state.prayerTimes && state.prayerTimeConfig && state.config.prayer_time_position !== 'hidden' && (
         <PrayerTimesOverlay

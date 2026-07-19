@@ -31,4 +31,20 @@ test.describe('TV Landing - Free Tier Discovery (US1)', () => {
     await expect(page.getByText(/Asas \(Free\)|Asas \(Percuma\)/)).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Gemilang' })).toBeVisible();
   });
+
+  test('shows FAQ section and allows expanding common questions', async ({ page }) => {
+    await expect(
+      page.getByRole('heading', { name: /Soalan Lazim|Frequently Asked Questions/ }),
+    ).toBeVisible();
+
+    const firstFaq = page
+      .getByText(/Apakah perbezaan antara Asas dan Maju\?|What's the difference between Asas and Maju\?/) 
+      .first();
+    await expect(firstFaq).toBeVisible();
+    await firstFaq.click();
+
+    await expect(
+      page.getByText(/Asas adalah percuma|Asas is free/, { exact: false }),
+    ).toBeVisible();
+  });
 });

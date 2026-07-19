@@ -2,7 +2,8 @@
  * Contract: JAKIM Zone Discovery
  */
 
-export type ZoneCode = `${Uppercase<string>}${Uppercase<string>}${Uppercase<string>}${number}${number}`;
+export type ZoneCode =
+  `${Uppercase<string>}${Uppercase<string>}${Uppercase<string>}${number}${number}`;
 
 export interface ZoneDTO {
   zone_code: string; // canonical key, e.g. JHR01
@@ -37,4 +38,6 @@ export interface GetZoneByCodeResponse {
  *   204 no mosques in zone
  *   400 invalid zone_code format
  *   404 zone not found
+ * FR-013 ownership note: canonical-zone additions/metadata drift are reconciled
+ * by scheduled sync and backfill paths before these endpoints are served.
  */

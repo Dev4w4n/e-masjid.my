@@ -17,7 +17,7 @@
 
 ## Decision 3: Prayer-time freshness strategy
 
-- Decision: Cache-first stale-while-revalidate on each display load with Asia/Kuala_Lumpur daily rollover.
+- Decision: FR-011 owns prayer-time freshness behavior: cache-first stale-while-revalidate on each display load with Asia/Kuala_Lumpur daily rollover.
 - Rationale: Fast UX with predictable daily refresh boundary and graceful degradation under upstream latency.
 - Alternatives considered:
   - Always-live fetch: rejected for outage sensitivity.
@@ -25,7 +25,7 @@
 
 ## Decision 4: Zone synchronization strategy
 
-- Decision: Scheduled zone sync plus backfill path (migration/admin import) for newly introduced zones.
+- Decision: FR-013 owns canonical-set drift reconciliation via scheduled zone sync plus backfill path (migration/admin import) for newly introduced zones or metadata changes.
 - Rationale: Covers both automated drift correction and operational recovery.
 - Alternatives considered:
   - Migration-only updates: rejected because it requires manual intervention for every JAKIM change.
@@ -56,7 +56,7 @@
 No unresolved `NEEDS CLARIFICATION` items remain for this feature.
 
 - Zone source of truth: official JAKIM `zone_code`.
-- Prayer-time update behavior: SWR + KL midnight rollover.
-- New zone handling: scheduled sync + backfill path.
+- Prayer-time update behavior (FR-011): SWR + KL midnight rollover.
+- New zone handling (FR-013): scheduled sync + backfill path.
 - Ownership boundary: package-first for business logic.
 - MVP population strategy: 58 canonical active zones, 58 Asas masjids, 1:1 mapping.

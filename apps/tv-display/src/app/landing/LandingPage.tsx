@@ -11,7 +11,9 @@ import { TierPackage } from '@masjid-suite/shared-types';
 import HeroSection from './HeroSection';
 import TierCardGrid from './TierCardGrid';
 import ZoneModal from './ZoneModal';
+import FAQSection from './FAQSection';
 import { patchZoneSessionState, readZoneSessionState } from '@/lib/zone-session-state';
+import { sendLandingAnalyticsEvent } from '@/lib/analytics-client';
 
 interface LandingPageProps {
   language?: 'ms' | 'en';
@@ -134,7 +136,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({ language = 'ms' }) => 
         }}
       >
         <Container maxWidth="lg">
-          {/* FAQ content would go here - Task T040+ */}
+          <FAQSection
+            language={language}
+            onFaqExpand={(faqId) => {
+              void sendLandingAnalyticsEvent({
+                event_name: 'faq_item_expand',
+                event_time: new Date().toISOString(),
+                session_id: 'anon-session',
+                actor_id: 'anonymous',
+                page_path: '/',
+                locale: language,
+                faq_id: faqId,
+              });
+            }}
+          />
         </Container>
       </Box>
 

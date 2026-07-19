@@ -106,12 +106,19 @@
 4. Route to `/display/[display-id]`.
 5. If none available, show no-data guidance with fallback CTA.
 
-### Prayer-Time Retrieval (SWR)
+### Prayer-Time Retrieval (SWR, FR-011)
 
 1. Read PrayerTimesCache by `(zone_code, today@Asia/Kuala_Lumpur)`.
 2. Serve cached payload immediately when available.
 3. Trigger background JAKIM refresh.
 4. Upsert refreshed payload and timestamp.
+
+### Canonical Registry Drift Reconciliation (FR-013)
+
+1. Compare canonical active zone set from `MALAYSIAN_ZONES` against persisted `JAKIMZone` rows.
+2. Detect additions/metadata changes and apply scheduled sync updates.
+3. Backfill one Asas auto-populated masjid + display mapping for newly introduced active zones.
+4. Keep existing-zone prayer-time freshness under FR-011 behavior.
 
 ### Upgrade Intent
 

@@ -44,7 +44,8 @@ Must-pass focus areas:
 - Canonical `zone_code` lookup and zone endpoint contract behavior.
 - Display routing by `display_id` contract.
 - Tier-gating checks (compile-time boundaries, RLS denial, runtime UI checks).
-- Prayer-time SWR fallback and KL-midnight rollover logic.
+- FR-011: prayer-time SWR fallback and KL-midnight rollover logic.
+- FR-013: canonical-set drift sync/backfill behavior for newly added or updated zone metadata.
 
 ## 4) Run tv-display locally
 

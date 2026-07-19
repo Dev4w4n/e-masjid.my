@@ -1,40 +1,37 @@
 # Implementation Plan: TV Landing Page with Tiered Package Marketing
 
-**Branch**: `007-tv-landing-tiers` | **Date**: 2026-07-18 | **Spec**: `/specs/007-tv-landing-tiers/spec.md`
+**Branch**: `007-tv-landing-tiers` | **Date**: 2026-07-20 | **Spec**: `/specs/007-tv-landing-tiers/spec.md`
 **Input**: Feature specification from `/specs/007-tv-landing-tiers/spec.md`
-
-**Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
 
 ## Summary
 
-Deliver a marketing-first TV landing flow with four tiers (Asas, Maju, Gemilang, Istimewa), zone discovery by official JAKIM `zone_code`, and no-login Asas entry. The solution is package-first: domain types and contracts in `packages/shared-types`, zone/tier business logic and prayer-time resiliency in `packages/supabase-client`, and UI composition in `apps/tv-display`.
+Deliver a bilingual TV landing and zone-discovery experience with four tier packages, canonical JAKIM `zone_code` routing, and deterministic Asas auto-population coverage. Requirement ownership is explicitly split: FR-011 governs prayer-time freshness behavior (official source, cache-first SWR, Asia/Kuala_Lumpur midnight rollover), while FR-013 governs canonical-set drift reconciliation (scheduled zone sync plus migration/admin backfill paths for new/changed canonical metadata).
 
 ## Technical Context
 
 **Language/Version**: TypeScript 5.2+, React 18+, Node.js >=18.0.0  
-**Primary Dependencies**: Material-UI v6, Vite build system, React Router v6, Zustand, Supabase JS client  
-**Storage**: Supabase PostgreSQL + RLS + realtime; prayer-time cache persisted in the existing `prayer_times` table and accessed through a package-owned SWR adapter in `packages/supabase-client`
-**Testing**: Vitest (unit), Playwright (E2E/contract), React Testing Library (component), SQL contract tests  
-**Target Platform**: Web (Cloudflare staging/production)  
+**Primary Dependencies**: Material-UI v6, React Router v6, Zustand, Vite  
+**Storage**: Supabase (PostgreSQL + Auth + Storage + Real-time)  
+**Testing**: Vitest (unit), Playwright (E2E), React Testing Library (components)  
+**Target Platform**: Web (Cloudflare deployment for staging/production)  
 **Project Type**: Monorepo (Turborepo + pnpm)  
-**Performance Goals**: Landing <=2s load, zone selection interaction <=500ms, cache-first prayer-times render  
-**Constraints**: WCAG 2.1 AA, bilingual ms/en content, explicit anonymous read-only RLS for Asas discovery, package-first boundaries  
-**Scale/Scope**: 58 canonical active JAKIM zones, exactly 58 auto-populated Asas masjids (1:1), four marketed tiers
-**Observability**: Landing analytics events are part of the planned contract surface so SC-010/SC-011 can be measured and reviewed in docs/tests
+**Performance Goals**: p95 LCP <= 2.0s on local baseline and staging; UI interactions <200ms  
+**Constraints**: WCAG 2.1 AA, multilingual ms/en, RLS multi-tenant security, package-first ownership  
+**Scale/Scope**: Canonical active baseline is 58 JAKIM zones with one Asas auto-populated masjid per zone (58 total)
 
 ## Constitution Check
 
 _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
-- [x] **Package-First Architecture**: Business logic is planned in `packages/supabase-client`; app layer remains presentation/composition.
-- [x] **Test-First Development**: Contract/component/service tests are planned before implementation tasks.
-- [x] **Database-First Development**: Supabase migration + SQL verification tests + RLS policies are included.
-- [x] **Monorepo Discipline**: pnpm and `pnpm run build:clean` are the prescribed build path.
-- [x] **Environment Strategy**: local/staging/production workflow remains intact.
-- [x] **Multilingual Support**: ms/en content required for tier cards, zone labels, FAQs, and CTAs.
-- [x] **Documentation**: Feature documentation update in `/docs/TV-LANDING-PAGE-TIERS.md` is included.
+- [x] **Package-First Architecture**: Business logic and policies live in package/services and Supabase layers; app layer composes UI and routing.
+- [x] **Test-First Development**: TDD sequencing is represented across tasks and contracts (unit, contract, E2E).
+- [x] **Database-First Development**: Migration + SQL verification + RLS policies are defined and tracked.
+- [x] **Monorepo Discipline**: `pnpm` and `pnpm run build:clean` are the required baseline commands.
+- [x] **Environment Strategy**: Local/staging/production execution and evidence flow are included.
+- [x] **Multilingual Support**: ms/en content, labels, and FAQ payloads are mandatory outputs.
+- [x] **Documentation**: `/docs/TV-LANDING-PAGE-TIERS.md` remains the release evidence target.
 
-Post-design re-check: PASS.
+Post-design re-check result: PASS. No constitutional violations were introduced by the FR-011/FR-013 boundary refinement.
 
 ## Project Structure
 
@@ -47,10 +44,6 @@ specs/007-tv-landing-tiers/
 ├── data-model.md
 ├── quickstart.md
 ├── contracts/
-│   ├── display-routing.contract.ts
-│   ├── jakim-zone.contract.ts
-│   ├── tier-package.contract.ts
-│   └── analytics-events.contract.ts
 └── tasks.md
 ```
 
@@ -58,56 +51,57 @@ specs/007-tv-landing-tiers/
 
 ```text
 packages/
-├── shared-types/
-│   └── src/types/tier.ts
-├── supabase-client/
-│   └── src/
-│       ├── services/zone-service.ts
-│       ├── services/tier-service.ts
-│       └── lib/zone-client.ts
+├── prayer-times/          # canonical MALAYSIAN_ZONES source + JAKIM integration
+├── supabase-client/       # zone service, zone-sync service, SWR fallback service
+└── shared-types/          # tier, zone, analytics shared contracts
+
 apps/
 └── tv-display/
-    └── src/
-        ├── app/landing/
-        ├── routes/AppRouter.tsx
-        ├── routes/LandingRoute.tsx
-        └── routes/DisplayRoute.tsx
+    ├── src/app/landing/   # landing UI, tier cards, zone modal, FAQ
+    └── src/routes/        # display routing and switch-zone flow
 
 supabase/
-├── migrations/
-│   └── 20260716000001_auto_populate_jakim_zones.sql
-├── functions/
-│   ├── zones-index/
-│   │   └── index.ts
-│   └── zones-by-code/
-│       └── index.ts
-└── tests/
-    └── verify_jakim_zones_migration.sql
+├── migrations/            # auto-population + analytics schema constraints
+└── functions/             # zones-index, zones-by-code, landing-analytics
 
 docs/
 └── TV-LANDING-PAGE-TIERS.md
 ```
 
-**Structure Decision**: Extend existing packages instead of creating a new feature package. This preserves package-first ownership while minimizing integration overhead in `apps/tv-display`.
+**Structure Decision**: Extend existing `packages/supabase-client`, `packages/shared-types`, and `packages/prayer-times` for domain behavior and canonical registry logic, while keeping `apps/tv-display` as a presentation/routing consumer. Use Supabase migrations and edge functions for persistence, synchronization paths, and analytics ingestion.
 
-## Phase 0: Research Decisions
+## Execution Phase Mapping
 
-See `/specs/007-tv-landing-tiers/research.md`.
+This plan defines scope, architecture, and requirement boundaries; `tasks.md` is the canonical execution ledger.
 
-## Phase 1: Design Outputs
+- Phase 1-2 (Foundation): shared contracts, migrations, canonical zone/tier services.
+- Phase 3-7 (User Stories): US1-US5 implementation and validation in priority order.
+- Phase 8 (Polish and cross-cutting): quality attributes, evidence capture, and release readiness.
 
-- Data model: `/specs/007-tv-landing-tiers/data-model.md`
-- Contracts: `/specs/007-tv-landing-tiers/contracts/`
-- Quickstart: `/specs/007-tv-landing-tiers/quickstart.md`
+For sequencing, ownership, and completion status, use `/specs/007-tv-landing-tiers/tasks.md`.
 
-## Post-Design Constitution Check
+## SC-009 Canonical FAQ Corpus
 
-- [x] Package-first boundaries preserved in artifacts.
-- [x] TDD-first sequencing represented in test and validation workflow.
-- [x] Database-first/RLS constraints represented in model/contracts.
-- [x] Monorepo/build rules represented in quickstart.
-- [x] Multilingual requirements preserved in data contracts and acceptance flow.
+Canonical source for SC-009 corpus and coverage mapping: `/specs/007-tv-landing-tiers/plan.md` (this section).
+
+Deterministic corpus (minimum 10 questions):
+
+1. What is the difference between Asas and Maju?
+2. What is the difference between Maju and Gemilang?
+3. What is the difference between Gemilang and Istimewa?
+4. Can we use more than one display screen?
+5. Is pricing charged per masjid or per screen?
+6. Is Asas free and does it require a credit card?
+7. How do payment methods and billing frequency work?
+8. What support channels are included for each tier?
+9. How do we upgrade from Asas to a paid tier?
+10. Can we keep existing settings/content after upgrading?
+
+Process-only governance:
+
+- Changes to this corpus must be made in this section before release evidence is generated.
+- SC-009 evidence tasks must map each corpus question to ms/en FAQ answers and record covered/not-covered status.
 
 ## Complexity Tracking
 
-No constitution deviations required. The tv-display shell now uses Vite + React Router v6, which matches the mandatory frontend stack.
+No constitution violations require exception handling for this planning pass.

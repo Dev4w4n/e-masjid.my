@@ -94,6 +94,7 @@ const TIER_PACKAGES: Record<TierId, TierPackage> = {
 export class TierPackageService implements ITierPackageService {
   private tierCache: Map<string, TierPackage | TierPackage[]> = new Map();
   private tierCacheTimeout: number = 3600000; // 1 hour in ms
+  private upgradeStateCache: Map<string, Record<string, unknown>> = new Map();
 
   /**
    * Fetch all tier packages
@@ -245,6 +246,18 @@ export class TierPackageService implements ITierPackageService {
    */
   clearCache(): void {
     this.tierCache.clear();
+  }
+
+  preserveTierState(masjidId: string, state: Record<string, unknown>): void {
+    this.upgradeStateCache.set(masjidId, { ...state });
+  }
+
+  restoreTierState(masjidId: string): Record<string, unknown> | null {
+    return this.upgradeStateCache.get(masjidId) ?? null;
+  }
+
+  rollbackTierChange(masjidId: string): void {
+    this.upgradeStateCache.delete(masjidId);
   }
 }
 
