@@ -1,0 +1,53 @@
+openapi: 3.0.3
+info:
+  title: Mapping Verification API Contract
+  version: 1.0.0
+  description: Contract for reporting generated masjid to display mapping integrity.
+paths:
+  /api/internal/mapping-verification/generated-masjids:
+    get:
+      summary: Get latest verification result for generated masjid-display mapping
+      responses:
+        "200":
+          description: Verification result available
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - generated_masjid_count
+                  - linked_display_count
+                  - violation_count
+                  - excluded_generated_masjid_ids
+                  - completed_at
+                properties:
+                  generated_masjid_count:
+                    type: integer
+                    minimum: 0
+                  linked_display_count:
+                    type: integer
+                    minimum: 0
+                  violation_count:
+                    type: integer
+                    minimum: 0
+                  excluded_generated_masjid_ids:
+                    type: array
+                    items:
+                      type: string
+                      format: uuid
+                  completed_at:
+                    type: string
+                    format: date-time
+        "503":
+          description: Verification unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [code, message]
+                properties:
+                  code:
+                    type: string
+                    enum: [VERIFICATION_UNAVAILABLE]
+                  message:
+                    type: string

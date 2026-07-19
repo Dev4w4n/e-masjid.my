@@ -16,9 +16,13 @@ import type {
 
 function getEnvironmentVariables() {
   const isBrowser = typeof window !== "undefined";
-  const nodeEnv =
-    (typeof process !== "undefined" && process.env && process.env.NODE_ENV) ||
-    undefined;
+  const safeProcessEnv =
+    typeof globalThis !== "undefined" &&
+    "process" in globalThis &&
+    (globalThis as any).process?.env
+      ? ((globalThis as any).process.env as Record<string, string | undefined>)
+      : undefined;
+  const nodeEnv = safeProcessEnv?.NODE_ENV;
   const isTest = nodeEnv === "test";
 
   let SUPABASE_URL: string | undefined;
@@ -37,26 +41,26 @@ function getEnvironmentVariables() {
     }
 
     // Check Next.js environment variables (NEXT_PUBLIC_ prefix)
-    if (!SUPABASE_URL && typeof process !== "undefined") {
-      SUPABASE_URL = process.env?.NEXT_PUBLIC_SUPABASE_URL;
+    if (!SUPABASE_URL && safeProcessEnv) {
+      SUPABASE_URL = safeProcessEnv.NEXT_PUBLIC_SUPABASE_URL;
     }
-    if (!SUPABASE_ANON_KEY && typeof process !== "undefined") {
-      SUPABASE_ANON_KEY = process.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!SUPABASE_ANON_KEY && safeProcessEnv) {
+      SUPABASE_ANON_KEY = safeProcessEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     }
   }
 
   // Fallback for Node.js/test environments
-  if (!SUPABASE_URL) {
+  if (!SUPABASE_URL && safeProcessEnv) {
     SUPABASE_URL =
-      process.env?.VITE_SUPABASE_URL ||
-      process.env?.NEXT_PUBLIC_SUPABASE_URL ||
-      process.env?.SUPABASE_URL;
+      safeProcessEnv.VITE_SUPABASE_URL ||
+      safeProcessEnv.NEXT_PUBLIC_SUPABASE_URL ||
+      safeProcessEnv.SUPABASE_URL;
   }
-  if (!SUPABASE_ANON_KEY) {
+  if (!SUPABASE_ANON_KEY && safeProcessEnv) {
     SUPABASE_ANON_KEY =
-      process.env?.VITE_SUPABASE_ANON_KEY ||
-      process.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-      process.env?.SUPABASE_ANON_KEY;
+      safeProcessEnv.VITE_SUPABASE_ANON_KEY ||
+      safeProcessEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+      safeProcessEnv.SUPABASE_ANON_KEY;
   }
 
   return { SUPABASE_URL, SUPABASE_ANON_KEY, isTest };
@@ -72,7 +76,7 @@ const finalKey = SUPABASE_ANON_KEY || (isTest ? testKey : "");
 
 if (!finalUrl || !finalKey) {
   throw new Error(
-    "Missing Supabase environment variables. Please set SUPABASE_URL and SUPABASE_ANON_KEY"
+    "Missing Supabase environment variables. Please set SUPABASE_URL and SUPABASE_ANON_KEY",
   );
 }
 
@@ -96,7 +100,7 @@ if (!finalUrl || !finalKey) {
 const noopLock = async <R>(
   _name: string,
   _acquireTimeout: number,
-  fn: () => Promise<R>
+  fn: () => Promise<R>,
 ): Promise<R> => {
   // Simply execute the function without any locking
   // This prevents hanging but may cause minor race conditions across tabs
@@ -127,7 +131,7 @@ export const supabase: SupabaseClient<Database> = createClient<Database>(
         eventsPerSecond: 10,
       },
     },
-  }
+  },
 );
 
 /**
@@ -146,7 +150,7 @@ export class AuthService {
   async signUp(
     email: string,
     password: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>,
   ) {
     const signUpData: any = {
       email,
@@ -279,7 +283,7 @@ export class AuthService {
    * Listen to auth state changes
    */
   onAuthStateChange(
-    callback: (event: string, session: Session | null) => void
+    callback: (event: string, session: Session | null) => void,
   ) {
     return this.client.auth.onAuthStateChange(callback);
   }
@@ -307,7 +311,7 @@ export class DatabaseService {
    */
   async rpc<T extends keyof Database["public"]["Functions"]>(
     functionName: T,
-    params?: Database["public"]["Functions"][T]["Args"]
+    params?: Database["public"]["Functions"][T]["Args"],
   ): Promise<Database["public"]["Functions"][T]["Returns"]> {
     const { data, error } = await this.client.rpc(functionName as any, params);
 
@@ -325,7 +329,7 @@ export class DatabaseService {
     tableName: T,
     callback: (payload: any) => void,
     event: "INSERT" | "UPDATE" | "DELETE" | "*" = "*",
-    filter?: string
+    filter?: string,
   ) {
     const channel = this.client
       .channel(`${String(tableName)}-changes`)
@@ -337,7 +341,7 @@ export class DatabaseService {
           table: String(tableName),
           filter,
         },
-        callback
+        callback,
       )
       .subscribe();
 
@@ -351,7 +355,7 @@ export class DatabaseService {
    */
   async count<T extends keyof Database["public"]["Tables"]>(
     tableName: T,
-    filter?: any
+    filter?: any,
   ): Promise<number> {
     let query = this.client
       .from(tableName as any)
@@ -403,7 +407,7 @@ export class ProfileService {
    * Create or update profile
    */
   async upsertProfile(
-    profile: Database["public"]["Tables"]["profiles"]["Insert"]
+    profile: Database["public"]["Tables"]["profiles"]["Insert"],
   ) {
     const { data, error } = await this.db
       .table("profiles")
@@ -439,7 +443,7 @@ export class ProfileService {
    * Add profile address
    */
   async addProfileAddress(
-    address: Database["public"]["Tables"]["profile_addresses"]["Insert"]
+    address: Database["public"]["Tables"]["profile_addresses"]["Insert"],
   ) {
     const { data, error } = await this.db
       .table("profile_addresses")
@@ -503,7 +507,7 @@ export class MasjidService {
       masjids.map(async (masjid: Masjid) => {
         const admins = await this.getMasjidAdmins(masjid.id);
         return { ...masjid, admins: admins || [] };
-      })
+      }),
     );
 
     return masjidsWithAdmins;
@@ -548,7 +552,7 @@ export class MasjidService {
    * Create masjid
    */
   async createMasjid(
-    masjid: Database["public"]["Tables"]["masjids"]["Insert"]
+    masjid: Database["public"]["Tables"]["masjids"]["Insert"],
   ) {
     // Get the current authenticated user via the db's client
     const {
@@ -583,7 +587,7 @@ export class MasjidService {
    */
   async updateMasjid(
     masjidId: string,
-    updates: Database["public"]["Tables"]["masjids"]["Update"]
+    updates: Database["public"]["Tables"]["masjids"]["Update"],
   ) {
     const { data, error } = await this.db
       .table("masjids")
@@ -656,7 +660,7 @@ export class MasjidService {
    * Create or update prayer time configuration
    */
   async upsertPrayerConfig(
-    config: Database["public"]["Tables"]["prayer_time_config"]["Insert"]
+    config: Database["public"]["Tables"]["prayer_time_config"]["Insert"],
   ) {
     const { data, error } = await this.db
       .table("prayer_time_config")
@@ -693,7 +697,7 @@ export class MasjidService {
         address->>'postcode' as postcode,
         address->>'city' as city,
         address->>'state' as state
-      `
+      `,
       )
       .eq("status", "active")
       .order("name");
@@ -722,7 +726,7 @@ export class MasjidService {
         address->>'postcode' as postcode,
         address->>'city' as city,
         address->>'state' as state
-      `
+      `,
       )
       .in("id", masjidIds);
 
@@ -737,7 +741,7 @@ export class MasjidService {
    * Get masjid admins
    */
   async getMasjidAdmins(
-    masjidId: string
+    masjidId: string,
   ): Promise<
     Database["public"]["Functions"]["get_masjid_admin_list"]["Returns"]
   > {
@@ -752,7 +756,7 @@ export class MasjidService {
    * Assign admin to masjid
    */
   async assignAdmin(
-    assignment: Database["public"]["Tables"]["masjid_admins"]["Insert"]
+    assignment: Database["public"]["Tables"]["masjid_admins"]["Insert"],
   ): Promise<Database["public"]["Tables"]["masjid_admins"]["Row"]> {
     const { data, error } = await this.db
       .table("masjid_admins")
@@ -793,7 +797,39 @@ export {
 export {
   StatisticsService,
   type DashboardStatistics,
+  type MappingVerificationResult,
 } from "./services/statistics";
+
+// Zone client for landing page discovery flows (Feature 007)
+export {
+  ZoneClient,
+  fetchAllZones,
+  selectZone,
+  isValidZoneCode,
+  clearZoneCache,
+} from "./lib/zone-client";
+
+// Zone selection service for TV landing tiers (Feature 007)
+export {
+  ZoneSelectionService,
+  type IZoneSelectionService,
+} from "./services/zone-service";
+
+// Tier package service for TV landing tiers (Feature 007)
+export {
+  TierPackageService,
+  tierPackageService,
+} from "./services/tier-service";
+
+// Zone sync service for JAKIM zone maintenance (Feature 007, T051)
+export { ZoneSyncService, zoneSyncService } from "./services/zone-sync";
+
+// JAKIM API fallback strategy for prayer times (Feature 007, T052)
+export {
+  JAKIMFallbackService,
+  jakimFallbackService,
+  JAKIMUnavailableMessage,
+} from "./services/jakim-fallback";
 
 // Re-export types for convenience
 export type { Database } from "@masjid-suite/shared-types";

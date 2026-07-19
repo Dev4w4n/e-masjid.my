@@ -1,0 +1,46 @@
+{
+  "faqs": [
+    {
+      "id": "tier-diff-asas-maju",
+      "question": "What's the difference between Asas and Maju?",
+      "answer": "Asas is free with no sign-up. Maju is a managed service where we handle content updates via WhatsApp.",
+      "category": "tiers",
+      "display_order": 1
+    },
+    {
+      "id": "multiple-screens",
+      "question": "Can I add more than one screen?",
+      "answer": "Yes, with Gemilang and Istimewa. Asas and Maju are limited to 1 screen each.",
+      "category": "screens",
+      "display_order": 2
+    },
+    {
+      "id": "pricing-per-screen",
+      "question": "Is pricing per screen?",
+      "answer": "No, pricing is per-mosque, not per-screen. Gemilang offers unlimited screens at the same price.",
+      "category": "pricing",
+      "display_order": 3
+    },
+    {
+      "id": "payment-methods",
+      "question": "How do you handle payments?",
+      "answer": "We accept credit cards, FPX, and bank transfers. Contact us via WhatsApp to arrange payment.",
+      "category": "payment",
+      "display_order": 4
+    },
+    {
+      "id": "support-included",
+      "question": "Is support included?",
+      "answer": "Asas: community support. Maju: email support. Gemilang/Istimewa: phone + WhatsApp support with <2 hour response time.",
+      "category": "support",
+      "display_order": 5
+    },
+    {
+      "id": "free-trial",
+      "question": "Can I try it first?",
+      "answer": "Yes, Asas is free forever. No time limit, no credit card required. Try Asas today!",
+      "category": "trial",
+      "display_order": 6
+    }
+  ]
+}

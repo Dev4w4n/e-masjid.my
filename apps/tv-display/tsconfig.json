@@ -14,11 +14,6 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
     /* Path mapping for workspace packages */
     "baseUrl": ".",
     "paths": {
@@ -34,10 +29,9 @@
     }
   },
   "include": [
-    "next-env.d.ts",
+    "src/vite-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

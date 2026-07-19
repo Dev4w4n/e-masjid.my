@@ -1,8 +1,8 @@
 // Malaysian address formatting and utilities
 
-import type { MalaysianState, ProfileAddress } from "./types.js";
-import type { MasjidAddress } from "./masjid.js";
-import { malaysianStates } from "./constants.js";
+import type { MalaysianState, ProfileAddress } from "./app-types";
+import type { MasjidAddress } from "./masjid";
+import { malaysianStates } from "./constants";
 
 // Type for new state names only (without deprecated names)
 type CurrentMalaysianState = (typeof malaysianStates)[number];
@@ -20,7 +20,7 @@ export const STATE_MAPPING: Record<string, CurrentMalaysianState> = {
 
 // Normalize state name to current names (converts old names to new names)
 export function normalizeStateName(
-  state: string
+  state: string,
 ): CurrentMalaysianState | null {
   // Check mapping first (this handles old names like "Penang" -> "Pulau Pinang")
   if (STATE_MAPPING[state]) {
@@ -75,14 +75,14 @@ export function formatAddress(address: ProfileAddress | MasjidAddress): string {
 
 // Format address for single line display
 export function formatAddressSingleLine(
-  address: ProfileAddress | MasjidAddress
+  address: ProfileAddress | MasjidAddress,
 ): string {
   return formatAddress(address);
 }
 
 // Format address for multi-line display
 export function formatAddressMultiLine(
-  address: ProfileAddress | MasjidAddress
+  address: ProfileAddress | MasjidAddress,
 ): string[] {
   const lines: string[] = [];
 
@@ -197,7 +197,7 @@ export const POSTCODE_TO_STATE: Record<string, CurrentMalaysianState> = {
 
 // Guess state from postal code
 export function guessStateFromPostcode(
-  postcode: string
+  postcode: string,
 ): CurrentMalaysianState | null {
   if (postcode.length !== 5) {
     return null;
@@ -210,7 +210,7 @@ export function guessStateFromPostcode(
 // Validate postal code against state
 export function isPostcodeValidForState(
   postcode: string,
-  state: MalaysianState
+  state: MalaysianState,
 ): boolean {
   const guessedState = guessStateFromPostcode(postcode);
 
@@ -292,7 +292,7 @@ export const STATE_CITIES: Record<CurrentMalaysianState, string[]> = {
 // Address validation helpers
 export function isValidCityForState(
   city: string,
-  state: MalaysianState
+  state: MalaysianState,
 ): boolean {
   // Normalize state to current name
   const normalizedState = normalizeStateName(state);
@@ -303,13 +303,13 @@ export function isValidCityForState(
 
   const normalizedCity = city.toLowerCase();
   return cities.some((validCity: string) =>
-    validCity.toLowerCase().includes(normalizedCity)
+    validCity.toLowerCase().includes(normalizedCity),
   );
 }
 
 // Convert ProfileAddress to MasjidAddress format
 export function profileAddressToMasjidAddress(
-  address: ProfileAddress
+  address: ProfileAddress,
 ): MasjidAddress {
   const normalizedState = normalizeStateName(address.state);
   if (!normalizedState) {
@@ -335,7 +335,7 @@ export function profileAddressToMasjidAddress(
 export function masjidAddressToProfileAddress(
   address: MasjidAddress,
   profileId: string,
-  addressType: "home" | "work" | "other" = "home"
+  addressType: "home" | "work" | "other" = "home",
 ): Omit<ProfileAddress, "id" | "created_at" | "updated_at"> {
   return {
     profile_id: profileId,

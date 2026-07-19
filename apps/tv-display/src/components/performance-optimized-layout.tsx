@@ -238,7 +238,7 @@ export const PerformanceOptimizedLayout: React.FC<PerformanceOptimizedLayoutProp
           <Suspense fallback={null}>
             <StatusIndicator 
               displayId={displayId}
-              showDebugInfo={process.env.NODE_ENV === 'development'}
+              showDebugInfo={import.meta.env.DEV}
               autoRefresh={true}
               refreshInterval={300}
             />
@@ -246,7 +246,7 @@ export const PerformanceOptimizedLayout: React.FC<PerformanceOptimizedLayoutProp
         </div>
 
         {/* Performance overlay for development */}
-        {process.env.NODE_ENV === 'development' && (
+        {import.meta.env.DEV && (
           <PerformanceOverlay performance={performance} />
         )}
 

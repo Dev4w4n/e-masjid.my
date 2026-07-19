@@ -1,0 +1,46 @@
+{
+  "faqs": [
+    {
+      "id": "tier-diff-asas-maju",
+      "question": "Apakah perbezaan antara Asas dan Maju?",
+      "answer": "Asas adalah percuma, tanpa pendaftaran. Maju adalah perkhidmatan terurus di mana kami mengendalikan pembaruan kandungan melalui WhatsApp.",
+      "category": "tiers",
+      "display_order": 1
+    },
+    {
+      "id": "multiple-screens",
+      "question": "Bolehkah saya menambah lebih dari satu skrin paparan?",
+      "answer": "Ya, dengan Gemilang dan Istimewa. Asas dan Maju adalah terbatas pada 1 skrin sahaja.",
+      "category": "screens",
+      "display_order": 2
+    },
+    {
+      "id": "pricing-per-screen",
+      "question": "Adakah harga dikira per skrin?",
+      "answer": "Tidak, harga adalah per-masjid, bukan per-skrin. Gemilang menawarkan skrin tanpa had dalam harga yang sama.",
+      "category": "pricing",
+      "display_order": 3
+    },
+    {
+      "id": "payment-methods",
+      "question": "Bagaimana cara pembayaran?",
+      "answer": "Kami menerima kad kredit, FPX, dan pemindahan bank. Pengguna boleh menghubungi kami melalui WhatsApp untuk mengatur pembayaran.",
+      "category": "payment",
+      "display_order": 4
+    },
+    {
+      "id": "support-included",
+      "question": "Apakah termasuk sokongan?",
+      "answer": "Asas: sokongan komuniti. Maju: sokongan e-mel. Gemilang/Istimewa: sokongan telefon + WhatsApp dengan masa tindak balas <2 jam.",
+      "category": "support",
+      "display_order": 5
+    },
+    {
+      "id": "free-trial",
+      "question": "Bolehkah saya mencuba terlebih dahulu?",
+      "answer": "Ya, Asas adalah percuma selamanya. Tiada had masa, tiada kad kredit diperlukan. Cuba Asas hari ini!",
+      "category": "trial",
+      "display_order": 6
+    }
+  ]
+}

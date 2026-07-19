@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+.yarn/
+.pnp
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Coverage
+coverage/
+
+# Generated files
+*.min.js
+*.min.css
+
+# Compiled files
+*.o
+*.so
+
+# Package manager locks
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Turborepo
+.turbo/
+
+# Database
+.supabase/
+
+# Test outputs
+.nyc_output/
+*.lcov

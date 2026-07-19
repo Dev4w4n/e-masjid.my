@@ -95,6 +95,8 @@ temp/
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
+*.tmp
 *.suo
 *.ntvs*
 *.njsproj

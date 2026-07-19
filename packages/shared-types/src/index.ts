@@ -1,7 +1,8 @@
 // Barrel exports for @masjid-suite/shared-types package
 
 export * from "./database";
-export * from "./types";
+export * from "./app-types"; // Application types (database schema types)
+export * from "./types"; // Feature 007 tier types (re-exports from ./types/tier)
 export * from "./validation";
 export * from "./address";
 export * from "./constants";
@@ -23,8 +24,6 @@ export {
 } from "./validation";
 export * from "./tv-display";
 export * from "./mock-data";
-export * from "./e2e-test-helpers";
-export * from "./types";
 export * from "./masjid";
 // ContentItem types (avoid conflicts with api-responses.ts)
 export type {

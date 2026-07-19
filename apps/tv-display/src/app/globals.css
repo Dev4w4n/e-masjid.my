@@ -24,6 +24,12 @@
     font-family: system-ui, -apple-system, sans-serif;
     overflow: hidden; /* Prevent scrolling on TV displays */
   }
+
+  body.landing-scroll {
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: #0b1220;
+  }
   
   /* Ensure all text is readable from TV viewing distance */
   h1, h2, h3, h4, h5, h6 {

@@ -9,6 +9,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { DisplayContent, ContentType } from '@masjid-suite/shared-types';
+import { supabase } from '@masjid-suite/supabase-client';
 import ContentViewer from './ContentViewer';
 import QRCodeOverlay from './QRCodeOverlay';
 
@@ -40,6 +41,17 @@ interface ContentState {
   lastFetch: Date | null;
 }
 
+function parseActiveContentFromApiPayload(payload: any): DisplayContentWithSponsor[] {
+  const sourceItems = Array.isArray(payload?.data) ? payload.data : [];
+
+  return sourceItems.filter((item: DisplayContent) => {
+    const now = new Date();
+    const startDate = new Date(item.start_date);
+    const endDate = new Date(item.end_date);
+    return startDate <= now && now <= endDate && item.status === 'active';
+  });
+}
+
 export function ContentCarousel({
   displayId,
   config,
@@ -64,28 +76,66 @@ export function ContentCarousel({
   const fetchContent = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, isLoading: true, error: null }));
-      
-      // Add cache-busting timestamp to ensure fresh data
-      const response = await fetch(`/api/displays/${displayId}/content?status=active&limit=${config.maxContentItems}&t=${Date.now()}`, {
-        cache: 'no-store'
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch content: ${response.statusText}`);
-      }
 
-      const data = await response.json();
-      
-      if (data.error) {
-        throw new Error(data.error.message || 'Failed to fetch content');
-      }
+      let activeContent: DisplayContentWithSponsor[] = [];
 
-      const activeContent = data.data.filter((item: DisplayContent) => {
-        const now = new Date();
-        const startDate = new Date(item.start_date);
-        const endDate = new Date(item.end_date);
-        return startDate <= now && now <= endDate && item.status === 'active';
-      });
+      try {
+        const response = await fetch(`/api/displays/${displayId}/content?status=active&limit=${config.maxContentItems}&t=${Date.now()}`, {
+          cache: 'no-store'
+        });
+
+        const text = await response.text();
+        if (text.trim().startsWith('<!doctype') || text.trim().startsWith('<html')) {
+          throw new Error('Display content API returned HTML fallback');
+        }
+
+        const data = JSON.parse(text);
+        if (data?.error) {
+          throw new Error(data.error.message || 'Failed to fetch content');
+        }
+
+        activeContent = parseActiveContentFromApiPayload(data);
+      } catch (apiError) {
+        console.warn('[ContentCarousel] Content API failed, using Supabase fallback:', apiError);
+
+        const { data: fallbackContent, error: fallbackError } = await supabase
+          .from('display_content')
+          .select(`
+            *,
+            display_content_assignments!inner (
+              display_id,
+              carousel_duration,
+              transition_type,
+              image_display_mode,
+              display_order
+            )
+          `)
+          .eq('display_content_assignments.display_id', displayId)
+          .eq('status', 'active')
+          .range(0, config.maxContentItems - 1);
+
+        if (fallbackError) {
+          throw new Error(fallbackError.message);
+        }
+
+        const transformedFallbackContent = (fallbackContent || []).map((item: any) => {
+          const assignment = Array.isArray(item.display_content_assignments)
+            ? item.display_content_assignments[0]
+            : item.display_content_assignments;
+
+          return {
+            ...item,
+            ...(assignment && {
+              carousel_duration: assignment.carousel_duration,
+              transition_type: assignment.transition_type,
+              image_display_mode: assignment.image_display_mode,
+              display_order: assignment.display_order,
+            }),
+          } as DisplayContentWithSponsor;
+        });
+
+        activeContent = parseActiveContentFromApiPayload({ data: transformedFallbackContent });
+      }
 
       setState(prev => ({
         ...prev,

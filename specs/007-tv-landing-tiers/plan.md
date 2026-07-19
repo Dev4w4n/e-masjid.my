@@ -1,43 +1,40 @@
 # Implementation Plan: TV Landing Page with Tiered Package Marketing
 
-**Branch**: `007-tv-landing-tiers` | **Date**: 2026-07-16 | **Spec**: [spec.md](spec.md)
+**Branch**: `007-tv-landing-tiers` | **Date**: 2026-07-18 | **Spec**: `/specs/007-tv-landing-tiers/spec.md`
 **Input**: Feature specification from `/specs/007-tv-landing-tiers/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
 
 ## Summary
 
-Transform the TV display landing page into a marketing-driven tier package showcase with zone-based discovery. The landing page will feature 4 tiers (Asas/Maju/Gemilang/Istimewa) with clear feature comparison, pricing, and CTAs. A "Cari kawasan anda" (Find Your Zone) modal enables users to discover their local mosque by selecting from pre-populated JAKIM zones, routing to live displays for free Asas tier entry point. Database auto-population seeds all Malaysia JAKIM zones with at least one mosque per zone, enabling zero-friction zone selection and immediate access to prayer times without login. FAQ section reduces support load by answering common questions about tiers, pricing, screens, and support.
+Deliver a marketing-first TV landing flow with four tiers (Asas, Maju, Gemilang, Istimewa), zone discovery by official JAKIM `zone_code`, and no-login Asas entry. The solution is package-first: domain types and contracts in `packages/shared-types`, zone/tier business logic and prayer-time resiliency in `packages/supabase-client`, and UI composition in `apps/tv-display`.
 
 ## Technical Context
 
-<!--
-  Open E Masjid project defaults - customize only where feature diverges
--->
-
-**Language/Version**: TypeScript 5.2+, React 18+, Node.js >=18.0.0
-**Primary Dependencies**: Material-UI v6, React Router v6, Zustand, Vite
-**Storage**: Supabase (PostgreSQL + Auth + Storage + Real-time)
-**Testing**: Vitest (unit), Playwright (E2E), React Testing Library (components)
-**Target Platform**: Web (Cloudflare deployment for staging/production)
-**Project Type**: Monorepo (Turborepo + pnpm)
-**Performance Goals**: Landing page <2s load, zone selection modal <500ms, prayer times accurate to JAKIM official schedule
-**Constraints**: WCAG 2.1 AA compliance, multilingual (Bahasa Malaysia/English), RLS multi-tenant security, anonymous user access (no auth required for Asas tier)
-**Scale/Scope**: Initial seed: 1-3 mosques per JAKIM zone (16+ zones = 50+ entries). Growth path: up to 50+ mosques per zone as adoption increases. No hard user limits; focus on landing page performance and zone discovery UX.
+**Language/Version**: TypeScript 5.2+, React 18+, Node.js >=18.0.0  
+**Primary Dependencies**: Material-UI v6, Vite build system, React Router v6, Zustand, Supabase JS client  
+**Storage**: Supabase PostgreSQL + RLS + realtime; prayer-time cache persisted in the existing `prayer_times` table and accessed through a package-owned SWR adapter in `packages/supabase-client`
+**Testing**: Vitest (unit), Playwright (E2E/contract), React Testing Library (component), SQL contract tests  
+**Target Platform**: Web (Cloudflare staging/production)  
+**Project Type**: Monorepo (Turborepo + pnpm)  
+**Performance Goals**: Landing <=2s load, zone selection interaction <=500ms, cache-first prayer-times render  
+**Constraints**: WCAG 2.1 AA, bilingual ms/en content, explicit anonymous read-only RLS for Asas discovery, package-first boundaries  
+**Scale/Scope**: 58 canonical active JAKIM zones, exactly 58 auto-populated Asas masjids (1:1), four marketed tiers
+**Observability**: Landing analytics events are part of the planned contract surface so SC-010/SC-011 can be measured and reviewed in docs/tests
 
 ## Constitution Check
 
 _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
-- [x] **Package-First Architecture**: Business logic in `shared-types`, `supabase-client` extensions; landing page components in `tv-display` app. Zone logic in `tv-display` services (or dedicated `tv-packages` if complexity grows).
-- [x] **Test-First Development**: TDD approach planned for all services (zone selection, tier display, FAQ logic). Unit tests for zone filtering/validation, E2E for zone selection flow and landing page navigation.
-- [x] **Database-First Development**: New Supabase migration (0XX_auto_populate_jakim_zones.sql) seeds masjid table with all JAKIM zones. RLS policies ensure anonymous read access for Asas tier masjids. No authentication required for zone selection.
-- [x] **Monorepo Discipline**: Uses pnpm workspace. Build order: shared-types → supabase-client → ui-components → tv-display. After changes, `pnpm run build:clean`.
-- [x] **Environment Strategy**: Local Supabase runs seed migration. Staging/Production use migration via Supabase CLI. Environment variables manage JAKIM API endpoint and zone list source.
-- [x] **Multilingual Support**: All tier descriptions, zone names, FAQs, CTAs localized in Bahasa Malaysia/English. i18n integration for dynamic language switching.
-- [x] **Documentation**: Feature documentation in `/docs/TV-LANDING-PAGE-TIERS.md` covering setup, zone management, tier upgrade flow, and FAQ maintenance.
+- [x] **Package-First Architecture**: Business logic is planned in `packages/supabase-client`; app layer remains presentation/composition.
+- [x] **Test-First Development**: Contract/component/service tests are planned before implementation tasks.
+- [x] **Database-First Development**: Supabase migration + SQL verification tests + RLS policies are included.
+- [x] **Monorepo Discipline**: pnpm and `pnpm run build:clean` are the prescribed build path.
+- [x] **Environment Strategy**: local/staging/production workflow remains intact.
+- [x] **Multilingual Support**: ms/en content required for tier cards, zone labels, FAQs, and CTAs.
+- [x] **Documentation**: Feature documentation update in `/docs/TV-LANDING-PAGE-TIERS.md` is included.
 
-_No violations. Feature fully aligns with constitution._
+Post-design re-check: PASS.
 
 ## Project Structure
 
@@ -45,70 +42,72 @@ _No violations. Feature fully aligns with constitution._
 
 ```text
 specs/007-tv-landing-tiers/
-├── plan.md              # This file (CURRENT - /speckit.plan output)
-├── research.md          # Phase 0 output (generated by /speckit.plan)
-├── data-model.md        # Phase 1 output (generated by /speckit.plan)
-├── quickstart.md        # Phase 1 output (generated by /speckit.plan)
-├── contracts/           # Phase 1 output (generated by /speckit.plan)
-│   ├── tier-package.contract.ts
+├── plan.md
+├── research.md
+├── data-model.md
+├── quickstart.md
+├── contracts/
+│   ├── display-routing.contract.ts
 │   ├── jakim-zone.contract.ts
-│   └── display-routing.contract.ts
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+│   ├── tier-package.contract.ts
+│   └── analytics-events.contract.ts
+└── tasks.md
 ```
 
 ### Source Code (repository root)
 
 ```text
-# Monorepo structure (Open E Masjid) - TV Landing Page feature
 packages/
-├── shared-types/       # EXTEND: Add TierPackage, JAKIMZone, DisplayRoute types
+├── shared-types/
+│   └── src/types/tier.ts
+├── supabase-client/
 │   └── src/
-│       └── types/tier.ts (NEW)
-├── supabase-client/    # EXTEND: Add zone selection, tier fetching services
-│   └── src/
-│       └── services/
-│           └── zone-service.ts (NEW)
-│           └── tier-service.ts (NEW)
-└── ui-components/      # EXTEND: Add TierCard, ZoneModal, FAQ components (optional if large)
-
+│       ├── services/zone-service.ts
+│       ├── services/tier-service.ts
+│       └── lib/zone-client.ts
 apps/
-├── tv-display/        # MAIN: Landing page redesign + zone integration
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── page.tsx          # EXISTING: Redesign with tiers
-│   │   │   ├── landing/          # NEW: Landing page sections
-│   │   │   │   ├── TierSection.tsx
-│   │   │   │   ├── ZoneModal.tsx
-│   │   │   │   ├── FAQSection.tsx
-│   │   │   │   └── HeroSection.tsx
-│   │   │   └── api/
-│   │   │       └── zones/        # NEW: Zone selection endpoint
-│   │   │           └── route.ts
-│   │   ├── lib/
-│   │   │   └── zone-client.ts    # NEW: Zone selection client logic
-│   │   └── tests/                # NEW: E2E and unit tests
-│   │       ├── landing-page.spec.ts
-│   │       └── zone-selection.spec.ts
+└── tv-display/
+    └── src/
+        ├── app/landing/
+        ├── routes/AppRouter.tsx
+        ├── routes/LandingRoute.tsx
+        └── routes/DisplayRoute.tsx
 
 supabase/
-└── migrations/
-    └── 0XX_auto_populate_jakim_zones.sql  # NEW: Seed data migration
+├── migrations/
+│   └── 20260716000001_auto_populate_jakim_zones.sql
+├── functions/
+│   ├── zones-index/
+│   │   └── index.ts
+│   └── zones-by-code/
+│       └── index.ts
+└── tests/
+    └── verify_jakim_zones_migration.sql
 
 docs/
-└── TV-LANDING-PAGE-TIERS.md      # NEW: Feature documentation
+└── TV-LANDING-PAGE-TIERS.md
 ```
 
-**Structure Decision**:
+**Structure Decision**: Extend existing packages instead of creating a new feature package. This preserves package-first ownership while minimizing integration overhead in `apps/tv-display`.
 
-- **shared-types**: Add TierPackage, JAKIMZone enums and interfaces for zone codes (reference hub app JAKIM zone implementation)
-- **supabase-client**: Extend with zone-service (fetch all zones, get masjids by zone) and tier-service (fetch tier metadata)
-- **tv-display app**: Main implementation hub. Landing page redesign with TierCard components, ZoneModal for zone selection, FAQSection for FAQ accordion. Zone selection logic in lib/zone-client.ts. API route for `/api/zones` to support zone filtering if needed.
-- **Database**: New migration auto-populates all Malaysia JAKIM zones with 1-3 representative mosques per zone. Reference hub app for official JAKIM zone codes (e.g., "Johor", "Kedah", "Negeri Sembilan", etc.).
+## Phase 0: Research Decisions
+
+See `/specs/007-tv-landing-tiers/research.md`.
+
+## Phase 1: Design Outputs
+
+- Data model: `/specs/007-tv-landing-tiers/data-model.md`
+- Contracts: `/specs/007-tv-landing-tiers/contracts/`
+- Quickstart: `/specs/007-tv-landing-tiers/quickstart.md`
+
+## Post-Design Constitution Check
+
+- [x] Package-first boundaries preserved in artifacts.
+- [x] TDD-first sequencing represented in test and validation workflow.
+- [x] Database-first/RLS constraints represented in model/contracts.
+- [x] Monorepo/build rules represented in quickstart.
+- [x] Multilingual requirements preserved in data contracts and acceptance flow.
 
 ## Complexity Tracking
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-| --------- | ---------- | ------------------------------------ |
-| None      | N/A        | N/A                                  |
-
-_All constitutional requirements are met without exception._
+No constitution deviations required. The tv-display shell now uses Vite + React Router v6, which matches the mandatory frontend stack.
