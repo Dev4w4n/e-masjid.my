@@ -425,40 +425,52 @@ function Profile() {
                     <Controller
                       name="homeMasjidId"
                       control={control}
-                      render={({ field }) => (
-                        <FormControl
-                          fullWidth
-                          disabled={isLoading || masjidsLoading}
-                        >
-                          <InputLabel>Home Masjid (Optional)</InputLabel>
-                          <Select {...field} label="Home Masjid (Optional)">
-                            <MenuItem value="">None</MenuItem>
-                            {masjids.map((masjid) => (
-                              <MenuItem key={masjid.id} value={masjid.id}>
-                                {masjid.name} - {masjid.address?.city},{" "}
-                                {masjid.address?.state}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                          {masjidsLoading && (
-                            <Box
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                mt: 1,
-                              }}
+                      render={({ field }) => {
+                        const selectedHomeMasjidId =
+                          field.value &&
+                          masjids.some((masjid) => masjid.id === field.value)
+                            ? field.value
+                            : "";
+
+                        return (
+                          <FormControl
+                            fullWidth
+                            disabled={isLoading || masjidsLoading}
+                          >
+                            <InputLabel>Home Masjid (Optional)</InputLabel>
+                            <Select
+                              {...field}
+                              value={selectedHomeMasjidId}
+                              label="Home Masjid (Optional)"
                             >
-                              <CircularProgress size={20} sx={{ mr: 1 }} />
-                              <Typography
-                                variant="caption"
-                                color="text.secondary"
+                              <MenuItem value="">None</MenuItem>
+                              {masjids.map((masjid) => (
+                                <MenuItem key={masjid.id} value={masjid.id}>
+                                  {masjid.name} - {masjid.address?.city},{" "}
+                                  {masjid.address?.state}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                            {masjidsLoading && (
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  mt: 1,
+                                }}
                               >
-                                Loading masjids...
-                              </Typography>
-                            </Box>
-                          )}
-                        </FormControl>
-                      )}
+                                <CircularProgress size={20} sx={{ mr: 1 }} />
+                                <Typography
+                                  variant="caption"
+                                  color="text.secondary"
+                                >
+                                  Loading masjids...
+                                </Typography>
+                              </Box>
+                            )}
+                          </FormControl>
+                        );
+                      }}
                     />
                   </Grid>
                 </Grid>

@@ -73,10 +73,46 @@ const testKey =
 
 const finalUrl = SUPABASE_URL || (isTest ? testUrl : "");
 const finalKey = SUPABASE_ANON_KEY || (isTest ? testKey : "");
+const RPC_TIMEOUT_MS = 12000;
 
 if (!finalUrl || !finalKey) {
   throw new Error(
     "Missing Supabase environment variables. Please set SUPABASE_URL and SUPABASE_ANON_KEY",
+  );
+}
+
+function withTimeout<T>(
+  promiseLike: PromiseLike<T>,
+  timeoutMs: number,
+  label: string,
+) {
+  return Promise.race<T>([
+    Promise.resolve(promiseLike),
+    new Promise<T>((_, reject) => {
+      setTimeout(() => {
+        reject(new Error(`${label} timed out after ${timeoutMs}ms`));
+      }, timeoutMs);
+    }),
+  ]);
+}
+
+function isAuthRecoverableError(error: unknown) {
+  if (!error || typeof error !== "object") return false;
+
+  const supabaseError = error as {
+    code?: string;
+    status?: number;
+    message?: string;
+  };
+
+  const message = (supabaseError.message || "").toLowerCase();
+
+  return (
+    supabaseError.code === "PGRST301" ||
+    supabaseError.status === 401 ||
+    message.includes("jwt") ||
+    message.includes("token") ||
+    message.includes("expired")
   );
 }
 
@@ -313,7 +349,21 @@ export class DatabaseService {
     functionName: T,
     params?: Database["public"]["Functions"][T]["Args"],
   ): Promise<Database["public"]["Functions"][T]["Returns"]> {
-    const { data, error } = await this.client.rpc(functionName as any, params);
+    let { data, error } = await withTimeout(
+      this.client.rpc(functionName as any, params),
+      RPC_TIMEOUT_MS,
+      `RPC ${String(functionName)}`,
+    );
+
+    if (error && isAuthRecoverableError(error)) {
+      // Retry once after refresh to recover from stale/rotated sessions.
+      await this.client.auth.refreshSession().catch(() => undefined);
+      ({ data, error } = await withTimeout(
+        this.client.rpc(functionName as any, params),
+        RPC_TIMEOUT_MS,
+        `RPC ${String(functionName)} (retry)`,
+      ));
+    }
 
     if (error) {
       throw new Error(`RPC call failed: ${error.message}`);

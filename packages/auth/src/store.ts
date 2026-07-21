@@ -46,6 +46,7 @@ const initialState: AuthState = {
 
 const AUTH_TIMEOUT_MS = 10000; // 10 second timeout for auth initialization
 const GET_SESSION_TIMEOUT_MS = 5000; // 5 second timeout for getSession call
+const SESSION_REVALIDATE_COOLDOWN_MS = 1000;
 
 /**
  * Wrapper for getSession with timeout to prevent hanging
@@ -119,6 +120,53 @@ const authStoreCreator: StateCreator<AuthStore> = (set, get) => ({
   initialize: () => {
     const { _setUserAndProfile } = get();
     let isActive = true;
+    let isRevalidatingSession = false;
+    let lastRevalidateAt = 0;
+
+    const scheduleUserSync = (user: User | null, session: Session | null) => {
+      // Keep auth callback synchronous; schedule profile loading off the event loop.
+      queueMicrotask(() => {
+        if (!isActive) return;
+        void _setUserAndProfile(user, session).catch((syncError) => {
+          console.error("Deferred user/profile sync failed:", syncError);
+        });
+      });
+    };
+
+    const revalidateSession = async () => {
+      if (!isActive || isRevalidatingSession) return;
+
+      // Ignore hidden-tab revalidation attempts; revalidate once visible.
+      if (typeof document !== "undefined" && document.visibilityState === "hidden") {
+        return;
+      }
+
+      const now = Date.now();
+      if (now - lastRevalidateAt < SESSION_REVALIDATE_COOLDOWN_MS) {
+        return;
+      }
+
+      isRevalidatingSession = true;
+      lastRevalidateAt = now;
+
+      try {
+        const {
+          data: { session },
+          error,
+        } = await getSessionWithTimeout();
+
+        if (error) {
+          console.warn("Session revalidation failed:", error);
+          return;
+        }
+
+        scheduleUserSync(session?.user ?? null, session);
+      } catch (revalidateError) {
+        console.error("Unexpected session revalidation error:", revalidateError);
+      } finally {
+        isRevalidatingSession = false;
+      }
+    };
 
     // Timeout to prevent indefinite loading state (backup safety net)
     const timeoutId = setTimeout(() => {
@@ -158,7 +206,7 @@ const authStoreCreator: StateCreator<AuthStore> = (set, get) => ({
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (!isActive) return;
 
       // Handle token refresh failures
@@ -174,13 +222,39 @@ const authStoreCreator: StateCreator<AuthStore> = (set, get) => ({
         return;
       }
 
-      await _setUserAndProfile(session?.user ?? null, session);
+      scheduleUserSync(session?.user ?? null, session);
     });
+
+    const handleFocus = () => {
+      void revalidateSession();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        void revalidateSession();
+      }
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("focus", handleFocus);
+    }
+
+    if (typeof document !== "undefined") {
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+    }
 
     return () => {
       isActive = false;
       clearTimeout(timeoutId);
       subscription.unsubscribe();
+
+      if (typeof window !== "undefined") {
+        window.removeEventListener("focus", handleFocus);
+      }
+
+      if (typeof document !== "undefined") {
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+      }
     };
   },
 

@@ -48,7 +48,7 @@ Sebelum memulakan, pastikan perkara berikut telah tersedia:
 > git clone https://github.com/Dev4w4n/e-masjid.my.git
 > cd e-masjid.my
 > pnpm install
-> ./scripts/setup-supabase.sh   # Sediakan pangkalan data dan persekitaran
+> ./scripts/setup-supabase.sh --test   # Sediakan pangkalan data dan persekitaran
 > pnpm run build:clean          # PENTING: Gunakan build:clean untuk kali pertama
 > pnpm dev                      # Mulakan server pembangunan
 > ```

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { DisplayConfig, PrayerTimes } from '@masjid-suite/shared-types';
 import ContentCarousel from '@/components/ContentCarousel';
 import PrayerTimesOverlay from '@/components/PrayerTimesOverlay';
@@ -8,11 +8,8 @@ import DisplayStatus from '@/components/DisplayStatus';
 import ClientOnly from '@/components/ClientOnly';
 import BlackScreenOverlay from '@/components/BlackScreenOverlay';
 import { jakimFallbackService } from '@masjid-suite/supabase-client/services/jakim-fallback';
-import type { TierId } from '@masjid-suite/shared-types';
-import { patchZoneSessionState, readZoneSessionState } from '@/lib/zone-session-state';
+import { readZoneSessionState } from '@/lib/zone-session-state';
 import { EnhancedSupabaseService } from '@/lib/services/enhanced-supabase';
-import { getUpgradeNavigation } from '@/lib/upgrade-client';
-import { UpgradeModal } from '@/app/landing/UpgradeModal';
 
 interface DisplayPageState {
   config: DisplayConfig | null;
@@ -150,10 +147,7 @@ async function fetchPrayerTimesWithFallback(displayId: string): Promise<{ prayer
 
 function DisplayPageContent() {
   const params = useParams();
-  const navigate = useNavigate();
   const displayId = params.id as string;
-  const zoneState = readZoneSessionState();
-  const zoneCode = zoneState?.zone_code;
 
   const [state, setState] = useState<DisplayPageState>({
     config: null,
@@ -165,7 +159,6 @@ function DisplayPageContent() {
   });
 
   const { state: offlineState, actions: offlineActions } = useOffline();
-  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
 
   useEffect(() => {
     loadDisplayData();
@@ -208,14 +201,16 @@ function DisplayPageContent() {
               .catch(async (error) => {
                 console.error('Failed to load prayer times:', error);
 
-                if (zoneCode) {
+                const currentZoneCode = readZoneSessionState()?.zone_code;
+
+                if (currentZoneCode) {
                   try {
-                    const fallbackTimes = await jakimFallbackService.getPrayerTimes(zoneCode);
+                    const fallbackTimes = await jakimFallbackService.getPrayerTimes(currentZoneCode);
                     if (fallbackTimes) {
                       const now = new Date().toISOString();
                       const prayerData: PrayerTimes = {
-                        id: `fallback-${zoneCode}-${fallbackTimes.date}`,
-                        masjid_id: `zone-${zoneCode}`,
+                        id: `fallback-${currentZoneCode}-${fallbackTimes.date}`,
+                        masjid_id: `zone-${currentZoneCode}`,
                         prayer_date: fallbackTimes.date,
                         fajr_time: fallbackTimes.fajr,
                         sunrise_time: fallbackTimes.sunrise || '00:00',
@@ -230,8 +225,8 @@ function DisplayPageContent() {
                       };
 
                       const fallbackConfig = {
-                        zone_code: zoneCode,
-                        location_name: zoneCode,
+                        zone_code: currentZoneCode,
+                        location_name: currentZoneCode,
                         show_seconds: false,
                         highlight_current_prayer: true,
                         next_prayer_countdown: true,
@@ -456,51 +451,6 @@ function DisplayPageContent() {
         onError={(error) => handleError(error, 'ContentCarousel')}
         className="h-full w-full"
         showDebugInfo={state.config.show_debug_info}
-      />
-
-      {zoneCode && (
-        <div className="fixed top-4 left-4 bg-black/70 text-white px-3 py-1.5 rounded-md text-sm z-30">
-          Zone: {zoneCode}
-        </div>
-      )}
-
-      <button
-        type="button"
-        onClick={() => {
-          patchZoneSessionState({
-            comparison_context: 'display',
-            last_display_id: displayId,
-          });
-          navigate('/');
-        }}
-        className="fixed top-4 right-4 bg-white/90 text-black px-3 py-1.5 rounded-md text-sm font-medium z-30 hover:bg-white"
-      >
-        Tukar Kawasan
-      </button>
-
-      <button
-        type="button"
-        onClick={() => setUpgradeModalOpen(true)}
-        className="fixed top-16 right-4 bg-emerald-500 text-white px-3 py-1.5 rounded-md text-sm font-medium z-30 hover:bg-emerald-600"
-      >
-        Tukar Pelan
-      </button>
-
-      <UpgradeModal
-        open={upgradeModalOpen}
-        onClose={() => setUpgradeModalOpen(false)}
-        language={(state.config.language || 'ms') as 'ms' | 'en'}
-        currentTier={((state.config as any).tier || 'asas') as TierId}
-        onSelectTier={(targetTier) => {
-          const currentTier = (((state.config as any).tier || 'asas') as TierId);
-          const target = getUpgradeNavigation(currentTier, targetTier);
-          if (target.external) {
-            window.open(target.href, '_blank', 'noopener,noreferrer');
-          } else {
-            navigate(target.href);
-          }
-          setUpgradeModalOpen(false);
-        }}
       />
 
       {state.prayerTimes && state.prayerTimeConfig && state.config.prayer_time_position !== 'hidden' && (
