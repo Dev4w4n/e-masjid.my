@@ -135,7 +135,7 @@ Same steps but use `dev` branch and staging environment variables.
 4. Framework preset: **Next.js**
 5. Build settings:
    ```
-   Build command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
+   Build command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm dlx @cloudflare/next-on-pages@1
    Build output: apps/tv-display/.vercel/output/static
    ```
    > **Note**: TV Display app uses Next.js for real-time content updates and SSR. The `build:packages` step compiles shared packages, then `@cloudflare/next-on-pages` adapts Next.js for Cloudflare Pages.

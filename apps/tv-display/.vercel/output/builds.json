@@ -3,7 +3,7 @@
   "target": "preview",
   "argv": [
     "/opt/homebrew/Cellar/node@22/22.23.0/bin/node",
-    "/Users/rohaizan/Library/Caches/pnpm/dlx/586d9ab59ef8898f2d2ca441838dcb560be58252160adde4f62ab4b8a1223af5/19f858207de-11ad6/node_modules/.pnpm/vercel@56.4.1/node_modules/vercel/dist/vc.js",
+    "/Users/rohaizan/Library/pnpm/store/v3/tmp/dlx-2074/node_modules/vercel/dist/vc.js",
     "build"
   ],
   "cliVersion": "56.4.1",
