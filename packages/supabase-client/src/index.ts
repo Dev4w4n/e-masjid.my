@@ -16,10 +16,15 @@ import type {
 
 function getEnvironmentVariables() {
   const isBrowser = typeof window !== "undefined";
+  const directProcessEnv =
+    typeof process !== "undefined"
+      ? (process.env as Record<string, string | undefined>)
+      : undefined;
   const safeProcessEnv =
-    typeof globalThis !== "undefined" &&
-    "process" in globalThis &&
-    (globalThis as any).process?.env
+    directProcessEnv ||
+    (typeof globalThis !== "undefined" &&
+      "process" in globalThis &&
+      (globalThis as any).process?.env)
       ? ((globalThis as any).process.env as Record<string, string | undefined>)
       : undefined;
   const nodeEnv = safeProcessEnv?.NODE_ENV;
@@ -43,12 +48,27 @@ function getEnvironmentVariables() {
       // ignore; fall back to process.env below (useful in tests/node)
     }
 
-    // Check Next.js environment variables (NEXT_PUBLIC_ prefix)
+    // Prefer compile-time inlined Next.js env values in browser bundles.
+    if (!SUPABASE_URL && directProcessEnv) {
+      SUPABASE_URL =
+        directProcessEnv.NEXT_PUBLIC_SUPABASE_URL ||
+        directProcessEnv.SUPABASE_URL;
+    }
+    if (!SUPABASE_ANON_KEY && directProcessEnv) {
+      SUPABASE_ANON_KEY =
+        directProcessEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+        directProcessEnv.SUPABASE_ANON_KEY;
+    }
+
+    // Check runtime process env as an additional fallback.
     if (!SUPABASE_URL && safeProcessEnv) {
-      SUPABASE_URL = safeProcessEnv.NEXT_PUBLIC_SUPABASE_URL;
+      SUPABASE_URL =
+        safeProcessEnv.NEXT_PUBLIC_SUPABASE_URL || safeProcessEnv.SUPABASE_URL;
     }
     if (!SUPABASE_ANON_KEY && safeProcessEnv) {
-      SUPABASE_ANON_KEY = safeProcessEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      SUPABASE_ANON_KEY =
+        safeProcessEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+        safeProcessEnv.SUPABASE_ANON_KEY;
     }
   }
 
@@ -80,7 +100,7 @@ const RPC_TIMEOUT_MS = 12000;
 
 if (!finalUrl || !finalKey) {
   throw new Error(
-    "Missing Supabase environment variables. Please set SUPABASE_URL and SUPABASE_ANON_KEY",
+    "Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY (or SUPABASE_URL and SUPABASE_ANON_KEY).",
   );
 }
 
