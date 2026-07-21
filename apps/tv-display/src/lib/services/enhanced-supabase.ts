@@ -5,8 +5,7 @@
  * caching, offline support, and performance optimizations.
  */
 
-import { SupabaseClient } from '@supabase/supabase-js';
-import { supabase, databaseService } from '@masjid-suite/supabase-client';
+import { supabase, databaseService, type SupabaseClient } from '@masjid-suite/supabase-client';
 import { 
   Database, 
   DisplayContent, 

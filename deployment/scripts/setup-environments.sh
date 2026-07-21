@@ -201,8 +201,8 @@ STAGING
 - [ ] Create Cloudflare Pages project  
 - [ ] Connect to GitHub: \`${GITHUB_REPO}\`
 - [ ] Set production branch: \`$( [ "$environment" = "production" ] && echo "$MAIN_BRANCH" || echo "$DEV_BRANCH" )\`
-- [ ] Configure build command: \`cd apps/tv-display && pnpm install --frozen-lockfile && pnpm build\`
-- [ ] Set build output: \`apps/tv-display/.next\`
+- [ ] Configure build command: \`pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm dlx @cloudflare/next-on-pages@1\`
+- [ ] Set build output: \`apps/tv-display/.vercel/output/static\`
 - [ ] Add environment variables from template
 
 ### Environment Variables

@@ -97,18 +97,17 @@ test.describe('TV Display Home Page', () => {
       return typeof window !== 'undefined' && 
              window.React !== undefined || 
              document.querySelector('[data-reactroot]') !== null ||
-             document.querySelector('#__next') !== null;
+             document.querySelector('#root') !== null;
     });
     
     console.log('React loaded:', reactLoaded);
     
-    // Check if Next.js has loaded
-    const nextLoaded = await page.evaluate(() => {
-      return typeof window !== 'undefined' && 
-             (window.__NEXT_DATA__ !== undefined || document.querySelector('#__next') !== null);
+    // Check if Vite app shell has loaded
+    const viteLoaded = await page.evaluate(() => {
+      return typeof window !== 'undefined' && document.querySelector('#root') !== null;
     });
-    
-    console.log('Next.js loaded:', nextLoaded);
+
+    console.log('Vite app loaded:', viteLoaded);
     
     // Print all errors for debugging
     if (errors.length > 0) {

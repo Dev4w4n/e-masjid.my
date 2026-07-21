@@ -546,7 +546,7 @@ class PerformanceMonitor {
 export const performanceMonitor = new PerformanceMonitor();
 
 // Auto-start monitoring in production
-if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
+if (typeof window !== 'undefined' && import.meta.env.PROD) {
   performanceMonitor.startMonitoring();
 }
 

@@ -367,8 +367,11 @@ export async function POST(
     // Check current content count against limit
     const { count: currentContentCount } = await supabase
       .from('display_content')
-      .select('*', { count: 'exact', head: true })
-      .eq('display_id', displayId)
+      .select('*, display_content_assignments!inner(display_id)', {
+        count: 'exact',
+        head: true,
+      })
+      .eq('display_content_assignments.display_id', displayId)
       .in('status', ['pending', 'active']);
 
     if (currentContentCount && currentContentCount >= display.max_content_items) {
@@ -497,7 +500,6 @@ export async function POST(
     const newContent = {
       id: contentId,
       masjid_id: display.masjid_id,
-      display_id: displayId,
       title,
       description: description || null,
       type,
@@ -532,6 +534,24 @@ export async function POST(
       console.error('Content creation error:', contentError);
       return NextResponse.json(
         createApiError('INTERNAL_SERVER_ERROR', 'Failed to create content record', contentError.message),
+        { status: 500 }
+      );
+    }
+
+    // Assign content to the target display (schema moved relation to join table)
+    const { error: assignmentError } = await supabase
+      .from('display_content_assignments')
+      .insert({
+        display_id: displayId,
+        content_id: contentId,
+        assigned_by: submittedBy,
+        display_order: currentContentCount || 0,
+      });
+
+    if (assignmentError) {
+      console.error('Content assignment error:', assignmentError);
+      return NextResponse.json(
+        createApiError('INTERNAL_SERVER_ERROR', 'Failed to assign content to display', assignmentError.message),
         { status: 500 }
       );
     }
@@ -602,9 +622,9 @@ export async function HEAD(
     // Quick check if display exists and is active
     const { data: display, error } = await supabase
       .from('tv_displays')
-      .select('id, status')
+      .select('id, is_active')
       .eq('id', displayId)
-      .eq('status', 'active')
+      .eq('is_active', true)
       .single();
 
     if (error || !display) {
