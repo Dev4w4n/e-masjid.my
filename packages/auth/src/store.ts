@@ -18,18 +18,18 @@ export type AuthActions = {
   signUp: (
     email: string,
     password: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>,
   ) => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updatePassword: (newPassword: string) => Promise<void>;
   updateProfile: (
-    updates: Partial<ProfileWithRole>
+    updates: Partial<ProfileWithRole>,
   ) => Promise<ProfileWithRole | null>;
   refreshProfile: () => Promise<void>;
   _setUserAndProfile: (
     user: User | null,
-    session: Session | null
+    session: Session | null,
   ) => Promise<void>;
 };
 
@@ -137,7 +137,10 @@ const authStoreCreator: StateCreator<AuthStore> = (set, get) => ({
       if (!isActive || isRevalidatingSession) return;
 
       // Ignore hidden-tab revalidation attempts; revalidate once visible.
-      if (typeof document !== "undefined" && document.visibilityState === "hidden") {
+      if (
+        typeof document !== "undefined" &&
+        document.visibilityState === "hidden"
+      ) {
         return;
       }
 
@@ -162,7 +165,10 @@ const authStoreCreator: StateCreator<AuthStore> = (set, get) => ({
 
         scheduleUserSync(session?.user ?? null, session);
       } catch (revalidateError) {
-        console.error("Unexpected session revalidation error:", revalidateError);
+        console.error(
+          "Unexpected session revalidation error:",
+          revalidateError,
+        );
       } finally {
         isRevalidatingSession = false;
       }
@@ -172,7 +178,7 @@ const authStoreCreator: StateCreator<AuthStore> = (set, get) => ({
     const timeoutId = setTimeout(() => {
       if (isActive && get().status === "initializing") {
         console.warn(
-          "Auth initialization timed out. Clearing invalid session and forcing unauthenticated state."
+          "Auth initialization timed out. Clearing invalid session and forcing unauthenticated state.",
         );
         // Clear potentially corrupted auth storage (don't await)
         safeSignOut();
@@ -253,7 +259,10 @@ const authStoreCreator: StateCreator<AuthStore> = (set, get) => ({
       }
 
       if (typeof document !== "undefined") {
-        document.removeEventListener("visibilitychange", handleVisibilityChange);
+        document.removeEventListener(
+          "visibilitychange",
+          handleVisibilityChange,
+        );
       }
     };
   },
