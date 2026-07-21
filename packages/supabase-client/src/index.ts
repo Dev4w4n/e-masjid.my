@@ -94,15 +94,24 @@ const testUrl = "https://dummy-project.supabase.co";
 const testKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1bW15LXByb2plY3QiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MDAwMDAwMCwiZXhwIjoxOTU1MzU1NjAwfQ.dummy_signature";
 
+const isBrowser = typeof window !== "undefined";
 const finalUrl = SUPABASE_URL || (isTest ? testUrl : "");
 const finalKey = SUPABASE_ANON_KEY || (isTest ? testKey : "");
 const RPC_TIMEOUT_MS = 12000;
 
 if (!finalUrl || !finalKey) {
-  throw new Error(
-    "Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY (or SUPABASE_URL and SUPABASE_ANON_KEY).",
-  );
+  const message =
+    "Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY (or SUPABASE_URL and SUPABASE_ANON_KEY).";
+
+  if (!isBrowser && !isTest) {
+    throw new Error(message);
+  }
+
+  console.error(message);
 }
+
+const resolvedUrl = finalUrl || testUrl;
+const resolvedKey = finalKey || testKey;
 
 function withTimeout<T>(
   promiseLike: PromiseLike<T>,
@@ -174,8 +183,8 @@ const noopLock = async <R>(
  * browser bugs, or stale locks from crashed tabs).
  */
 export const supabase: SupabaseClient<Database> = createClient<Database>(
-  finalUrl,
-  finalKey,
+  resolvedUrl,
+  resolvedKey,
   {
     auth: {
       autoRefreshToken: true,

@@ -3,6 +3,9 @@ import { createClient, } from "@supabase/supabase-js";
 // Simplified and more reliable environment variable access
 function getEnvironmentVariables() {
     const isBrowser = typeof window !== "undefined";
+    const directProcessEnv = typeof process !== "undefined"
+        ? process.env
+        : undefined;
     const safeProcessEnv = typeof globalThis !== "undefined" &&
         "process" in globalThis &&
         globalThis.process?.env
@@ -24,12 +27,26 @@ function getEnvironmentVariables() {
         catch {
             // ignore; fall back to process.env below (useful in tests/node)
         }
-        // Check Next.js environment variables (NEXT_PUBLIC_ prefix)
+        // Prefer compile-time inlined Next.js env values in browser bundles.
+        if (!SUPABASE_URL && directProcessEnv) {
+            SUPABASE_URL =
+                directProcessEnv.NEXT_PUBLIC_SUPABASE_URL ||
+                    directProcessEnv.SUPABASE_URL;
+        }
+        if (!SUPABASE_ANON_KEY && directProcessEnv) {
+            SUPABASE_ANON_KEY =
+                directProcessEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+                    directProcessEnv.SUPABASE_ANON_KEY;
+        }
+        // Check runtime process env as an additional fallback.
         if (!SUPABASE_URL && safeProcessEnv) {
-            SUPABASE_URL = safeProcessEnv.NEXT_PUBLIC_SUPABASE_URL;
+            SUPABASE_URL =
+                safeProcessEnv.NEXT_PUBLIC_SUPABASE_URL || safeProcessEnv.SUPABASE_URL;
         }
         if (!SUPABASE_ANON_KEY && safeProcessEnv) {
-            SUPABASE_ANON_KEY = safeProcessEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+            SUPABASE_ANON_KEY =
+                safeProcessEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+                    safeProcessEnv.SUPABASE_ANON_KEY;
         }
     }
     // Fallback for Node.js/test environments
@@ -50,11 +67,18 @@ function getEnvironmentVariables() {
 const { SUPABASE_URL, SUPABASE_ANON_KEY, isTest } = getEnvironmentVariables();
 const testUrl = "https://dummy-project.supabase.co";
 const testKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1bW15LXByb2plY3QiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MDAwMDAwMCwiZXhwIjoxOTU1MzU1NjAwfQ.dummy_signature";
+const isBrowser = typeof window !== "undefined";
 const finalUrl = SUPABASE_URL || (isTest ? testUrl : "");
 const finalKey = SUPABASE_ANON_KEY || (isTest ? testKey : "");
 if (!finalUrl || !finalKey) {
-    throw new Error("Missing Supabase environment variables. Please set SUPABASE_URL and SUPABASE_ANON_KEY");
+    const message = "Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY (or SUPABASE_URL and SUPABASE_ANON_KEY).";
+    if (!isBrowser && !isTest) {
+        throw new Error(message);
+    }
+    console.error(message);
 }
+const resolvedUrl = finalUrl || testUrl;
+const resolvedKey = finalKey || testKey;
 /**
  * Custom lock function that bypasses the browser's LockManager API.
  *
@@ -84,7 +108,7 @@ const noopLock = async (_name, _acquireTimeout, fn) => {
  * indefinitely when there are lock contention issues (e.g., multiple tabs,
  * browser bugs, or stale locks from crashed tabs).
  */
-export const supabase = createClient(finalUrl, finalKey, {
+export const supabase = createClient(resolvedUrl, resolvedKey, {
     auth: {
         autoRefreshToken: true,
         persistSession: true,
