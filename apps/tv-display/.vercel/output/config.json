@@ -1,0 +1,331 @@
+{
+  "version": 3,
+  "routes": [
+    {
+      "src": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$",
+      "headers": {
+        "Location": "/$1"
+      },
+      "status": 308,
+      "continue": true
+    },
+    {
+      "src": "/_next/__private/trace",
+      "dest": "/404",
+      "status": 404,
+      "continue": true
+    },
+    {
+      "src": "^/preview(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))?(?:/)?$",
+      "headers": {
+        "Content-Security-Policy": "frame-ancestors 'self' http://localhost:* https://*.emasjid.my",
+        "X-Content-Type-Options": "nosniff",
+        "Cache-Control": "no-cache, no-store, must-revalidate"
+      },
+      "continue": true
+    },
+    {
+      "src": "^/api/preview(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))?(?:/)?$",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Cache-Control": "no-cache, no-store, must-revalidate"
+      },
+      "continue": true
+    },
+    {
+      "src": "^(?:/((?!preview).*))(?:/)?$",
+      "headers": {
+        "X-Frame-Options": "SAMEORIGIN",
+        "X-Content-Type-Options": "nosniff",
+        "Cache-Control": "public, max-age=60, stale-while-revalidate=30"
+      },
+      "continue": true
+    },
+    {
+      "src": "^/display(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))?(?:/)?$",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"
+      },
+      "continue": true
+    },
+    {
+      "src": "/404/?",
+      "status": 404,
+      "continue": true,
+      "missing": [
+        {
+          "type": "header",
+          "key": "x-prerender-revalidate"
+        }
+      ]
+    },
+    {
+      "src": "/500",
+      "status": 500,
+      "continue": true
+    },
+    {
+      "src": "^/?",
+      "has": [
+        {
+          "type": "header",
+          "key": "rsc",
+          "value": "1"
+        }
+      ],
+      "dest": "/index.rsc",
+      "headers": {
+        "vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch"
+      },
+      "continue": true,
+      "override": true
+    },
+    {
+      "src": "^/((?!.+\\.rsc).+?)(?:/)?$",
+      "has": [
+        {
+          "type": "header",
+          "key": "rsc",
+          "value": "1"
+        }
+      ],
+      "dest": "/$1.rsc",
+      "headers": {
+        "vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch"
+      },
+      "continue": true,
+      "override": true
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/index(\\.action|\\.rsc)",
+      "dest": "/",
+      "continue": true
+    },
+    {
+      "src": "/_next/data/(.*)",
+      "dest": "/_next/data/$1",
+      "check": true
+    },
+    {
+      "src": "/\\.prefetch\\.rsc$",
+      "dest": "/__index.prefetch.rsc",
+      "check": true
+    },
+    {
+      "src": "/(.+)/\\.prefetch\\.rsc$",
+      "dest": "/$1.prefetch.rsc",
+      "check": true
+    },
+    {
+      "src": "/\\.rsc$",
+      "dest": "/index.rsc",
+      "check": true
+    },
+    {
+      "src": "/(.+)/\\.rsc$",
+      "dest": "/$1.rsc",
+      "check": true
+    },
+    {
+      "handle": "resource"
+    },
+    {
+      "src": "/.*",
+      "status": 404
+    },
+    {
+      "handle": "miss"
+    },
+    {
+      "src": "/_next/static/.+",
+      "status": 404,
+      "check": true,
+      "dest": "/_next/static/not-found.txt",
+      "headers": {
+        "content-type": "text/plain; charset=utf-8"
+      }
+    },
+    {
+      "handle": "rewrite"
+    },
+    {
+      "src": "/_next/data/(.*)",
+      "dest": "/404",
+      "status": 404
+    },
+    {
+      "src": "^/api/displays/(?<nxtPid>[^/]+?)/config(?:\\.rsc)(?:/)?$",
+      "dest": "/api/displays/[id]/config.rsc?nxtPid=$nxtPid"
+    },
+    {
+      "src": "^/api/displays/(?<nxtPid>[^/]+?)/config(?:/)?$",
+      "dest": "/api/displays/[id]/config?nxtPid=$nxtPid"
+    },
+    {
+      "src": "^/api/displays/(?<nxtPid>[^/]+?)/content(?:\\.rsc)(?:/)?$",
+      "dest": "/api/displays/[id]/content.rsc?nxtPid=$nxtPid"
+    },
+    {
+      "src": "^/api/displays/(?<nxtPid>[^/]+?)/content(?:/)?$",
+      "dest": "/api/displays/[id]/content?nxtPid=$nxtPid"
+    },
+    {
+      "src": "^/api/displays/(?<nxtPid>[^/]+?)/heartbeat(?:\\.rsc)(?:/)?$",
+      "dest": "/api/displays/[id]/heartbeat.rsc?nxtPid=$nxtPid"
+    },
+    {
+      "src": "^/api/displays/(?<nxtPid>[^/]+?)/heartbeat(?:/)?$",
+      "dest": "/api/displays/[id]/heartbeat?nxtPid=$nxtPid"
+    },
+    {
+      "src": "^/api/displays/(?<nxtPid>[^/]+?)/prayer\\-times(?:\\.rsc)(?:/)?$",
+      "dest": "/api/displays/[id]/prayer-times.rsc?nxtPid=$nxtPid"
+    },
+    {
+      "src": "^/api/displays/(?<nxtPid>[^/]+?)/prayer\\-times(?:/)?$",
+      "dest": "/api/displays/[id]/prayer-times?nxtPid=$nxtPid"
+    },
+    {
+      "src": "^/api/displays/(?<nxtPid>[^/]+?)/status(?:\\.rsc)(?:/)?$",
+      "dest": "/api/displays/[id]/status.rsc?nxtPid=$nxtPid"
+    },
+    {
+      "src": "^/api/displays/(?<nxtPid>[^/]+?)/status(?:/)?$",
+      "dest": "/api/displays/[id]/status?nxtPid=$nxtPid"
+    },
+    {
+      "src": "^/api/preview/(?<nxtPtoken>[^/]+?)/content(?:\\.rsc)(?:/)?$",
+      "dest": "/api/preview/[token]/content.rsc?nxtPtoken=$nxtPtoken"
+    },
+    {
+      "src": "^/api/preview/(?<nxtPtoken>[^/]+?)/content(?:/)?$",
+      "dest": "/api/preview/[token]/content?nxtPtoken=$nxtPtoken"
+    },
+    {
+      "src": "^/api/zones/(?<nxtPzone_code>[^/]+?)(?:\\.rsc)(?:/)?$",
+      "dest": "/api/zones/[zone_code].rsc?nxtPzone_code=$nxtPzone_code"
+    },
+    {
+      "src": "^/api/zones/(?<nxtPzone_code>[^/]+?)(?:/)?$",
+      "dest": "/api/zones/[zone_code]?nxtPzone_code=$nxtPzone_code"
+    },
+    {
+      "handle": "hit"
+    },
+    {
+      "src": "/_next/static/(?:[^/]+/pages|pages|chunks|runtime|css|image|media|VfJ9H7FAs\\-_EVYOPjWxhR)/.+",
+      "headers": {
+        "cache-control": "public,max-age=31536000,immutable"
+      },
+      "continue": true,
+      "important": true
+    },
+    {
+      "src": "/index(?:/)?",
+      "headers": {
+        "x-matched-path": "/"
+      },
+      "continue": true,
+      "important": true
+    },
+    {
+      "src": "/((?!index$).*?)(?:/)?",
+      "headers": {
+        "x-matched-path": "/$1"
+      },
+      "continue": true,
+      "important": true
+    },
+    {
+      "handle": "error"
+    },
+    {
+      "src": "/.*",
+      "dest": "/404",
+      "status": 404,
+      "headers": {
+        "x-next-error-status": "404"
+      }
+    },
+    {
+      "src": "/.*",
+      "dest": "/500",
+      "status": 500,
+      "headers": {
+        "x-next-error-status": "500"
+      }
+    }
+  ],
+  "images": {
+    "domains": [
+      "img.youtube.com",
+      "i.ytimg.com",
+      "yt3.ggpht.com"
+    ],
+    "sizes": [
+      640,
+      750,
+      828,
+      1080,
+      1200,
+      1920,
+      2048,
+      3840,
+      16,
+      32,
+      48,
+      64,
+      96,
+      128,
+      256,
+      384
+    ],
+    "remotePatterns": [],
+    "minimumCacheTTL": 60,
+    "formats": [
+      "image/webp",
+      "image/avif"
+    ],
+    "dangerouslyAllowSVG": false,
+    "contentSecurityPolicy": "script-src 'none'; frame-src 'none'; sandbox;",
+    "contentDispositionType": "attachment"
+  },
+  "overrides": {
+    "404.html": {
+      "path": "404",
+      "contentType": "text/html; charset=utf-8"
+    },
+    "500.html": {
+      "path": "500",
+      "contentType": "text/html; charset=utf-8"
+    },
+    "_app.rsc.json": {
+      "path": "_app.rsc",
+      "contentType": "application/json"
+    },
+    "_error.rsc.json": {
+      "path": "_error.rsc",
+      "contentType": "application/json"
+    },
+    "_document.rsc.json": {
+      "path": "_document.rsc",
+      "contentType": "application/json"
+    },
+    "404.rsc.json": {
+      "path": "404.rsc",
+      "contentType": "application/json"
+    },
+    "_next/static/not-found.txt": {
+      "contentType": "text/plain"
+    }
+  },
+  "framework": {
+    "slug": "nextjs",
+    "version": "15.5.9"
+  },
+  "crons": []
+}

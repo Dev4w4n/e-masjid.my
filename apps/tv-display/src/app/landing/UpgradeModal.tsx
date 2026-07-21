@@ -82,7 +82,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
                 alignItems: "center",
               }}
             >
-              <Typography fontWeight={600}>{content.labels[tier]}</Typography>
+                     <Typography sx={{ fontWeight: 600 }}>{content.labels[tier]}</Typography>
               <Button
                 variant="contained"
                 size="small"

@@ -30,7 +30,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
-import { fetchAllZones, selectZone } from '@masjid-suite/supabase-client/lib/zone-client';
+import { fetchAllZones, selectZone } from '@masjid-suite/supabase-client';
 
 /**
  * Zone interface matching supabase-client zone-service response

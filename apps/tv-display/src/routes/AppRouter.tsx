@@ -7,7 +7,7 @@ function RootRoute() {
   return <Outlet />;
 }
 
-export const appRouter = createBrowserRouter([
+export const appRouter: ReturnType<typeof createBrowserRouter> = createBrowserRouter([
   {
     element: <RootRoute />,
     children: [

@@ -28,11 +28,11 @@ For each application:
 
 Choose the correct framework preset during project creation:
 
-| Application    | Framework Preset | Why                                    |
-| -------------- | ---------------- | -------------------------------------- |
-| Hub App        | **None**         | Vite + React (custom build to `/dist`) |
-| Papan Info App | **Next.js**      | Next.js with SSR for SEO               |
-| TV Display     | **Next.js**      | Next.js with real-time updates         |
+| Application    | Framework Preset | Why                                     |
+| -------------- | ---------------- | --------------------------------------- |
+| Hub App        | **None**         | Vite + React (custom build to `/dist`)  |
+| Papan Info App | **Next.js**      | Next.js with SSR for SEO                |
+| TV Display     | **Next.js**      | Next.js with API routes via edge worker |
 
 > **Note**: For Hub app, if "None" isn't available, select "Create React App" then customize the build settings as shown below.
 
@@ -127,9 +127,9 @@ Environment Variables: [See environment section below]
 Project Name: tv-emasjid-production
 Production Branch: main
 Build Settings:
-  Framework Preset: Next.js
-  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && VERCEL_PROJECT_DIR=. pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
-  Build Output Directory: apps/tv-display/.vercel/output/static
+   Framework Preset: Next.js
+   Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm dlx @cloudflare/next-on-pages@1
+   Build Output Directory: apps/tv-display/.vercel/output/static
   Root Directory: /
 Environment Variables: [See environment section below]
 ```
@@ -140,9 +140,9 @@ Environment Variables: [See environment section below]
 Project Name: tv-emasjid-staging
 Production Branch: dev
 Build Settings:
-  Framework Preset: Next.js
-  Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && VERCEL_PROJECT_DIR=. pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
-  Build Output Directory: apps/tv-display/.vercel/output/static
+   Framework Preset: Next.js
+   Build Command: pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm dlx @cloudflare/next-on-pages@1
+   Build Output Directory: apps/tv-display/.vercel/output/static
   Root Directory: /
 Environment Variables: [See environment section below]
 ```

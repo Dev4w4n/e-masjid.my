@@ -51,12 +51,15 @@ export function patchZoneSessionState(
   payload: Partial<Omit<ZoneSessionState, "updated_at">>,
 ): void {
   const current = readZoneSessionState();
+  const zoneCode = payload.zone_code ?? current?.zone_code;
+  const lastDisplayId = payload.last_display_id ?? current?.last_display_id;
+
   writeZoneSessionState({
     locale: payload.locale ?? current?.locale ?? "ms",
-    zone_code: payload.zone_code ?? current?.zone_code,
-    last_display_id: payload.last_display_id ?? current?.last_display_id,
     comparison_context:
       payload.comparison_context ?? current?.comparison_context ?? "tiers",
+    ...(zoneCode ? { zone_code: zoneCode } : {}),
+    ...(lastDisplayId ? { last_display_id: lastDisplayId } : {}),
   });
 }
 

@@ -25,6 +25,7 @@ import {
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import StarIcon from '@mui/icons-material/Star';
+import { TierId } from '@masjid-suite/shared-types';
 import {
   compareTiers,
   ComparisonMatrixRow,
@@ -34,9 +35,9 @@ import {
 
 interface TierComparisonTableProps {
   language?: 'ms' | 'en';
-  tierIds?: string[];
-  highlightedTierId?: string;
-  onTierSelect?: (tierId: string) => void;
+  tierIds?: TierId[];
+  highlightedTierId?: TierId;
+  onTierSelect?: (tierId: TierId) => void;
 }
 
 /**

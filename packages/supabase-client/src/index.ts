@@ -31,8 +31,11 @@ function getEnvironmentVariables() {
   if (isBrowser) {
     // Access Vite's injected env directly via import.meta.env
     try {
-      // @ts-expect-error Vite provides import.meta.env at build time
-      const env = import.meta.env as Record<string, string | undefined>;
+      const env = (
+        import.meta as unknown as {
+          env?: Record<string, string | undefined>;
+        }
+      ).env;
       SUPABASE_URL = env?.VITE_SUPABASE_URL || env?.NEXT_PUBLIC_SUPABASE_URL;
       SUPABASE_ANON_KEY =
         env?.VITE_SUPABASE_ANON_KEY || env?.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -859,6 +862,10 @@ export {
   clearZoneCache,
 } from "./lib/zone-client";
 
+// Upgrade intent helper for TV landing upgrade flow
+export { resolveUpgradeIntent } from "./lib/upgrade-intent";
+export type { UpgradeIntent } from "./lib/upgrade-intent";
+
 // Zone selection service for TV landing tiers (Feature 007)
 export {
   ZoneSelectionService,
@@ -870,6 +877,20 @@ export {
   TierPackageService,
   tierPackageService,
 } from "./services/tier-service";
+
+// Tier comparison helpers for TV landing tiers (Feature 007)
+export {
+  COMPARISON_DIMENSIONS,
+  TIER_COMPARISON_DATA,
+  compareTiers,
+  getTierComparisonValue,
+} from "./lib/tier-comparison";
+export type {
+  ComparisonDimension,
+  ComparisonMatrixRow,
+  ComparisonValue,
+  TierComparisonKey,
+} from "./lib/tier-comparison";
 
 // Zone sync service for JAKIM zone maintenance (Feature 007, T051)
 export { ZoneSyncService, zoneSyncService } from "./services/zone-sync";

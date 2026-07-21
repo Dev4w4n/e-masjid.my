@@ -2,7 +2,11 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "ES2020",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -17,30 +21,65 @@
     /* Path mapping for workspace packages */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@/components/*": ["./src/components/*"],
-      "@/lib/*": ["./src/lib/*"],
-      "@/types/*": ["./src/types/*"],
-      "@masjid-suite/auth": ["../../packages/auth/src"],
-      "@masjid-suite/supabase-client": ["../../packages/supabase-client/src"],
-      "@masjid-suite/shared-types": ["../../packages/shared-types/src"],
-      "@masjid-suite/ui-components": ["../../packages/ui-components/src"],
-      "@masjid-suite/ui-theme": ["../../packages/ui-theme/src"]
-    }
+      "@/*": [
+        "./src/*"
+      ],
+      "@/components/*": [
+        "./src/components/*"
+      ],
+      "@/lib/*": [
+        "./src/lib/*"
+      ],
+      "@/types/*": [
+        "./src/types/*"
+      ],
+      "@masjid-suite/auth": [
+        "../../packages/auth/src"
+      ],
+      "@masjid-suite/supabase-client": [
+        "../../packages/supabase-client/src/index.ts"
+      ],
+      "@masjid-suite/shared-types": [
+        "../../packages/shared-types/src"
+      ],
+      "@masjid-suite/ui-components": [
+        "../../packages/ui-components/src"
+      ],
+      "@masjid-suite/ui-theme": [
+        "../../packages/ui-theme/src"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
-    "src/vite-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
+    "src/vite-env.d.ts",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "vite.config.ts"
   ],
   "references": [
-    { "path": "../../packages/auth" },
-    { "path": "../../packages/supabase-client" },
-    { "path": "../../packages/shared-types" },
-    { "path": "../../packages/ui-components" },
-    { "path": "../../packages/ui-theme" }
+    {
+      "path": "../../packages/auth"
+    },
+    {
+      "path": "../../packages/supabase-client"
+    },
+    {
+      "path": "../../packages/shared-types"
+    },
+    {
+      "path": "../../packages/ui-components"
+    },
+    {
+      "path": "../../packages/ui-theme"
+    }
   ]
 }

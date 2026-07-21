@@ -4,10 +4,10 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { TierPackage } from '@masjid-suite/shared-types';
-import { tierPackageService } from '@masjid-suite/supabase-client/services/tier-service';
+import { tierPackageService } from '@masjid-suite/supabase-client';
 import TierCardGrid from '../TierCardGrid';
 
-vi.mock('@masjid-suite/supabase-client/services/tier-service', () => ({
+vi.mock('@masjid-suite/supabase-client', () => ({
   tierPackageService: {
     fetchTiersForLanding: vi.fn(),
   },

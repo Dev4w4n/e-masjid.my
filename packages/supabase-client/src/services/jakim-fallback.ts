@@ -240,7 +240,7 @@ export class JAKIMFallbackService {
       return {
         zone_code,
         date: row.prayer_date,
-        sunrise: row.sunrise_time,
+        ...(row.sunrise_time ? { sunrise: row.sunrise_time } : {}),
         fajr: row.fajr_time,
         dhuhr: row.dhuhr_time,
         asr: row.asr_time,
@@ -315,7 +315,7 @@ export class JAKIMFallbackService {
       return {
         zone_code,
         date: response.date,
-        sunrise: response.times.sunrise,
+        ...(response.times.sunrise ? { sunrise: response.times.sunrise } : {}),
         fajr: response.times.fajr,
         dhuhr: response.times.dhuhr,
         asr: response.times.asr,

@@ -102,7 +102,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
               aria-controls={`${faq.id}-content`}
               id={`${faq.id}-header`}
             >
-              <Typography fontWeight={600}>{faq.question}</Typography>
+              <Typography sx={{ fontWeight: 600 }}>{faq.question}</Typography>
             </AccordionSummary>
             <AccordionDetails id={`${faq.id}-content`}>
               <Typography>{faq.answer}</Typography>

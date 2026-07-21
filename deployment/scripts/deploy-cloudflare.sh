@@ -102,7 +102,11 @@ get_cf_project_name() {
 # Get build command for app
 get_build_command() {
     local app=$1
-    echo "cd apps/${app} && pnpm install --frozen-lockfile && pnpm build"
+    if [ "$app" = "tv-display" ]; then
+        echo "pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm dlx @cloudflare/next-on-pages@1"
+    else
+        echo "cd apps/${app} && pnpm install --frozen-lockfile && pnpm build"
+    fi
 }
 
 # Get build output directory
@@ -112,8 +116,11 @@ get_build_output() {
         hub)
             echo "apps/hub/dist"
             ;;
-        public|tv-display)
+        public)
             echo "apps/${app}/.next"
+            ;;
+        tv-display)
+            echo "apps/tv-display/.vercel/output/static"
             ;;
         *)
             log_error "Unknown app: $app"

@@ -8,6 +8,8 @@ import { NextResponse } from 'next/server';
 import { ZoneSelectionService, supabase } from '@masjid-suite/supabase-client';
 import { ServiceError } from '@masjid-suite/shared-types';
 
+export const runtime = 'edge';
+
 const zoneService = new ZoneSelectionService(supabase);
 
 function isValidZoneCode(zone_code: string): boolean {

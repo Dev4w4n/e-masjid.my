@@ -40,7 +40,7 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, './src'),
       '@masjid-suite/auth': resolve(__dirname, '../../packages/auth/src'),
-      '@masjid-suite/supabase-client': resolve(__dirname, '../../packages/supabase-client/src'),
+      '@masjid-suite/supabase-client': resolve(__dirname, '../../packages/supabase-client/src/index.ts'),
       '@masjid-suite/shared-types': resolve(__dirname, '../../packages/shared-types/src'),
       '@masjid-suite/ui-components': resolve(__dirname, '../../packages/ui-components/src'),
       '@masjid-suite/ui-theme': resolve(__dirname, '../../packages/ui-theme/src'),

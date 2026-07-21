@@ -149,7 +149,7 @@ export function ContentCarousel({
 
       // Notify parent of content change
       if (activeContent.length > 0) {
-        onContentChange?.(activeContent[0]);
+        onContentChange?.(activeContent[0] ?? null);
       } else {
         onContentChange?.(null);
       }

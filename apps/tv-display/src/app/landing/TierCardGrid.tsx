@@ -17,7 +17,7 @@ import {
   Collapse,
 } from '@mui/material';
 import { TierPackage } from '@masjid-suite/shared-types';
-import { tierPackageService } from '@masjid-suite/supabase-client/services/tier-service';
+import { tierPackageService } from '@masjid-suite/supabase-client';
 import TierCard from './TierCard';
 import { TierComparisonTable } from './TierComparisonTable';
 

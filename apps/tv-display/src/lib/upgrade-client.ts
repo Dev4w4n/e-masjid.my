@@ -1,5 +1,5 @@
 import type { TierId } from "@masjid-suite/shared-types";
-import { resolveUpgradeIntent } from "@masjid-suite/supabase-client/lib/upgrade-intent";
+import { resolveUpgradeIntent } from "@masjid-suite/supabase-client";
 
 export interface UpgradeNavigationTarget {
   href: string;

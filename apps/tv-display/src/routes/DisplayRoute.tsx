@@ -7,7 +7,7 @@ import OfflineHandler, { useOffline, FallbackContent } from '@/components/Offlin
 import DisplayStatus from '@/components/DisplayStatus';
 import ClientOnly from '@/components/ClientOnly';
 import BlackScreenOverlay from '@/components/BlackScreenOverlay';
-import { jakimFallbackService } from '@masjid-suite/supabase-client/services/jakim-fallback';
+import { jakimFallbackService } from '@masjid-suite/supabase-client';
 import { readZoneSessionState } from '@/lib/zone-session-state';
 import { EnhancedSupabaseService } from '@/lib/services/enhanced-supabase';
 
