@@ -137,3 +137,4 @@ deployment/checklists/*-checklist.md
 deployment/.secrets/
 
 test-data-generated.sql
+.vercel/
