@@ -5,7 +5,7 @@
   "description": "TV display Vite application for Masjid Suite",
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 3001",
-    "build": "vite build",
+    "build": "next build",
     "build:cloudflare": "next build && pnpm dlx @cloudflare/next-on-pages@1",
     "start": "vite preview --host 0.0.0.0 --port 3001",
     "preview": "vite preview --host 0.0.0.0 --port 3001",
