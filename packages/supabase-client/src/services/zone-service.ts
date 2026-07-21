@@ -8,6 +8,7 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import {
   JAKIMZone,
+  JAKIM_ZONES,
   IZoneSelectionService,
   ZoneSelectionResponse,
   ServiceError,
@@ -21,7 +22,6 @@ export type { IZoneSelectionService };
 interface DatabaseMasjid {
   id: string;
   name: string;
-  display_id?: string;
   [key: string]: unknown;
 }
 
@@ -31,6 +31,57 @@ export class ZoneSelectionService implements IZoneSelectionService {
   private zoneCacheTimeout: number = 3600000; // 1 hour in ms
 
   constructor(private supabase: SupabaseClient) {}
+
+  private inferRegion(state: string): "peninsular" | "sabah" | "sarawak" {
+    const normalized = state.toLowerCase();
+
+    if (normalized.includes("sabah")) {
+      return "sabah";
+    }
+
+    if (normalized.includes("sarawak")) {
+      return "sarawak";
+    }
+
+    return "peninsular";
+  }
+
+  private getStaticZones(): JAKIMZone[] {
+    return JAKIM_ZONES.map((zone) => ({
+      zone_code: zone.id,
+      zone_name_ms: zone.name,
+      zone_name_en: zone.name,
+      state_ms: zone.state,
+      state_en: zone.state,
+      region: this.inferRegion(zone.state),
+      is_active: zone.is_active,
+      masjid_count: 0,
+    }));
+  }
+
+  private async getMasjidCountsByZone(): Promise<Map<string, number>> {
+    const { data, error } = await this.supabase
+      .from("masjids")
+      .select("jakim_zone_code")
+      .eq("status", "active");
+
+    if (error || !data) {
+      return new Map();
+    }
+
+    const counts = new Map<string, number>();
+    for (const row of data) {
+      const zoneCode = String(
+        (row as { jakim_zone_code?: string }).jakim_zone_code ?? "",
+      );
+      if (!zoneCode) {
+        continue;
+      }
+      counts.set(zoneCode, (counts.get(zoneCode) ?? 0) + 1);
+    }
+
+    return counts;
+  }
 
   /**
    * Fetch all active JAKIM zones
@@ -50,36 +101,35 @@ export class ZoneSelectionService implements IZoneSelectionService {
         .eq("is_active", true)
         .order("zone_code", { ascending: true });
 
-      if (error) {
-        throw new ServiceError(
-          ServiceErrorCode.SERVICE_UNAVAILABLE,
-          `Failed to fetch zones: ${error.message}`,
-          500,
-          { original_error: error },
-        );
+      let zones: JAKIMZone[] = [];
+      if (!error && data && data.length > 0) {
+        zones = data as JAKIMZone[];
+      } else {
+        zones = this.getStaticZones();
       }
 
-      if (!data || data.length === 0) {
-        throw new ServiceError(
-          ServiceErrorCode.ZONE_NOT_FOUND,
-          "No active JAKIM zones found",
-          404,
-        );
-      }
+      const masjidCounts = await this.getMasjidCountsByZone();
+      const enrichedZones = zones.map((zone) => ({
+        ...zone,
+        masjid_count:
+          masjidCounts.get(zone.zone_code) ?? zone.masjid_count ?? 0,
+      }));
 
       // Cache the result
-      this.zoneCache.set(cacheKey, data as JAKIMZone[]);
+      this.zoneCache.set(cacheKey, enrichedZones);
       setTimeout(() => this.zoneCache.delete(cacheKey), this.zoneCacheTimeout);
 
-      return data as JAKIMZone[];
+      return enrichedZones;
     } catch (error) {
       if (error instanceof ServiceError) throw error;
-      throw new ServiceError(
-        ServiceErrorCode.DATABASE_ERROR,
-        `Zone fetch error: ${error}`,
-        500,
-        { error },
+
+      const fallback = this.getStaticZones();
+      this.zoneCache.set("all_zones", fallback);
+      setTimeout(
+        () => this.zoneCache.delete("all_zones"),
+        this.zoneCacheTimeout,
       );
+      return fallback;
     }
   }
 
@@ -97,24 +147,8 @@ export class ZoneSelectionService implements IZoneSelectionService {
         );
       }
 
-      const { data, error } = await this.supabase
-        .from("jakim_zones")
-        .select("*")
-        .eq("zone_code", zone_code)
-        .eq("is_active", true)
-        .single();
-
-      if (error && error.code !== "PGRST116") {
-        // PGRST116 = no rows found (expected for missing zones)
-        throw new ServiceError(
-          ServiceErrorCode.SERVICE_UNAVAILABLE,
-          `Failed to fetch zone: ${error.message}`,
-          500,
-          { original_error: error },
-        );
-      }
-
-      return (data as JAKIMZone) || null;
+      const zones = await this.fetchAllZones();
+      return zones.find((zone) => zone.zone_code === zone_code) ?? null;
     } catch (error) {
       if (error instanceof ServiceError) throw error;
       throw new ServiceError(
@@ -146,9 +180,7 @@ export class ZoneSelectionService implements IZoneSelectionService {
       const { data, error } = await this.supabase
         .from("masjids")
         .select("*")
-        .eq("zone_code", zone_code)
-        .eq("is_auto_populated", true)
-        .eq("tier", "asas")
+        .eq("jakim_zone_code", zone_code)
         .eq("status", "active")
         .order("created_at", { ascending: true });
 
@@ -196,25 +228,14 @@ export class ZoneSelectionService implements IZoneSelectionService {
    * Resolve an active display linked to a masjid.
    * Discovery only routes to masjids whose linked display is active.
    */
-  private async resolveActiveDisplayId(
-    masjidId: string,
-    displayId?: string,
-  ): Promise<string> {
-    if (!displayId) {
-      throw new ServiceError(
-        ServiceErrorCode.NO_MOSQUES_IN_ZONE,
-        `No linked display available for masjid: ${masjidId}`,
-        404,
-        { masjidId },
-      );
-    }
-
+  private async resolveActiveDisplayId(masjidId: string): Promise<string> {
     const { data, error } = await this.supabase
       .from("tv_displays")
       .select("id")
-      .eq("id", displayId)
       .eq("masjid_id", masjidId)
       .eq("is_active", true)
+      .order("created_at", { ascending: true })
+      .limit(1)
       .single();
 
     if (error && error.code !== "PGRST116") {
@@ -229,9 +250,9 @@ export class ZoneSelectionService implements IZoneSelectionService {
     if (!data?.id) {
       throw new ServiceError(
         ServiceErrorCode.NO_MOSQUES_IN_ZONE,
-        `No active linked display available for masjid: ${masjidId}`,
+        `No active display available for masjid: ${masjidId}`,
         404,
-        { masjidId, displayId },
+        { masjidId },
       );
     }
 
@@ -305,10 +326,7 @@ export class ZoneSelectionService implements IZoneSelectionService {
         );
       }
 
-      const display_id = await this.resolveActiveDisplayId(
-        primary_masjid.id,
-        primary_masjid.display_id as string | undefined,
-      );
+      const display_id = await this.resolveActiveDisplayId(primary_masjid.id);
 
       return {
         zone,
