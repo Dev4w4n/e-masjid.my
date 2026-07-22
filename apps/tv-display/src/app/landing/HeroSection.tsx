@@ -13,7 +13,6 @@ import {
   useTheme,
   useMediaQuery,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 
 interface HeroSectionProps {
   language?: 'ms' | 'en';
@@ -30,7 +29,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const navigate = useNavigate();
 
   // i18n content (passed from landing page via props in real implementation)
   const content = {
@@ -54,7 +52,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     if (onCtaClick) {
       onCtaClick();
     } else {
-      navigate('/#tiers-section');
+      if (typeof document !== 'undefined') {
+        const target = document.getElementById('tiers-section');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
+      }
+      if (typeof window !== 'undefined') {
+        window.location.hash = 'tiers-section';
+      }
     }
   };
 

@@ -29,7 +29,6 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useNavigate } from 'react-router-dom';
 import { fetchAllZones, selectZone } from '@masjid-suite/supabase-client';
 
 /**
@@ -72,7 +71,6 @@ export const ZoneModal: React.FC<ZoneModalProps> = ({
   language = 'ms',
   onZoneSelected,
 }) => {
-  const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -135,7 +133,9 @@ export const ZoneModal: React.FC<ZoneModalProps> = ({
       });
 
       // Route to display page
-      navigate(`/display/${displayId}`);
+      if (typeof window !== 'undefined') {
+        window.location.assign(`/display/${displayId}`);
+      }
       onClose();
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : String(err);
