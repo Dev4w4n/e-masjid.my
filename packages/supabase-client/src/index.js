@@ -6,11 +6,11 @@ function getEnvironmentVariables() {
     const directProcessEnv = typeof process !== "undefined"
         ? process.env
         : undefined;
-    const safeProcessEnv = typeof globalThis !== "undefined" &&
-        "process" in globalThis &&
-        globalThis.process?.env
-        ? globalThis.process.env
+    const globalProcessEnv = typeof globalThis !== "undefined" &&
+        "process" in globalThis
+        ? globalThis.process?.env
         : undefined;
+    const safeProcessEnv = directProcessEnv ?? globalProcessEnv;
     const nodeEnv = safeProcessEnv?.NODE_ENV;
     const isTest = nodeEnv === "test";
     let SUPABASE_URL;

@@ -20,13 +20,13 @@ function getEnvironmentVariables() {
     typeof process !== "undefined"
       ? (process.env as Record<string, string | undefined>)
       : undefined;
-  const safeProcessEnv =
-    directProcessEnv ||
-    (typeof globalThis !== "undefined" &&
-      "process" in globalThis &&
-      (globalThis as any).process?.env)
-      ? ((globalThis as any).process.env as Record<string, string | undefined>)
+  const globalProcessEnv =
+    typeof globalThis !== "undefined" && "process" in globalThis
+      ? ((globalThis as any).process?.env as
+          | Record<string, string | undefined>
+          | undefined)
       : undefined;
+  const safeProcessEnv = directProcessEnv ?? globalProcessEnv;
   const nodeEnv = safeProcessEnv?.NODE_ENV;
   const isTest = nodeEnv === "test";
 
