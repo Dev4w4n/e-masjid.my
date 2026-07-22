@@ -1,0 +1,49 @@
+openapi: 3.0.3
+info:
+  title: Discovery Routing API Contract
+  version: 1.0.0
+  description: Contract for resolving zone discovery to a deterministic generated masjid display target.
+paths:
+  /api/zones/{zone_code}/discovery-target:
+    get:
+      summary: Resolve deterministic discovery target for zone
+      parameters:
+        - name: zone_code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Deterministic target resolved
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [zone_code, masjid_id, display_id, selection_rule]
+                properties:
+                  zone_code:
+                    type: string
+                  masjid_id:
+                    type: string
+                    format: uuid
+                  display_id:
+                    type: string
+                  selection_rule:
+                    type: string
+                    enum: [created_at_asc_then_id_asc]
+        "404":
+          description: No valid generated masjid target for this zone
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [zone_code, code, message]
+                properties:
+                  zone_code:
+                    type: string
+                  code:
+                    type: string
+                    enum: [NO_VALID_GENERATED_TARGET]
+                  message:
+                    type: string

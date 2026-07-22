@@ -1,0 +1,2417 @@
+{
+  "timestamp": 1784657448044,
+  "outputDir": ".vercel/output/static/_worker.js",
+  "versions": {
+    "@cloudflare/next-on-pages": "1.13.16"
+  },
+  "buildFiles": {
+    "functions": {
+      "invalid": [],
+      "middleware": [],
+      "edge": [
+        {
+          "relativePath": "/api/displays/[id]/config.func",
+          "config": {
+            "runtime": "edge",
+            "name": "api/displays/[id]/config",
+            "deploymentTarget": "v8-worker",
+            "entrypoint": "index.js",
+            "assets": [],
+            "framework": {
+              "slug": "nextjs",
+              "version": "15.5.9"
+            },
+            "environment": {
+              "__NEXT_BUILD_ID": "VVJFRL5pISgWCXydKUbJF",
+              "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "wRABv0C6a37nqqZVdbaNyRy0XD9dlt/yXLHcRv53/1s=",
+              "__NEXT_PREVIEW_MODE_ID": "0f3bbb93e251cbdbeb830c976e1df18a",
+              "__NEXT_PREVIEW_MODE_SIGNING_KEY": "df208ef5c5d9cc39ac4fac88586f90d87bbb2cc0e5b816f3b30faabb84c402a8",
+              "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "4b3179f7d70ddc9af6b4e6f40cd2a555160615c7763ce9cebcb17180110b3663"
+            }
+          },
+          "route": {
+            "path": "/api/displays/[id]/config",
+            "overrides": [
+              "/api/displays/[id]/config.rsc"
+            ]
+          },
+          "outputPath": "__next-on-pages-dist__/functions/api/displays/[id]/config.func.js",
+          "outputByteSize": 30428
+        },
+        {
+          "relativePath": "/api/displays/[id]/content.func",
+          "config": {
+            "runtime": "edge",
+            "name": "api/displays/[id]/content",
+            "deploymentTarget": "v8-worker",
+            "entrypoint": "index.js",
+            "assets": [],
+            "framework": {
+              "slug": "nextjs",
+              "version": "15.5.9"
+            },
+            "environment": {
+              "__NEXT_BUILD_ID": "VVJFRL5pISgWCXydKUbJF",
+              "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "wRABv0C6a37nqqZVdbaNyRy0XD9dlt/yXLHcRv53/1s=",
+              "__NEXT_PREVIEW_MODE_ID": "0f3bbb93e251cbdbeb830c976e1df18a",
+              "__NEXT_PREVIEW_MODE_SIGNING_KEY": "df208ef5c5d9cc39ac4fac88586f90d87bbb2cc0e5b816f3b30faabb84c402a8",
+              "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "4b3179f7d70ddc9af6b4e6f40cd2a555160615c7763ce9cebcb17180110b3663"
+            }
+          },
+          "route": {
+            "path": "/api/displays/[id]/content",
+            "overrides": [
+              "/api/displays/[id]/content.rsc"
+            ]
+          },
+          "outputPath": "__next-on-pages-dist__/functions/api/displays/[id]/content.func.js",
+          "outputByteSize": 32459
+        },
+        {
+          "relativePath": "/api/displays/[id]/heartbeat.func",
+          "config": {
+            "runtime": "edge",
+            "name": "api/displays/[id]/heartbeat",
+            "deploymentTarget": "v8-worker",
+            "entrypoint": "index.js",
+            "assets": [],
+            "framework": {
+              "slug": "nextjs",
+              "version": "15.5.9"
+            },
+            "environment": {
+              "__NEXT_BUILD_ID": "VVJFRL5pISgWCXydKUbJF",
+              "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "wRABv0C6a37nqqZVdbaNyRy0XD9dlt/yXLHcRv53/1s=",
+              "__NEXT_PREVIEW_MODE_ID": "0f3bbb93e251cbdbeb830c976e1df18a",
+              "__NEXT_PREVIEW_MODE_SIGNING_KEY": "df208ef5c5d9cc39ac4fac88586f90d87bbb2cc0e5b816f3b30faabb84c402a8",
+              "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "4b3179f7d70ddc9af6b4e6f40cd2a555160615c7763ce9cebcb17180110b3663"
+            }
+          },
+          "route": {
+            "path": "/api/displays/[id]/heartbeat",
+            "overrides": [
+              "/api/displays/[id]/heartbeat.rsc"
+            ]
+          },
+          "outputPath": "__next-on-pages-dist__/functions/api/displays/[id]/heartbeat.func.js",
+          "outputByteSize": 27839
+        },
+        {
+          "relativePath": "/api/displays/[id]/prayer-times.func",
+          "config": {
+            "runtime": "edge",
+            "name": "api/displays/[id]/prayer-times",
+            "deploymentTarget": "v8-worker",
+            "entrypoint": "index.js",
+            "assets": [],
+            "framework": {
+              "slug": "nextjs",
+              "version": "15.5.9"
+            },
+            "environment": {
+              "__NEXT_BUILD_ID": "VVJFRL5pISgWCXydKUbJF",
+              "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "wRABv0C6a37nqqZVdbaNyRy0XD9dlt/yXLHcRv53/1s=",
+              "__NEXT_PREVIEW_MODE_ID": "0f3bbb93e251cbdbeb830c976e1df18a",
+              "__NEXT_PREVIEW_MODE_SIGNING_KEY": "df208ef5c5d9cc39ac4fac88586f90d87bbb2cc0e5b816f3b30faabb84c402a8",
+              "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "4b3179f7d70ddc9af6b4e6f40cd2a555160615c7763ce9cebcb17180110b3663"
+            }
+          },
+          "route": {
+            "path": "/api/displays/[id]/prayer-times",
+            "overrides": [
+              "/api/displays/[id]/prayer-times.rsc"
+            ]
+          },
+          "outputPath": "__next-on-pages-dist__/functions/api/displays/[id]/prayer-times.func.js",
+          "outputByteSize": 28459
+        },
+        {
+          "relativePath": "/api/displays/[id]/status.func",
+          "config": {
+            "runtime": "edge",
+            "name": "api/displays/[id]/status",
+            "deploymentTarget": "v8-worker",
+            "entrypoint": "index.js",
+            "assets": [],
+            "framework": {
+              "slug": "nextjs",
+              "version": "15.5.9"
+            },
+            "environment": {
+              "__NEXT_BUILD_ID": "VVJFRL5pISgWCXydKUbJF",
+              "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "wRABv0C6a37nqqZVdbaNyRy0XD9dlt/yXLHcRv53/1s=",
+              "__NEXT_PREVIEW_MODE_ID": "0f3bbb93e251cbdbeb830c976e1df18a",
+              "__NEXT_PREVIEW_MODE_SIGNING_KEY": "df208ef5c5d9cc39ac4fac88586f90d87bbb2cc0e5b816f3b30faabb84c402a8",
+              "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "4b3179f7d70ddc9af6b4e6f40cd2a555160615c7763ce9cebcb17180110b3663"
+            }
+          },
+          "route": {
+            "path": "/api/displays/[id]/status",
+            "overrides": [
+              "/api/displays/[id]/status.rsc"
+            ]
+          },
+          "outputPath": "__next-on-pages-dist__/functions/api/displays/[id]/status.func.js",
+          "outputByteSize": 25121
+        },
+        {
+          "relativePath": "/api/preview/[token]/content.func",
+          "config": {
+            "runtime": "edge",
+            "name": "api/preview/[token]/content",
+            "deploymentTarget": "v8-worker",
+            "entrypoint": "index.js",
+            "assets": [],
+            "framework": {
+              "slug": "nextjs",
+              "version": "15.5.9"
+            },
+            "environment": {
+              "__NEXT_BUILD_ID": "VVJFRL5pISgWCXydKUbJF",
+              "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "wRABv0C6a37nqqZVdbaNyRy0XD9dlt/yXLHcRv53/1s=",
+              "__NEXT_PREVIEW_MODE_ID": "0f3bbb93e251cbdbeb830c976e1df18a",
+              "__NEXT_PREVIEW_MODE_SIGNING_KEY": "df208ef5c5d9cc39ac4fac88586f90d87bbb2cc0e5b816f3b30faabb84c402a8",
+              "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "4b3179f7d70ddc9af6b4e6f40cd2a555160615c7763ce9cebcb17180110b3663"
+            }
+          },
+          "route": {
+            "path": "/api/preview/[token]/content",
+            "overrides": [
+              "/api/preview/[token]/content.rsc"
+            ]
+          },
+          "outputPath": "__next-on-pages-dist__/functions/api/preview/[token]/content.func.js",
+          "outputByteSize": 24402
+        },
+        {
+          "relativePath": "/api/zones/[zone_code].func",
+          "config": {
+            "runtime": "edge",
+            "name": "api/zones/[zone_code]",
+            "deploymentTarget": "v8-worker",
+            "entrypoint": "index.js",
+            "assets": [],
+            "framework": {
+              "slug": "nextjs",
+              "version": "15.5.9"
+            },
+            "environment": {
+              "__NEXT_BUILD_ID": "VVJFRL5pISgWCXydKUbJF",
+              "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "wRABv0C6a37nqqZVdbaNyRy0XD9dlt/yXLHcRv53/1s=",
+              "__NEXT_PREVIEW_MODE_ID": "0f3bbb93e251cbdbeb830c976e1df18a",
+              "__NEXT_PREVIEW_MODE_SIGNING_KEY": "df208ef5c5d9cc39ac4fac88586f90d87bbb2cc0e5b816f3b30faabb84c402a8",
+              "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "4b3179f7d70ddc9af6b4e6f40cd2a555160615c7763ce9cebcb17180110b3663"
+            }
+          },
+          "route": {
+            "path": "/api/zones/[zone_code]",
+            "overrides": [
+              "/api/zones/[zone_code].rsc"
+            ]
+          },
+          "outputPath": "__next-on-pages-dist__/functions/api/zones/[zone_code].func.js",
+          "outputByteSize": 35092
+        },
+        {
+          "relativePath": "/api/zones.func",
+          "config": {
+            "runtime": "edge",
+            "name": "api/zones",
+            "deploymentTarget": "v8-worker",
+            "entrypoint": "index.js",
+            "assets": [],
+            "framework": {
+              "slug": "nextjs",
+              "version": "15.5.9"
+            },
+            "environment": {
+              "__NEXT_BUILD_ID": "VVJFRL5pISgWCXydKUbJF",
+              "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "wRABv0C6a37nqqZVdbaNyRy0XD9dlt/yXLHcRv53/1s=",
+              "__NEXT_PREVIEW_MODE_ID": "0f3bbb93e251cbdbeb830c976e1df18a",
+              "__NEXT_PREVIEW_MODE_SIGNING_KEY": "df208ef5c5d9cc39ac4fac88586f90d87bbb2cc0e5b816f3b30faabb84c402a8",
+              "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "4b3179f7d70ddc9af6b4e6f40cd2a555160615c7763ce9cebcb17180110b3663"
+            }
+          },
+          "route": {
+            "path": "/api/zones",
+            "overrides": [
+              "/api/zones.rsc"
+            ]
+          },
+          "outputPath": "__next-on-pages-dist__/functions/api/zones.func.js",
+          "outputByteSize": 34528
+        }
+      ],
+      "prerendered": [],
+      "ignored": [
+        {
+          "reason": "unnecessary rsc function",
+          "relativePath": "/api/displays/[id]/config.rsc.func",
+          "config": {
+            "runtime": "edge",
+            "name": "api/displays/[id]/config",
+            "deploymentTarget": "v8-worker",
+            "entrypoint": "index.js",
+            "assets": [],
+            "framework": {
+              "slug": "nextjs",
+              "version": "15.5.9"
+            },
+            "environment": {
+              "__NEXT_BUILD_ID": "VVJFRL5pISgWCXydKUbJF",
+              "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "wRABv0C6a37nqqZVdbaNyRy0XD9dlt/yXLHcRv53/1s=",
+              "__NEXT_PREVIEW_MODE_ID": "0f3bbb93e251cbdbeb830c976e1df18a",
+              "__NEXT_PREVIEW_MODE_SIGNING_KEY": "df208ef5c5d9cc39ac4fac88586f90d87bbb2cc0e5b816f3b30faabb84c402a8",
+              "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "4b3179f7d70ddc9af6b4e6f40cd2a555160615c7763ce9cebcb17180110b3663"
+            }
+          },
+          "route": {
+            "path": "/api/displays/[id]/config.rsc",
+            "overrides": []
+          }
+        },
+        {
+          "reason": "unnecessary rsc function",
+          "relativePath": "/api/displays/[id]/content.rsc.func",
+          "config": {
+            "runtime": "edge",
+            "name": "api/displays/[id]/content",
+            "deploymentTarget": "v8-worker",
+            "entrypoint": "index.js",
+            "assets": [],
+            "framework": {
+              "slug": "nextjs",
+              "version": "15.5.9"
+            },
+            "environment": {
+              "__NEXT_BUILD_ID": "VVJFRL5pISgWCXydKUbJF",
+              "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "wRABv0C6a37nqqZVdbaNyRy0XD9dlt/yXLHcRv53/1s=",
+              "__NEXT_PREVIEW_MODE_ID": "0f3bbb93e251cbdbeb830c976e1df18a",
+              "__NEXT_PREVIEW_MODE_SIGNING_KEY": "df208ef5c5d9cc39ac4fac88586f90d87bbb2cc0e5b816f3b30faabb84c402a8",
+              "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "4b3179f7d70ddc9af6b4e6f40cd2a555160615c7763ce9cebcb17180110b3663"
+            }
+          },
+          "route": {
+            "path": "/api/displays/[id]/content.rsc",
+            "overrides": []
+          }
+        },
+        {
+          "reason": "unnecessary rsc function",
+          "relativePath": "/api/displays/[id]/heartbeat.rsc.func",
+          "config": {
+            "runtime": "edge",
+            "name": "api/displays/[id]/heartbeat",
+            "deploymentTarget": "v8-worker",
+            "entrypoint": "index.js",
+            "assets": [],
+            "framework": {
+              "slug": "nextjs",
+              "version": "15.5.9"
+            },
+            "environment": {
+              "__NEXT_BUILD_ID": "VVJFRL5pISgWCXydKUbJF",
+              "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "wRABv0C6a37nqqZVdbaNyRy0XD9dlt/yXLHcRv53/1s=",
+              "__NEXT_PREVIEW_MODE_ID": "0f3bbb93e251cbdbeb830c976e1df18a",
+              "__NEXT_PREVIEW_MODE_SIGNING_KEY": "df208ef5c5d9cc39ac4fac88586f90d87bbb2cc0e5b816f3b30faabb84c402a8",
+              "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "4b3179f7d70ddc9af6b4e6f40cd2a555160615c7763ce9cebcb17180110b3663"
+            }
+          },
+          "route": {
+            "path": "/api/displays/[id]/heartbeat.rsc",
+            "overrides": []
+          }
+        },
+        {
+          "reason": "unnecessary rsc function",
+          "relativePath": "/api/displays/[id]/prayer-times.rsc.func",
+          "config": {
+            "runtime": "edge",
+            "name": "api/displays/[id]/prayer-times",
+            "deploymentTarget": "v8-worker",
+            "entrypoint": "index.js",
+            "assets": [],
+            "framework": {
+              "slug": "nextjs",
+              "version": "15.5.9"
+            },
+            "environment": {
+              "__NEXT_BUILD_ID": "VVJFRL5pISgWCXydKUbJF",
+              "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "wRABv0C6a37nqqZVdbaNyRy0XD9dlt/yXLHcRv53/1s=",
+              "__NEXT_PREVIEW_MODE_ID": "0f3bbb93e251cbdbeb830c976e1df18a",
+              "__NEXT_PREVIEW_MODE_SIGNING_KEY": "df208ef5c5d9cc39ac4fac88586f90d87bbb2cc0e5b816f3b30faabb84c402a8",
+              "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "4b3179f7d70ddc9af6b4e6f40cd2a555160615c7763ce9cebcb17180110b3663"
+            }
+          },
+          "route": {
+            "path": "/api/displays/[id]/prayer-times.rsc",
+            "overrides": []
+          }
+        },
+        {
+          "reason": "unnecessary rsc function",
+          "relativePath": "/api/displays/[id]/status.rsc.func",
+          "config": {
+            "runtime": "edge",
+            "name": "api/displays/[id]/status",
+            "deploymentTarget": "v8-worker",
+            "entrypoint": "index.js",
+            "assets": [],
+            "framework": {
+              "slug": "nextjs",
+              "version": "15.5.9"
+            },
+            "environment": {
+              "__NEXT_BUILD_ID": "VVJFRL5pISgWCXydKUbJF",
+              "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "wRABv0C6a37nqqZVdbaNyRy0XD9dlt/yXLHcRv53/1s=",
+              "__NEXT_PREVIEW_MODE_ID": "0f3bbb93e251cbdbeb830c976e1df18a",
+              "__NEXT_PREVIEW_MODE_SIGNING_KEY": "df208ef5c5d9cc39ac4fac88586f90d87bbb2cc0e5b816f3b30faabb84c402a8",
+              "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "4b3179f7d70ddc9af6b4e6f40cd2a555160615c7763ce9cebcb17180110b3663"
+            }
+          },
+          "route": {
+            "path": "/api/displays/[id]/status.rsc",
+            "overrides": []
+          }
+        },
+        {
+          "reason": "unnecessary rsc function",
+          "relativePath": "/api/preview/[token]/content.rsc.func",
+          "config": {
+            "runtime": "edge",
+            "name": "api/preview/[token]/content",
+            "deploymentTarget": "v8-worker",
+            "entrypoint": "index.js",
+            "assets": [],
+            "framework": {
+              "slug": "nextjs",
+              "version": "15.5.9"
+            },
+            "environment": {
+              "__NEXT_BUILD_ID": "VVJFRL5pISgWCXydKUbJF",
+              "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "wRABv0C6a37nqqZVdbaNyRy0XD9dlt/yXLHcRv53/1s=",
+              "__NEXT_PREVIEW_MODE_ID": "0f3bbb93e251cbdbeb830c976e1df18a",
+              "__NEXT_PREVIEW_MODE_SIGNING_KEY": "df208ef5c5d9cc39ac4fac88586f90d87bbb2cc0e5b816f3b30faabb84c402a8",
+              "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "4b3179f7d70ddc9af6b4e6f40cd2a555160615c7763ce9cebcb17180110b3663"
+            }
+          },
+          "route": {
+            "path": "/api/preview/[token]/content.rsc",
+            "overrides": []
+          }
+        },
+        {
+          "reason": "unnecessary rsc function",
+          "relativePath": "/api/zones/[zone_code].rsc.func",
+          "config": {
+            "runtime": "edge",
+            "name": "api/zones/[zone_code]",
+            "deploymentTarget": "v8-worker",
+            "entrypoint": "index.js",
+            "assets": [],
+            "framework": {
+              "slug": "nextjs",
+              "version": "15.5.9"
+            },
+            "environment": {
+              "__NEXT_BUILD_ID": "VVJFRL5pISgWCXydKUbJF",
+              "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "wRABv0C6a37nqqZVdbaNyRy0XD9dlt/yXLHcRv53/1s=",
+              "__NEXT_PREVIEW_MODE_ID": "0f3bbb93e251cbdbeb830c976e1df18a",
+              "__NEXT_PREVIEW_MODE_SIGNING_KEY": "df208ef5c5d9cc39ac4fac88586f90d87bbb2cc0e5b816f3b30faabb84c402a8",
+              "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "4b3179f7d70ddc9af6b4e6f40cd2a555160615c7763ce9cebcb17180110b3663"
+            }
+          },
+          "route": {
+            "path": "/api/zones/[zone_code].rsc",
+            "overrides": []
+          }
+        },
+        {
+          "reason": "unnecessary rsc function",
+          "relativePath": "/api/zones.rsc.func",
+          "config": {
+            "runtime": "edge",
+            "name": "api/zones",
+            "deploymentTarget": "v8-worker",
+            "entrypoint": "index.js",
+            "assets": [],
+            "framework": {
+              "slug": "nextjs",
+              "version": "15.5.9"
+            },
+            "environment": {
+              "__NEXT_BUILD_ID": "VVJFRL5pISgWCXydKUbJF",
+              "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "wRABv0C6a37nqqZVdbaNyRy0XD9dlt/yXLHcRv53/1s=",
+              "__NEXT_PREVIEW_MODE_ID": "0f3bbb93e251cbdbeb830c976e1df18a",
+              "__NEXT_PREVIEW_MODE_SIGNING_KEY": "df208ef5c5d9cc39ac4fac88586f90d87bbb2cc0e5b816f3b30faabb84c402a8",
+              "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "4b3179f7d70ddc9af6b4e6f40cd2a555160615c7763ce9cebcb17180110b3663"
+            }
+          },
+          "route": {
+            "path": "/api/zones.rsc",
+            "overrides": []
+          }
+        }
+      ]
+    },
+    "staticAssets": [
+      "/404.html",
+      "/404.rsc.json",
+      "/500.html",
+      "/_app.rsc.json",
+      "/_document.rsc.json",
+      "/_error.rsc.json",
+      "/_next/static/VVJFRL5pISgWCXydKUbJF/_buildManifest.js",
+      "/_next/static/VVJFRL5pISgWCXydKUbJF/_ssgManifest.js",
+      "/_next/static/chunks/app/api/displays/[id]/config/route-4e38526821c7c16d.js",
+      "/_next/static/chunks/app/api/displays/[id]/content/route-4e38526821c7c16d.js",
+      "/_next/static/chunks/app/api/displays/[id]/heartbeat/route-4e38526821c7c16d.js",
+      "/_next/static/chunks/app/api/displays/[id]/prayer-times/route-4e38526821c7c16d.js",
+      "/_next/static/chunks/app/api/displays/[id]/status/route-4e38526821c7c16d.js",
+      "/_next/static/chunks/app/api/preview/[token]/content/route-4e38526821c7c16d.js",
+      "/_next/static/chunks/app/api/zones/[zone_code]/route-4e38526821c7c16d.js",
+      "/_next/static/chunks/app/api/zones/route-4e38526821c7c16d.js",
+      "/_next/static/chunks/main-6a91f2551da28fdd.js",
+      "/_next/static/chunks/main-app-42ed1e9d10b55a8a.js",
+      "/_next/static/chunks/pages/_app-4dec5b7dd49bcaf3.js",
+      "/_next/static/chunks/pages/_error-da0c7294bbed2a12.js",
+      "/_next/static/chunks/polyfills-42372ed130431b0a.js",
+      "/_next/static/chunks/vendors-6071acf011b1c505.js",
+      "/_next/static/chunks/webpack-23055d52f9c766c3.js",
+      "/_next/static/not-found.txt",
+      "/images/hero-landing.svg"
+    ],
+    "identifiers": {
+      "wasm": {},
+      "manifest": {
+        "__RSC_SERVER_MANIFEST": {
+          "consumers": 8,
+          "groupedPath": "88a389dd6c068190adb2efc795e4063c",
+          "newDest": "__next-on-pages-dist__/manifest/88a389dd6c068190adb2efc795e4063c.js",
+          "byteLength": 178,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "__REACT_LOADABLE_MANIFEST": {
+          "consumers": 8,
+          "groupedPath": "88a389dd6c068190adb2efc795e4063c",
+          "newDest": "__next-on-pages-dist__/manifest/88a389dd6c068190adb2efc795e4063c.js",
+          "byteLength": 89,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "__NEXT_FONT_MANIFEST": {
+          "consumers": 8,
+          "groupedPath": "88a389dd6c068190adb2efc795e4063c",
+          "newDest": "__next-on-pages-dist__/manifest/88a389dd6c068190adb2efc795e4063c.js",
+          "byteLength": 154,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        }
+      },
+      "webpack": {
+        "48": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 322,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "131": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 468,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "146": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 1116,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "151": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 231,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "229": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 9922,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "290": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 159,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "313": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 423,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "396": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 80,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "451": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 381,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "464": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 102,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "491": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 291,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "495": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 4944,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "521": {
+          "consumers": 2,
+          "groupedPath": "9268afa3409dcda96a21cf20b3259e9b",
+          "newDest": "__next-on-pages-dist__/webpack/9268afa3409dcda96a21cf20b3259e9b.js",
+          "byteLength": 109617,
+          "consumersList": [
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "624": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 45,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "671": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 153,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "705": {
+          "consumers": 1,
+          "inlined": true,
+          "byteLength": 12224,
+          "consumersList": [
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "713": {
+          "consumers": 1,
+          "inlined": true,
+          "byteLength": 19097,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js"
+          ]
+        },
+        "746": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 267,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "747": {
+          "consumers": 2,
+          "groupedPath": "9268afa3409dcda96a21cf20b3259e9b",
+          "newDest": "__next-on-pages-dist__/webpack/9268afa3409dcda96a21cf20b3259e9b.js",
+          "byteLength": 247,
+          "consumersList": [
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "886": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 251,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "915": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 348,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "979": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 126,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "1161": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 24360,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "1382": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 502,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "1454": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 2102,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "1585": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 1713,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "1728": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 358,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "1762": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 8815,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "1771": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 4969,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "1814": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 5424,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "1821": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 473,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "1878": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 2521,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "1893": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 371,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "1951": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 779,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "2015": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 360,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "2146": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 6199,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "2193": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 1672,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "2203": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 126,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "2238": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 10129,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "2281": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 8693,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "2475": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 81,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "2611": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 4064,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "2816": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 166,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "2858": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 190,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "2900": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 103,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "2925": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 476,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "2939": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 1367,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "2945": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 2269,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "2968": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 1323,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "2969": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 194,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "3155": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 259,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "3253": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 325,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "3297": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 187,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "3397": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 3036,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "3470": {
+          "consumers": 2,
+          "groupedPath": "9268afa3409dcda96a21cf20b3259e9b",
+          "newDest": "__next-on-pages-dist__/webpack/9268afa3409dcda96a21cf20b3259e9b.js",
+          "byteLength": 381,
+          "consumersList": [
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "3477": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 295,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "3703": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 322,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "3749": {
+          "consumers": 1,
+          "inlined": true,
+          "byteLength": 13191,
+          "consumersList": [
+            "/api/preview/[token]/content.func/index.js"
+          ]
+        },
+        "3939": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 208,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "3983": {
+          "consumers": 1,
+          "inlined": true,
+          "byteLength": 13783,
+          "consumersList": [
+            "/api/displays/[id]/status.func/index.js"
+          ]
+        },
+        "4173": {
+          "consumers": 1,
+          "inlined": true,
+          "byteLength": 11818,
+          "consumersList": [
+            "/api/zones.func/index.js"
+          ]
+        },
+        "4365": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 412,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "4462": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 169,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "4492": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 1888,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "4525": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 4025,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "4581": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 31515,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "4616": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 187,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "4699": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 4401,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "4706": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 6253,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "4709": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 1387,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "4782": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 103,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "4829": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 226,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "4841": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 184,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "4928": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 821,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "4996": {
+          "consumers": 5,
+          "newDest": "__next-on-pages-dist__/webpack/4996.js",
+          "byteLength": 213,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js"
+          ]
+        },
+        "5118": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 123,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "5258": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 2537,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "5292": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 190,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "5356": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 90,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "5423": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 127,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "5472": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 46,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "5521": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 95,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "5774": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 1214,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "5785": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 1926,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "5890": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 10955,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "5901": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 985,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "6102": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 1519,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "6145": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 602,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "6209": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 1412,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "6279": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 220,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "6317": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 247,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "6461": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 16852,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "6531": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 370,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "6585": {
+          "consumers": 1,
+          "inlined": true,
+          "byteLength": 21059,
+          "consumersList": [
+            "/api/displays/[id]/content.func/index.js"
+          ]
+        },
+        "6676": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 167,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "6786": {
+          "consumers": 1,
+          "inlined": true,
+          "byteLength": 17075,
+          "consumersList": [
+            "/api/displays/[id]/prayer-times.func/index.js"
+          ]
+        },
+        "6808": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 235,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "6839": {
+          "consumers": 2,
+          "groupedPath": "9268afa3409dcda96a21cf20b3259e9b",
+          "newDest": "__next-on-pages-dist__/webpack/9268afa3409dcda96a21cf20b3259e9b.js",
+          "byteLength": 12275,
+          "consumersList": [
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "6840": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 81,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "6864": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 207,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "6884": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 1259,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "6894": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 343,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "7266": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 3509,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "7587": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 553,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "7798": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 307,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "7856": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 44789,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "7966": {
+          "consumers": 2,
+          "groupedPath": "9268afa3409dcda96a21cf20b3259e9b",
+          "newDest": "__next-on-pages-dist__/webpack/9268afa3409dcda96a21cf20b3259e9b.js",
+          "byteLength": 56534,
+          "consumersList": [
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "7995": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 11219,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "8046": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 439,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "8109": {
+          "consumers": 1,
+          "inlined": true,
+          "byteLength": 16459,
+          "consumersList": [
+            "/api/displays/[id]/heartbeat.func/index.js"
+          ]
+        },
+        "8230": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 2309,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "8590": {
+          "consumers": 6,
+          "newDest": "__next-on-pages-dist__/webpack/8590.js",
+          "byteLength": 210812,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js"
+          ]
+        },
+        "8793": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 202,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "8803": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 679,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "8875": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 170,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "8916": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 1284,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "8946": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 423,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "9122": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 184,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "9147": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 68,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "9364": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 214,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "9596": {
+          "consumers": 2,
+          "groupedPath": "9268afa3409dcda96a21cf20b3259e9b",
+          "newDest": "__next-on-pages-dist__/webpack/9268afa3409dcda96a21cf20b3259e9b.js",
+          "byteLength": 30505,
+          "consumersList": [
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "9690": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 589,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "9695": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 1705,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        },
+        "9952": {
+          "consumers": 8,
+          "groupedPath": "7001972f252ffe46a9fe37f1ae3cbb75",
+          "newDest": "__next-on-pages-dist__/webpack/7001972f252ffe46a9fe37f1ae3cbb75.js",
+          "byteLength": 1035,
+          "consumersList": [
+            "/api/displays/[id]/config.func/index.js",
+            "/api/displays/[id]/content.func/index.js",
+            "/api/displays/[id]/heartbeat.func/index.js",
+            "/api/displays/[id]/prayer-times.func/index.js",
+            "/api/displays/[id]/status.func/index.js",
+            "/api/preview/[token]/content.func/index.js",
+            "/api/zones.func/index.js",
+            "/api/zones/[zone_code].func/index.js"
+          ]
+        }
+      }
+    }
+  }
+}

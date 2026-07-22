@@ -10,6 +10,7 @@ node_modules/
 
 # Environment variables
 .env
+.env*
 .env.local
 .env.development.local
 .env.test.local
@@ -17,6 +18,7 @@ node_modules/
 .env.production.local
 
 # Logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -95,6 +97,8 @@ temp/
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
+*.tmp
 *.suo
 *.ntvs*
 *.njsproj
@@ -133,3 +137,4 @@ deployment/checklists/*-checklist.md
 deployment/.secrets/
 
 test-data-generated.sql
+.vercel/

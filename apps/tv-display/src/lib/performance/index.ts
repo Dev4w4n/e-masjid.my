@@ -13,7 +13,19 @@ import { usePerformance, type PerformanceHookReturn } from './use-performance';
 
 // Initialize performance system
 export const initializePerformanceSystem = () => {
-  const config = getPerformanceConfig(process.env.NODE_ENV as 'development' | 'production' | 'test');
+  const safeProcessEnv: Record<string, string | undefined> | undefined =
+    typeof globalThis !== 'undefined' &&
+    'process' in globalThis &&
+    (globalThis as any).process?.env
+      ? ((globalThis as any).process.env as Record<string, string | undefined>)
+      : undefined;
+
+  const nodeEnv =
+    (import.meta.env.MODE as 'development' | 'production' | 'test' | undefined) ||
+    (safeProcessEnv?.NODE_ENV as 'development' | 'production' | 'test' | undefined) ||
+    'development';
+
+  const config = getPerformanceConfig(nodeEnv);
   
   console.log('🚀 Initializing TV Display Performance System');
   

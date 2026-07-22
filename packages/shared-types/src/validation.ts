@@ -1,6 +1,6 @@
 // Malaysian-specific validation schemas and functions
 
-import type { MalaysianState } from "./types.js";
+import type { MalaysianState } from "./app-types";
 
 // Phone number validation for Malaysian format
 export const MALAYSIAN_PHONE_REGEX = /^(\+60|0)[1-9][0-9]{7,9}$/;

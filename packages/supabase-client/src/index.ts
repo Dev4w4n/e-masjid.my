@@ -16,9 +16,18 @@ import type {
 
 function getEnvironmentVariables() {
   const isBrowser = typeof window !== "undefined";
-  const nodeEnv =
-    (typeof process !== "undefined" && process.env && process.env.NODE_ENV) ||
-    undefined;
+  const directProcessEnv =
+    typeof process !== "undefined"
+      ? (process.env as Record<string, string | undefined>)
+      : undefined;
+  const globalProcessEnv =
+    typeof globalThis !== "undefined" && "process" in globalThis
+      ? ((globalThis as any).process?.env as
+          | Record<string, string | undefined>
+          | undefined)
+      : undefined;
+  const safeProcessEnv = directProcessEnv ?? globalProcessEnv;
+  const nodeEnv = safeProcessEnv?.NODE_ENV;
   const isTest = nodeEnv === "test";
 
   let SUPABASE_URL: string | undefined;
@@ -27,8 +36,11 @@ function getEnvironmentVariables() {
   if (isBrowser) {
     // Access Vite's injected env directly via import.meta.env
     try {
-      // @ts-expect-error Vite provides import.meta.env at build time
-      const env = import.meta.env as Record<string, string | undefined>;
+      const env = (
+        import.meta as unknown as {
+          env?: Record<string, string | undefined>;
+        }
+      ).env;
       SUPABASE_URL = env?.VITE_SUPABASE_URL || env?.NEXT_PUBLIC_SUPABASE_URL;
       SUPABASE_ANON_KEY =
         env?.VITE_SUPABASE_ANON_KEY || env?.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -36,27 +48,42 @@ function getEnvironmentVariables() {
       // ignore; fall back to process.env below (useful in tests/node)
     }
 
-    // Check Next.js environment variables (NEXT_PUBLIC_ prefix)
-    if (!SUPABASE_URL && typeof process !== "undefined") {
-      SUPABASE_URL = process.env?.NEXT_PUBLIC_SUPABASE_URL;
+    // Prefer compile-time inlined Next.js env values in browser bundles.
+    if (!SUPABASE_URL && directProcessEnv) {
+      SUPABASE_URL =
+        directProcessEnv.NEXT_PUBLIC_SUPABASE_URL ||
+        directProcessEnv.SUPABASE_URL;
     }
-    if (!SUPABASE_ANON_KEY && typeof process !== "undefined") {
-      SUPABASE_ANON_KEY = process.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!SUPABASE_ANON_KEY && directProcessEnv) {
+      SUPABASE_ANON_KEY =
+        directProcessEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+        directProcessEnv.SUPABASE_ANON_KEY;
+    }
+
+    // Check runtime process env as an additional fallback.
+    if (!SUPABASE_URL && safeProcessEnv) {
+      SUPABASE_URL =
+        safeProcessEnv.NEXT_PUBLIC_SUPABASE_URL || safeProcessEnv.SUPABASE_URL;
+    }
+    if (!SUPABASE_ANON_KEY && safeProcessEnv) {
+      SUPABASE_ANON_KEY =
+        safeProcessEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+        safeProcessEnv.SUPABASE_ANON_KEY;
     }
   }
 
   // Fallback for Node.js/test environments
-  if (!SUPABASE_URL) {
+  if (!SUPABASE_URL && safeProcessEnv) {
     SUPABASE_URL =
-      process.env?.VITE_SUPABASE_URL ||
-      process.env?.NEXT_PUBLIC_SUPABASE_URL ||
-      process.env?.SUPABASE_URL;
+      safeProcessEnv.VITE_SUPABASE_URL ||
+      safeProcessEnv.NEXT_PUBLIC_SUPABASE_URL ||
+      safeProcessEnv.SUPABASE_URL;
   }
-  if (!SUPABASE_ANON_KEY) {
+  if (!SUPABASE_ANON_KEY && safeProcessEnv) {
     SUPABASE_ANON_KEY =
-      process.env?.VITE_SUPABASE_ANON_KEY ||
-      process.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-      process.env?.SUPABASE_ANON_KEY;
+      safeProcessEnv.VITE_SUPABASE_ANON_KEY ||
+      safeProcessEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+      safeProcessEnv.SUPABASE_ANON_KEY;
   }
 
   return { SUPABASE_URL, SUPABASE_ANON_KEY, isTest };
@@ -67,12 +94,57 @@ const testUrl = "https://dummy-project.supabase.co";
 const testKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1bW15LXByb2plY3QiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MDAwMDAwMCwiZXhwIjoxOTU1MzU1NjAwfQ.dummy_signature";
 
+const isBrowser = typeof window !== "undefined";
 const finalUrl = SUPABASE_URL || (isTest ? testUrl : "");
 const finalKey = SUPABASE_ANON_KEY || (isTest ? testKey : "");
+const RPC_TIMEOUT_MS = 12000;
 
 if (!finalUrl || !finalKey) {
-  throw new Error(
-    "Missing Supabase environment variables. Please set SUPABASE_URL and SUPABASE_ANON_KEY"
+  const message =
+    "Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY (or SUPABASE_URL and SUPABASE_ANON_KEY).";
+
+  if (!isBrowser && !isTest) {
+    throw new Error(message);
+  }
+
+  console.error(message);
+}
+
+const resolvedUrl = finalUrl || testUrl;
+const resolvedKey = finalKey || testKey;
+
+function withTimeout<T>(
+  promiseLike: PromiseLike<T>,
+  timeoutMs: number,
+  label: string,
+) {
+  return Promise.race<T>([
+    Promise.resolve(promiseLike),
+    new Promise<T>((_, reject) => {
+      setTimeout(() => {
+        reject(new Error(`${label} timed out after ${timeoutMs}ms`));
+      }, timeoutMs);
+    }),
+  ]);
+}
+
+function isAuthRecoverableError(error: unknown) {
+  if (!error || typeof error !== "object") return false;
+
+  const supabaseError = error as {
+    code?: string;
+    status?: number;
+    message?: string;
+  };
+
+  const message = (supabaseError.message || "").toLowerCase();
+
+  return (
+    supabaseError.code === "PGRST301" ||
+    supabaseError.status === 401 ||
+    message.includes("jwt") ||
+    message.includes("token") ||
+    message.includes("expired")
   );
 }
 
@@ -96,11 +168,15 @@ if (!finalUrl || !finalKey) {
 const noopLock = async <R>(
   _name: string,
   _acquireTimeout: number,
-  fn: () => Promise<R>
+  fn: () => Promise<R>,
 ): Promise<R> => {
   // Simply execute the function without any locking
   // This prevents hanging but may cause minor race conditions across tabs
   return fn();
+};
+
+const supabaseGlobal = globalThis as typeof globalThis & {
+  __emasjidSupabaseClient__?: SupabaseClient<Database>;
 };
 
 /**
@@ -110,25 +186,27 @@ const noopLock = async <R>(
  * indefinitely when there are lock contention issues (e.g., multiple tabs,
  * browser bugs, or stale locks from crashed tabs).
  */
-export const supabase: SupabaseClient<Database> = createClient<Database>(
-  finalUrl,
-  finalKey,
-  {
-    auth: {
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: true,
-      // Use our no-op lock to prevent hanging on getSession/refreshSession calls
-      // This is an @experimental option - may need updating in future Supabase versions
-      lock: noopLock,
-    },
-    realtime: {
-      params: {
-        eventsPerSecond: 10,
+export const supabase: SupabaseClient<Database> =
+  supabaseGlobal.__emasjidSupabaseClient__ ||
+  (supabaseGlobal.__emasjidSupabaseClient__ = createClient<Database>(
+    resolvedUrl,
+    resolvedKey,
+    {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+        // Use our no-op lock to prevent hanging on getSession/refreshSession calls
+        // This is an @experimental option - may need updating in future Supabase versions
+        lock: noopLock,
+      },
+      realtime: {
+        params: {
+          eventsPerSecond: 10,
+        },
       },
     },
-  }
-);
+  ));
 
 /**
  * Authentication utilities
@@ -146,7 +224,7 @@ export class AuthService {
   async signUp(
     email: string,
     password: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>,
   ) {
     const signUpData: any = {
       email,
@@ -279,7 +357,7 @@ export class AuthService {
    * Listen to auth state changes
    */
   onAuthStateChange(
-    callback: (event: string, session: Session | null) => void
+    callback: (event: string, session: Session | null) => void,
   ) {
     return this.client.auth.onAuthStateChange(callback);
   }
@@ -307,9 +385,23 @@ export class DatabaseService {
    */
   async rpc<T extends keyof Database["public"]["Functions"]>(
     functionName: T,
-    params?: Database["public"]["Functions"][T]["Args"]
+    params?: Database["public"]["Functions"][T]["Args"],
   ): Promise<Database["public"]["Functions"][T]["Returns"]> {
-    const { data, error } = await this.client.rpc(functionName as any, params);
+    let { data, error } = await withTimeout(
+      this.client.rpc(functionName as any, params),
+      RPC_TIMEOUT_MS,
+      `RPC ${String(functionName)}`,
+    );
+
+    if (error && isAuthRecoverableError(error)) {
+      // Retry once after refresh to recover from stale/rotated sessions.
+      await this.client.auth.refreshSession().catch(() => undefined);
+      ({ data, error } = await withTimeout(
+        this.client.rpc(functionName as any, params),
+        RPC_TIMEOUT_MS,
+        `RPC ${String(functionName)} (retry)`,
+      ));
+    }
 
     if (error) {
       throw new Error(`RPC call failed: ${error.message}`);
@@ -325,7 +417,7 @@ export class DatabaseService {
     tableName: T,
     callback: (payload: any) => void,
     event: "INSERT" | "UPDATE" | "DELETE" | "*" = "*",
-    filter?: string
+    filter?: string,
   ) {
     const channel = this.client
       .channel(`${String(tableName)}-changes`)
@@ -337,7 +429,7 @@ export class DatabaseService {
           table: String(tableName),
           filter,
         },
-        callback
+        callback,
       )
       .subscribe();
 
@@ -351,7 +443,7 @@ export class DatabaseService {
    */
   async count<T extends keyof Database["public"]["Tables"]>(
     tableName: T,
-    filter?: any
+    filter?: any,
   ): Promise<number> {
     let query = this.client
       .from(tableName as any)
@@ -403,7 +495,7 @@ export class ProfileService {
    * Create or update profile
    */
   async upsertProfile(
-    profile: Database["public"]["Tables"]["profiles"]["Insert"]
+    profile: Database["public"]["Tables"]["profiles"]["Insert"],
   ) {
     const { data, error } = await this.db
       .table("profiles")
@@ -439,7 +531,7 @@ export class ProfileService {
    * Add profile address
    */
   async addProfileAddress(
-    address: Database["public"]["Tables"]["profile_addresses"]["Insert"]
+    address: Database["public"]["Tables"]["profile_addresses"]["Insert"],
   ) {
     const { data, error } = await this.db
       .table("profile_addresses")
@@ -503,7 +595,7 @@ export class MasjidService {
       masjids.map(async (masjid: Masjid) => {
         const admins = await this.getMasjidAdmins(masjid.id);
         return { ...masjid, admins: admins || [] };
-      })
+      }),
     );
 
     return masjidsWithAdmins;
@@ -548,7 +640,7 @@ export class MasjidService {
    * Create masjid
    */
   async createMasjid(
-    masjid: Database["public"]["Tables"]["masjids"]["Insert"]
+    masjid: Database["public"]["Tables"]["masjids"]["Insert"],
   ) {
     // Get the current authenticated user via the db's client
     const {
@@ -583,7 +675,7 @@ export class MasjidService {
    */
   async updateMasjid(
     masjidId: string,
-    updates: Database["public"]["Tables"]["masjids"]["Update"]
+    updates: Database["public"]["Tables"]["masjids"]["Update"],
   ) {
     const { data, error } = await this.db
       .table("masjids")
@@ -656,7 +748,7 @@ export class MasjidService {
    * Create or update prayer time configuration
    */
   async upsertPrayerConfig(
-    config: Database["public"]["Tables"]["prayer_time_config"]["Insert"]
+    config: Database["public"]["Tables"]["prayer_time_config"]["Insert"],
   ) {
     const { data, error } = await this.db
       .table("prayer_time_config")
@@ -693,7 +785,7 @@ export class MasjidService {
         address->>'postcode' as postcode,
         address->>'city' as city,
         address->>'state' as state
-      `
+      `,
       )
       .eq("status", "active")
       .order("name");
@@ -722,7 +814,7 @@ export class MasjidService {
         address->>'postcode' as postcode,
         address->>'city' as city,
         address->>'state' as state
-      `
+      `,
       )
       .in("id", masjidIds);
 
@@ -737,7 +829,7 @@ export class MasjidService {
    * Get masjid admins
    */
   async getMasjidAdmins(
-    masjidId: string
+    masjidId: string,
   ): Promise<
     Database["public"]["Functions"]["get_masjid_admin_list"]["Returns"]
   > {
@@ -752,7 +844,7 @@ export class MasjidService {
    * Assign admin to masjid
    */
   async assignAdmin(
-    assignment: Database["public"]["Tables"]["masjid_admins"]["Insert"]
+    assignment: Database["public"]["Tables"]["masjid_admins"]["Insert"],
   ): Promise<Database["public"]["Tables"]["masjid_admins"]["Row"]> {
     const { data, error } = await this.db
       .table("masjid_admins")
@@ -793,7 +885,57 @@ export {
 export {
   StatisticsService,
   type DashboardStatistics,
+  type MappingVerificationResult,
 } from "./services/statistics";
+
+// Zone client for landing page discovery flows (Feature 007)
+export {
+  ZoneClient,
+  fetchAllZones,
+  selectZone,
+  isValidZoneCode,
+  clearZoneCache,
+} from "./lib/zone-client";
+
+// Upgrade intent helper for TV landing upgrade flow
+export { resolveUpgradeIntent } from "./lib/upgrade-intent";
+export type { UpgradeIntent } from "./lib/upgrade-intent";
+
+// Zone selection service for TV landing tiers (Feature 007)
+export {
+  ZoneSelectionService,
+  type IZoneSelectionService,
+} from "./services/zone-service";
+
+// Tier package service for TV landing tiers (Feature 007)
+export {
+  TierPackageService,
+  tierPackageService,
+} from "./services/tier-service";
+
+// Tier comparison helpers for TV landing tiers (Feature 007)
+export {
+  COMPARISON_DIMENSIONS,
+  TIER_COMPARISON_DATA,
+  compareTiers,
+  getTierComparisonValue,
+} from "./lib/tier-comparison";
+export type {
+  ComparisonDimension,
+  ComparisonMatrixRow,
+  ComparisonValue,
+  TierComparisonKey,
+} from "./lib/tier-comparison";
+
+// Zone sync service for JAKIM zone maintenance (Feature 007, T051)
+export { ZoneSyncService, zoneSyncService } from "./services/zone-sync";
+
+// JAKIM API fallback strategy for prayer times (Feature 007, T052)
+export {
+  JAKIMFallbackService,
+  jakimFallbackService,
+  JAKIMUnavailableMessage,
+} from "./services/jakim-fallback";
 
 // Re-export types for convenience
 export type { Database } from "@masjid-suite/shared-types";

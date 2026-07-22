@@ -426,6 +426,213 @@ EOL
     echo -e "${GREEN}✅ TV display test data created successfully!${NC}"
 }
 
+# Reassign auto-populated zone masjids to the active admin user created by setup.
+normalize_zone_seed_ownership() {
+    local owner_user_id="$1"
+
+    if [ -z "$owner_user_id" ]; then
+        echo -e "${YELLOW}⚠️  Skipping zone ownership normalization (missing owner user id).${NC}"
+        return 0
+    fi
+
+    psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" -v ON_ERROR_STOP=1 <<EOSQL >/dev/null
+DO \$\$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'masjids'
+  ) THEN
+    UPDATE public.masjids
+    SET created_by = '${owner_user_id}'::uuid,
+        updated_at = NOW()
+    WHERE is_auto_populated = true
+      AND (created_by IS NULL OR created_by <> '${owner_user_id}'::uuid);
+  END IF;
+END;
+\$\$;
+EOSQL
+
+    echo -e "${GREEN}✅ Auto-populated zone ownership normalized to setup admin user${NC}"
+}
+
+# Ensure a target user has active admin assignments for all auto-populated Asas masjids.
+ensure_auto_populated_admin_assignments() {
+    local admin_user_id="$1"
+    local approver_user_id="$2"
+
+    if [ -z "$admin_user_id" ] || [ -z "$approver_user_id" ]; then
+        echo -e "${YELLOW}⚠️  Skipping masjid_admin assignment sync (missing admin or approver id).${NC}"
+        return 0
+    fi
+
+    psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" -v ON_ERROR_STOP=1 <<EOSQL >/dev/null
+DO \$\$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'masjid_admins'
+  )
+  AND EXISTS (
+    SELECT 1
+    FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'masjids'
+  )
+  AND EXISTS (
+    SELECT 1
+    FROM public.profiles
+    WHERE user_id = '${admin_user_id}'::uuid
+      AND is_complete = true
+  ) THEN
+    INSERT INTO public.masjid_admins (
+      user_id,
+      masjid_id,
+      status,
+      approved_by,
+      approved_at
+    )
+    SELECT
+      '${admin_user_id}'::uuid,
+      m.id,
+      'active'::admin_assignment_status,
+      '${approver_user_id}'::uuid,
+      NOW()
+    FROM public.masjids m
+    WHERE m.is_auto_populated = true
+      AND m.tier = 'asas'
+      AND m.status = 'active'
+    ON CONFLICT (user_id, masjid_id) DO UPDATE
+    SET
+      status = EXCLUDED.status,
+      approved_by = EXCLUDED.approved_by,
+      approved_at = EXCLUDED.approved_at,
+      updated_at = NOW();
+  END IF;
+END;
+\$\$;
+EOSQL
+
+    echo -e "${GREEN}✅ Masjid admin assignments ensured for auto-populated Asas masjids${NC}"
+}
+
+# Ensure auto-populated zone masjids exist and are owned by the provided admin.
+# This is required for --test because migrations run during db reset before test
+# users are created, which can skip owner-bound auto-population.
+ensure_zone_seed_data_for_owner() {
+    local owner_user_id="$1"
+
+    if [ -z "$owner_user_id" ]; then
+        echo -e "${YELLOW}⚠️  Skipping zone seed backfill (missing owner user id).${NC}"
+        return 0
+    fi
+
+    psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" -v ON_ERROR_STOP=1 <<EOSQL >/dev/null
+DO \$\$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'jakim_zones'
+  )
+  AND EXISTS (
+    SELECT 1
+    FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'masjids'
+  ) THEN
+    INSERT INTO public.masjids (
+      id,
+      name,
+      zone_code,
+      tier,
+      display_id,
+      prayer_times_source,
+      is_auto_populated,
+      status,
+      created_by,
+      address,
+      created_at,
+      updated_at
+    )
+    SELECT
+      gen_random_uuid(),
+      'Masjid Kawasan ' || z.zone_code || ' - ' || z.zone_name_ms,
+      z.zone_code,
+      'asas',
+      gen_random_uuid(),
+      'jakim',
+      true,
+      'active',
+      '${owner_user_id}'::uuid,
+      '{"address_line_1":"Auto Generated Masjid","city":"Kuala Lumpur","state":"Kuala Lumpur","postcode":"50000","country":"MYS"}'::jsonb,
+      NOW(),
+      NOW()
+    FROM public.jakim_zones z
+    WHERE z.is_active = true
+      AND NOT EXISTS (
+        SELECT 1
+        FROM public.masjids m
+        WHERE m.zone_code = z.zone_code
+          AND m.is_auto_populated = true
+          AND m.tier = 'asas'
+      );
+
+    UPDATE public.masjids
+    SET display_id = gen_random_uuid(),
+        updated_at = NOW()
+    WHERE is_auto_populated = true
+      AND tier = 'asas'
+      AND display_id IS NULL;
+  END IF;
+
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'tv_displays'
+  )
+  AND EXISTS (
+    SELECT 1
+    FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'masjids'
+  ) THEN
+    INSERT INTO public.tv_displays (
+      id,
+      masjid_id,
+      display_name,
+      description,
+      is_active,
+      created_at,
+      updated_at
+    )
+    SELECT
+      COALESCE(m.display_id, gen_random_uuid()),
+      m.id,
+      'Auto Generated Display',
+      'Auto-seeded display for generated Asas masjid',
+      true,
+      NOW(),
+      NOW()
+    FROM public.masjids m
+    JOIN public.jakim_zones z
+      ON z.zone_code = m.zone_code
+     AND z.is_active = true
+    WHERE m.is_auto_populated = true
+      AND m.tier = 'asas'
+      AND m.status = 'active'
+      AND NOT EXISTS (
+        SELECT 1
+        FROM public.tv_displays d
+        WHERE d.masjid_id = m.id
+      )
+    ON CONFLICT (id) DO NOTHING;
+  END IF;
+END;
+\$\$;
+EOSQL
+
+    echo -e "${GREEN}✅ Auto-populated zone seed data ensured for setup admin user${NC}"
+}
+
 # Function to create environment files
 create_env_files() {
     local env_type="$1"
@@ -461,6 +668,8 @@ create_env_files() {
 # Also used by Vite (configured in vite.config.ts envPrefix)
 NEXT_PUBLIC_SUPABASE_URL=$API_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY
+VITE_SUPABASE_URL=$API_URL
+VITE_SUPABASE_ANON_KEY=$ANON_KEY
 
 # ===========================================
 # APPLICATION CONFIGURATION
@@ -503,9 +712,11 @@ EOL
 # ===========================================
 # SUPABASE CONFIGURATION
 # ===========================================
-# Next.js client-side variables (NEXT_PUBLIC_ prefix for Next.js client-side access)
+# Vite + Next.js client-side variables
 NEXT_PUBLIC_SUPABASE_URL=$API_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY
+VITE_SUPABASE_URL=$API_URL
+VITE_SUPABASE_ANON_KEY=$ANON_KEY
 
 # ===========================================
 # APPLICATION CONFIGURATION
@@ -513,6 +724,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY
 NODE_ENV=$NODE_ENV
 NEXT_PUBLIC_APP_URL=http://localhost:3001
 NEXT_PUBLIC_APP_ENV=$NODE_ENV
+VITE_APP_URL=http://localhost:3001
+VITE_APP_ENV=$NODE_ENV
 
 # Note: TV Display gets all configuration from the database via display_id
 # Configuration like masjid_id, prayer times, display settings, etc. are
@@ -524,13 +737,22 @@ NEXT_PUBLIC_APP_ENV=$NODE_ENV
 # ===========================================
 NEXT_PUBLIC_ENABLE_DEV_TOOLS=$ENABLE_DEV_TOOLS
 NEXT_PUBLIC_SHOW_LOGGER=$SHOW_LOGGER
+VITE_ENABLE_DEV_TOOLS=$ENABLE_DEV_TOOLS
+VITE_SHOW_LOGGER=$SHOW_LOGGER
 EOL
 
-    # Create Public App .env.local
-    local PUBLIC_ENV_FILE="apps/public/.env.local"
-    echo -e "${BLUE}Creating $PUBLIC_ENV_FILE...${NC}"
-    
-    cat > "$PUBLIC_ENV_FILE" << EOL
+    # Create Public-facing app .env.local
+    local PUBLIC_ENV_FILE=""
+    if [ -d "apps/papan-info" ]; then
+      PUBLIC_ENV_FILE="apps/papan-info/.env.local"
+    elif [ -d "apps/public" ]; then
+      PUBLIC_ENV_FILE="apps/public/.env.local"
+    fi
+
+    if [ -n "$PUBLIC_ENV_FILE" ]; then
+      echo -e "${BLUE}Creating $PUBLIC_ENV_FILE...${NC}"
+
+      cat > "$PUBLIC_ENV_FILE" << EOL
 # Environment Variables for Public SEO App (Next.js)
 # Generated automatically by setup script on $(date)
 
@@ -557,6 +779,9 @@ NEXT_PUBLIC_SITE_DESCRIPTION=Platform digital untuk komuniti masjid di Malaysia
 # ===========================================
 NODE_ENV=$NODE_ENV
 EOL
+  else
+    echo -e "${YELLOW}⚠️  Skipping public app env file (no apps/papan-info or apps/public directory found).${NC}"
+  fi
 
     # Add test-specific variables if this is a test environment
     if [ "$env_type" = "test" ]; then
@@ -597,7 +822,9 @@ EOL
     echo -e "${GREEN}✅ All environment files created successfully${NC}"
     echo -e "${BLUE}   • Hub app: $HUB_ENV_FILE${NC}"
     echo -e "${BLUE}   • TV Display app: $TV_DISPLAY_ENV_FILE${NC}"
-    echo -e "${BLUE}   • Public app: $PUBLIC_ENV_FILE${NC}"
+    if [ -n "$PUBLIC_ENV_FILE" ]; then
+      echo -e "${BLUE}   • Public app: $PUBLIC_ENV_FILE${NC}"
+    fi
 }
 
 if [ "$SETUP_TYPE" = "test" ]; then
@@ -1007,6 +1234,17 @@ EOSQL
     
     # Create TV display test data
     create_tv_display_data "$USER1_ID" "$MASJID_ADMIN_ID"
+
+    # Backfill missing auto-populated zone masjids for --test setup.
+    # Insert must be performed by super admin due DB trigger constraints.
+    ensure_zone_seed_data_for_owner "$SUPER_ADMIN_ID"
+
+    # Ensure auto-populated zone records are owned by the test masjid admin.
+    normalize_zone_seed_ownership "$MASJID_ADMIN_ID"
+
+    # Ensure masjid.admin@test.com is assigned as active admin for all
+    # auto-populated Asas masjids.
+    ensure_auto_populated_admin_assignments "$MASJID_ADMIN_ID" "$SUPER_ADMIN_ID"
     
     # Generate and store API keys for tests
     echo -e "${BLUE}5. Generating environment files...${NC}"
@@ -1054,6 +1292,9 @@ else
             " >/dev/null
             
             echo -e "${GREEN}✅ User role updated to super_admin!${NC}"
+
+            # Ensure auto-populated zone records are owned by the created super admin.
+            normalize_zone_seed_ownership "$USER_ID"
             
             echo -e "${BLUE}5. Verifying setup...${NC}"
             

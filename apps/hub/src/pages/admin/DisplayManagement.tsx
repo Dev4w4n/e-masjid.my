@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, type ComponentType } from "react";
 import {
   Container,
   Typography,
@@ -88,6 +88,11 @@ import {
   BlackScreenScheduleType,
 } from "@masjid-suite/shared-types";
 import { useUser } from "@masjid-suite/auth";
+
+const SketchPickerComponent = SketchPicker as unknown as ComponentType<{
+  color: string;
+  onChangeComplete: (color: ColorResult) => void;
+}>;
 
 type TvDisplay = Tables<"tv_displays">;
 type Masjid = Tables<"masjids">;
@@ -260,7 +265,7 @@ const DisplayManagement = () => {
 
   // Content assignment state
   const [availableContent, setAvailableContent] = useState<DisplayContent[]>(
-    []
+    [],
   );
   const [assignedContent, setAssignedContent] = useState<DisplayContent[]>([]);
   const [contentLoading, setContentLoading] = useState(false);
@@ -285,7 +290,7 @@ const DisplayManagement = () => {
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   // Create display state
@@ -311,7 +316,7 @@ const DisplayManagement = () => {
           masjidIds.map(async (id) => {
             const masjidData = await masjidService.getMasjid(id);
             return masjidData;
-          })
+          }),
         );
 
         setUserMasjids(masjidDetails.filter(Boolean) as Masjid[]);
@@ -366,7 +371,7 @@ const DisplayManagement = () => {
       const content = await getContentForAdmin();
       // Filter content for selected masjid and only active content
       const masjidContent = content.filter(
-        (c) => c.masjid_id === selectedMasjidId && c.status === "active"
+        (c) => c.masjid_id === selectedMasjidId && c.status === "active",
       );
       setAvailableContent(masjidContent);
     } catch (err) {
@@ -472,7 +477,7 @@ const DisplayManagement = () => {
 
       // Update local state
       const updatedDisplays = displays.map((d) =>
-        d.id === id ? (updatedDisplay as TvDisplay) : d
+        d.id === id ? (updatedDisplay as TvDisplay) : d,
       );
       setDisplays(updatedDisplays);
       setDisplaySettings(updatedDisplay);
@@ -530,7 +535,7 @@ const DisplayManagement = () => {
   };
 
   const handleOpenEditDialog = (
-    content: SortableContentItemProps["content"]
+    content: SortableContentItemProps["content"],
   ) => {
     setContentToEdit({
       id: content.id,
@@ -552,7 +557,7 @@ const DisplayManagement = () => {
       await updateContentSettings(
         selectedDisplayId,
         contentToEdit.id,
-        settings
+        settings,
       );
 
       // Reload assigned content to show updated settings
@@ -650,7 +655,7 @@ const DisplayManagement = () => {
   };
 
   const unassignedContent = availableContent.filter(
-    (ac) => !assignedContent.some((asc) => asc.id === ac.id)
+    (ac) => !assignedContent.some((asc) => asc.id === ac.id),
   );
 
   if (loading) {
@@ -789,7 +794,7 @@ const DisplayManagement = () => {
                             "Arahan muat semula dihantar ke paparan",
                             {
                               variant: "success",
-                            }
+                            },
                           );
                         } else {
                           enqueueSnackbar("Gagal menghantar arahan", {
@@ -821,7 +826,7 @@ const DisplayManagement = () => {
                             "Arahan muat semula dihantar ke paparan",
                             {
                               variant: "success",
-                            }
+                            },
                           );
                         } else {
                           enqueueSnackbar("Gagal menghantar arahan", {
@@ -854,7 +859,7 @@ const DisplayManagement = () => {
                             "Arahan kosongkan cache dihantar ke paparan",
                             {
                               variant: "success",
-                            }
+                            },
                           );
                         } else {
                           enqueueSnackbar("Gagal menghantar arahan", {
@@ -1270,7 +1275,7 @@ const DisplayManagement = () => {
                         {showColorPicker && (
                           <Box sx={{ position: "relative", zIndex: 2 }}>
                             <Box sx={{ position: "absolute", top: "10px" }}>
-                              <SketchPicker
+                              <SketchPickerComponent
                                 color={
                                   displaySettings.prayer_time_color || "#FFFFFF"
                                 }
@@ -1347,7 +1352,7 @@ const DisplayManagement = () => {
                         </Box>
                         {showImageBgColorPicker && (
                           <Box sx={{ mt: 2 }}>
-                            <SketchPicker
+                            <SketchPickerComponent
                               color={
                                 displaySettings.image_background_color ||
                                 "#000000"

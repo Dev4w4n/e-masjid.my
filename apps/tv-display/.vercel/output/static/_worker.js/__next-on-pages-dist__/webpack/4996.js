@@ -1,0 +1,1 @@
+var r={},u=(d,i,_)=>(r.__chunk_4996=(c,s,a)=>{"use strict";function n(o,l,t,e){return{data:null,error:{code:o,message:l,...t&&{details:t},...e&&{field:e},timestamp:new Date().toISOString()}}}a.d(s,{JV:()=>n})},r);export{u as __getNamedExports};

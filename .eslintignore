@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+.yarn/
+.pnp
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Generated files
+*.min.js
+*.min.css
+coverage/
+
+# Third-party / vendor code
+vendor/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test outputs
+.nyc_output/
+*.lcov
+
+# Turborepo
+.turbo/
+
+# Package manager locks (typically excluded from linting)
+pnpm-lock.yaml
+yarn.lock
+package-lock.json

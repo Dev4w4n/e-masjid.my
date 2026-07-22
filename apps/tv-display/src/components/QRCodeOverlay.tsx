@@ -25,7 +25,17 @@ export function QRCodeOverlay({ content, className = '' }: QRCodeOverlayProps) {
 
   // Generate the QR code URL
   // If custom URL is provided, use it; otherwise, default to public content detail page (/iklan/)
-  const qrUrl = content.qr_code_url || `${process.env.NEXT_PUBLIC_APP_URL || 'https://e-masjid.my'}/iklan/${content.id}`;
+  const safeProcessEnv: Record<string, string | undefined> | undefined =
+    typeof globalThis !== 'undefined' &&
+    'process' in globalThis &&
+    (globalThis as any).process?.env
+      ? ((globalThis as any).process.env as Record<string, string | undefined>)
+      : undefined;
+
+  const baseAppUrl =
+    import.meta.env.VITE_APP_URL || safeProcessEnv?.NEXT_PUBLIC_APP_URL || 'https://e-masjid.my';
+
+  const qrUrl = content.qr_code_url || `${baseAppUrl}/iklan/${content.id}`;
   
   // Get position from content settings (default to bottom-right)
   const position = content.qr_code_position || 'bottom-right';

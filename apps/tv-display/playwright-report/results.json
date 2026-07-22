@@ -1,7 +1,7 @@
 {
   "config": {
-    "configFile": "/Users/rohaizan/Codes/ai-gen/agent-1-emasjid-my/apps/tv-display/playwright.config.ts",
-    "rootDir": "/Users/rohaizan/Codes/ai-gen/agent-1-emasjid-my/apps/tv-display/tests",
+    "configFile": "/Users/rohaizan/Codes/ai-gen/e-masjid.my/apps/tv-display/playwright.config.ts",
+    "rootDir": "/Users/rohaizan/Codes/ai-gen/e-masjid.my/apps/tv-display/tests",
     "forbidOnly": false,
     "fullyParallel": true,
     "globalSetup": null,
@@ -11,7 +11,7 @@
     "grepInvert": null,
     "maxFailures": 0,
     "metadata": {
-      "actualWorkers": 1
+      "actualWorkers": 2
     },
     "preserveOutput": "always",
     "reporter": [
@@ -33,15 +33,15 @@
     "quiet": false,
     "projects": [
       {
-        "outputDir": "/Users/rohaizan/Codes/ai-gen/agent-1-emasjid-my/apps/tv-display/test-results",
+        "outputDir": "/Users/rohaizan/Codes/ai-gen/e-masjid.my/apps/tv-display/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
-          "actualWorkers": 1
+          "actualWorkers": 2
         },
         "id": "Chrome TV Display",
         "name": "Chrome TV Display",
-        "testDir": "/Users/rohaizan/Codes/ai-gen/agent-1-emasjid-my/apps/tv-display/tests",
+        "testDir": "/Users/rohaizan/Codes/ai-gen/e-masjid.my/apps/tv-display/tests",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -49,15 +49,15 @@
         "timeout": 60000
       },
       {
-        "outputDir": "/Users/rohaizan/Codes/ai-gen/agent-1-emasjid-my/apps/tv-display/test-results",
+        "outputDir": "/Users/rohaizan/Codes/ai-gen/e-masjid.my/apps/tv-display/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
-          "actualWorkers": 1
+          "actualWorkers": 2
         },
         "id": "4K TV Display",
         "name": "4K TV Display",
-        "testDir": "/Users/rohaizan/Codes/ai-gen/agent-1-emasjid-my/apps/tv-display/tests",
+        "testDir": "/Users/rohaizan/Codes/ai-gen/e-masjid.my/apps/tv-display/tests",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -65,15 +65,15 @@
         "timeout": 60000
       },
       {
-        "outputDir": "/Users/rohaizan/Codes/ai-gen/agent-1-emasjid-my/apps/tv-display/test-results",
+        "outputDir": "/Users/rohaizan/Codes/ai-gen/e-masjid.my/apps/tv-display/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
-          "actualWorkers": 1
+          "actualWorkers": 2
         },
         "id": "TV Kiosk Mode",
         "name": "TV Kiosk Mode",
-        "testDir": "/Users/rohaizan/Codes/ai-gen/agent-1-emasjid-my/apps/tv-display/tests",
+        "testDir": "/Users/rohaizan/Codes/ai-gen/e-masjid.my/apps/tv-display/tests",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -81,15 +81,15 @@
         "timeout": 60000
       },
       {
-        "outputDir": "/Users/rohaizan/Codes/ai-gen/agent-1-emasjid-my/apps/tv-display/test-results",
+        "outputDir": "/Users/rohaizan/Codes/ai-gen/e-masjid.my/apps/tv-display/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
-          "actualWorkers": 1
+          "actualWorkers": 2
         },
         "id": "Firefox TV",
         "name": "Firefox TV",
-        "testDir": "/Users/rohaizan/Codes/ai-gen/agent-1-emasjid-my/apps/tv-display/tests",
+        "testDir": "/Users/rohaizan/Codes/ai-gen/e-masjid.my/apps/tv-display/tests",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -97,15 +97,15 @@
         "timeout": 60000
       },
       {
-        "outputDir": "/Users/rohaizan/Codes/ai-gen/agent-1-emasjid-my/apps/tv-display/test-results",
+        "outputDir": "/Users/rohaizan/Codes/ai-gen/e-masjid.my/apps/tv-display/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
-          "actualWorkers": 1
+          "actualWorkers": 2
         },
         "id": "Safari TV",
         "name": "Safari TV",
-        "testDir": "/Users/rohaizan/Codes/ai-gen/agent-1-emasjid-my/apps/tv-display/tests",
+        "testDir": "/Users/rohaizan/Codes/ai-gen/e-masjid.my/apps/tv-display/tests",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -127,21 +127,293 @@
   },
   "suites": [
     {
-      "title": "contract/display-content.test.ts",
-      "file": "contract/display-content.test.ts",
+      "title": "contract/display-routing.spec.ts",
+      "file": "contract/display-routing.spec.ts",
       "column": 0,
       "line": 0,
       "specs": [],
       "suites": [
         {
-          "title": "Display Content API Contract",
-          "file": "contract/display-content.test.ts",
-          "line": 16,
+          "title": "Display Routing Contract",
+          "file": "contract/display-routing.spec.ts",
+          "line": 3,
           "column": 6,
           "specs": [
             {
-              "title": "GET /displays/{displayId}/content returns content items with all required fields",
-              "ok": false,
+              "title": "display route accepts UUID-like id token",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Chrome TV Display",
+                  "projectName": "Chrome TV Display",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 432,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:12.120Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "74efbdc4f930f05b9d26-1628c2de42244807ecf9",
+              "file": "contract/display-routing.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "unknown routes redirect back to landing",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Chrome TV Display",
+                  "projectName": "Chrome TV Display",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 433,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:12.120Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "74efbdc4f930f05b9d26-86640723799e37b39510",
+              "file": "contract/display-routing.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "display route accepts UUID-like id token",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "4K TV Display",
+                  "projectName": "4K TV Display",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 272,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:13.853Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "74efbdc4f930f05b9d26-3eb21515edb94bce7b80",
+              "file": "contract/display-routing.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "unknown routes redirect back to landing",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "4K TV Display",
+                  "projectName": "4K TV Display",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 279,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:14.184Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "74efbdc4f930f05b9d26-d2b7a316aafd00b0f57f",
+              "file": "contract/display-routing.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "display route accepts UUID-like id token",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "TV Kiosk Mode",
+                  "projectName": "TV Kiosk Mode",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 222,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:15.532Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "74efbdc4f930f05b9d26-abae8886af375301cc9e",
+              "file": "contract/display-routing.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "unknown routes redirect back to landing",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "TV Kiosk Mode",
+                  "projectName": "TV Kiosk Mode",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 228,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:15.798Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "74efbdc4f930f05b9d26-a100b7f55852afa02aa3",
+              "file": "contract/display-routing.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "display route accepts UUID-like id token",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Firefox TV",
+                  "projectName": "Firefox TV",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 803,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:17.205Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "74efbdc4f930f05b9d26-ef2fe065a2959314b00b",
+              "file": "contract/display-routing.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "unknown routes redirect back to landing",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Firefox TV",
+                  "projectName": "Firefox TV",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 891,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:17.232Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "74efbdc4f930f05b9d26-320add286fd37d2ef533",
+              "file": "contract/display-routing.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "display route accepts UUID-like id token",
+              "ok": true,
               "tags": [],
               "tests": [
                 {
@@ -152,49 +424,977 @@
                   "projectName": "Safari TV",
                   "results": [
                     {
-                      "workerIndex": 0,
+                      "workerIndex": 8,
                       "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 217,
-                      "error": {
-                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoHaveProperty\u001b[2m(\u001b[22m\u001b[32mpath\u001b[39m\u001b[2m)\u001b[22m\n\nExpected path: \u001b[32m\"thumbnail_url\"\u001b[39m\nReceived path: \u001b[31m[]\u001b[39m\n\nReceived value: \u001b[31m{\"created_at\": \"2025-09-23T04:11:55.044891+00:00\", \"display_id\": \"\", \"duration\": 15, \"end_date\": \"2025-09-30\", \"id\": \"9c634465-d95b-48be-a3c8-a3a5cfc35e4e\", \"masjid_id\": \"098be8b6-0809-43c1-aa11-9cee5e401e66\", \"payment_status\": \"pending\", \"sponsorship_amount\": 50, \"sponsorship_tier\": \"silver\", \"start_date\": \"2025-09-23\", \"status\": \"active\", \"submitted_at\": \"2025-09-23T04:11:55.044891+00:00\", \"submitted_by\": \"2f47b61b-b461-4824-b396-75e6e9ce5047\", \"title\": \"Friday Prayer Announcement\", \"type\": \"text_announcement\", \"updated_at\": \"2025-09-23T04:11:55.044891+00:00\", \"url\": \"data:text/plain;base64,RnJpZGF5IFByYXllciBBbm5vdW5jZW1lbnQ=\"}\u001b[39m",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoHaveProperty\u001b[2m(\u001b[22m\u001b[32mpath\u001b[39m\u001b[2m)\u001b[22m\n\nExpected path: \u001b[32m\"thumbnail_url\"\u001b[39m\nReceived path: \u001b[31m[]\u001b[39m\n\nReceived value: \u001b[31m{\"created_at\": \"2025-09-23T04:11:55.044891+00:00\", \"display_id\": \"\", \"duration\": 15, \"end_date\": \"2025-09-30\", \"id\": \"9c634465-d95b-48be-a3c8-a3a5cfc35e4e\", \"masjid_id\": \"098be8b6-0809-43c1-aa11-9cee5e401e66\", \"payment_status\": \"pending\", \"sponsorship_amount\": 50, \"sponsorship_tier\": \"silver\", \"start_date\": \"2025-09-23\", \"status\": \"active\", \"submitted_at\": \"2025-09-23T04:11:55.044891+00:00\", \"submitted_by\": \"2f47b61b-b461-4824-b396-75e6e9ce5047\", \"title\": \"Friday Prayer Announcement\", \"type\": \"text_announcement\", \"updated_at\": \"2025-09-23T04:11:55.044891+00:00\", \"url\": \"data:text/plain;base64,RnJpZGF5IFByYXllciBBbm5vdW5jZW1lbnQ=\"}\u001b[39m\n    at /Users/rohaizan/Codes/ai-gen/agent-1-emasjid-my/apps/tv-display/tests/contract/display-content.test.ts:66:27",
-                        "location": {
-                          "file": "/Users/rohaizan/Codes/ai-gen/agent-1-emasjid-my/apps/tv-display/tests/contract/display-content.test.ts",
-                          "column": 27,
-                          "line": 66
-                        },
-                        "snippet": "\u001b[0m \u001b[90m 64 |\u001b[39m\n \u001b[90m 65 |\u001b[39m       \u001b[90m// Optional fields from API spec\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 66 |\u001b[39m       expect(contentItem)\u001b[33m.\u001b[39mtoHaveProperty(\u001b[32m'thumbnail_url'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 67 |\u001b[39m       expect(contentItem)\u001b[33m.\u001b[39mtoHaveProperty(\u001b[32m'status'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 68 |\u001b[39m       expect(contentItem)\u001b[33m.\u001b[39mtoHaveProperty(\u001b[32m'approved_at'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 69 |\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/rohaizan/Codes/ai-gen/agent-1-emasjid-my/apps/tv-display/tests/contract/display-content.test.ts",
-                            "column": 27,
-                            "line": 66
-                          },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoHaveProperty\u001b[2m(\u001b[22m\u001b[32mpath\u001b[39m\u001b[2m)\u001b[22m\n\nExpected path: \u001b[32m\"thumbnail_url\"\u001b[39m\nReceived path: \u001b[31m[]\u001b[39m\n\nReceived value: \u001b[31m{\"created_at\": \"2025-09-23T04:11:55.044891+00:00\", \"display_id\": \"\", \"duration\": 15, \"end_date\": \"2025-09-30\", \"id\": \"9c634465-d95b-48be-a3c8-a3a5cfc35e4e\", \"masjid_id\": \"098be8b6-0809-43c1-aa11-9cee5e401e66\", \"payment_status\": \"pending\", \"sponsorship_amount\": 50, \"sponsorship_tier\": \"silver\", \"start_date\": \"2025-09-23\", \"status\": \"active\", \"submitted_at\": \"2025-09-23T04:11:55.044891+00:00\", \"submitted_by\": \"2f47b61b-b461-4824-b396-75e6e9ce5047\", \"title\": \"Friday Prayer Announcement\", \"type\": \"text_announcement\", \"updated_at\": \"2025-09-23T04:11:55.044891+00:00\", \"url\": \"data:text/plain;base64,RnJpZGF5IFByYXllciBBbm5vdW5jZW1lbnQ=\"}\u001b[39m\n\n\u001b[0m \u001b[90m 64 |\u001b[39m\n \u001b[90m 65 |\u001b[39m       \u001b[90m// Optional fields from API spec\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 66 |\u001b[39m       expect(contentItem)\u001b[33m.\u001b[39mtoHaveProperty(\u001b[32m'thumbnail_url'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 67 |\u001b[39m       expect(contentItem)\u001b[33m.\u001b[39mtoHaveProperty(\u001b[32m'status'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 68 |\u001b[39m       expect(contentItem)\u001b[33m.\u001b[39mtoHaveProperty(\u001b[32m'approved_at'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 69 |\u001b[39m\u001b[0m\n\u001b[2m    at /Users/rohaizan/Codes/ai-gen/agent-1-emasjid-my/apps/tv-display/tests/contract/display-content.test.ts:66:27\u001b[22m"
-                        }
-                      ],
+                      "status": "passed",
+                      "duration": 748,
+                      "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-09-23T05:30:19.578Z",
+                      "startTime": "2026-07-19T14:19:20.494Z",
                       "annotations": [],
-                      "attachments": [],
-                      "errorLocation": {
-                        "file": "/Users/rohaizan/Codes/ai-gen/agent-1-emasjid-my/apps/tv-display/tests/contract/display-content.test.ts",
-                        "column": 27,
-                        "line": 66
-                      }
+                      "attachments": []
                     }
                   ],
-                  "status": "unexpected"
+                  "status": "expected"
                 }
               ],
-              "id": "d7dc3ff055cc27201428-c4a255bc4f0a0c6bd0ca",
-              "file": "contract/display-content.test.ts",
-              "line": 43,
+              "id": "74efbdc4f930f05b9d26-002ccb03b18b7dbe0211",
+              "file": "contract/display-routing.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "unknown routes redirect back to landing",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Safari TV",
+                  "projectName": "Safari TV",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 755,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:20.504Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "74efbdc4f930f05b9d26-33df8ff0d637566d5e6b",
+              "file": "contract/display-routing.spec.ts",
+              "line": 9,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "contract/jakim-zone.spec.ts",
+      "file": "contract/jakim-zone.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "JAKIM Zone API Contract",
+          "file": "contract/jakim-zone.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "zones index returns canonical zone payload",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Chrome TV Display",
+                  "projectName": "Chrome TV Display",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 322,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:12.673Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1634bc31d233568dad5b-ce419f0a9d856b3cb86d",
+              "file": "contract/jakim-zone.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "zone detail validates zone_code and returns primary display contract",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Chrome TV Display",
+                  "projectName": "Chrome TV Display",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 322,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:12.673Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1634bc31d233568dad5b-d72e5c31492c97a51b2e",
+              "file": "contract/jakim-zone.spec.ts",
+              "line": 22,
+              "column": 7
+            },
+            {
+              "title": "zones index returns canonical zone payload",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "4K TV Display",
+                  "projectName": "4K TV Display",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 314,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:14.226Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1634bc31d233568dad5b-b9d53be735d330eafe3c",
+              "file": "contract/jakim-zone.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "zone detail validates zone_code and returns primary display contract",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "4K TV Display",
+                  "projectName": "4K TV Display",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 4,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:14.547Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1634bc31d233568dad5b-f64051c9f71031baa076",
+              "file": "contract/jakim-zone.spec.ts",
+              "line": 22,
+              "column": 7
+            },
+            {
+              "title": "zones index returns canonical zone payload",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "TV Kiosk Mode",
+                  "projectName": "TV Kiosk Mode",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 313,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:15.852Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1634bc31d233568dad5b-ba33648a888846543110",
+              "file": "contract/jakim-zone.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "zone detail validates zone_code and returns primary display contract",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "TV Kiosk Mode",
+                  "projectName": "TV Kiosk Mode",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 312,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:16.117Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1634bc31d233568dad5b-736f8ec909bde1561863",
+              "file": "contract/jakim-zone.spec.ts",
+              "line": 22,
+              "column": 7
+            },
+            {
+              "title": "zones index returns canonical zone payload",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Firefox TV",
+                  "projectName": "Firefox TV",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 316,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:18.651Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1634bc31d233568dad5b-601e236fb942b378b993",
+              "file": "contract/jakim-zone.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "zone detail validates zone_code and returns primary display contract",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Firefox TV",
+                  "projectName": "Firefox TV",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 315,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:18.882Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1634bc31d233568dad5b-597c0b7311c91e8bf234",
+              "file": "contract/jakim-zone.spec.ts",
+              "line": 22,
+              "column": 7
+            },
+            {
+              "title": "zones index returns canonical zone payload",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Safari TV",
+                  "projectName": "Safari TV",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 318,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:21.443Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1634bc31d233568dad5b-da3989b65281df3dc853",
+              "file": "contract/jakim-zone.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "zone detail validates zone_code and returns primary display contract",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Safari TV",
+                  "projectName": "Safari TV",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 317,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:21.450Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1634bc31d233568dad5b-5124915f20712f93ba58",
+              "file": "contract/jakim-zone.spec.ts",
+              "line": 22,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "zone-selection.spec.ts",
+      "file": "zone-selection.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Zone Selection Flow",
+          "file": "zone-selection.spec.ts",
+          "line": 28,
+          "column": 6,
+          "specs": [
+            {
+              "title": "user can select zone and route to display",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Chrome TV Display",
+                  "projectName": "Chrome TV Display",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 801,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:13.006Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fd0b92080fc78d782d4a-1399125015b6f9c3accf",
+              "file": "zone-selection.spec.ts",
+              "line": 48,
+              "column": 7
+            },
+            {
+              "title": "user can select zone and route to display",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "4K TV Display",
+                  "projectName": "4K TV Display",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 873,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:14.557Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fd0b92080fc78d782d4a-8bca0820b3457401e236",
+              "file": "zone-selection.spec.ts",
+              "line": 48,
+              "column": 7
+            },
+            {
+              "title": "user can select zone and route to display",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "TV Kiosk Mode",
+                  "projectName": "TV Kiosk Mode",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 734,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:16.173Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fd0b92080fc78d782d4a-390ade5febba60dc18a2",
+              "file": "zone-selection.spec.ts",
+              "line": 48,
+              "column": 7
+            },
+            {
+              "title": "user can select zone and route to display",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Firefox TV",
+                  "projectName": "Firefox TV",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 913,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:18.973Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fd0b92080fc78d782d4a-bb985dd854d21b87b9c6",
+              "file": "zone-selection.spec.ts",
+              "line": 48,
+              "column": 7
+            },
+            {
+              "title": "user can select zone and route to display",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Safari TV",
+                  "projectName": "Safari TV",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 934,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:21.773Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fd0b92080fc78d782d4a-dd6486b58320b3865587",
+              "file": "zone-selection.spec.ts",
+              "line": 48,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "zone-session-restore.spec.ts",
+      "file": "zone-session-restore.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Zone Session Restore",
+          "file": "zone-session-restore.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "returns to landing without losing selected language context",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Chrome TV Display",
+                  "projectName": "Chrome TV Display",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 285,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:13.006Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d35cea2c068c301dd77a-4e130ae996d8e227144d",
+              "file": "zone-session-restore.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "returns to landing without losing selected language context",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "4K TV Display",
+                  "projectName": "4K TV Display",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 358,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:14.559Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d35cea2c068c301dd77a-72bdd7f0c03627627fa2",
+              "file": "zone-session-restore.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "returns to landing without losing selected language context",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "TV Kiosk Mode",
+                  "projectName": "TV Kiosk Mode",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 238,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:16.436Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d35cea2c068c301dd77a-bd186183e6f566cd9d9a",
+              "file": "zone-session-restore.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "returns to landing without losing selected language context",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Firefox TV",
+                  "projectName": "Firefox TV",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 388,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:19.203Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d35cea2c068c301dd77a-24749df035e60a3eb09d",
+              "file": "zone-session-restore.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "returns to landing without losing selected language context",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Safari TV",
+                  "projectName": "Safari TV",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 441,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:21.776Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d35cea2c068c301dd77a-c62a4ca1ea4775ad7ca4",
+              "file": "zone-session-restore.spec.ts",
+              "line": 4,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "zone-switch-state.spec.ts",
+      "file": "zone-switch-state.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Zone Switch State Persistence",
+          "file": "zone-switch-state.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "language context remains stable while switching zone",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Chrome TV Display",
+                  "projectName": "Chrome TV Display",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 196,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:13.298Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "10af42d57fd461cd4ef1-8f868a9c019999149458",
+              "file": "zone-switch-state.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "language context remains stable while switching zone",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "4K TV Display",
+                  "projectName": "4K TV Display",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 251,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:14.923Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "10af42d57fd461cd4ef1-f0add203235c7b4f2c30",
+              "file": "zone-switch-state.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "language context remains stable while switching zone",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "TV Kiosk Mode",
+                  "projectName": "TV Kiosk Mode",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 199,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:16.679Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "10af42d57fd461cd4ef1-f38e5065d071f5120da8",
+              "file": "zone-switch-state.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "language context remains stable while switching zone",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Firefox TV",
+                  "projectName": "Firefox TV",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 309,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:19.599Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "10af42d57fd461cd4ef1-889e6f5b65f11ddd9a81",
+              "file": "zone-switch-state.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "language context remains stable while switching zone",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Safari TV",
+                  "projectName": "Safari TV",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 292,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-19T14:19:22.226Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "10af42d57fd461cd4ef1-32661c0d613c61ec312a",
+              "file": "zone-switch-state.spec.ts",
+              "line": 4,
               "column": 7
             }
           ]
@@ -204,11 +1404,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-09-23T05:30:19.173Z",
-    "duration": 650.2110000000001,
-    "expected": 0,
+    "startTime": "2026-07-19T14:19:10.732Z",
+    "duration": 12010.722,
+    "expected": 35,
     "skipped": 0,
-    "unexpected": 1,
+    "unexpected": 0,
     "flaky": 0
   }
 }

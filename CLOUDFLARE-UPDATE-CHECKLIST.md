@@ -71,7 +71,7 @@ If you encounter similar issues with TV Display apps, use the same fix pattern:
 **New build command**:
 
 ```
-pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
+pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm dlx @cloudflare/next-on-pages@1
 ```
 
 ### TV Display - Production
@@ -81,7 +81,7 @@ pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display 
 **New build command**:
 
 ```
-pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm build && pnpm dlx @cloudflare/next-on-pages@1 --experimental-minify
+pnpm install --frozen-lockfile && pnpm run build:packages && cd apps/tv-display && pnpm dlx @cloudflare/next-on-pages@1
 ```
 
 ## Verification Steps
