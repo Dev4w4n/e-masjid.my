@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { DisplayConfig, PrayerTimes } from '@masjid-suite/shared-types';
@@ -10,6 +12,10 @@ import BlackScreenOverlay from '@/components/BlackScreenOverlay';
 import { jakimFallbackService } from '@masjid-suite/supabase-client';
 import { readZoneSessionState } from '@/lib/zone-session-state';
 import { EnhancedSupabaseService } from '@/lib/services/enhanced-supabase';
+
+interface DisplayPageContentProps {
+  displayId: string;
+}
 
 interface DisplayPageState {
   config: DisplayConfig | null;
@@ -145,9 +151,7 @@ async function fetchPrayerTimesWithFallback(displayId: string): Promise<{ prayer
   }
 }
 
-function DisplayPageContent() {
-  const params = useParams();
-  const displayId = params.id as string;
+function DisplayPageContent({ displayId }: DisplayPageContentProps) {
 
   const [state, setState] = useState<DisplayPageState>({
     config: null,
@@ -523,9 +527,11 @@ function DisplayPageContent() {
   );
 }
 
-export function DisplayRoute() {
-  const params = useParams();
-  const displayId = params.id as string;
+interface DisplayScreenProps {
+  displayId: string;
+}
+
+function DisplayScreen({ displayId }: DisplayScreenProps) {
   const hasValidDisplayId = Boolean(displayId && typeof displayId === 'string');
 
   const [showDebugInfo, setShowDebugInfo] = useState(false);
@@ -575,9 +581,20 @@ export function DisplayRoute() {
       enableFallbackContent={true}
       showDebugInfo={showDebugInfo}
     >
-      <DisplayPageContent />
+      <DisplayPageContent displayId={displayId} />
     </OfflineHandler>
   );
+}
+
+export function DisplayRoute() {
+  const params = useParams();
+  const displayId = params.id as string;
+
+  return <DisplayScreen displayId={displayId} />;
+}
+
+export function DisplayPage({ displayId }: DisplayScreenProps) {
+  return <DisplayScreen displayId={displayId} />;
 }
 
 export default DisplayRoute;
