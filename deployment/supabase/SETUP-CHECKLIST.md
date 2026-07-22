@@ -43,12 +43,12 @@ Use this checklist to ensure proper setup of automatic deployments for both dev 
 ### Initial Data
 
 - [ ] Created super admin user via Authentication UI
-  - Email: `dev-admin@emasjid.my`
+  - Email: `dev-admin@e-masjid.my`
   - Password: [secure password saved in password manager]
 - [ ] Ran SQL to set super admin role:
   ```sql
   UPDATE users SET role = 'super_admin'
-  WHERE email = 'dev-admin@emasjid.my';
+  WHERE email = 'dev-admin@e-masjid.my';
   ```
 - [ ] Verified super admin can log in
 - [ ] Verified super admin has correct permissions
@@ -87,12 +87,12 @@ Use this checklist to ensure proper setup of automatic deployments for both dev 
 ### Initial Data
 
 - [ ] Created super admin user via Authentication UI
-  - Email: `admin@emasjid.my`
+  - Email: `admin@e-masjid.my`
   - Password: [secure password saved in password manager]
 - [ ] Ran SQL to set super admin role:
   ```sql
   UPDATE users SET role = 'super_admin'
-  WHERE email = 'admin@emasjid.my';
+  WHERE email = 'admin@e-masjid.my';
   ```
 - [ ] Verified super admin can log in
 - [ ] Verified super admin has correct permissions
@@ -220,9 +220,9 @@ http://localhost:3000
 ### Production Authentication URLs
 
 ```
-https://hub.emasjid.my
-https://public.emasjid.my
-https://tv.emasjid.my
+https://hub.e-masjid.my
+https://public.e-masjid.my
+https://tv.e-masjid.my
 ```
 
 ## 🎯 Next Steps

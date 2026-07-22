@@ -21,7 +21,7 @@ VITE_SHOW_LOGGER = "false"
 
 # Cross-app integration URLs
 VITE_TV_DISPLAY_BASE_URL = "https://tv-emasjid-production.pages.dev/display"
-VITE_PUBLIC_BASE_URL = "https://papan-info.emasjid.my"
+VITE_PUBLIC_BASE_URL = "https://papan-info.e-masjid.my"
 
 # Build optimization
 VITE_BUILD_TARGET = "production"

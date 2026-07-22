@@ -92,15 +92,15 @@ Our database schema is managed through migrations in the `/supabase/migrations/`
 3. ⚠️ **Create super admin user manually:**
    - Go to Supabase Dashboard → Authentication → Users
    - Click "Add user" → Email
-   - For production: `admin@emasjid.my`
-   - For staging: `staging-admin@emasjid.my`
+   - For production: `admin@e-masjid.my`
+   - For staging: `staging-admin@e-masjid.my`
    - Set a strong password
 4. ⚠️ **Set super admin role:**
    - Go to SQL Editor in Supabase Dashboard
    - Run:
      ```sql
      UPDATE users SET role = 'super_admin'
-     WHERE email = 'admin@emasjid.my'; -- or staging email
+     WHERE email = 'admin@e-masjid.my'; -- or staging email
      ```
 
 **Local Development:**
@@ -128,11 +128,11 @@ extra_search_path = ["public", "extensions"]
 max_rows = 1000
 
 [auth]
-site_url = "https://hub.emasjid.my"
+site_url = "https://hub.e-masjid.my"
 additional_redirect_urls = [
-  "https://hub.emasjid.my",
-  "https://public.emasjid.my",
-  "https://tv.emasjid.my"
+  "https://hub.e-masjid.my",
+  "https://public.e-masjid.my",
+  "https://tv.e-masjid.my"
 ]
 jwt_expiry = 3600
 enable_refresh_token_rotation = true
@@ -188,7 +188,7 @@ Set these in each Supabase project's environment variables:
 **Production:**
 
 ```bash
-SUPER_ADMIN_EMAIL=admin@emasjid.my
+SUPER_ADMIN_EMAIL=admin@e-masjid.my
 SUPER_ADMIN_PASSWORD=GENERATE_STRONG_PASSWORD
 SUPER_ADMIN_ID=WILL_BE_GENERATED_AFTER_CREATION
 ```
@@ -196,7 +196,7 @@ SUPER_ADMIN_ID=WILL_BE_GENERATED_AFTER_CREATION
 **Staging:**
 
 ```bash
-SUPER_ADMIN_EMAIL=staging-admin@emasjid.my
+SUPER_ADMIN_EMAIL=staging-admin@e-masjid.my
 SUPER_ADMIN_PASSWORD=GENERATE_STRONG_PASSWORD
 SUPER_ADMIN_ID=WILL_BE_GENERATED_AFTER_CREATION
 ```

@@ -207,7 +207,7 @@ After completion, you'll have:
 To use your own domains:
 
 1. In Cloudflare Pages, go to project → Custom domains
-2. Add your domain (e.g., `hub.emasjid.my`)
+2. Add your domain (e.g., `hub.e-masjid.my`)
 3. Update environment variables with new URLs
 4. Update Supabase auth redirect URLs
 

@@ -60,8 +60,8 @@ function testConfiguration() {
     console.log('✅ Display URL:', displayUrl);
     
     // Verify URLs fallback to production
-    if (baseUrl === 'https://tv.emasjid.my/display' && 
-        displayUrl === 'https://tv.emasjid.my/display/test-display-123') {
+    if (baseUrl === 'https://tv.e-masjid.my/display' && 
+        displayUrl === 'https://tv.e-masjid.my/display/test-display-123') {
       console.log('✅ Production URLs are correct!\n');
     } else {
       console.log('❌ Production URLs are incorrect!\n');
@@ -154,7 +154,7 @@ function runTests() {
   console.log('🎉 All tests passed! TV Display URL configuration is working correctly.');
   console.log('\n📋 Summary:');
   console.log('   • Development: Links point to localhost:3001');
-  console.log('   • Production: Links point to tv.emasjid.my');
+  console.log('   • Production: Links point to tv.e-masjid.my');
   console.log('   • Environment variables override defaults');
   console.log('   • All apps use the same shared configuration\n');
   

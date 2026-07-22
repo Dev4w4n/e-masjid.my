@@ -125,8 +125,8 @@ string; // Valid JSON
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "E-Masjid.My",
-  "url": "https://emasjid.my",
-  "logo": "https://emasjid.my/emasjid-500x500.png"
+  "url": "https://e-masjid.my",
+  "logo": "https://e-masjid.my/emasjid-500x500.png"
 }
 ```
 
@@ -184,13 +184,13 @@ generateSitemap(contents: ContentWithMasjid[]): string
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://emasjid.my/</loc>
+    <loc>https://e-masjid.my/</loc>
     <lastmod>2025-10-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://emasjid.my/iklan/{slug}</loc>
+    <loc>https://e-masjid.my/iklan/{slug}</loc>
     <lastmod>{content.updated_at}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

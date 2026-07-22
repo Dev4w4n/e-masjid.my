@@ -51,7 +51,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "frame-ancestors 'self' http://localhost:* https://*.emasjid.my", // Allow hub app domains
+            value: "frame-ancestors 'self' http://localhost:* https://*.e-masjid.my", // Allow hub app domains
           },
           {
             key: 'X-Content-Type-Options',

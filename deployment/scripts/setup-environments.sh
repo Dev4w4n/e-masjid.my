@@ -132,7 +132,7 @@ NEXT_PUBLIC_SHOW_LOGGER=$( [ "$environment" = "staging" ] && echo "true" || echo
 # ===========================================
 # ADMIN CONFIGURATION (Set in Supabase dashboard)
 # ===========================================
-# SUPER_ADMIN_EMAIL=admin@emasjid.my
+# SUPER_ADMIN_EMAIL=admin@e-masjid.my
 # SUPER_ADMIN_PASSWORD=GENERATE_STRONG_PASSWORD
 # SUPER_ADMIN_ID=GENERATED_UUID_AFTER_USER_CREATION
 

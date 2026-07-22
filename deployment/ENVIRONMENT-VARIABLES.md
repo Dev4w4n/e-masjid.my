@@ -34,7 +34,7 @@ Uses `VITE_` prefix for client-side variables:
 # ✅ Safe to expose (client-side)
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
-VITE_APP_URL=https://hub.emasjid.my
+VITE_APP_URL=https://hub.e-masjid.my
 
 # ✅ Development flags (disable in production)
 VITE_ENABLE_DEV_TOOLS=false
@@ -49,7 +49,7 @@ Uses `NEXT_PUBLIC_` prefix for client-side variables:
 # ✅ Safe to expose (client-side)
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
-NEXT_PUBLIC_BASE_URL=https://public.emasjid.my
+NEXT_PUBLIC_BASE_URL=https://public.e-masjid.my
 
 # 🔒 Server-side (no NEXT_PUBLIC_ prefix)
 SUPABASE_URL=https://your-project.supabase.co
@@ -66,7 +66,7 @@ Uses `NEXT_PUBLIC_` for client-side variables. **Note:** This app uses only the 
 # ✅ Safe to expose (client-side)
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
-NEXT_PUBLIC_APP_URL=https://tv.emasjid.my
+NEXT_PUBLIC_APP_URL=https://tv.e-masjid.my
 
 # Server-side (used in API routes)
 SUPABASE_URL=https://your-project.supabase.co
@@ -111,9 +111,9 @@ VITE_SUPABASE_URL=https://your-project-id--staging.supabase.co
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-id--staging.supabase.co
 
 # Staging URLs
-VITE_APP_URL=https://hub-staging.emasjid.my
-NEXT_PUBLIC_APP_URL=https://tv-staging.emasjid.my
-NEXT_PUBLIC_BASE_URL=https://public-staging.emasjid.my
+VITE_APP_URL=https://hub-staging.e-masjid.my
+NEXT_PUBLIC_APP_URL=https://tv-staging.e-masjid.my
+NEXT_PUBLIC_BASE_URL=https://public-staging.e-masjid.my
 
 # Development flags can be enabled for staging
 VITE_ENABLE_DEV_TOOLS=true
@@ -129,9 +129,9 @@ VITE_SUPABASE_URL=https://your-production-project.supabase.co
 NEXT_PUBLIC_SUPABASE_URL=https://your-production-project.supabase.co
 
 # Production URLs
-VITE_APP_URL=https://hub.emasjid.my
-NEXT_PUBLIC_APP_URL=https://tv.emasjid.my
-NEXT_PUBLIC_BASE_URL=https://public.emasjid.my
+VITE_APP_URL=https://hub.e-masjid.my
+NEXT_PUBLIC_APP_URL=https://tv.e-masjid.my
+NEXT_PUBLIC_BASE_URL=https://public.e-masjid.my
 
 # All development flags disabled
 VITE_ENABLE_DEV_TOOLS=false
