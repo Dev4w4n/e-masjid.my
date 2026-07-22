@@ -101,6 +101,7 @@ const noopLock = async (_name, _acquireTimeout, fn) => {
     // This prevents hanging but may cause minor race conditions across tabs
     return fn();
 };
+const supabaseGlobal = globalThis;
 /**
  * Typed Supabase client for the Masjid Suite application
  *
@@ -108,21 +109,22 @@ const noopLock = async (_name, _acquireTimeout, fn) => {
  * indefinitely when there are lock contention issues (e.g., multiple tabs,
  * browser bugs, or stale locks from crashed tabs).
  */
-export const supabase = createClient(resolvedUrl, resolvedKey, {
-    auth: {
-        autoRefreshToken: true,
-        persistSession: true,
-        detectSessionInUrl: true,
-        // Use our no-op lock to prevent hanging on getSession/refreshSession calls
-        // This is an @experimental option - may need updating in future Supabase versions
-        lock: noopLock,
-    },
-    realtime: {
-        params: {
-            eventsPerSecond: 10,
+export const supabase = supabaseGlobal.__emasjidSupabaseClient__ ||
+    (supabaseGlobal.__emasjidSupabaseClient__ = createClient(resolvedUrl, resolvedKey, {
+        auth: {
+            autoRefreshToken: true,
+            persistSession: true,
+            detectSessionInUrl: true,
+            // Use our no-op lock to prevent hanging on getSession/refreshSession calls
+            // This is an @experimental option - may need updating in future Supabase versions
+            lock: noopLock,
         },
-    },
-});
+        realtime: {
+            params: {
+                eventsPerSecond: 10,
+            },
+        },
+    }));
 /**
  * Authentication utilities
  */

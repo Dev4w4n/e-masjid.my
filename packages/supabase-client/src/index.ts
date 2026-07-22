@@ -175,6 +175,10 @@ const noopLock = async <R>(
   return fn();
 };
 
+const supabaseGlobal = globalThis as typeof globalThis & {
+  __emasjidSupabaseClient__?: SupabaseClient<Database>;
+};
+
 /**
  * Typed Supabase client for the Masjid Suite application
  *
@@ -182,25 +186,27 @@ const noopLock = async <R>(
  * indefinitely when there are lock contention issues (e.g., multiple tabs,
  * browser bugs, or stale locks from crashed tabs).
  */
-export const supabase: SupabaseClient<Database> = createClient<Database>(
-  resolvedUrl,
-  resolvedKey,
-  {
-    auth: {
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: true,
-      // Use our no-op lock to prevent hanging on getSession/refreshSession calls
-      // This is an @experimental option - may need updating in future Supabase versions
-      lock: noopLock,
-    },
-    realtime: {
-      params: {
-        eventsPerSecond: 10,
+export const supabase: SupabaseClient<Database> =
+  supabaseGlobal.__emasjidSupabaseClient__ ||
+  (supabaseGlobal.__emasjidSupabaseClient__ = createClient<Database>(
+    resolvedUrl,
+    resolvedKey,
+    {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+        // Use our no-op lock to prevent hanging on getSession/refreshSession calls
+        // This is an @experimental option - may need updating in future Supabase versions
+        lock: noopLock,
+      },
+      realtime: {
+        params: {
+          eventsPerSecond: 10,
+        },
       },
     },
-  },
-);
+  ));
 
 /**
  * Authentication utilities
