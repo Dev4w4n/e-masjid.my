@@ -16,6 +16,20 @@ import type {
 
 function getEnvironmentVariables() {
   const isBrowser = typeof window !== "undefined";
+  const nextPublicSupabaseUrl =
+    typeof process !== "undefined"
+      ? process.env.NEXT_PUBLIC_SUPABASE_URL
+      : undefined;
+  const nextPublicSupabaseAnonKey =
+    typeof process !== "undefined"
+      ? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+      : undefined;
+  const viteSupabaseUrlFromProcess =
+    typeof process !== "undefined" ? process.env.VITE_SUPABASE_URL : undefined;
+  const viteSupabaseAnonKeyFromProcess =
+    typeof process !== "undefined"
+      ? process.env.VITE_SUPABASE_ANON_KEY
+      : undefined;
   const directProcessEnv =
     typeof process !== "undefined"
       ? (process.env as Record<string, string | undefined>)
@@ -28,14 +42,6 @@ function getEnvironmentVariables() {
   const safeProcessEnv = directProcessEnv ?? globalProcessEnv;
   const nodeEnv = safeProcessEnv?.NODE_ENV;
   const isTest = nodeEnv === "test";
-
-  const getBuildTimeEnv = (key: string): string | undefined => {
-    try {
-      return typeof process !== "undefined" ? process.env?.[key] : undefined;
-    } catch {
-      return undefined;
-    }
-  };
 
   let SUPABASE_URL: string | undefined;
   let SUPABASE_ANON_KEY: string | undefined;
@@ -57,14 +63,11 @@ function getEnvironmentVariables() {
 
     // Next.js client bundles inline NEXT_PUBLIC_* values at build time.
     if (!SUPABASE_URL) {
-      SUPABASE_URL =
-        getBuildTimeEnv("NEXT_PUBLIC_SUPABASE_URL") ||
-        getBuildTimeEnv("VITE_SUPABASE_URL");
+      SUPABASE_URL = nextPublicSupabaseUrl || viteSupabaseUrlFromProcess;
     }
     if (!SUPABASE_ANON_KEY) {
       SUPABASE_ANON_KEY =
-        getBuildTimeEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY") ||
-        getBuildTimeEnv("VITE_SUPABASE_ANON_KEY");
+        nextPublicSupabaseAnonKey || viteSupabaseAnonKeyFromProcess;
     }
 
     // Prefer compile-time inlined Next.js env values in browser bundles.
@@ -108,6 +111,48 @@ function getEnvironmentVariables() {
   return { SUPABASE_URL, SUPABASE_ANON_KEY, isTest };
 }
 
+function buildEnvDiagnostics(): string {
+  const isBrowser = typeof window !== "undefined";
+  const directProcessEnv =
+    typeof process !== "undefined"
+      ? (process.env as Record<string, string | undefined>)
+      : undefined;
+  const globalProcessEnv =
+    typeof globalThis !== "undefined" && "process" in globalThis
+      ? ((globalThis as any).process?.env as
+          Record<string, string | undefined> | undefined)
+      : undefined;
+
+  let importMetaEnv: Record<string, string | undefined> | undefined;
+  try {
+    importMetaEnv = (
+      import.meta as unknown as {
+        env?: Record<string, string | undefined>;
+      }
+    ).env;
+  } catch {
+    importMetaEnv = undefined;
+  }
+
+  const diagnostics = {
+    isBrowser,
+    locationHost:
+      isBrowser && typeof window !== "undefined" ? window.location.host : null,
+    hasImportMetaEnv: !!importMetaEnv,
+    hasImportMetaNextPublicUrl: !!importMetaEnv?.NEXT_PUBLIC_SUPABASE_URL,
+    hasImportMetaNextPublicAnon: !!importMetaEnv?.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    hasImportMetaViteUrl: !!importMetaEnv?.VITE_SUPABASE_URL,
+    hasImportMetaViteAnon: !!importMetaEnv?.VITE_SUPABASE_ANON_KEY,
+    hasProcessNextPublicUrl: !!directProcessEnv?.NEXT_PUBLIC_SUPABASE_URL,
+    hasProcessNextPublicAnon: !!directProcessEnv?.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    hasGlobalProcessNextPublicUrl: !!globalProcessEnv?.NEXT_PUBLIC_SUPABASE_URL,
+    hasGlobalProcessNextPublicAnon:
+      !!globalProcessEnv?.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  };
+
+  return JSON.stringify(diagnostics);
+}
+
 const { SUPABASE_URL, SUPABASE_ANON_KEY, isTest } = getEnvironmentVariables();
 const testUrl = "https://dummy-project.supabase.co";
 const testKey =
@@ -120,7 +165,8 @@ const RPC_TIMEOUT_MS = 12000;
 
 if (!finalUrl || !finalKey) {
   const message =
-    "Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY (or SUPABASE_URL and SUPABASE_ANON_KEY).";
+    "Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY (or SUPABASE_URL and SUPABASE_ANON_KEY). " +
+    `Diagnostics=${buildEnvDiagnostics()}`;
 
   if (!isTest) {
     throw new Error(message);
