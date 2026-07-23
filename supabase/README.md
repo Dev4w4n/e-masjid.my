@@ -56,12 +56,12 @@ The `seed.sql` file runs automatically when Supabase deploys:
 **Manual steps required:**
 
 1. Create super admin user via Supabase Dashboard → Authentication
-   - Production: `admin@emasjid.my`
-   - Staging: `staging-admin@emasjid.my`
+   - Production: `admin@e-masjid.my`
+   - Staging: `staging-admin@e-masjid.my`
 2. Run SQL to set role:
    ```sql
    UPDATE users SET role = 'super_admin'
-   WHERE email = 'your-admin-email@emasjid.my';
+   WHERE email = 'your-admin-email@e-masjid.my';
    ```
 
 **Use this for:**

@@ -61,7 +61,7 @@ describe("SEO Service Contract Tests", () => {
         // Should include at least one BM keyword
         const bmKeywords = ["masjid", "iklan", "halal", "komuniti", "Muslim"];
         const hasBMKeyword = metadata.keywords.some((keyword) =>
-          bmKeywords.includes(keyword.toLowerCase())
+          bmKeywords.includes(keyword.toLowerCase()),
         );
         expect(hasBMKeyword).toBe(true);
       }
@@ -72,7 +72,7 @@ describe("SEO Service Contract Tests", () => {
     it("should return valid JSON-LD string", () => {
       const jsonLd = generateStructuredData("Organization", {
         name: "Open E Masjid",
-        url: "https://openemasjid.my",
+        url: "https://opene-masjid.my",
       });
 
       expect(typeof jsonLd).toBe("string");
@@ -85,7 +85,7 @@ describe("SEO Service Contract Tests", () => {
     it("should include @context in Organization schema", () => {
       const jsonLd = generateStructuredData("Organization", {
         name: "Open E Masjid",
-        url: "https://openemasjid.my",
+        url: "https://opene-masjid.my",
       });
 
       const parsed = JSON.parse(jsonLd);
@@ -96,14 +96,14 @@ describe("SEO Service Contract Tests", () => {
     it("should include required fields in Organization schema", () => {
       const jsonLd = generateStructuredData("Organization", {
         name: "Open E Masjid",
-        url: "https://openemasjid.my",
-        logo: "https://openemasjid.my/logo.png",
+        url: "https://opene-masjid.my",
+        logo: "https://opene-masjid.my/logo.png",
       });
 
       const parsed = JSON.parse(jsonLd);
       expect(parsed.name).toBe("Open E Masjid");
-      expect(parsed.url).toBe("https://openemasjid.my");
-      expect(parsed.logo).toBe("https://openemasjid.my/logo.png");
+      expect(parsed.url).toBe("https://opene-masjid.my");
+      expect(parsed.logo).toBe("https://opene-masjid.my/logo.png");
     });
 
     it("should include position field in ItemList schema", () => {
@@ -141,8 +141,8 @@ describe("SEO Service Contract Tests", () => {
     it("should use absolute URLs", () => {
       const jsonLd = generateStructuredData("Organization", {
         name: "Open E Masjid",
-        url: "https://openemasjid.my",
-        logo: "https://openemasjid.my/logo.png",
+        url: "https://opene-masjid.my",
+        logo: "https://opene-masjid.my/logo.png",
       });
 
       const parsed = JSON.parse(jsonLd);
@@ -169,7 +169,7 @@ describe("SEO Service Contract Tests", () => {
     it("should include homepage with priority 1.0", () => {
       const sitemap = generateSitemap([]);
 
-      expect(sitemap.includes("<loc>https://emasjid.my/</loc>")).toBe(true);
+      expect(sitemap.includes("<loc>https://e-masjid.my/</loc>")).toBe(true);
       expect(sitemap.includes("<priority>1.0</priority>")).toBe(true);
     });
 
@@ -212,7 +212,7 @@ describe("SEO Service Contract Tests", () => {
 
       // Should still include homepage
       expect(sitemap).toBeDefined();
-      expect(sitemap.includes("https://emasjid.my/")).toBe(true);
+      expect(sitemap.includes("https://e-masjid.my/")).toBe(true);
     });
   });
 });

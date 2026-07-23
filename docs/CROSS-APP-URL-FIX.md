@@ -122,21 +122,21 @@ href={`${getPublicUrl()}/masjid/${masjid.id}`}
 
 ### For Production Deployment
 
-1. **Cloudflare Pages - Hub App** (hub.emasjid.my):
+1. **Cloudflare Pages - Hub App** (hub.e-masjid.my):
 
    ```bash
-   VITE_PUBLIC_APP_URL=https://emasjid.my
-   VITE_TV_DISPLAY_BASE_URL=https://tv.emasjid.my/display
+   VITE_PUBLIC_APP_URL=https://e-masjid.my
+   VITE_TV_DISPLAY_BASE_URL=https://tv.e-masjid.my/display
    ```
 
-2. **Cloudflare Pages - Papan Info App** (emasjid.my):
+2. **Cloudflare Pages - Papan Info App** (e-masjid.my):
 
    ```bash
-   NEXT_PUBLIC_HUB_URL=https://hub.emasjid.my
-   NEXT_PUBLIC_TV_DISPLAY_URL=https://tv.emasjid.my/display
+   NEXT_PUBLIC_HUB_URL=https://hub.e-masjid.my
+   NEXT_PUBLIC_TV_DISPLAY_URL=https://tv.e-masjid.my/display
    ```
 
-3. **Cloudflare Pages - TV Display App** (tv.emasjid.my):
+3. **Cloudflare Pages - TV Display App** (tv.e-masjid.my):
    ```bash
    # No changes needed - TV app doesn't navigate to other apps
    ```

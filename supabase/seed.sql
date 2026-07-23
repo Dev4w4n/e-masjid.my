@@ -21,9 +21,9 @@ BEGIN
   
   -- Set admin email based on environment
   IF v_environment = 'production' THEN
-    v_super_admin_email := 'admin@emasjid.my';
+    v_super_admin_email := 'admin@e-masjid.my';
   ELSE
-    v_super_admin_email := 'staging-admin@emasjid.my';
+    v_super_admin_email := 'staging-admin@e-masjid.my';
   END IF;
   
   RAISE NOTICE 'Seeding data for % environment...', v_environment;

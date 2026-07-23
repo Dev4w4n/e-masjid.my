@@ -78,7 +78,7 @@ function getDefaultTvDisplayUrl(): string {
     (typeof window !== "undefined" && window.location.hostname !== "localhost");
 
   if (isProduction) {
-    return "https://tv.emasjid.my/display";
+    return "https://tv.e-masjid.my/display";
   } else {
     return "http://localhost:3001/display";
   }

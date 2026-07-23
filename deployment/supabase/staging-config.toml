@@ -88,7 +88,7 @@ enabled = true
 backend = "postgres"
 
 # Staging environment variables to set in Supabase dashboard:
-# SUPER_ADMIN_EMAIL = "staging-admin@emasjid.my"
+# SUPER_ADMIN_EMAIL = "staging-admin@e-masjid.my"
 # SUPER_ADMIN_PASSWORD = "GENERATE_STRONG_PASSWORD"
 # SUPER_ADMIN_ID = "GENERATED_AFTER_USER_CREATION"
 

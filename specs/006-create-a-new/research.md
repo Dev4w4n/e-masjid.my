@@ -145,8 +145,8 @@ const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "E-Masjid.My",
-  "url": "https://emasjid.my",
-  "logo": "https://emasjid.my/emasjid-500x500.png"
+  "url": "https://e-masjid.my",
+  "logo": "https://e-masjid.my/emasjid-500x500.png"
 }
 
 // ItemList schema for content listing
@@ -187,7 +187,7 @@ export async function GET() {
 // app/robots.txt/route.ts
 export async function GET() {
   return new Response(
-    `User-agent: *\nAllow: /\nSitemap: https://emasjid.my/sitemap.xml`
+    `User-agent: *\nAllow: /\nSitemap: https://e-masjid.my/sitemap.xml`,
   );
 }
 ```
@@ -382,8 +382,8 @@ NEXT_PUBLIC_HUB_URL=http://localhost:3000
 ### Production Configuration
 
 - Development: `http://localhost:3000`
-- Staging: `https://hub-staging.emasjid.my`
-- Production: `https://hub.emasjid.my`
+- Staging: `https://hub-staging.e-masjid.my`
+- Production: `https://hub.e-masjid.my`
 
 ---
 

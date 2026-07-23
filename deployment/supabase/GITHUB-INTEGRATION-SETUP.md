@@ -202,13 +202,13 @@ NODE_ENV=production
 -- Run this in Supabase Dev SQL Editor after first deployment
 
 -- 1. Create super admin user in Authentication UI first
--- Email: dev-admin@emasjid.my
+-- Email: dev-admin@e-masjid.my
 -- Password: [secure-password]
 
 -- 2. Then run this SQL to set role:
 UPDATE users
 SET role = 'super_admin'
-WHERE email = 'dev-admin@emasjid.my';
+WHERE email = 'dev-admin@e-masjid.my';
 
 -- 3. Verify
 SELECT id, email, role FROM users WHERE role = 'super_admin';
@@ -220,13 +220,13 @@ SELECT id, email, role FROM users WHERE role = 'super_admin';
 -- Run this in Supabase Production SQL Editor after first deployment
 
 -- 1. Create super admin user in Authentication UI first
--- Email: admin@emasjid.my
+-- Email: admin@e-masjid.my
 -- Password: [secure-password]
 
 -- 2. Then run this SQL to set role:
 UPDATE users
 SET role = 'super_admin'
-WHERE email = 'admin@emasjid.my';
+WHERE email = 'admin@e-masjid.my';
 
 -- 3. Verify
 SELECT id, email, role FROM users WHERE role = 'super_admin';

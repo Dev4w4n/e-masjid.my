@@ -38,13 +38,13 @@ file_size_limit = "50MiB"
 [auth]
 enabled = true
 # The base URL of your production website
-site_url = "https://hub.emasjid.my"
+site_url = "https://hub.e-masjid.my"
 
 # Production redirect URLs - add your actual domains
 additional_redirect_urls = [
-  "https://hub.emasjid.my",
-  "https://papan-info.emasjid.my", 
-  "https://tv.emasjid.my",
+  "https://hub.e-masjid.my",
+  "https://papan-info.e-masjid.my", 
+  "https://tv.e-masjid.my",
   "https://hub-emasjid-production.pages.dev",
   "https://papan-info-emasjid-production.pages.dev",
   "https://tv-emasjid-production.pages.dev"
@@ -83,7 +83,7 @@ enabled = true
 backend = "postgres"
 
 # Production environment variables to set in Supabase dashboard:
-# SUPER_ADMIN_EMAIL = "admin@emasjid.my"
+# SUPER_ADMIN_EMAIL = "admin@e-masjid.my"
 # SUPER_ADMIN_PASSWORD = "GENERATE_STRONG_PASSWORD" 
 # SUPER_ADMIN_ID = "GENERATED_AFTER_USER_CREATION"
 

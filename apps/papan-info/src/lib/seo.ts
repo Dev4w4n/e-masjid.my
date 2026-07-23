@@ -13,7 +13,7 @@ const DEFAULT_OG_IMAGE = `${SITE_URL}/emasjid-500x500.png`;
  */
 export function generateMetadata(
   content?: ContentWithMasjid,
-  category?: string
+  category?: string,
 ): Metadata {
   let title = "";
   let description = "";
@@ -101,7 +101,7 @@ export function generateMetadata(
  */
 export function generateStructuredData(
   type: "Organization" | "ItemList" | "Product",
-  data: any
+  data: any,
 ): string {
   let schema: any = {
     "@context": "https://schema.org",
@@ -117,7 +117,7 @@ export function generateStructuredData(
         logo: data.logo || DEFAULT_OG_IMAGE,
         contactPoint: {
           "@type": "ContactPoint",
-          email: data.email || "info@emasjid.my",
+          email: data.email || "info@e-masjid.my",
           contactType: "customer service",
         },
       };

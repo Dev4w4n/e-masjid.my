@@ -28,18 +28,18 @@ NEXT_PUBLIC_TV_DISPLAY_URL=https://tv-emasjid-staging.pages.dev/display
 
 When ready for production deployment:
 
-#### 1. Hub App (hub.emasjid.my or hub-emasjid-production.pages.dev)
+#### 1. Hub App (hub.e-masjid.my or hub-emasjid-production.pages.dev)
 
 ```
-VITE_PUBLIC_APP_URL=https://emasjid.my
-VITE_TV_DISPLAY_BASE_URL=https://tv.emasjid.my/display
+VITE_PUBLIC_APP_URL=https://e-masjid.my
+VITE_TV_DISPLAY_BASE_URL=https://tv.e-masjid.my/display
 ```
 
-#### 2. Public App (emasjid.my or public-emasjid-production.pages.dev)
+#### 2. Public App (e-masjid.my or public-emasjid-production.pages.dev)
 
 ```
-NEXT_PUBLIC_HUB_URL=https://hub.emasjid.my
-NEXT_PUBLIC_TV_DISPLAY_URL=https://tv.emasjid.my/display
+NEXT_PUBLIC_HUB_URL=https://hub.e-masjid.my
+NEXT_PUBLIC_TV_DISPLAY_URL=https://tv.e-masjid.my/display
 ```
 
 ## Steps in Cloudflare Dashboard

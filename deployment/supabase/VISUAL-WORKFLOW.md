@@ -260,7 +260,7 @@ WHERE version = '024';
 #### 5. Test Application
 
 ```
-Open: https://hub-dev.emasjid.my (or your dev URL)
+Open: https://hub-dev.e-masjid.my (or your dev URL)
 Test: Create display content with QR code
 Verify: QR code appears correctly
 ```

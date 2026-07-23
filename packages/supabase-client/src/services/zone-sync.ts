@@ -1,10 +1,18 @@
 import { supabase } from "../index";
 
 const getRuntimeEnv = (): Record<string, string | undefined> => {
-  const viteEnv = ((import.meta as any)?.env ?? {}) as Record<
-    string,
-    string | undefined
-  >;
+  const viteEnv = (() => {
+    try {
+      return typeof import.meta !== "undefined"
+        ? (((import.meta as any).env ?? {}) as Record<
+            string,
+            string | undefined
+          >)
+        : {};
+    } catch {
+      return {};
+    }
+  })();
   const nodeEnv =
     typeof process !== "undefined"
       ? (process.env as unknown as Record<string, string | undefined>)

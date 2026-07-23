@@ -16,14 +16,14 @@ compatibility_date = "2024-01-01"
 NODE_ENV = "production"
 NEXT_PUBLIC_SUPABASE_URL = "https://YOUR_PRODUCTION_SUPABASE_PROJECT_ID.supabase.co"
 NEXT_PUBLIC_SUPABASE_ANON_KEY = "YOUR_PRODUCTION_SUPABASE_ANON_KEY"
-NEXT_PUBLIC_BASE_URL = "https://papan-info.emasjid.my"
+NEXT_PUBLIC_BASE_URL = "https://papan-info.e-masjid.my"
 
 # Server-side environment variables (sensitive - set in dashboard only)
 # SUPABASE_SERVICE_ROLE_KEY = "set-in-cloudflare-dashboard"
 
 # Cross-app integration (production)
-NEXT_PUBLIC_HUB_URL = "https://hub.emasjid.my"
-NEXT_PUBLIC_TV_DISPLAY_URL = "https://tv.emasjid.my"
+NEXT_PUBLIC_HUB_URL = "https://hub.e-masjid.my"
+NEXT_PUBLIC_TV_DISPLAY_URL = "https://tv.e-masjid.my"
 
 # Production settings
 NEXT_PUBLIC_APP_ENV = "production"
@@ -54,7 +54,7 @@ NEXT_PUBLIC_CONTENT_REFRESH_INTERVAL = "30000"
 # Notes:
 # - This configuration is for the Papan Info PRODUCTION environment
 # - All sensitive keys MUST be set in Cloudflare dashboard, NEVER commit them
-# - Custom domain configured: papan-info.emasjid.my
+# - Custom domain configured: papan-info.e-masjid.my
 # - SSL/TLS: Full (strict) mode enabled in Cloudflare
 # - Test all changes in staging before deploying to production
 # - Coordinate URL changes with hub and tv-display apps for cross-app features

@@ -23,7 +23,7 @@ NEXT_PUBLIC_APP_URL = "https://YOUR_PRODUCTION_TV_DOMAIN"
 
 # Cross-app integration
 NEXT_PUBLIC_HUB_URL = "https://hub-emasjid-production.pages.dev"
-NEXT_PUBLIC_BASE_URL = "https://papan-info.emasjid.my"
+NEXT_PUBLIC_BASE_URL = "https://papan-info.e-masjid.my"
 
 # TV Display specific configuration
 NEXT_PUBLIC_AUTO_REFRESH = "true"

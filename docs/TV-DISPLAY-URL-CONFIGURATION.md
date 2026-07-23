@@ -2,7 +2,7 @@
 
 ## Problem Fixed
 
-Previously, clicking "Paparan TV" links in the hub app would redirect to the hardcoded production URL `https://tv.emasjid.my/display`, which was not suitable for local development. This caused confusion and made local testing difficult.
+Previously, clicking "Paparan TV" links in the hub app would redirect to the hardcoded production URL `https://tv.e-masjid.my/display`, which was not suitable for local development. This caused confusion and made local testing difficult.
 
 ## Solution Implemented
 
@@ -27,10 +27,10 @@ Created a unified configuration system that automatically detects the environmen
 
 #### Default URLs
 
-| Environment | TV Display URL                  |
-| ----------- | ------------------------------- |
-| Development | `http://localhost:3001/display` |
-| Production  | `https://tv.emasjid.my/display` |
+| Environment | TV Display URL                   |
+| ----------- | -------------------------------- |
+| Development | `http://localhost:3001/display`  |
+| Production  | `https://tv.e-masjid.my/display` |
 
 ### Apps Updated
 
@@ -68,10 +68,10 @@ For production deployment, set these environment variables:
 
 ```bash
 # Production values
-VITE_TV_DISPLAY_BASE_URL=https://tv.emasjid.my/display
-NEXT_PUBLIC_TV_DISPLAY_URL=https://tv.emasjid.my/display
-NEXT_PUBLIC_HUB_URL=https://hub.emasjid.my
-NEXT_PUBLIC_BASE_URL=https://emasjid.my
+VITE_TV_DISPLAY_BASE_URL=https://tv.e-masjid.my/display
+NEXT_PUBLIC_TV_DISPLAY_URL=https://tv.e-masjid.my/display
+NEXT_PUBLIC_HUB_URL=https://hub.e-masjid.my
+NEXT_PUBLIC_BASE_URL=https://e-masjid.my
 ```
 
 ### Benefits
@@ -90,7 +90,7 @@ import { getTvDisplayUrlForDisplay } from "@masjid-suite/shared-types";
 
 const displayUrl = getTvDisplayUrlForDisplay(display.id);
 // Development: http://localhost:3001/display/abc-123
-// Production: https://tv.emasjid.my/display/abc-123
+// Production: https://tv.e-masjid.my/display/abc-123
 
 // Public app - masjid page
 import { getTvDisplayUrlForDisplay } from "@masjid-suite/shared-types";
@@ -102,7 +102,7 @@ const displayUrl = getTvDisplayUrlForDisplay(display.id);
 ### Testing
 
 1. **Local Development**: All "Paparan TV" links now point to `http://localhost:3001/display/[id]`
-2. **Production**: Links will automatically use `https://tv.emasjid.my/display/[id]`
+2. **Production**: Links will automatically use `https://tv.e-masjid.my/display/[id]`
 3. **Cross-App Navigation**: Hub ↔ Public ↔ TV Display all work correctly
 
 ### File Changes Summary
