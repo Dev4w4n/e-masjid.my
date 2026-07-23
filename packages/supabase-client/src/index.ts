@@ -23,12 +23,19 @@ function getEnvironmentVariables() {
   const globalProcessEnv =
     typeof globalThis !== "undefined" && "process" in globalThis
       ? ((globalThis as any).process?.env as
-          | Record<string, string | undefined>
-          | undefined)
+          Record<string, string | undefined> | undefined)
       : undefined;
   const safeProcessEnv = directProcessEnv ?? globalProcessEnv;
   const nodeEnv = safeProcessEnv?.NODE_ENV;
   const isTest = nodeEnv === "test";
+
+  const getBuildTimeEnv = (key: string): string | undefined => {
+    try {
+      return typeof process !== "undefined" ? process.env?.[key] : undefined;
+    } catch {
+      return undefined;
+    }
+  };
 
   let SUPABASE_URL: string | undefined;
   let SUPABASE_ANON_KEY: string | undefined;
@@ -46,6 +53,18 @@ function getEnvironmentVariables() {
         env?.VITE_SUPABASE_ANON_KEY || env?.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     } catch {
       // ignore; fall back to process.env below (useful in tests/node)
+    }
+
+    // Next.js client bundles inline NEXT_PUBLIC_* values at build time.
+    if (!SUPABASE_URL) {
+      SUPABASE_URL =
+        getBuildTimeEnv("NEXT_PUBLIC_SUPABASE_URL") ||
+        getBuildTimeEnv("VITE_SUPABASE_URL");
+    }
+    if (!SUPABASE_ANON_KEY) {
+      SUPABASE_ANON_KEY =
+        getBuildTimeEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY") ||
+        getBuildTimeEnv("VITE_SUPABASE_ANON_KEY");
     }
 
     // Prefer compile-time inlined Next.js env values in browser bundles.
@@ -103,15 +122,17 @@ if (!finalUrl || !finalKey) {
   const message =
     "Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY (or SUPABASE_URL and SUPABASE_ANON_KEY).";
 
-  if (!isBrowser && !isTest) {
+  if (!isTest) {
     throw new Error(message);
   }
 
-  console.error(message);
+  if (isBrowser) {
+    console.error(message);
+  }
 }
 
-const resolvedUrl = finalUrl || testUrl;
-const resolvedKey = finalKey || testKey;
+const resolvedUrl = finalUrl || (isTest ? testUrl : "");
+const resolvedKey = finalKey || (isTest ? testKey : "");
 
 function withTimeout<T>(
   promiseLike: PromiseLike<T>,

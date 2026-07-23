@@ -32,8 +32,27 @@ export function QRCodeOverlay({ content, className = '' }: QRCodeOverlayProps) {
       ? ((globalThis as any).process.env as Record<string, string | undefined>)
       : undefined;
 
+  const safeImportMetaEnv: Record<string, string | undefined> | undefined =
+    (() => {
+      try {
+        return typeof import.meta !== 'undefined'
+          ? ((import.meta as any).env as Record<string, string | undefined> | undefined)
+          : undefined;
+      } catch {
+        return undefined;
+      }
+    })();
+
+  const defaultBaseAppUrl =
+    typeof window !== 'undefined' && window.location?.origin
+      ? window.location.origin
+      : 'https://e-masjid.my';
+
   const baseAppUrl =
-    import.meta.env.VITE_APP_URL || safeProcessEnv?.NEXT_PUBLIC_APP_URL || 'https://e-masjid.my';
+    safeImportMetaEnv?.VITE_APP_URL ||
+    safeProcessEnv?.NEXT_PUBLIC_APP_URL ||
+    safeProcessEnv?.NEXT_PUBLIC_BASE_URL ||
+    defaultBaseAppUrl;
 
   const qrUrl = content.qr_code_url || `${baseAppUrl}/iklan/${content.id}`;
   
