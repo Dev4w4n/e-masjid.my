@@ -44,12 +44,14 @@ export function QRCodeOverlay({ content, className = '' }: QRCodeOverlayProps) {
     })();
 
   const defaultBaseAppUrl =
-    typeof window !== 'undefined' && window.location?.origin
-      ? window.location.origin
+    typeof window !== 'undefined' &&
+    (window.location?.hostname === 'localhost' || window.location?.hostname === '127.0.0.1')
+      ? 'http://localhost:3002'
       : 'https://e-masjid.my';
 
   const baseAppUrl =
     safeImportMetaEnv?.VITE_APP_URL ||
+    safeImportMetaEnv?.VITE_PUBLIC_APP_URL ||
     safeProcessEnv?.NEXT_PUBLIC_APP_URL ||
     safeProcessEnv?.NEXT_PUBLIC_BASE_URL ||
     defaultBaseAppUrl;
