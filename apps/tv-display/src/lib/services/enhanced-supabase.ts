@@ -381,15 +381,16 @@ export class EnhancedSupabaseService {
         .from('display_content')
         .select(`
           *,
-          sponsors (
-            id,
-            name,
-            logo_url
+          display_content_assignments!inner (
+            display_id,
+            display_order,
+            carousel_duration,
+            transition_type,
+            image_display_mode
           )
         `)
-        .eq('display_id', displayId)
-        .eq('is_active', true)
-        .order('priority', { ascending: false })
+        .eq('display_content_assignments.display_id', displayId)
+        .eq('status', 'active')
         .order('created_at', { ascending: false })
         .range(offset, offset + limit - 1);
 
@@ -397,7 +398,35 @@ export class EnhancedSupabaseService {
         throw new Error(`Failed to fetch display content: ${error.message}`);
       }
 
-      const content = (data || []) as DisplayContent[];
+      const content = ((data || []) as any[])
+        .map((item) => {
+          const assignment = Array.isArray(item.display_content_assignments)
+            ? item.display_content_assignments[0]
+            : item.display_content_assignments;
+
+          return {
+            ...item,
+            ...(assignment && {
+              display_id: assignment.display_id,
+              display_order: assignment.display_order,
+              carousel_duration: assignment.carousel_duration,
+              transition_type: assignment.transition_type,
+              image_display_mode: assignment.image_display_mode,
+            }),
+          } as DisplayContent;
+        })
+        .sort((a: any, b: any) => {
+          const orderA = typeof a.display_order === 'number' ? a.display_order : Number.MAX_SAFE_INTEGER;
+          const orderB = typeof b.display_order === 'number' ? b.display_order : Number.MAX_SAFE_INTEGER;
+
+          if (orderA !== orderB) {
+            return orderA - orderB;
+          }
+
+          const timeA = new Date(a.created_at || 0).getTime();
+          const timeB = new Date(b.created_at || 0).getTime();
+          return timeB - timeA;
+        });
       cache.set(cacheKey, content);
       
       console.log(`[EnhancedSupabase] Fetched and cached ${content.length} content items for display ${displayId}`);
@@ -557,14 +586,14 @@ export class EnhancedSupabaseService {
 
     const channel = this.client
       .channel(`content-${displayId}-changes`)
-      // Listen to display_content table changes for this display
+      // Listen to display_content table changes without a filter because
+      // display_content no longer has a display_id column.
       .on(
         'postgres_changes',
         {
           event: '*',
           schema: 'public',
-          table: 'display_content',
-          filter: `display_id=eq.${displayId}`
+          table: 'display_content'
         },
         (payload) => {
           console.log(`[EnhancedSupabase] Display content changed for display ${displayId}:`, payload);
