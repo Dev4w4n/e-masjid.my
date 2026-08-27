@@ -24,6 +24,17 @@ import {
   createApiError 
 } from '../../../../../lib/api-utils';
 
+const MIN_CAROUSEL_DURATION_SECONDS = 5;
+const MAX_CAROUSEL_DURATION_SECONDS = 300;
+
+function sanitizeCarouselDuration(value: unknown): number {
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    return 10;
+  }
+
+  return Math.min(Math.max(value, MIN_CAROUSEL_DURATION_SECONDS), MAX_CAROUSEL_DURATION_SECONDS);
+}
+
 // Create Supabase client for API routes
 // Uses anon key for security - RLS policies control access
 function createSupabaseClient() {
@@ -185,7 +196,7 @@ export async function GET(
         updated_at: item.updated_at || '',
         // Add per-content carousel settings from assignments
         ...(assignment && {
-          carousel_duration: assignment.carousel_duration,
+          carousel_duration: sanitizeCarouselDuration(assignment.carousel_duration),
           transition_type: assignment.transition_type,
           image_display_mode: assignment.image_display_mode,
           display_order: assignment.display_order

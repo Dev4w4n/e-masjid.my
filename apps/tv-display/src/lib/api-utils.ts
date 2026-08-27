@@ -58,7 +58,7 @@ export interface ApiError {
   error: {
     message: string;
     code: string;
-    details?: string;
+    details?: string | Record<string, any>;
     hint?: string;
     field?: string;
     timestamp: string;
@@ -78,15 +78,22 @@ export interface ApiResponse<T = any> {
 export function createApiError(
   code: ApiErrorCode,
   message: string,
-  details?: string,
+  details?: string | Record<string, any>,
   field?: string
 ): ApiError {
+  const normalizedDetails =
+    typeof details === 'object' && details !== null
+      ? details
+      : details
+        ? { message: details }
+        : undefined;
+
   return {
     data: null,
     error: {
       code,
       message,
-      ...(details && { details }),
+      ...(normalizedDetails && { details: normalizedDetails }),
       ...(field && { field }),
       timestamp: new Date().toISOString(),
     },
