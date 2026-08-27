@@ -8,8 +8,22 @@ import {
 type TvDisplay = Tables<"tv_displays">;
 type NewTvDisplay = TablesInsert<"tv_displays">;
 
+const MIN_CAROUSEL_DURATION_SECONDS = 5;
+const MAX_CAROUSEL_DURATION_SECONDS = 300;
+
+function sanitizeCarouselDuration(value?: number): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return 10;
+  }
+
+  return Math.min(
+    Math.max(value, MIN_CAROUSEL_DURATION_SECONDS),
+    MAX_CAROUSEL_DURATION_SECONDS,
+  );
+}
+
 export const createDisplay = async (
-  newDisplay: NewTvDisplay
+  newDisplay: NewTvDisplay,
 ): Promise<TvDisplay> => {
   const { data, error } = await supabase
     .from("tv_displays")
@@ -25,7 +39,7 @@ export const createDisplay = async (
 };
 
 export const getDisplaysByMasjid = async (
-  masjidId: string
+  masjidId: string,
 ): Promise<TvDisplay[]> => {
   const { data, error } = await supabase
     .from("tv_displays")
@@ -40,7 +54,7 @@ export const getDisplaysByMasjid = async (
 };
 
 export const getAssignedContent = async (
-  displayId: string
+  displayId: string,
 ): Promise<
   Array<
     DisplayContent & {
@@ -59,7 +73,7 @@ export const getAssignedContent = async (
       transition_type,
       image_display_mode,
       display_content:content_id(*)
-    `
+    `,
     )
     .eq("display_id", displayId)
     .order("display_order", { ascending: true });
@@ -70,7 +84,7 @@ export const getAssignedContent = async (
 
   return data.map((item: any) => ({
     ...item.display_content,
-    carousel_duration: item.carousel_duration,
+    carousel_duration: sanitizeCarouselDuration(item.carousel_duration),
     transition_type: item.transition_type,
     image_display_mode: item.image_display_mode,
   }));
@@ -83,7 +97,7 @@ export const assignContent = async (
     carousel_duration?: number;
     transition_type?: "fade" | "slide" | "zoom" | "none";
     image_display_mode?: "contain" | "cover" | "fill" | "none";
-  }
+  },
 ) => {
   // Get the current max display_order for this display
   const { data: maxOrderData } = await (supabase as any)
@@ -104,7 +118,9 @@ export const assignContent = async (
         content_id: contentId,
         assigned_by: (await supabase.auth.getUser()).data.user?.id,
         display_order: nextOrder,
-        carousel_duration: settings?.carousel_duration || 10,
+        carousel_duration: sanitizeCarouselDuration(
+          settings?.carousel_duration,
+        ),
         transition_type: settings?.transition_type || "fade",
         image_display_mode: settings?.image_display_mode || "contain",
       },
@@ -133,7 +149,7 @@ export const removeContent = async (displayId: string, contentId: string) => {
 
 export const updateContentOrder = async (
   displayId: string,
-  contentOrders: Array<{ contentId: string; order: number }>
+  contentOrders: Array<{ contentId: string; order: number }>,
 ) => {
   // Update each assignment's display_order
   const updates = contentOrders.map(({ contentId, order }) =>
@@ -141,7 +157,7 @@ export const updateContentOrder = async (
       .from("display_content_assignments")
       .update({ display_order: order })
       .eq("display_id", displayId)
-      .eq("content_id", contentId)
+      .eq("content_id", contentId),
   );
 
   const results = await Promise.all(updates);
@@ -150,7 +166,7 @@ export const updateContentOrder = async (
   const errors = results.filter((result) => result.error);
   if (errors.length > 0) {
     throw new Error(
-      `Failed to update content order: ${errors[0].error.message}`
+      `Failed to update content order: ${errors[0].error.message}`,
     );
   }
 
@@ -164,11 +180,18 @@ export const updateContentSettings = async (
     carousel_duration?: number;
     transition_type?: "fade" | "slide" | "zoom" | "none";
     image_display_mode?: "contain" | "cover" | "fill" | "none";
-  }
+  },
 ) => {
+  const sanitizedSettings = {
+    ...settings,
+    ...(settings.carousel_duration !== undefined && {
+      carousel_duration: sanitizeCarouselDuration(settings.carousel_duration),
+    }),
+  };
+
   const { error } = await (supabase as any)
     .from("display_content_assignments")
-    .update(settings)
+    .update(sanitizedSettings)
     .eq("display_id", displayId)
     .eq("content_id", contentId);
 

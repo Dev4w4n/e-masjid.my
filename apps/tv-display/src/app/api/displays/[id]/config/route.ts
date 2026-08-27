@@ -19,6 +19,17 @@ import {
   createApiError 
 } from '../../../../../lib/api-utils';
 
+const MIN_CAROUSEL_INTERVAL_SECONDS = 5;
+const MAX_CAROUSEL_INTERVAL_SECONDS = 300;
+
+function sanitizeCarouselInterval(value: unknown): number | null {
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    return null;
+  }
+
+  return Math.min(Math.max(value, MIN_CAROUSEL_INTERVAL_SECONDS), MAX_CAROUSEL_INTERVAL_SECONDS);
+}
+
 // Required for Cloudflare Pages deployment
 export const runtime = 'edge';
 
@@ -241,19 +252,28 @@ export async function PUT(
       }
     }
 
+    if (updateData.carousel_interval !== undefined) {
+      const sanitizedCarouselInterval = sanitizeCarouselInterval(updateData.carousel_interval);
+
+      if (sanitizedCarouselInterval === null) {
+        return NextResponse.json(
+          createApiError(
+            'VALIDATION_ERROR',
+            'Carousel interval must be a number',
+            { field: 'carousel_interval' },
+            'carousel_interval'
+          ),
+          { status: 400 }
+        );
+      }
+
+      updateData.carousel_interval = sanitizedCarouselInterval;
+    }
+
     // Add timestamp
     updateData.updated_at = new Date().toISOString();
 
     // Validate specific field constraints
-    if (updateData.carousel_interval !== undefined) {
-      if (updateData.carousel_interval < 3 || updateData.carousel_interval > 300) {
-        return NextResponse.json(
-          createApiError('VALIDATION_ERROR', 'Carousel interval must be between 3 and 300 seconds'),
-          { status: 400 }
-        );
-      }
-    }
-
     if (updateData.max_content_items !== undefined) {
       if (updateData.max_content_items < 1 || updateData.max_content_items > 100) {
         return NextResponse.json(
