@@ -7,7 +7,7 @@
 
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { DisplayContent, ContentType } from '@masjid-suite/shared-types';
 
 // Extended content type with sponsor info from API response
@@ -45,6 +45,26 @@ export function ContentViewer({
     imageError: false,
     videoError: false
   });
+  const youtubeIframeRef = useRef<HTMLIFrameElement | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (youtubeIframeRef.current?.contentWindow) {
+        try {
+          youtubeIframeRef.current.contentWindow.postMessage(
+            JSON.stringify({ event: 'command', func: 'stopVideo', args: [] }),
+            '*'
+          );
+        } catch (_error) {
+          // Best effort cleanup; browsers may block postMessage when the iframe is already torn down.
+        }
+      }
+
+      if (youtubeIframeRef.current) {
+        youtubeIframeRef.current.src = 'about:blank';
+      }
+    };
+  }, [content.id]);
 
   // Reset state when content changes
   useEffect(() => {
@@ -163,12 +183,12 @@ export function ContentViewer({
           </div>
         )}
         <iframe
+          ref={youtubeIframeRef}
           // Use nocookie to prevent tracking/ads from trying to access user data
           src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&enablejsapi=1`}
           title={content.title}
           className="w-full h-full"
           frameBorder="0"
-          
           allow="autoplay; encrypted-media"
           onLoad={handleLoadComplete}
           onError={() => {

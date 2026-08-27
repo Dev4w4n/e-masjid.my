@@ -69,8 +69,19 @@ export function ContentCarousel({
   });
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const slideDeadlineRef = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+
+  const getCappedDuration = useCallback((duration?: number) => {
+    const normalized = Number(duration ?? config.carouselInterval);
+
+    if (!Number.isFinite(normalized) || normalized <= 0) {
+      return Math.max(5, Math.min(config.carouselInterval, 300));
+    }
+
+    return Math.min(Math.max(normalized, 5), 300);
+  }, [config.carouselInterval]);
 
   // Fetch content from API
   const fetchContent = useCallback(async () => {
@@ -170,12 +181,12 @@ export function ContentCarousel({
   const nextContent = useCallback(() => {
     setState(prev => {
       if (prev.content.length === 0) return prev;
-      
+
       const newIndex = (prev.currentIndex + 1) % prev.content.length;
       const newContent = prev.content[newIndex];
-      
+
       onContentChange?.(newContent || null);
-      
+
       return {
         ...prev,
         currentIndex: newIndex
@@ -187,12 +198,12 @@ export function ContentCarousel({
   const previousContent = useCallback(() => {
     setState(prev => {
       if (prev.content.length === 0) return prev;
-      
+
       const newIndex = prev.currentIndex === 0 ? prev.content.length - 1 : prev.currentIndex - 1;
       const newContent = prev.content[newIndex];
-      
+
       onContentChange?.(newContent || null);
-      
+
       return {
         ...prev,
         currentIndex: newIndex
@@ -200,29 +211,60 @@ export function ContentCarousel({
     });
   }, [onContentChange]);
 
-  // Set up automatic content rotation with per-content duration
+  const clearRotationTimer = useCallback(() => {
+    if (intervalRef.current) {
+      clearTimeout(intervalRef.current);
+      intervalRef.current = null;
+    }
+    slideDeadlineRef.current = null;
+  }, []);
+
+  // Set up automatic content rotation with per-content duration. Use a deadline-based timeout
+  // so slides never continue past the configured maximum and browser throttling does not cause
+  // the YouTube iframe to remain active indefinitely.
   useEffect(() => {
     if (state.content.length <= 1) {
+      clearRotationTimer();
       return;
     }
 
     const currentContent = state.content[state.currentIndex];
-    // Use per-content carousel_duration if available, otherwise fall back to display-level default
-    const duration = currentContent?.carousel_duration || config.carouselInterval;
+    const durationSeconds = getCappedDuration(currentContent?.carousel_duration ?? config.carouselInterval);
+    const durationMs = durationSeconds * 1000;
 
-    if (duration <= 0) {
-      return;
-    }
+    clearRotationTimer();
+    slideDeadlineRef.current = Date.now() + durationMs;
 
-    intervalRef.current = setInterval(nextContent, duration * 1000);
+    intervalRef.current = setTimeout(() => {
+      nextContent();
+    }, durationMs);
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState !== 'visible' || !slideDeadlineRef.current) {
+        return;
+      }
+
+      const remainingMs = slideDeadlineRef.current - Date.now();
+      if (remainingMs <= 0) {
+        clearRotationTimer();
+        nextContent();
+        return;
+      }
+
+      clearRotationTimer();
+      slideDeadlineRef.current = Date.now() + remainingMs;
+      intervalRef.current = setTimeout(() => {
+        nextContent();
+      }, remainingMs);
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      clearRotationTimer();
     };
-  }, [nextContent, config.carouselInterval, state.content.length, state.currentIndex, state.content]);
+  }, [clearRotationTimer, config.carouselInterval, getCappedDuration, nextContent, state.content, state.currentIndex]);
 
   // Fetch content on mount and periodically refresh
   useEffect(() => {
