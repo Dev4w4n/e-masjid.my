@@ -72,6 +72,18 @@ export function ContentCarousel({
   const slideDeadlineRef = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const onContentChangeRef = useRef(onContentChange);
+  const onErrorRef = useRef(onError);
+  const isFetchingRef = useRef(false);
+  const hasPendingRefreshRef = useRef(false);
+
+  useEffect(() => {
+    onContentChangeRef.current = onContentChange;
+  }, [onContentChange]);
+
+  useEffect(() => {
+    onErrorRef.current = onError;
+  }, [onError]);
 
   const getCappedDuration = useCallback((duration?: number) => {
     const normalized = Number(duration ?? config.carouselInterval);
@@ -85,6 +97,13 @@ export function ContentCarousel({
 
   // Fetch content from API
   const fetchContent = useCallback(async () => {
+    if (isFetchingRef.current) {
+      hasPendingRefreshRef.current = true;
+      return;
+    }
+
+    isFetchingRef.current = true;
+
     try {
       setState(prev => ({ ...prev, isLoading: true, error: null }));
 
@@ -148,22 +167,25 @@ export function ContentCarousel({
         activeContent = parseActiveContentFromApiPayload({ data: transformedFallbackContent });
       }
 
-      setState(prev => ({
-        ...prev,
-        content: activeContent,
-        isLoading: false,
-        error: null,
-        lastFetch: new Date(),
-        // Reset to first item if current index is out of bounds
-        currentIndex: prev.currentIndex >= activeContent.length ? 0 : prev.currentIndex
-      }));
+      setState(prev => {
+        const previousContentId = prev.content[prev.currentIndex]?.id;
+        const preservedIndex = previousContentId
+          ? activeContent.findIndex(item => item.id === previousContentId)
+          : -1;
 
-      // Notify parent of content change
-      if (activeContent.length > 0) {
-        onContentChange?.(activeContent[0] ?? null);
-      } else {
-        onContentChange?.(null);
-      }
+        const nextIndex = preservedIndex >= 0
+          ? preservedIndex
+          : (prev.currentIndex >= activeContent.length ? 0 : prev.currentIndex);
+
+        return {
+          ...prev,
+          content: activeContent,
+          isLoading: false,
+          error: null,
+          lastFetch: new Date(),
+          currentIndex: nextIndex,
+        };
+      });
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
@@ -173,9 +195,16 @@ export function ContentCarousel({
         error: errorMessage
       }));
       
-      onError?.(error instanceof Error ? error : new Error(errorMessage));
+      onErrorRef.current?.(error instanceof Error ? error : new Error(errorMessage));
+    } finally {
+      isFetchingRef.current = false;
+
+      if (hasPendingRefreshRef.current) {
+        hasPendingRefreshRef.current = false;
+        void fetchContent();
+      }
     }
-  }, [displayId, config.maxContentItems, onContentChange, onError]);
+  }, [displayId, config.maxContentItems]);
 
   // Navigate to next content item
   const nextContent = useCallback(() => {
@@ -183,16 +212,13 @@ export function ContentCarousel({
       if (prev.content.length === 0) return prev;
 
       const newIndex = (prev.currentIndex + 1) % prev.content.length;
-      const newContent = prev.content[newIndex];
-
-      onContentChange?.(newContent || null);
 
       return {
         ...prev,
         currentIndex: newIndex
       };
     });
-  }, [onContentChange]);
+  }, []);
 
   // Navigate to previous content item
   const previousContent = useCallback(() => {
@@ -200,16 +226,13 @@ export function ContentCarousel({
       if (prev.content.length === 0) return prev;
 
       const newIndex = prev.currentIndex === 0 ? prev.content.length - 1 : prev.currentIndex - 1;
-      const newContent = prev.content[newIndex];
-
-      onContentChange?.(newContent || null);
 
       return {
         ...prev,
         currentIndex: newIndex
       };
     });
-  }, [onContentChange]);
+  }, []);
 
   const clearRotationTimer = useCallback(() => {
     if (intervalRef.current) {
@@ -218,6 +241,11 @@ export function ContentCarousel({
     }
     slideDeadlineRef.current = null;
   }, []);
+
+  useEffect(() => {
+    const activeContent = state.content[state.currentIndex] ?? null;
+    onContentChangeRef.current?.(activeContent);
+  }, [state.content, state.currentIndex]);
 
   // Set up automatic content rotation with per-content duration. Use a deadline-based timeout
   // so slides never continue past the configured maximum and browser throttling does not cause
@@ -264,7 +292,16 @@ export function ContentCarousel({
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       clearRotationTimer();
     };
-  }, [clearRotationTimer, config.carouselInterval, getCappedDuration, nextContent, state.content, state.currentIndex]);
+  }, [
+    clearRotationTimer,
+    config.carouselInterval,
+    getCappedDuration,
+    nextContent,
+    state.content.length,
+    state.currentIndex,
+    state.content[state.currentIndex]?.id,
+    state.content[state.currentIndex]?.carousel_duration,
+  ]);
 
   // Fetch content on mount and periodically refresh
   useEffect(() => {
@@ -280,30 +317,36 @@ export function ContentCarousel({
 
   // Real-time subscription for immediate content updates
   useEffect(() => {
-    // Import the EnhancedSupabaseService dynamically
+    let isMounted = true;
+    let unsubscribe: (() => void) | null = null;
+
     import('../lib/services/enhanced-supabase').then(({ EnhancedSupabaseService }) => {
+      if (!isMounted) {
+        return;
+      }
+
       const supabaseService = new EnhancedSupabaseService();
-      
+
       console.log('[ContentCarousel] Setting up real-time subscription for display content:', displayId);
-      
-      // Subscribe to content changes for this display
-      const unsubscribe = supabaseService.subscribeToContentChanges(
+
+      unsubscribe = supabaseService.subscribeToContentChanges(
         displayId,
         (payload) => {
           console.log('[ContentCarousel] Content updated via real-time:', payload);
-          // Immediately fetch updated content
-          fetchContent();
+          void fetchContent();
         }
       );
-      
-      // Cleanup subscription on unmount
-      return () => {
-        console.log('[ContentCarousel] Cleaning up real-time subscription');
-        unsubscribe();
-      };
     }).catch(error => {
       console.error('[ContentCarousel] Failed to setup real-time subscription:', error);
     });
+
+    return () => {
+      isMounted = false;
+      if (unsubscribe) {
+        console.log('[ContentCarousel] Cleaning up real-time subscription');
+        unsubscribe();
+      }
+    };
   }, [displayId, fetchContent]);
 
   // Touch event handlers for swipe navigation

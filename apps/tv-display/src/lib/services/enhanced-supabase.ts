@@ -584,6 +584,40 @@ export class EnhancedSupabaseService {
       existingUnsub();
     }
 
+    const invalidateDisplayContentCache = () => {
+      const cache = this.getCache<DisplayContent[]>('content');
+      // Clear all content cache entries for this display
+      for (const key of Array.from(cache['cache'].keys())) {
+        if (key.startsWith(`content_${displayId}_`)) {
+          cache.delete(key);
+        }
+      }
+    };
+
+    const isContentAssignedToDisplay = async (contentId: string): Promise<boolean> => {
+      const { count, error } = await (this.client as any)
+        .from('display_content_assignments')
+        .select('content_id', { count: 'exact', head: true })
+        .eq('display_id', displayId)
+        .eq('content_id', contentId);
+
+      if (error) {
+        console.warn(`[EnhancedSupabase] Failed assignment check for content ${contentId} on display ${displayId}:`, error);
+        return false;
+      }
+
+      return (count || 0) > 0;
+    };
+
+    const getPayloadContentId = (payload: any): string | null => {
+      const eventPayload = payload as {
+        new?: { id?: string };
+        old?: { id?: string };
+      };
+
+      return eventPayload.new?.id || eventPayload.old?.id || null;
+    };
+
     const channel = this.client
       .channel(`content-${displayId}-changes`)
       // Listen to display_content table changes without a filter because
@@ -596,18 +630,22 @@ export class EnhancedSupabaseService {
           table: 'display_content'
         },
         (payload) => {
-          console.log(`[EnhancedSupabase] Display content changed for display ${displayId}:`, payload);
-          
-          // Invalidate cache
-          const cache = this.getCache<DisplayContent[]>('content');
-          // Clear all content cache entries for this display
-          for (const key of Array.from(cache['cache'].keys())) {
-            if (key.startsWith(`content_${displayId}_`)) {
-              cache.delete(key);
-            }
+          const contentId = getPayloadContentId(payload);
+
+          if (!contentId) {
+            return;
           }
-          
-          callback(payload);
+
+          void (async () => {
+            const shouldRefresh = await isContentAssignedToDisplay(contentId);
+            if (!shouldRefresh) {
+              return;
+            }
+
+            console.log(`[EnhancedSupabase] Display content changed for display ${displayId}:`, payload);
+            invalidateDisplayContentCache();
+            callback(payload);
+          })();
         }
       )
       // Also listen to display_content_assignments table changes
@@ -622,16 +660,8 @@ export class EnhancedSupabaseService {
         },
         (payload) => {
           console.log(`[EnhancedSupabase] Content assignment changed for display ${displayId}:`, payload);
-          
-          // Invalidate cache
-          const cache = this.getCache<DisplayContent[]>('content');
-          // Clear all content cache entries for this display
-          for (const key of Array.from(cache['cache'].keys())) {
-            if (key.startsWith(`content_${displayId}_`)) {
-              cache.delete(key);
-            }
-          }
-          
+
+          invalidateDisplayContentCache();
           callback(payload);
         }
       )
