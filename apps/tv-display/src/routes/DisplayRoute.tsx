@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { DisplayConfig, PrayerTimes } from '@masjid-suite/shared-types';
+import { DisplayConfig, DisplayContent, PrayerTimes } from '@masjid-suite/shared-types';
 import ContentCarousel from '@/components/ContentCarousel';
 import PrayerTimesOverlay from '@/components/PrayerTimesOverlay';
 import OfflineHandler, { useOffline, FallbackContent } from '@/components/OfflineHandler';
@@ -323,18 +323,27 @@ function DisplayPageContent({ displayId }: DisplayPageContentProps) {
   );
 
   useEffect(() => {
+    let isMounted = true;
+    let unsubscribeDisplay: (() => void) | null = null;
+    let unsubscribeContent: (() => void) | null = null;
+    let unsubscribeCommands: (() => void) | null = null;
+
     import('@/lib/services/enhanced-supabase').then(({ EnhancedSupabaseService }) => {
+      if (!isMounted) {
+        return;
+      }
+
       const supabaseService = new EnhancedSupabaseService();
 
-      const unsubscribeDisplay = supabaseService.subscribeToDisplayChanges(displayId, () => {
+      unsubscribeDisplay = supabaseService.subscribeToDisplayChanges(displayId, () => {
         loadDisplayData(true);
       });
 
-      const unsubscribeContent = supabaseService.subscribeToContentChanges(displayId, () => {
+      unsubscribeContent = supabaseService.subscribeToContentChanges(displayId, () => {
         loadDisplayData(true);
       });
 
-      const unsubscribeCommands = supabaseService.subscribeToDisplayCommands(displayId, (command) => {
+      unsubscribeCommands = supabaseService.subscribeToDisplayCommands(displayId, (command) => {
         switch (command) {
           case 'hard_reload':
             supabaseService.clearAllCaches();
@@ -357,15 +366,16 @@ function DisplayPageContent({ displayId }: DisplayPageContentProps) {
             break;
         }
       });
-
-      return () => {
-        unsubscribeDisplay();
-        unsubscribeContent();
-        unsubscribeCommands();
-      };
     }).catch(error => {
       console.error('[DisplayRoute] Failed to setup real-time subscriptions:', error);
     });
+
+    return () => {
+      isMounted = false;
+      unsubscribeDisplay?.();
+      unsubscribeContent?.();
+      unsubscribeCommands?.();
+    };
   }, [displayId, loadDisplayData, offlineActions]);
 
   useEffect(() => {
@@ -394,6 +404,14 @@ function DisplayPageContent({ displayId }: DisplayPageContentProps) {
       }));
     }
   }, []);
+
+  const handleCarouselContentChange = useCallback((content: DisplayContent | null) => {
+    console.log('Content changed:', content?.title);
+  }, []);
+
+  const handleCarouselError = useCallback((error: Error) => {
+    handleError(error, 'ContentCarousel');
+  }, [handleError]);
 
   if (state.isLoading && !state.config) {
     return (
@@ -449,10 +467,8 @@ function DisplayPageContent({ displayId }: DisplayPageContentProps) {
           contentTransitionType: state.config.content_transition_type as 'fade' | 'slide' | 'zoom' | 'none',
           maxContentItems: state.config.max_content_items,
         }}
-        onContentChange={(content) => {
-          console.log('Content changed:', content?.title);
-        }}
-        onError={(error) => handleError(error, 'ContentCarousel')}
+        onContentChange={handleCarouselContentChange}
+        onError={handleCarouselError}
         className="h-full w-full"
         showDebugInfo={state.config.show_debug_info}
       />
