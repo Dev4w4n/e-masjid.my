@@ -9,7 +9,7 @@ type TvDisplay = Tables<"tv_displays">;
 type NewTvDisplay = TablesInsert<"tv_displays">;
 
 const MIN_CAROUSEL_DURATION_SECONDS = 5;
-const MAX_CAROUSEL_DURATION_SECONDS = 300;
+const MAX_CAROUSEL_DURATION_SECONDS = 600;
 
 function sanitizeCarouselDuration(value?: number): number {
   if (typeof value !== "number" || !Number.isFinite(value)) {
