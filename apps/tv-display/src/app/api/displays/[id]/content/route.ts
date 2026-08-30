@@ -25,7 +25,7 @@ import {
 } from '../../../../../lib/api-utils';
 
 const MIN_CAROUSEL_DURATION_SECONDS = 5;
-const MAX_CAROUSEL_DURATION_SECONDS = 300;
+const MAX_CAROUSEL_DURATION_SECONDS = 600;
 
 function sanitizeCarouselDuration(value: unknown): number {
   if (typeof value !== 'number' || !Number.isFinite(value)) {
