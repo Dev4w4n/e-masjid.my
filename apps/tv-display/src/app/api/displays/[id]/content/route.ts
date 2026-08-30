@@ -416,9 +416,9 @@ export async function POST(
       );
     }
 
-    if (duration < 5 || duration > 300) {
+    if (duration < 5 || duration > 600) {
       return NextResponse.json(
-        createApiError('VALIDATION_ERROR', 'Duration must be between 5 and 300 seconds'),
+        createApiError('VALIDATION_ERROR', 'Duration must be between 5 and 600 seconds'),
         { status: 400 }
       );
     }

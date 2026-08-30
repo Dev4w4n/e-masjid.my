@@ -246,8 +246,8 @@ export class ContentManagementService {
     }
 
     // Performance suggestions
-    if (content.type === 'youtube_video' && content.duration && content.duration > 300) {
-      result.suggestions.push('Video longer than 5 minutes may impact display rotation');
+    if (content.type === 'youtube_video' && content.duration && content.duration > 600) {
+      result.suggestions.push('Video longer than 10 minutes may impact display rotation');
     }
 
     return result;

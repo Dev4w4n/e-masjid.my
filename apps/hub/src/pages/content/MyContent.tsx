@@ -816,7 +816,7 @@ const MyContent: React.FC = () => {
                 required
                 label={t("myContent.duration_field")}
                 helperText={t("myContent.duration_help")}
-                inputProps={{ min: 5, max: 300 }}
+                inputProps={{ min: 5, max: 600 }}
                 value={editDialog.duration}
                 onChange={(e) =>
                   setEditDialog({
@@ -941,7 +941,7 @@ const MyContent: React.FC = () => {
               disabled={
                 !editDialog.title.trim() ||
                 editDialog.duration < 5 ||
-                editDialog.duration > 300 ||
+                editDialog.duration > 600 ||
                 !editDialog.start_date ||
                 !editDialog.end_date
               }

@@ -89,10 +89,10 @@ export function ContentCarousel({
     const normalized = Number(duration ?? config.carouselInterval);
 
     if (!Number.isFinite(normalized) || normalized <= 0) {
-      return Math.max(5, Math.min(config.carouselInterval, 300));
+      return Math.max(5, Math.min(config.carouselInterval, 600));
     }
 
-    return Math.min(Math.max(normalized, 5), 300);
+    return Math.min(Math.max(normalized, 5), 600);
   }, [config.carouselInterval]);
 
   // Fetch content from API

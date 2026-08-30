@@ -12,7 +12,7 @@ describe('ContentCarousel', () => {
     vi.useRealTimers();
   });
 
-  it('caps a YouTube slide at 300 seconds even when its assigned duration is longer', async () => {
+  it('caps a YouTube slide at 600 seconds even when its assigned duration is longer', async () => {
     const fetchMock = vi.spyOn(globalThis, 'fetch' as any).mockResolvedValue({
       ok: true,
       text: async () => JSON.stringify({
@@ -79,7 +79,7 @@ describe('ContentCarousel', () => {
       .filter((value) => Number.isFinite(value));
 
     expect(scheduledDurations.length).toBeGreaterThan(0);
-    expect(Math.max(...scheduledDurations)).toBeLessThanOrEqual(300000);
-    expect(scheduledDurations.some((value) => value === 300000)).toBe(true);
+    expect(Math.max(...scheduledDurations)).toBeLessThanOrEqual(600000);
+    expect(scheduledDurations.some((value) => value === 600000)).toBe(true);
   });
 });
