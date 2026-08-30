@@ -3,7 +3,7 @@
  *
  * Dialog for configuring per-content display settings when assigning or editing content.
  * Allows admins to set:
- * - Display duration (5-300 seconds)
+ * - Display duration (5-600 seconds)
  * - Transition effect (fade, slide, zoom, none)
  * - Image display mode (contain, cover, fill, none) - only for image content
  */
@@ -54,7 +54,11 @@ const DURATION_MARKS = [
   { value: 30, label: "30s" },
   { value: 60, label: "1m" },
   { value: 120, label: "2m" },
+  { value: 180, label: "3m" },
   { value: 300, label: "5m" },
+  { value: 420, label: "7m" },
+  { value: 480, label: "8m" },
+  { value: 600, label: "10m" },
 ];
 
 export const ContentSettingsDialog: React.FC<ContentSettingsDialogProps> = ({
@@ -149,13 +153,13 @@ export const ContentSettingsDialog: React.FC<ContentSettingsDialogProps> = ({
                 }))
               }
               min={5}
-              max={300}
+              max={600}
               marks={DURATION_MARKS}
-              step={5}
+              step={10}
               aria-labelledby="duration-slider"
             />
             <Typography variant="caption" color="text.secondary">
-              How long this content will be displayed (5 seconds to 5 minutes)
+              How long this content will be displayed (5 seconds to 10 minutes)
             </Typography>
           </Box>
 
